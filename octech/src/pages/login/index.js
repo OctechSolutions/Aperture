@@ -1,7 +1,7 @@
 import React from 'react'
-import logo_white_bg from '../images/logo/aperture_lens_white_bg.jpg'
-import './Login.css'
-import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import logo_white_bg from '../../images/logo/aperture_lens_white_bg.jpg'
+import './index.css'
+import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 class Login extends React.Component {
     render(){
@@ -13,7 +13,7 @@ class Login extends React.Component {
                             <p id="aperture-heading">Aperture</p>
                             <p id="tagline">Dare to Venture</p>
                         </div>
-                        <img src={logo_white_bg} id="logo_white_bg" />
+                        <img src={logo_white_bg} id="logo_white_bg" alt="aperture logo" />
                     </div>
                     <div className="col-md-7">
                         <div className="black-veil">
