@@ -1,0 +1,11 @@
+.headerOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: gray;
+  cursor: pointer;
+}
+
+.headerOption_icon {
+  object-fit: contain;
+}
