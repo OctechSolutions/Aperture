@@ -13,6 +13,7 @@ import './index.css'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import { Slider, EditOption, AddOverlays } from '../../components'
 
+/* List of initial values of properties that will be assigned to the images */
 const DEFAULT_EDIT_OPTIONS = [
     {   
         name: 'Brightness',
@@ -52,13 +53,18 @@ const DEFAULT_EDIT_OPTIONS = [
 ]
 
 export default function PhotoEditor() {
-    const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS)
-    const [selectedOptionIndex, setSelectedOptionIndex] = useState(0)
+    const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS) // editOptions = Current values of edit categories.
+    const [selectedOptionIndex, setSelectedOptionIndex] = useState(0) // selectedOptionIndex = Index of the currently selected option.
     const selectedOption = editOptions[selectedOptionIndex]
-    const addOverlayBtn = <AddOverlays value={{title: "Overlay"}} />
+    const addOverlayBtn = <AddOverlays value={{title: "Overlay"}} /> 
 
     function handleSliderChange(event) {
         setEditOptions(prevEditOptions => {
+            /* Loop through all the options.
+               Once the currently selected,
+               then change the value of that option to 
+               the current one on the slider.
+            */
             return(
                 (prevEditOptions.map((option, index) => {
                     
@@ -72,6 +78,9 @@ export default function PhotoEditor() {
     }
 
     function getImageStyle() {
+        /* filters store all the current option values 
+           as a string that is returned.
+        */
         const filters = editOptions.map(option => {
             return `${option.property}(${option.value}${option.unit})`
         })
@@ -85,6 +94,10 @@ export default function PhotoEditor() {
             {console.log(getImageStyle())}
 
             {/* Div with 6 options like brightness, contrast, etc. */}
+            
+            {/* Loop through all options and create EditOption 
+                components using their values. 
+            */}
             <div className="row">
                 {editOptions.map((option, index) => {
                     return(
