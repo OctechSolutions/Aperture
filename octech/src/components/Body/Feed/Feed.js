@@ -11,14 +11,78 @@ import ImageIcon from "@material-ui/icons/Image";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import Camera, { FACING_MODES } from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
+import { Slider, EditOption } from '../ImageManipulation';
 
-function Feed(props) {
+const DEFAULT_EDIT_OPTIONS = [
+  {
+    name: 'Brightness',
+    property: 'brightness',
+    value: 100,
+    range: { min: 0, max: 200 },
+    unit: '%'
+  },
+  {
+    name: 'Contrast',
+    property: 'contrast',
+    value: 100,
+    range: { min: 0, max: 200 },
+    unit: '%'
+  },
+  {
+    name: 'Saturation',
+    property: 'saturate',
+    value: 100,
+    range: { min: 0, max: 200 },
+    unit: '%'
+  },
+  {
+    name: 'Grayscale',
+    property: 'grayscale',
+    value: 0,
+    range: { min: 0, max: 100 },
+    unit: '%'
+  },
+  {
+    name: 'Hue',
+    property: 'hue-rotate',
+    value: 0,
+    range: { min: 0, max: 360 },
+    unit: 'deg'
+  }
+]
+
+function Feed() {
   const user = useSelector(selectUser);
 
   const [input, setInput] = useState("");
   const [inputImg, setInputImg] = useState("");
   const [posts, setPosts] = useState([]);
   const [cameraActive, setCameraActive] = useState("");
+  const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS)
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(0)
+  const selectedOption = editOptions[selectedOptionIndex]
+
+  function handleSliderChange(event) {
+    setEditOptions(prevEditOptions => {
+      return (
+        (prevEditOptions.map((option, index) => {
+
+          if (index !== selectedOptionIndex) {
+            return option
+          }
+          return { ...option, value: event.target.value }
+        }))
+      )
+    })
+  }
+
+  function getImageStyle() {
+    const filters = editOptions.map(option => {
+      return `${option.property}(${option.value}${option.unit})`
+    })
+    return { filter: filters.join(` `) }
+  }
+
 
   useEffect(() => {
     db.collection("posts")
@@ -38,12 +102,14 @@ function Feed(props) {
 
     if (input) {
       setInputImg("");
+      setEditOptions(DEFAULT_EDIT_OPTIONS);
       db.collection("posts").add({
         name: user.displayName,
         description: user.email,
         message: input,
         photoUrl: user.photoUrl || "",
         photoBase: inputImg || "",
+        styleModification: getImageStyle(editOptions),
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
       setInput("");
@@ -65,6 +131,7 @@ function Feed(props) {
     e.preventDefault();
     var reader = new FileReader();
     console.log(e.target.files[0]);
+    setEditOptions(DEFAULT_EDIT_OPTIONS);
 
     if (e.target.files[0] !== undefined) {
       reader.readAsDataURL(e.target.files[0]);
@@ -119,7 +186,36 @@ function Feed(props) {
         {inputImg && (
           <>
             <br />
-            <img src={inputImg} alt="Preview" className="previewImage" />
+            {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
+            <div className="photoEditor">
+              {/* Div in which to view the photo. */}
+              <img src={inputImg}
+                className="previewImage" alt="Preview" style={getImageStyle()}></img>
+              {console.log(getImageStyle())}
+              <br></br>
+              {/* Div with 6 options like brightness, contrast, etc. */}
+              <div className="row">
+                {editOptions.map((option, index) => {
+                  return (
+                    <EditOption
+                      key={index}
+                      name={option.name}
+                      active={index === selectedOptionIndex ? true : false}
+                      handleClick={() => setSelectedOptionIndex(index)}
+                    />
+                  )
+                })}
+              </div>
+              <br></br>
+            </div>
+            {/* Slider to adjust edit values. */}
+            <Slider
+              min={selectedOption.range.min}
+              max={selectedOption.range.max}
+              value={selectedOption.value}
+              handleChange={handleSliderChange}
+            />
+
           </>
         )}
       </div>
@@ -141,7 +237,7 @@ function Feed(props) {
         {posts.map(
           ({
             id,
-            data: { name, description, message, photoUrl, photoBase },
+            data: { name, description, message, photoUrl, photoBase, styleModification },
           }) => (
             <Post
               key={id}
@@ -151,6 +247,7 @@ function Feed(props) {
               message={message}
               photoUrl={photoUrl}
               photoBase={photoBase}
+              styleModification={styleModification}
             />
           )
         )}

@@ -5,7 +5,7 @@ import { db } from "../../../firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../features/userSlice";
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, photoBase }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, photoBase, styleModification }, ref) => {
 
   const user = useSelector(selectUser);
   const deletePost = () => {
@@ -41,7 +41,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, photoBase }
         <p>{message}</p>
         <br />
       </div>
-      <div className="post__image">{photoBase && <img src={photoBase} alt="User Post" />}</div>
+      <div className="post__image">{photoBase && <img src={photoBase} style={styleModification} alt="User Post" />}</div>
     </div>
   );
 });

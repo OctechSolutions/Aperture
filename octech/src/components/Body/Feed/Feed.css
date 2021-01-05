@@ -107,6 +107,15 @@ button {
     transform: scale(0.9, 0.9);
     justify-content: center;
   }
+  .photoEditor {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .row {
+    flex-direction: column;
+    margin-left: 10px;
+  }
 }
 
 @media (max-width: 395px) {
@@ -127,4 +136,9 @@ button {
     width: 30vw;
   }
   
+}
+
+.row {
+  justify-content: space-between;
+  display: flex;
 }
