@@ -1,0 +1,18 @@
+div {
+    /* border: 1px solid #793AFF; */
+    justify-content: space-evenly;
+    padding: 1%;
+}
+
+.photoEditor {
+    height: 95vh;
+}
+
+.view-image {
+    background-image: url(https://cdn.pixabay.com/photo/2018/04/17/15/35/lion-3327806_1280.jpg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 70%;
+    margin-bottom: 1%;
+}

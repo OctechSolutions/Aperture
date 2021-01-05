@@ -1,9 +1,9 @@
 import React from "react"
-import { Login } from "./pages"
+import { Login, PhotoEditor } from "./pages"
 
 class App extends React.Component{
   render(){
-    return (<Login />)
+    return (<PhotoEditor />)
   }
 }
 
