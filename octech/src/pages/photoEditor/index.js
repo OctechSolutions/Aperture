@@ -9,9 +9,12 @@
 */
 
 import React, { useState } from 'react'
+
 import './index.css'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
-import { Slider, EditOption, AddOverlays } from '../../components'
+
+import { Slider, EditOption} from '../../components'
+import { Giphy } from '../../components'
 
 /* List of initial values of properties that will be assigned to the images */
 const DEFAULT_EDIT_OPTIONS = [
@@ -55,8 +58,7 @@ const DEFAULT_EDIT_OPTIONS = [
 export default function PhotoEditor() {
     const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS) // editOptions = Current values of edit categories.
     const [selectedOptionIndex, setSelectedOptionIndex] = useState(0) // selectedOptionIndex = Index of the currently selected option.
-    const selectedOption = editOptions[selectedOptionIndex]
-    const addOverlayBtn = <AddOverlays value={{title: "Overlay"}} /> 
+    const selectedOption = editOptions[selectedOptionIndex] 
 
     function handleSliderChange(event) {
         setEditOptions(prevEditOptions => {
@@ -91,7 +93,6 @@ export default function PhotoEditor() {
         <div className="photoEditor">
             {/* Div in which to view the photo. */}
             <div className="view-image" style={getImageStyle()}></div>
-            {console.log(getImageStyle())}
 
             {/* Div with 6 options like brightness, contrast, etc. */}
             
@@ -110,8 +111,6 @@ export default function PhotoEditor() {
                     )
                 })}
 
-                {/* To add Overlays */} 
-                { addOverlayBtn }
             </div>
 
             {/* Slider to adjust edit values. */}
@@ -121,6 +120,10 @@ export default function PhotoEditor() {
                 value={selectedOption.value}
                 handleChange={handleSliderChange}
             />
+
+            {/* Search for Giffs and Stickers from https://giphy.com/ */}
+            <Giphy />
+
         </div>
     )
 }
