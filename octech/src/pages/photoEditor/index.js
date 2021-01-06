@@ -15,6 +15,7 @@ import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 import { Slider, EditOption} from '../../components'
 import { Giphy } from '../../components'
+import Dragable from '../../containers/dragable'
 
 /* List of initial values of properties that will be assigned to the images */
 const DEFAULT_EDIT_OPTIONS = [
@@ -59,6 +60,7 @@ export default function PhotoEditor() {
     const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS) // editOptions = Current values of edit categories.
     const [selectedOptionIndex, setSelectedOptionIndex] = useState(0) // selectedOptionIndex = Index of the currently selected option.
     const selectedOption = editOptions[selectedOptionIndex] 
+    const [imgOverlays, setImgOverlays] = useState([]) // imgOverlays = array of giffs ot stickers on the image.
 
     function handleSliderChange(event) {
         setEditOptions(prevEditOptions => {
@@ -89,10 +91,26 @@ export default function PhotoEditor() {
         return {filter: filters.join(` `)}
     }
 
+    function handleGiffClick (gif, e) {
+        e.preventDefault();
+        console.log("gif", gif);
+
+        // BELOW CODE NOT WORKING!
+        // setImgOverlays(prevImgOverlays => {
+        //     return(prevImgOverlays.push(gif.url)) /* Add new overlay url to the list of overlays. */
+        // })
+    }
+
     return (
         <div className="photoEditor">
             {/* Div in which to view the photo. */}
-            <div className="view-image" style={getImageStyle()}></div>
+            <div className="view-image" style={getImageStyle()}>
+                {imgOverlays.map(
+                    (url) => {
+                        return <Dragable style={{backgroundImage: 'url(' + url + ')'}} />
+                    }
+                )}
+            </div>
 
             {/* Div with 6 options like brightness, contrast, etc. */}
             
@@ -122,7 +140,7 @@ export default function PhotoEditor() {
             />
 
             {/* Search for Giffs and Stickers from https://giphy.com/ */}
-            <Giphy />
+            <Giphy handleGiffClick={handleGiffClick}/>
 
         </div>
     )
