@@ -112,6 +112,7 @@ export default function PhotoEditor() {
                                     height: preview_gif.height + "px",
                                     width: preview_gif.width + "px"
                                 }} 
+                                onClick={() => {this.focus()}}
                             />
                         )
                 })}
