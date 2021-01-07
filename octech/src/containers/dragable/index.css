@@ -2,4 +2,5 @@
     background-color: none;
     background-repeat: no-repeat;
     background-size: contain;
+    max-height: 15vh;
 }
