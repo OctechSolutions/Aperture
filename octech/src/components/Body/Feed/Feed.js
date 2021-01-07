@@ -103,7 +103,10 @@ function Feed() {
     if (input) {
       setInputImg("");
       setEditOptions(DEFAULT_EDIT_OPTIONS);
-      db.collection("posts").add({
+
+      const ref = db.collection('posts').doc()
+
+      ref.set({
         name: user.displayName,
         description: user.email,
         message: input,
@@ -111,7 +114,13 @@ function Feed() {
         photoBase: inputImg || "",
         styleModification: getImageStyle(editOptions),
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+      })
+
+      console.log(ref.id)
+      db.collection("users").doc(user.displayName).update({
+        posts: firebase.firestore.FieldValue.arrayUnion(ref.id)
+      })
+
       setInput("");
       setCameraActive("");
     }

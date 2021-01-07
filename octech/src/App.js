@@ -6,6 +6,7 @@ import Header from './components/Header/Header';
 import Login from './components/Login/Login';
 import { login, logout, selectUser } from './features/userSlice';
 import { auth } from './firebase';
+import { db } from "./firebase";
 
 function App() {
   const user = useSelector(selectUser);
@@ -14,6 +15,18 @@ function App() {
   useEffect(() => {
     auth.onAuthStateChanged(userAuth => {
       if (userAuth) {
+        db.collection("users").where("name", "==", userAuth.displayName).get().then(function (querySnapshot) {
+          if (querySnapshot.size === 0) {
+            db.collection("users").doc(userAuth.displayName).set({
+              name: userAuth.displayName,
+              posts: []
+            });
+            console.log(userAuth.displayName, "Added to the DB")
+          }
+          else {
+            console.log("Already in DB")
+          }
+        })
         dispatch(login({
           email: userAuth.email,
           uid: userAuth.uid,
@@ -33,11 +46,11 @@ function App() {
       {!user ? (
         <Login />
       ) : (
-        <div className="app_body">
-          <Feed />
-        </div>
-      )}
-      
+          <div className="app_body">
+            <Feed />
+          </div>
+        )}
+
     </div>
   );
 }
