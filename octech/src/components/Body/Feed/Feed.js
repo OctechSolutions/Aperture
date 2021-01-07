@@ -84,9 +84,9 @@ function Feed() {
   }
 
 
-  useEffect(() => {
+  useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
     db.collection("posts")
-      .orderBy("timestamp", "desc")
+      .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
       .onSnapshot((snapshot) =>
         setPosts(
           snapshot.docs.map((doc) => ({
@@ -97,16 +97,16 @@ function Feed() {
       );
   }, []);
 
-  const sendPost = (e) => {
-    e.preventDefault();
+  const sendPost = (e) => { // When the new post is submitted this function is called
+    e.preventDefault(); // This is to prevent the default behaviour of submitting a form
 
-    if (input) {
-      setInputImg("");
-      setEditOptions(DEFAULT_EDIT_OPTIONS);
+    if (input) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
+      setInputImg(""); // When the post is submitted the input image is set to an empty string removing the preview of the image and providing a fresh canvas for the next post
+      setEditOptions(DEFAULT_EDIT_OPTIONS); // This sets the slider values for editing the image to its default once the post is submitted which avoids applying old filters to the next image that is uploaded
 
-      const ref = db.collection('posts').doc()
+      const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
 
-      ref.set({
+      ref.set({ // This adds a new post to the databse
         name: user.displayName,
         description: user.email,
         message: input,
@@ -118,24 +118,24 @@ function Feed() {
 
       console.log(ref.id)
       db.collection("users").doc(user.displayName).update({
-        posts: firebase.firestore.FieldValue.arrayUnion(ref.id)
+        posts: firebase.firestore.FieldValue.arrayUnion(ref.id) // The new posts id is added to the users db by appending it to the posts array
       })
 
-      setInput("");
+      setInput(""); // On posting the input value is set to an empty string
       setCameraActive("");
     }
   };
 
-  const openCamera = (e) => {
+  const openCamera = (e) => { // On clicking the camera button this function is called
     e.preventDefault();
-    setCameraActive("active");
+    setCameraActive("active"); // The camera state is set to active which renders the camera component 
   };
 
-  const closeCamera = (e) => {
-    setCameraActive("");
+  const closeCamera = (e) => { // On clicking the camera closed button this function is called
+    setCameraActive(""); // Setting this to an empty state stops the rendering of the camera component
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e) => { // When a file is uploaded this function is called
     setCameraActive("");
     e.preventDefault();
     var reader = new FileReader();
@@ -143,18 +143,18 @@ function Feed() {
     setEditOptions(DEFAULT_EDIT_OPTIONS);
 
     if (e.target.files[0] !== undefined) {
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
     }
-    reader.onloadend = function () {
+    reader.onloadend = function () { // Since this is asyncronous on completion of the loading the image is set with the base64 string
       console.log("RESULT", reader.result);
       setInputImg(reader.result);
       // alert("Image Uploaded Sucessfully!")
     };
   };
 
-  function handleTakePhoto(dataUri) {
+  function handleTakePhoto(dataUri) { // This function is called when the photo using the camera is taken
     console.log(dataUri);
-    setInputImg(dataUri);
+    setInputImg(dataUri); // The inputImg is set with the result that is returned from the camera
     // alert("Image Uploaded Sucessfully!");
     setCameraActive("");
   }
@@ -163,13 +163,13 @@ function Feed() {
     <div className="feed">
       <div className="feed_inputContainer">
         <div className="feed_input">
-          <Avatar src={user?.photoUrl}></Avatar>
+          <Avatar src={user?.photoUrl}></Avatar> {/*Avatar using materialui*/}
           <form onSubmit={sendPost}>
             <input
               className="feed_inputbox"
               placeholder="Caption..."
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
               type="text"
               required
             />
@@ -204,16 +204,18 @@ function Feed() {
               <br></br>
               {/* Div with 6 options like brightness, contrast, etc. */}
               <div className="row">
-                {editOptions.map((option, index) => {
-                  return (
-                    <EditOption
-                      key={index}
-                      name={option.name}
-                      active={index === selectedOptionIndex ? true : false}
-                      handleClick={() => setSelectedOptionIndex(index)}
-                    />
-                  )
-                })}
+                {
+                  editOptions.map((option, index) => {
+                    return (
+                      <EditOption
+                        key={index}
+                        name={option.name}
+                        active={index === selectedOptionIndex ? true : false}
+                        handleClick={() => setSelectedOptionIndex(index)}
+                      />
+                    )
+                  })
+                }
               </div>
               <br></br>
             </div>
@@ -232,7 +234,7 @@ function Feed() {
       {cameraActive && (
         <div className="camera">
           <br></br>
-          <Camera
+          <Camera // Camera API
             onTakePhoto={(dataUri) => {
               handleTakePhoto(dataUri);
             }}
@@ -242,8 +244,9 @@ function Feed() {
         </div>
       )}
 
-      <FlipMove>
-        {posts.map(
+      <FlipMove> 
+        {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
+        {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
           ({
             id,
             data: { name, description, message, photoUrl, photoBase, styleModification },

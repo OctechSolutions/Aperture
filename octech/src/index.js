@@ -7,8 +7,8 @@ import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-    <Provider store={store}>
-      <App />
+    <Provider store={store}>  {/*Redux wrapper*/}
+      <App /> {/*Main app being mounted*/}
     </Provider>,
   document.getElementById('root')
 );

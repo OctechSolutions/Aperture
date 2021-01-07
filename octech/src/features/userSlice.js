@@ -1,16 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: 'user', // user is the only variable in our slice
   initialState: {
-    user: null,
+    user: null, // initially set to null meaning user logged out
   },
   reducers: {
     login: (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload; // on logging in the user is set to the payload which changes its value from null which denotes the user being logged in
     },
     logout: (state) => {
-      state.user += null;
+      state.user += null; // The state is changed back to null denoting the user being logged out
     },
   },
 });
