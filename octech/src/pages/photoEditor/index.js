@@ -8,7 +8,7 @@
    -> .row
 */
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 
 import './index.css'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
@@ -61,6 +61,7 @@ export default function PhotoEditor() {
     const [selectedOptionIndex, setSelectedOptionIndex] = useState(0) // selectedOptionIndex = Index of the currently selected option.
     const selectedOption = editOptions[selectedOptionIndex] 
     const [imgOverlays, setImgOverlays] = useState([]) // imgOverlays = array of giffs ot stickers on the image.
+    const overlayParentRef = useRef()
 
     function handleSliderChange(event) {
         setEditOptions(prevEditOptions => {
@@ -93,23 +94,27 @@ export default function PhotoEditor() {
 
     function handleGiffClick (gif, e) {
         e.preventDefault();
-        console.log("gif", gif);
-
-        // BELOW CODE NOT WORKING!
-        // setImgOverlays(prevImgOverlays => {
-        //     return(prevImgOverlays.push(gif.url)) /* Add new overlay url to the list of overlays. */
-        // })
+        setImgOverlays(imgOverlays.concat(gif.images.preview_gif)) /* Add new overlay url to the list of overlays. */
+        console.log("gif = ", gif)
+        console.log("overlay previews = ", imgOverlays)
     }
 
     return (
         <div className="photoEditor">
             {/* Div in which to view the photo. */}
-            <div className="view-image" style={getImageStyle()}>
-                {imgOverlays.map(
-                    (url) => {
-                        return <Dragable style={{backgroundImage: 'url(' + url + ')'}} />
-                    }
-                )}
+            <div className="view-image" ref={overlayParentRef} style={getImageStyle()}>
+                {imgOverlays.map((preview_gif) => {
+                        return (
+                            <Dragable 
+                                parentRef={overlayParentRef} 
+                                style={{
+                                    backgroundImage: "url(" + preview_gif.url + ")",
+                                    height: preview_gif.height + "px",
+                                    width: preview_gif.width + "px"
+                                }} 
+                            />
+                        )
+                })}
             </div>
 
             {/* Div with 6 options like brightness, contrast, etc. */}
