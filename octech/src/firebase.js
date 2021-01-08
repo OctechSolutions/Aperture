@@ -12,6 +12,7 @@ const firebaseConfig = {
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore(); //database
+const storage = firebaseApp.storage()
 const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider()
 const signInWithGoogle = () => {
@@ -23,4 +24,4 @@ const signInWithGoogle = () => {
 }
 
 
-export { db, auth, signInWithGoogle }; 
+export { db, auth, signInWithGoogle, storage }; 

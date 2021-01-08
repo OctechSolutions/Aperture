@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Feed.css";
 import { Avatar } from "@material-ui/core";
 import Post from "../Post/Post";
-import { db } from "../../../firebase";
+import { db, storage } from "../../../firebase";
 import firebase from "firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../features/userSlice";
@@ -55,8 +55,10 @@ function Feed() {
   const user = useSelector(selectUser);
 
   const [input, setInput] = useState("");
+  const [file, setFile] = useState(null)
   const [inputImg, setInputImg] = useState("");
   const [posts, setPosts] = useState([]);
+  const [largeFile, setLargeFile] = useState("");
   const [cameraActive, setCameraActive] = useState("");
   const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS)
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(0)
@@ -97,32 +99,60 @@ function Feed() {
       );
   }, []);
 
-  const sendPost = (e) => { // When the new post is submitted this function is called
+  const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
 
     if (input) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
       setInputImg(""); // When the post is submitted the input image is set to an empty string removing the preview of the image and providing a fresh canvas for the next post
       setEditOptions(DEFAULT_EDIT_OPTIONS); // This sets the slider values for editing the image to its default once the post is submitted which avoids applying old filters to the next image that is uploaded
 
-      const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
 
-      ref.set({ // This adds a new post to the databse
-        name: user.displayName,
-        description: user.email,
-        message: input,
-        photoUrl: user.photoUrl || "",
-        photoBase: inputImg || "",
-        styleModification: getImageStyle(editOptions),
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      })
+      if (largeFile === "") {
+        const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
+        console.log("Small file using base64");
+        ref.set({ // This adds a new post to the databse
+          name: user.displayName,
+          description: user.email,
+          message: input,
+          photoUrl: user.photoUrl || "",
+          photoBase: inputImg || "",
+          styleModification: getImageStyle(editOptions),
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
 
-      console.log(ref.id)
-      db.collection("users").doc(user.displayName).update({
-        posts: firebase.firestore.FieldValue.arrayUnion(ref.id) // The new posts id is added to the users db by appending it to the posts array
-      })
+        console.log(ref.id)
+        db.collection("users").doc(user.displayName).update({
+          posts: firebase.firestore.FieldValue.arrayUnion(ref.id) // The new posts id is added to the users db by appending it to the posts array
+        })
+      }
+
+      else {
+        const ref = db.collection('posts').doc(file.name) // A reference to the next entry to the database is created in advance
+        console.log("Large file using firebase storage");
+        const storageRef = storage.ref()
+        const fileRef = storageRef.child(file.name)
+        await fileRef.put(file)
+        ref.set({ // This adds a new post to the database
+          name: user.displayName,
+          description: user.email,
+          message: input,
+          photoUrl: user.photoUrl || "",
+          photoBase: await fileRef.getDownloadURL() || "",
+          styleModification: getImageStyle(editOptions),
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+
+        console.log(ref.id)
+        db.collection("users").doc(user.displayName).update({
+          posts: firebase.firestore.FieldValue.arrayUnion(ref.id) // The new posts id is added to the users db by appending it to the posts array
+        })
+      }
+
+
 
       setInput(""); // On posting the input value is set to an empty string
       setCameraActive("");
+      setLargeFile("")
     }
   };
 
@@ -144,10 +174,17 @@ function Feed() {
 
     if (e.target.files[0] !== undefined) {
       reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
+      setFile(e.target.files[0]);
     }
     reader.onloadend = function () { // Since this is asyncronous on completion of the loading the image is set with the base64 string
       console.log("RESULT", reader.result);
       setInputImg(reader.result);
+      if (reader.result.length > 980000) {
+        setLargeFile("Large File");
+      }
+      else {
+        setLargeFile("")
+      }
       // alert("Image Uploaded Sucessfully!")
     };
   };
@@ -244,7 +281,7 @@ function Feed() {
         </div>
       )}
 
-      <FlipMove> 
+      <FlipMove>
         {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
         {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
           ({
