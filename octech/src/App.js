@@ -9,6 +9,7 @@ import { login, logout, selectUser } from './features/userSlice';
 import { auth } from './firebase';
 import { db } from "./firebase";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Collection from './Collections/Collection.js';
 
 function App() {
   const user = useSelector(selectUser); // Select the currently logged in user from the slice using redux
@@ -58,6 +59,7 @@ function App() {
 
             <Route path="/feed" exact component={Feed} /> 
             <Route path="/user/:id" exact component={Profile} /> {/* Dynamically generated user pages, the user lands on /user/{username} when clicking on someone profile, the profile page of the user is rendered by the profile component */}
+            <Route path="/user/:id/:collection" component={Collection} />
           </div>)}
     </Router>
   );
