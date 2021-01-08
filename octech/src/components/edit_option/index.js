@@ -9,7 +9,7 @@ export default function EditOption(props) {
             className={props.active ? 'edit-option active' : 'edit-option'}
             onClick={props.handleClick}
         >
-            <p>{ props.name }</p>
+            <p>{props.name}</p>
         </button>        
     )
 }

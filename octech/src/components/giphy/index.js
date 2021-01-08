@@ -20,7 +20,7 @@ export default function Giphy({handleGiffClick}) {
         const { fetchGifs, searchKey } = useContext(SearchContext)
         return (
             <>
-                <SearchBar placeholder="Search for Giffs or Stickers."/>
+                <SearchBar placeholder="Search for Giffs or Stickers. Double click to delete added overlays."/>
                 <Carousel // Container to display giffs in (From Giphy).
                     key={searchKey}
                     onGifClick={handleGiffClick}

@@ -1,4 +1,4 @@
-/* Code inspired from 
+/* Parts of code inspired from 
    YouTube Video "How To Build A Photo Editor With React And CSS Filters"
    uploaded on Sep 12, 2020 by "Web Dev Simplified".
    Link = https://www.youtube.com/watch?v=J243ncoInNE
@@ -8,7 +8,7 @@
    -> .row
 */
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 import './index.css'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
@@ -95,24 +95,29 @@ export default function PhotoEditor() {
     function handleGiffClick (gif, e) {
         e.preventDefault();
         setImgOverlays(imgOverlays.concat(gif.images.preview_gif)) /* Add new overlay url to the list of overlays. */
-        console.log("gif = ", gif)
-        console.log("overlay previews = ", imgOverlays)
     }
+
+    function removeOverlay(preview_gif) {
+        setImgOverlays(imgOverlays.filter(obj => obj !== preview_gif))
+    }
+
 
     return (
         <div className="photoEditor">
             {/* Div in which to view the photo. */}
             <div className="view-image" ref={overlayParentRef} style={getImageStyle()}>
-                {imgOverlays.map((preview_gif) => {
+                {imgOverlays.map((preview_gif, index) => {
                         return (
                             <Dragable 
+                                key={index}
+                                preview_gif={preview_gif}
                                 parentRef={overlayParentRef} 
                                 style={{
                                     backgroundImage: "url(" + preview_gif.url + ")",
                                     height: preview_gif.height + "px",
                                     width: preview_gif.width + "px"
                                 }} 
-                                onClick={() => {this.focus()}}
+                                handleDblClick={removeOverlay}
                             />
                         )
                 })}
