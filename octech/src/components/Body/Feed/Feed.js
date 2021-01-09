@@ -272,7 +272,6 @@ function Feed() {
         <div className="camera">
           <br></br>
           <Camera // Camera API
-            isMaxResolution={true}
             isImageMirror={false}
             onTakePhoto={(dataUri) => {
               handleTakePhoto(dataUri);
