@@ -10,6 +10,9 @@ export default function Dragable(props) {
     var timestamp = 0.0
     var tapCount = 0
 
+    /* If the user taps 2 times within 1000 milliseconds, then
+       it is counted as a double click. If an overlay is
+       is double cicked, it will be deleted. */
     function checkDoubleClick(event) {
         if(tapCount === 1){
             if(event.timeStamp - timestamp <= 1000){
@@ -23,6 +26,8 @@ export default function Dragable(props) {
         }
     }
 
+    /* Upon the start of each tap, the x and y coordinates of 
+       the overlay will be displayed on the console. */
     function getCoordinates(event, info) {
         console.log(info.point.x, info.point.y)
     }

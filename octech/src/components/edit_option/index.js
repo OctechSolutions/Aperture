@@ -2,7 +2,7 @@ import React from 'react'
 import './index.css'
 
 export default function EditOption(props) {
-    // An aspect of the image to edit. Like the brightness, contrast, etc.
+    // Button to adjust image properties like brightness, contrast, etc.
     return (
         <button 
             type='button'

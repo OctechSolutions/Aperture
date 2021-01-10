@@ -17,7 +17,7 @@ import { Slider, EditOption} from '../../components'
 import { Giphy } from '../../components'
 import { Dragable } from '../../containers'
 
-/* List of initial values of properties that will be assigned to the images */
+/* List of initial values of properties that will be assigned to the image. */
 const DEFAULT_EDIT_OPTIONS = [
     {   
         name: 'Brightness',
@@ -57,11 +57,11 @@ const DEFAULT_EDIT_OPTIONS = [
 ]
 
 export default function PhotoEditor() {
-    const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS) // editOptions = Current values of edit categories.
+    const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS) // editOptions = Current values of image properties.
     const [selectedOptionIndex, setSelectedOptionIndex] = useState(0) // selectedOptionIndex = Index of the currently selected option.
     const selectedOption = editOptions[selectedOptionIndex] 
     const [imgOverlays, setImgOverlays] = useState([]) // imgOverlays = array of giffs ot stickers on the image.
-    const overlayParentRef = useRef()
+    const overlayParentRef = useRef() // Reference to the parent element of overlays.
 
     function handleSliderChange(event) {
         setEditOptions(prevEditOptions => {
@@ -83,7 +83,7 @@ export default function PhotoEditor() {
     }
 
     function getImageStyle() {
-        /* filters store all the current option values 
+        /* filters and stores all the current image property values 
            as a string that is returned.
         */
         const filters = editOptions.map(option => {
@@ -92,9 +92,11 @@ export default function PhotoEditor() {
         return {filter: filters.join(` `)}
     }
 
-    function handleGiffClick (gif, e) {
+    function handleOverlayClick (overlay, e) {
+        /* When am overlay is clicked, it is added to the list of overlays
+           causing it to be rendered on screen. */
         e.preventDefault();
-        setImgOverlays(imgOverlays.concat(gif.images.preview_gif)) /* Add new overlay url to the list of overlays. */
+        setImgOverlays(imgOverlays.concat(overlay.images.preview_gif)) /* Add new overlay url to the list of overlays. */
     }
 
     function removeOverlay(preview_gif) {
@@ -104,11 +106,9 @@ export default function PhotoEditor() {
     return (
         <div className="photoEditor">
             {/* Div with 6 options like brightness, contrast, etc. */}
-            
-            {/* Loop through all options and create EditOption 
-                components using their values. 
-            */}
             <div className="row edit-options">
+                {/* Loop through all options and create EditOption 
+                    components using their values. */}
                 {editOptions.map((option, index) => {
                     return(
                             <EditOption 
@@ -131,7 +131,7 @@ export default function PhotoEditor() {
             />
 
             {/* Search for Giffs and Stickers from https://giphy.com/ */}
-            <Giphy handleGiffClick={handleGiffClick}/>
+            <Giphy handleGiffClick={handleOverlayClick}/>
 
             {/* Div in which to view the photo. */}
                 <img 

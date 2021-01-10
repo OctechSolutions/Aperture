@@ -2,7 +2,7 @@ import React from 'react'
 import './index.css'
 
 export default function Slider(props) {
-    // Slider controls the value of the filter's effect.
+    // Slider controls the value of the image's properties.
     return (
         <div className="slider-container">
             <input 
