@@ -12,7 +12,6 @@ import './index.css'
 export default function Giphy({handleGiffClick}) {
     {/* use @giphy/js-fetch-api to fetch gifs */}
     const apiKey = "SL07jZg7zFxxOTBN29YaS4979AUIInJK"
-    const gf = new GiphyFetch(apiKey)
 
     // define the components in a separate function so we can
     // use the context hook. You could also use the render props pattern
@@ -25,7 +24,7 @@ export default function Giphy({handleGiffClick}) {
                     key={searchKey}
                     onGifClick={handleGiffClick}
                     fetchGifs={fetchGifs}
-                    gifHeight={150}
+                    gifHeight={100}
                     gutter={6}
                 />
             </>

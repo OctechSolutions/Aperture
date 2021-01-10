@@ -15,7 +15,7 @@ import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 import { Slider, EditOption} from '../../components'
 import { Giphy } from '../../components'
-import Dragable from '../../containers/dragable'
+import { Dragable } from '../../containers'
 
 /* List of initial values of properties that will be assigned to the images */
 const DEFAULT_EDIT_OPTIONS = [
@@ -101,34 +101,14 @@ export default function PhotoEditor() {
         setImgOverlays(imgOverlays.filter(obj => obj !== preview_gif))
     }
 
-
     return (
         <div className="photoEditor">
-            {/* Div in which to view the photo. */}
-            <div className="view-image" ref={overlayParentRef} style={getImageStyle()}>
-                {imgOverlays.map((preview_gif, index) => {
-                        return (
-                            <Dragable 
-                                key={index}
-                                preview_gif={preview_gif}
-                                parentRef={overlayParentRef} 
-                                style={{
-                                    backgroundImage: "url(" + preview_gif.url + ")",
-                                    height: preview_gif.height + "px",
-                                    width: preview_gif.width + "px"
-                                }} 
-                                handleDblClick={removeOverlay}
-                            />
-                        )
-                })}
-            </div>
-
             {/* Div with 6 options like brightness, contrast, etc. */}
             
             {/* Loop through all options and create EditOption 
                 components using their values. 
             */}
-            <div className="row">
+            <div className="row edit-options">
                 {editOptions.map((option, index) => {
                     return(
                             <EditOption 
@@ -153,6 +133,30 @@ export default function PhotoEditor() {
             {/* Search for Giffs and Stickers from https://giphy.com/ */}
             <Giphy handleGiffClick={handleGiffClick}/>
 
+            {/* Div in which to view the photo. */}
+                <img 
+                    className="view-image" 
+                    src="https://cdn.pixabay.com/photo/2017/11/05/18/11/dogs-2921382_1280.jpg" 
+                    style={getImageStyle()} 
+                    ref={overlayParentRef}
+                />
+                {imgOverlays.map((preview_gif, index) => {
+                        return (
+                            <Dragable 
+                                key={index}
+                                preview_gif={preview_gif}
+                                parentRef={overlayParentRef} 
+                                style={{
+                                    backgroundImage: "url(" + preview_gif.url + ")",
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundSize: "contain",
+                                    height: preview_gif.height + "px",
+                                    width: preview_gif.width + "px"
+                                }} 
+                                handleDblClick={removeOverlay}
+                            />
+                        )
+                })}
         </div>
     )
 }

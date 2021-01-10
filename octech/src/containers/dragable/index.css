@@ -1,6 +1,8 @@
-.dragable{
+.dragable {
     background-color: none;
-    background-repeat: no-repeat;
-    background-size: contain;
-    max-width: 10%;
+    
+    position: relative;
+    max-width: 20%;
+    top: 10%;
+    left: 30%;
 }

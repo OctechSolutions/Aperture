@@ -5,16 +5,33 @@ div {
 }
 
 .photoEditor {
-    height: 80vh;
+    height: 80%;
     width: 100%;
 }
 
 .view-image {
-    background-image: url(https://cdn.pixabay.com/photo/2017/11/05/18/11/dogs-2921382_1280.jpg);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 70%;
-    margin: 0;
-    padding: 0;
+    position: absolute;
+    left:0;
+    right:0;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 2%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.edit-options {
+    margin-top: 0%;
+}
+
+@media all and (max-width: 800px) {
+    .row {
+        flex-direction: column;
+    }
+    .view-image {
+        max-width: 100%;
+    }
+    .div{
+        padding: 0%;
+    }
 }

@@ -1,7 +1,7 @@
 /* Farmer Motion API was used for dragging behaviour.
    Link = https://www.framer.com/api/motion/gestures#drag
 */
-import React, {useState, useRef, useEffect } from 'react'
+import React, {useRef} from 'react'
 import { motion } from "framer-motion"
 import './index.css'
 
@@ -23,15 +23,19 @@ export default function Dragable(props) {
         }
     }
 
+    function getCoordinates(event, info) {
+        console.log(info.point.x, info.point.y)
+    }
+
     return (
-        <motion.div ref={constraintsRef}>
-            <motion.div
-                className="dragable" 
+        <motion.div ref={constraintsRef} className="dragable">
+            <motion.div 
                 drag dragConstraints={props.parentRef}  
                 dragElastic={0}
                 style={props.style}
                 dragMomentum={false}
                 onTap={checkDoubleClick}
+                onTapStart={getCoordinates}
             />
         </motion.div>
     )
