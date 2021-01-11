@@ -1,10 +1,13 @@
 import React from "react"
-import {PhotoEditor } from "./pages"
+import { Firebase } from './config'
+import { SignUp } from "./pages"
 
-class App extends React.Component{
-  render(){
-    return (<PhotoEditor />)
-  }
+export default class App extends React.Component{
+    render() {
+        return (
+            <div className="sign-up">
+                <SignUp />
+            </div>
+        )
+    }
 }
-
-export default App;

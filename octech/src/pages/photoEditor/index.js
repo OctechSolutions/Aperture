@@ -8,7 +8,7 @@
    -> .row
 */
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef} from 'react'
 
 import './index.css'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'

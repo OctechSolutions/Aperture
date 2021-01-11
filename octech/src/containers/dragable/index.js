@@ -1,7 +1,7 @@
 /* Farmer Motion API was used for dragging behaviour.
    Link = https://www.framer.com/api/motion/gestures#drag
 */
-import React, {useRef} from 'react'
+import React, { useRef } from 'react'
 import { motion } from "framer-motion"
 import './index.css'
 

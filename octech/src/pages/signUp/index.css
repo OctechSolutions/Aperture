@@ -1,0 +1,16 @@
+.sign-up {
+    margin: 2% 10%;
+    width: 80%;
+}
+
+.sign-up input {
+    width: 100%;   
+    justify-self: center;
+}
+
+@media all and (max-width: 500px) {
+    .sign-up {
+        margin: 10% 0;
+        width: 100%;
+    }
+}
