@@ -1,2 +1,2 @@
 // config folder consits of all configurations.
-export { default as Firebase } from './firebase'
+export { default as FirebaseApp } from './firebase'

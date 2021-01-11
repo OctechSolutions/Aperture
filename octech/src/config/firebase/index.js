@@ -1,8 +1,7 @@
 import firebase from 'firebase'
-import withFirebaseAuth from 'react-with-firebase-auth'
 
 // Your web app's Firebase configuration
-var firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyAEd4a_IJw8g5X3NQcKz1itgnYKD9ZfBRo",
     authDomain: "aperture-test-ff551.firebaseapp.com",
     projectId: "aperture-test-ff551",
@@ -12,13 +11,6 @@ var firebaseConfig = {
 };
 
 // Initialize Firebase
-const firebaseAppAuth = firebase.initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-const providers = {
-    googleProvider: new firebase.auth.GoogleAuthProvider(),
-};
-
-export default withFirebaseAuth({
-    providers,
-    firebaseAppAuth
-}) (firebase)
+export default firebaseApp
