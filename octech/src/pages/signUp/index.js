@@ -4,23 +4,30 @@
 
 import React, { useCallback } from 'react'
 import FirebaseApp from '../../config/firebase'
-import firebase from 'firebase'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 
 const SignUp = ({history}) => {
     const handleSubmit = useCallback(async event => {
         event.preventDefault()
-        const { email, 
-                passwordConfirm
+        const { name,
+                username,
+                email, 
+                password,
+                passwordConfirm,
+                contactNumber
         } = event.target.elements
-        try {
-            await FirebaseApp
-            .auth()
-            .createUserWithEmailAndPassword(email.value, passwordConfirm.value)
-            history.push("/")
-        } catch (error) {
-            alert(error)
+        if (passwordConfirm.value === password.value) {
+            try {
+                await FirebaseApp
+                .auth()
+                .createUserWithEmailAndPassword(email.value, passwordConfirm.value)
+                history.push("/")
+            } catch (error) {
+                alert(error)
+            }
+        } else {
+            alert("The password and the confirmed password must match.")
         }
     }, [history])
 

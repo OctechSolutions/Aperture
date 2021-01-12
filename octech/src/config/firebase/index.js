@@ -1,16 +1,17 @@
 import firebase from 'firebase'
 
-// Your web app's Firebase configuration
+// Aperture Project Firebase configuration.
 const firebaseConfig = {
-    apiKey: "AIzaSyAEd4a_IJw8g5X3NQcKz1itgnYKD9ZfBRo",
-    authDomain: "aperture-test-ff551.firebaseapp.com",
-    projectId: "aperture-test-ff551",
-    storageBucket: "aperture-test-ff551.appspot.com",
-    messagingSenderId: "143682216621",
-    appId: "1:143682216621:web:5ee6b81ab5c9997c5f5c24"
+    apiKey: "AIzaSyChcmT6j0Odya7uLp5kMOx8WztiYHRKSRg",
+    authDomain: "aperture-f2abe.firebaseapp.com",
+    projectId: "aperture-f2abe",
+    storageBucket: "aperture-f2abe.appspot.com",
+    messagingSenderId: "404260521084",
+    appId: "1:404260521084:web:c96771716245b4275ab5f9",
+    measurementId: "G-174606WG0W"
 };
 
-// Initialize Firebase
+// Initializing Firebase App.
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 export default firebaseApp
