@@ -1,11 +1,7 @@
 .profile-pic {
     width: 14%;
     margin: 0% 43%;
-}
-
-#icon-credits {
-    text-align: center;
-    font-size: 0.5rem;
+    border-radius: 50%;
 }
 
 .profile-pic:hover {

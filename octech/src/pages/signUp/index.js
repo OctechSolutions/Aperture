@@ -48,10 +48,10 @@ const SignUp = ({ history }) => {
     return (
         <form className="sign-up" onSubmit={handleSubmit}>
             {/* Profile Picture */}
-            <ProfilePic />
+            <ProfilePic imgSrc="https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814049_1280.png" />
 
             {/* Sign Up Heading */}
-            <h1 style={{ textAlign: "center" }}>Sign Up</h1>
+            <h1 style={{ textAlign: "center", marginBottom: "2%"}}>Sign Up</h1>
 
             {/* Name Input */}
             <input 
