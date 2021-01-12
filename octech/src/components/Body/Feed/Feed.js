@@ -122,7 +122,7 @@ function Feed() {
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       })
 
-      sliderImages.map((image) => {
+      sliderImages.forEach((image) => {
         console.log(image, "added to db");
         db.collection('postImages').doc().set({
           url: image.src,

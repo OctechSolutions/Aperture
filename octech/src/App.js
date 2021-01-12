@@ -17,8 +17,9 @@ function App() {
 
   useEffect(() => { // useEffect keeps listening to the variables passed in the array at the end
     auth.onAuthStateChanged(userAuth => { // When the state of the user changes this function is called that is if the user logs in or out this function gets called
+      console.log(userAuth);
       if (userAuth) { // If user logs in, userAuth becomes true as it holds some value
-        db.collection("users").where("name", "==", userAuth.displayName).get().then(function (querySnapshot) { //This is a firebase query to get all users in the db with the name of the current user
+        db.collection("users").where("email", "==", userAuth.email).get().then(function (querySnapshot) { //This is a firebase query to get all users in the db with the name of the current user
           if (querySnapshot.size === 0) { // If there is none in the db, it means its the first time the user is logging in and he is added to the db
             // This if condition will only be true when the user logs in for the first time
             db.collection("users").doc(userAuth.displayName).set({

@@ -18,6 +18,7 @@ function ImageGallery({ sliderImages }) {
                             className="w-100"
                             src={a.src}
                             style={a.style}
+                            alt="Carousel"
                         />
                     </Carousel.Item>
                 )}
