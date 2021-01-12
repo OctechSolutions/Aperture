@@ -4,6 +4,7 @@
 
 import React, { useCallback } from 'react'
 import FirebaseApp from '../../config/firebase'
+import { ProfilePic } from '../../components'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 
@@ -46,9 +47,11 @@ const SignUp = ({ history }) => {
     // Returns a Sign Up form.
     return (
         <form className="sign-up" onSubmit={handleSubmit}>
+            {/* Profile Picture */}
+            <ProfilePic />
 
             {/* Sign Up Heading */}
-            <h1 style={{textAlign: "center"}}>Sign Up</h1>
+            <h1 style={{ textAlign: "center" }}>Sign Up</h1>
 
             {/* Name Input */}
             <input 
