@@ -1,19 +1,40 @@
-import React from 'react'
+/* Inspired from YouTube video 
+   "Firebase React Authentication Tutorial For Beginners - Private Route With Hooks"
+   uploaded on May 5, 2019 by "Maksim Ivanov" */
+
+import React, { useCallback } from 'react'
+import FirebaseApp from '../../config/firebase'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 
-export default function SignUp() {
+const SignUp = ({history}) => {
+    const handleSubmit = useCallback(async event => {
+        event.preventDefault()
+        const { email, 
+                passwordConfirm
+        } = event.target.elements
+        try {
+            await FirebaseApp
+            .auth()
+            .createUserWithEmailAndPassword(email.value, passwordConfirm.value)
+            history.push("/")
+        } catch (error) {
+            alert(error)
+        }
+    }, [history])
 
-    function handleSubmit() {
-        console.log("Submitted")
+    const handleGoogleSignIn = (event) => {
+        event.preventDefault()
+        alert("Google Sign In")
     }
 
     return (
-        <div className="sign-up">
+        <form className="sign-up" onSubmit={handleSubmit}>
             <h1 style={{textAlign: "center"}}>Sign Up</h1>
 
             {/* Name Input */}
             <input 
+                name="name"
                 required={true}
                 type="text" 
                 className="mb-3 form-control" 
@@ -22,6 +43,7 @@ export default function SignUp() {
 
             {/* Username Input */}
             <input  
+                name="username"
                 required={true}
                 type="text" 
                 className="mb-3 form-control" 
@@ -30,6 +52,7 @@ export default function SignUp() {
 
             {/* Email Input */}
             <input 
+                name="email"
                 required={true}
                 type="email" 
                 className="mb-3 form-control" 
@@ -38,6 +61,7 @@ export default function SignUp() {
 
             {/* Password Input */}
             <input 
+                name="password"
                 required={true}
                 type="password" 
                 className="mb-3 form-control" 
@@ -46,6 +70,7 @@ export default function SignUp() {
 
             {/* Password Confirmation Input */}
             <input 
+                name="passwordConfirm"
                 required={true}
                 type="password" 
                 className="mb-3 form-control" 
@@ -54,6 +79,7 @@ export default function SignUp() {
 
             {/* Contact Number Input */}
             <input 
+                name="contactNumber"
                 type="tel" 
                 className="mb-3 form-control" 
                 placeholder="Contact Number" 
@@ -61,21 +87,24 @@ export default function SignUp() {
 
             {/* Submit Button Input */}
             <input 
+                name="submitBtn"
                 className="btn btn-primary mb-3" 
                 type="submit" 
                 value="Submit" 
                 style={{width: "100%"}}
-                onClick={handleSubmit}
             />
 
             {/* Google Sign Up Button Input */}
             <input 
+                name="googleSignUpBtn"
                 className="btn btn-outline-primary mb-3" 
                 type="submit" 
                 value="Sign Up using Google" 
                 style={{width: "100%"}}
-                onClick={handleSubmit}
+                onClick={handleGoogleSignIn}
             />
-        </div>
+        </form>
     )
 }
+
+export default SignUp
