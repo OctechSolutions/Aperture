@@ -12,6 +12,11 @@ import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import Camera, { FACING_MODES } from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
 import { Slider, EditOption } from '../ImageManipulation';
+import ImageGallery from "./ImageGallery";
+
+
+const Compress = require('compress.js');
+
 
 const DEFAULT_EDIT_OPTIONS = [
   {
@@ -57,12 +62,14 @@ function Feed() {
   const [input, setInput] = useState("");
   const [file, setFile] = useState(null)
   const [inputImg, setInputImg] = useState("");
+  const [inputImgs, setInputImgs] = useState([]);
   const [posts, setPosts] = useState([]);
-  const [largeFile, setLargeFile] = useState("");
   const [cameraActive, setCameraActive] = useState("");
-  const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS)
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState(0)
-  const selectedOption = editOptions[selectedOptionIndex]
+  const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
+  const selectedOption = editOptions[selectedOptionIndex];
+  const [sliderImages, setSliderImages] = useState([]);
+  const [largeImages, setLargeImages] = useState([]);
 
   function handleSliderChange(event) {
     setEditOptions(prevEditOptions => {
@@ -101,60 +108,104 @@ function Feed() {
 
   const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
+    console.log(sliderImages);
 
     if (input) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
+
+      const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
+      ref.set({ // This adds a new post to the databse
+        name: user.displayName,
+        description: user.email,
+        message: input,
+        photoUrl: user.photoUrl || "",
+        largeGifs: largeImages,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+
+      sliderImages.map((image) => {
+        console.log(image, "added to db");
+        db.collection('postImages').doc().set({
+          url: image.src,
+          styleModification: image.style,
+          ref: ref.id
+        });
+      });
+
       setInputImg(""); // When the post is submitted the input image is set to an empty string removing the preview of the image and providing a fresh canvas for the next post
       setEditOptions(DEFAULT_EDIT_OPTIONS); // This sets the slider values for editing the image to its default once the post is submitted which avoids applying old filters to the next image that is uploaded
-
-
-      if (largeFile === "") {
-        const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
-        console.log("Small file using base64");
-        ref.set({ // This adds a new post to the databse
-          name: user.displayName,
-          description: user.email,
-          message: input,
-          photoUrl: user.photoUrl || "",
-          photoBase: inputImg || "",
-          styleModification: getImageStyle(editOptions),
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        })
-
-        console.log(ref.id)
-        db.collection("users").doc(user.displayName).update({
-          posts: firebase.firestore.FieldValue.arrayUnion(ref.id) // The new posts id is added to the users db by appending it to the posts array
-        })
-      }
-
-      else {
-        const ref = db.collection('posts').doc(file.name) // A reference to the next entry to the database is created in advance
-        console.log("Large file using firebase storage");
-        const storageRef = storage.ref()
-        const fileRef = storageRef.child(file.name)
-        await fileRef.put(file)
-        ref.set({ // This adds a new post to the database
-          name: user.displayName,
-          description: user.email,
-          message: input,
-          photoUrl: user.photoUrl || "",
-          photoBase: await fileRef.getDownloadURL() || "",
-          styleModification: getImageStyle(editOptions),
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        })
-
-        console.log(ref.id)
-        db.collection("users").doc(user.displayName).update({
-          posts: firebase.firestore.FieldValue.arrayUnion(ref.id) // The new posts id is added to the users db by appending it to the posts array
-        })
-      }
-
-
-
+      setSliderImages([]);
+      setLargeImages([]);
       setInput(""); // On posting the input value is set to an empty string
       setCameraActive("");
-      setLargeFile("")
     }
   };
+
+  const editingCancelled = async () => {
+    setInputImg("");
+    setEditOptions(DEFAULT_EDIT_OPTIONS);
+  }
+
+  const editingDone = async () => {
+
+    if (file.size / (1024 * 1024) > 0.9) {
+      if (file.type === 'image/gif') {
+        console.log("Large gif using firebase storage");
+        const storageRef = storage.ref();
+        const fileRef = storageRef.child(user.displayName + file.name);
+        fileRef.put(file).then(() => {
+          fileRef.getDownloadURL().then((doc) => {
+            console.log(doc);
+            setInputImgs(inputImgs.concat(doc))
+            setSliderImages(sliderImages.concat({
+              src: doc,
+              style: getImageStyle()
+            }));
+            console.log(sliderImages);
+            var reference = user.displayName + file.name;
+            console.log(file, "name  =  ", reference);
+            setInputImg("");
+            setEditOptions(DEFAULT_EDIT_OPTIONS);
+            setLargeImages(largeImages.concat(reference));
+          });
+        });
+      }
+      else {
+        const compress = new Compress();
+        compress.compress([file], {
+          size: 0.8, // the max size in MB, defaults to 2MB
+          quality: .70, // the quality of the image, max is 1,
+          maxWidth: 1920, // the max width of the output image, defaults to 1920px
+          maxHeight: 1920, // the max height of the output image, defaults to 1920px
+          resize: true, // defaults to true, set false if you do not want to resize the image width and height
+        }).then((data) => {
+          // returns an array of compressed images
+          console.log(data);
+          var compressedb64 = data[0].prefix + data[0].data;
+          setInputImgs(inputImgs.concat(compressedb64))
+          setSliderImages(sliderImages.concat({
+            src: compressedb64,
+            style: getImageStyle()
+          }))
+          console.log(sliderImages);
+          console.log(file);
+          setInputImg("");
+          setEditOptions(DEFAULT_EDIT_OPTIONS);
+        })
+      }
+    }
+    else {
+      setInputImgs(inputImgs.concat(inputImg))
+      setSliderImages(sliderImages.concat({
+        src: inputImg,
+        style: getImageStyle()
+      }))
+      console.log(sliderImages);
+      console.log(file);
+      setInputImg("");
+      setEditOptions(DEFAULT_EDIT_OPTIONS);
+    }
+
+  }
 
   const openCamera = (e) => { // On clicking the camera button this function is called
     e.preventDefault();
@@ -165,7 +216,7 @@ function Feed() {
     setCameraActive(""); // Setting this to an empty state stops the rendering of the camera component
   };
 
-  const handleChange = (e) => { // When a file is uploaded this function is called
+  const handleChange = async (e) => { // When a file is uploaded this function is called
     setCameraActive("");
     e.preventDefault();
     var reader = new FileReader();
@@ -179,25 +230,21 @@ function Feed() {
     reader.onloadend = function () { // Since this is asyncronous on completion of the loading the image is set with the base64 string
       console.log("RESULT", reader.result);
       setInputImg(reader.result);
-      if (reader.result.length > 980000) {
-        setLargeFile("Large File");
-      }
-      else {
-        setLargeFile("")
-      }
       // alert("Image Uploaded Sucessfully!")
     };
   };
 
-  function handleTakePhoto(dataUri) { // This function is called when the photo using the camera is taken
+  async function handleTakePhoto(dataUri) { // This function is called when the photo using the camera is taken
     console.log(dataUri);
-    setInputImg(dataUri); // The inputImg is set with the result that is returned from the camera
+    setInputImg(await dataUri); // The inputImg is set with the result that is returned from the camera
     // alert("Image Uploaded Sucessfully!");
     setCameraActive("");
   }
 
   return (
     <div className="feed">
+
+
       <div className="feed_inputContainer">
         <div className="feed_input">
           <Avatar src={user?.photoUrl}></Avatar> {/*Avatar using materialui*/}
@@ -212,23 +259,26 @@ function Feed() {
             />
             <div className="imagePreview">
               <div className="buttons">
-                <div className="upload-btn-wrapper">
+                {!inputImg && <div className="upload-btn-wrapper">
                   <button className="btn">
                     <ImageIcon />
                   </button>
-                  <input type="file" name="myfile" onChange={handleChange} />
-                </div>
-                <button className="btn" onClick={openCamera}>
+                  <input type="file" multiple name="myfile" onChange={handleChange} />
+                </div>}
+                {!inputImg && <button className="btn" onClick={openCamera}>
                   <PhotoCameraIcon />
-                </button>
+                </button>}
 
-                <button onClick={sendPost} type="submit">
+                {!inputImg && <button onClick={sendPost} type="submit">
                   Post
-                </button>
+                </button>}
               </div>
             </div>
           </form>
+
+
         </div>
+
         {inputImg && (
           <>
             <br />
@@ -237,7 +287,8 @@ function Feed() {
               {/* Div in which to view the photo. */}
               <img src={inputImg}
                 className="previewImage" alt="Preview" style={getImageStyle()}></img>
-              {console.log(getImageStyle())}
+
+              {/* {console.log(getImageStyle())} */}
               <br></br>
               {/* Div with 6 options like brightness, contrast, etc. */}
               <div className="row">
@@ -266,7 +317,11 @@ function Feed() {
 
           </>
         )}
+        {inputImg && <div className="buttons"><button onClick={editingDone}>Done</button><button onClick={editingCancelled}>Cancel</button></div>}
+        {sliderImages && <ImageGallery sliderImages={sliderImages} />}
+
       </div>
+
 
       {cameraActive && (
         <div className="camera">
@@ -283,11 +338,13 @@ function Feed() {
       )}
 
       <FlipMove>
+
+
         {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
         {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
           ({
             id,
-            data: { name, description, message, photoUrl, photoBase, styleModification },
+            data: { name, description, message, photoUrl, largeGifs },
           }) => (
             <Post
               key={id}
@@ -296,8 +353,7 @@ function Feed() {
               description={description}
               message={message}
               photoUrl={photoUrl}
-              photoBase={photoBase}
-              styleModification={styleModification}
+              largeGifs={largeGifs}
             />
           )
         )}

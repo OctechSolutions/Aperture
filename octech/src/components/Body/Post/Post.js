@@ -1,13 +1,14 @@
 import { Avatar } from '@material-ui/core';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
 import './Post.css';
 import { db, storage } from "../../../firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../features/userSlice";
 import firebase from "firebase";
 import { Link } from "react-router-dom";
+import ImageGallery from '../Feed/ImageGallery';
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, photoBase, styleModification }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }, ref) => {
 
   // const displayPosts = () => {
   //   console.log("hello", name);
@@ -28,6 +29,28 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, photoBase, 
 
 
 
+  const [images, setImages] = useState([]);
+  const [refs, setRefs] = useState([]);
+  useEffect(() => {
+    db.collection("postImages").where("ref", "==", id).onSnapshot((snapshot) => {
+      const tempImages = [];
+      const tempRefs = [];
+      snapshot.forEach((doc) => {
+        tempImages.push({
+          src: doc.data().url,
+          style: doc.data().styleModification
+        });
+        tempRefs.push(doc.id);
+        console.log(doc.data(), doc.id)
+      });
+      setImages(tempImages);
+      setRefs(tempRefs);
+    });
+  }, [id]);
+
+
+
+
   const user = useSelector(selectUser); // Select current user from slice
   const deletePost = () => { // This function is called when the delete button is clicked
 
@@ -37,19 +60,27 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, photoBase, 
     })
 
 
-    if (photoBase) {
-      if (photoBase[0] !== "d") {
+
+    console.log(refs)
+    refs.forEach((ids) => {
+      console.log(ids);
+      db.collection('postImages').doc(ids).delete();
+    });
+
+    if (largeGifs) {
+      largeGifs.forEach((name) => {
         const storageRef = storage.ref()
-        var ref = storageRef.child(id);
-        
+        var ref = storageRef.child(name);
 
         // Delete the file
         ref.delete().then(function () {
           // File deleted successfully
-          console.log(id, " deleted from storage!")
+          console.log(name, " deleted from storage!")
         })
-      }
+      })
     }
+
+
 
     db.collection("posts") // The post is removed from the posts database
       .doc(id)
@@ -61,8 +92,19 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, photoBase, 
       .catch(function (error) {
         console.log(`Error post info delete ${error}`);
       });
-    
+
   };
+
+
+  var slideshow;
+  if (images.length === 1) {
+    slideshow = <div className="post__image"><img src={images[0].src} style={images[0].style} alt="User Post" /></div>;
+  } else if (images.length > 1) {
+    slideshow = <div className="post__image"><ImageGallery sliderImages={images} /></div>;
+  }
+  else {
+    slideshow = <></>
+  }
 
   return (
     <div ref={ref} className="post">
@@ -85,7 +127,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, photoBase, 
         <p>{message}</p>
         <br />
       </div>
-      <div className="post__image">{photoBase && <img src={photoBase} style={styleModification} alt="User Post" />}</div>
+      {slideshow}
     </div>
   );
 });

@@ -4,12 +4,13 @@ import { NewPhoto } from "./NewPhoto.js";
 import { db, storage } from "../firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../features/userSlice";
+import Carousel from 'react-bootstrap/Carousel';
 
 
 function Collection() {
     const user = useSelector(selectUser); // Select current user from slice
     const [images, setImages] = useState([]);
-    const [collectionName, setCollectionName] = useState("");   
+    const [collectionName, setCollectionName] = useState("");
 
     const match = useRouteMatch("/user/:id/:collection");
     const { collection, id } = match.params;
@@ -76,15 +77,32 @@ function Collection() {
                     <p><Link to={`/user/${id}`}>Go Back</Link></p>
                 </header>
             </section>
-            <section>
-                {images.map((image) => (
-                    (image.name === collectionName) && (id === image.creator) &&
-                    <aside>
-                        {(id === user.displayName) && <p onClick={() => deleteCollectionImage(image.ref)} className="post__delete">Delete</p>}
-                        <img src={image.url} alt="collection" />
-                    </aside>
-                ))}
-            </section>
+            <div style={{
+                display: "block",
+                width: "70%",
+                maxHeight: "50vh",
+                marginLeft: "auto",
+                marginRight: "auto"
+            }}>
+                <Carousel interval={null}>
+                    {images.map((image) => (
+                        (image.name === collectionName) && (id === image.creator) &&
+                        <Carousel.Item>
+                            <img src={image.url} style={{
+                                display: "block",
+                                width: "90%",
+                                maxHeight: "50vh",
+                                marginLeft: "auto",
+                                marginRight: "auto"
+                            }} alt="collection" />
+                            <Carousel.Caption>
+                                {(id === user.displayName) && <p onClick={() => deleteCollectionImage(image.ref)} className="post__delete">Delete</p>}
+                            </Carousel.Caption>
+                        </Carousel.Item>
+                    ))}
+
+                </Carousel>
+            </div>
             {(id === user.displayName) &&
                 <footer>
                     <NewPhoto />
