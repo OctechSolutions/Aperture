@@ -4,6 +4,7 @@
 
 import React, { useCallback } from 'react'
 import FirebaseApp from '../../config/firebase'
+import firebase from 'firebase'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 
@@ -23,10 +24,9 @@ const SignUp = ({history}) => {
         }
     }, [history])
 
-    const handleGoogleSignIn = (event) => {
-        event.preventDefault()
-        alert("Google Sign In")
-    }
+    const handleGoogleSignIn = useCallback(event => {
+        console.log('Google Sign In')
+    }, [history])
 
     return (
         <form className="sign-up" onSubmit={handleSubmit}>
@@ -95,14 +95,12 @@ const SignUp = ({history}) => {
             />
 
             {/* Google Sign Up Button Input */}
-            <input 
+            <button 
                 name="googleSignUpBtn"
                 className="btn btn-outline-primary mb-3" 
-                type="submit" 
-                value="Sign Up using Google" 
                 style={{width: "100%"}}
                 onClick={handleGoogleSignIn}
-            />
+            > Sign In With Google </button>
         </form>
     )
 }
