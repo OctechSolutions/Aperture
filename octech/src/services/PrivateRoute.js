@@ -2,13 +2,15 @@ import React, { useContext } from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import { AuthContext } from './Auth'
 
+// PrivateRoute = Will render the sign up page if user is not signed in.
 const PrivateRoute = ({ component: RouteComponent, ...rest }) => {
     const {currentUser} = useContext(AuthContext)
+    
     return (
         <Route
             {...rest}
-            render={routeProps => 
-                !!currentUser ? 
+            render={ routeProps => 
+                currentUser ? 
                 (<RouteComponent {...routeProps} />) :
                 (<Redirect to={'/signup'} />)
             }

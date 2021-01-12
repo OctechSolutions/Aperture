@@ -7,9 +7,12 @@ import FirebaseApp from '../../config/firebase'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 
-const SignUp = ({history}) => {
+const SignUp = ({ history }) => {
+    // handleSubmit = What to do when the sign up form is submitted?
     const handleSubmit = useCallback(async event => {
-        event.preventDefault()
+        event.preventDefault() // Prevent default behavior of re-loading etc.
+
+        // Object destructuring to extract form inputs.
         const { name,
                 username,
                 email, 
@@ -17,12 +20,17 @@ const SignUp = ({history}) => {
                 passwordConfirm,
                 contactNumber
         } = event.target.elements
+
+        /* If both the 1st typed password and the confirmed password are
+           same, then proceed to sign up. Else promt user to input matching
+           passwords. */
         if (passwordConfirm.value === password.value) {
             try {
+                // Wait until the user has been added to authenticated users list in Firebase.
                 await FirebaseApp
                 .auth()
                 .createUserWithEmailAndPassword(email.value, passwordConfirm.value)
-                history.push("/")
+                history.push("/") // Push the home page to history to redirect to it.
             } catch (error) {
                 alert(error)
             }
@@ -32,11 +40,14 @@ const SignUp = ({history}) => {
     }, [history])
 
     const handleGoogleSignIn = useCallback(event => {
-        console.log('Google Sign In')
+        console.log("Google Sign In")
     }, [history])
 
+    // Returns a Sign Up form.
     return (
         <form className="sign-up" onSubmit={handleSubmit}>
+
+            {/* Sign Up Heading */}
             <h1 style={{textAlign: "center"}}>Sign Up</h1>
 
             {/* Name Input */}
@@ -108,6 +119,7 @@ const SignUp = ({history}) => {
                 style={{width: "100%"}}
                 onClick={handleGoogleSignIn}
             > Sign In With Google </button>
+
         </form>
     )
 }
