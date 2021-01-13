@@ -7,5 +7,11 @@ export {
     auth as Auth
 } from './firebase'
 
-export { default as UserReducer } from './userSlice'
+export {
+    default as UserReducer,
+    login as Login,
+    logout as Logout,
+    selectUser as SelectUser
+} from "./userSlice"
+
 export { default as ReduxStore } from './reduxStore'

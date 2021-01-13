@@ -9,10 +9,10 @@ export const userSlice = createSlice({
 
   reducers: {
     login: (state, action) => {
-      state.user = action.payload; // on logging in the user is set to the payload which changes its value from null which denotes the user being logged in
+      state.user = action.payload; // on logging in the user is set to the payload which changes its value from null which denotes the user being logged in.
     },
     logout: (state) => {
-      state.user += null; // The state is changed back to null denoting the user being logged out
+      state.user += null; // the state is changed back to null denoting the user being logged out.
     },
   }
 })
