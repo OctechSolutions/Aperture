@@ -8,13 +8,19 @@ import { auth } from '../../firebase';
 import { logout } from '../../features/userSlice';
 import logo from './aperture_logo.svg';
 import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import { useHistory } from "react-router-dom";
+
+
 
 function Header() {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const logoutOfApp = () => {
     dispatch(logout());
     auth.signOut();
+    history.push('/');
     window.location.reload();
   }
 
@@ -28,14 +34,14 @@ function Header() {
           <h6>Aperture</h6>
         </div>
       </Link>
-      <button onClick={logoutOfApp}>Logout</button>
+      <Button onClick={logoutOfApp}>Logout</Button>
       <div className="header__right">
         <Link style={{ textDecoration: 'none', color: "black" }} to={`/user/${user?.displayName}`}>
           {/* This link takes the user to their profile */}
           <HeaderOption
             avatar={true}
           />
-          <h6>{user?.displayName}</h6>
+          <p>{user?.displayName}</p>
         </Link>
       </div>
     </div>

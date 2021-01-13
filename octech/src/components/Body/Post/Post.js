@@ -8,7 +8,6 @@ import firebase from "firebase";
 import { Link } from "react-router-dom";
 import ImageGallery from '../Feed/ImageGallery';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 
 const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }, ref) => {
 
@@ -36,7 +35,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   useEffect(() => {
     db.collection("postImages").where("ref", "==", id).onSnapshot((snapshot) => {
       const tempImages = [];
@@ -142,10 +140,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        {/* <Modal.Header closeButton onClick={handleClose}>
-                  <Modal.Title>Modal title</Modal.Title>
-                </Modal.Header> */}
-                <Modal.Header closeButton onClick={handleClose}>
+        <Modal.Header closeButton onClick={handleClose}>
         <div className="post_header">
               <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
               <div className="postInfo">

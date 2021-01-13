@@ -1,9 +1,8 @@
 .feed {
-  /* flex: auto; */
+  flex: auto;
   max-width: 80vw;
   margin-left: auto;
   margin-right: auto;
-  overflow: hidden;
 }
 .feed_inputContainer {
   background-color: white;

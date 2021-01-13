@@ -13,6 +13,7 @@ import Camera, { FACING_MODES } from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
 import { Slider, EditOption } from '../ImageManipulation';
 import ImageGallery from "./ImageGallery";
+import Modal from 'react-bootstrap/Modal';
 
 
 const Compress = require('compress.js');
@@ -147,50 +148,64 @@ function Feed() {
 
   const editingDone = async () => {
 
-    if (file.size / (1024 * 1024) > 0.9) {
-      if (file.type === 'image/gif') {
-        console.log("Large gif using firebase storage");
-        const storageRef = storage.ref();
-        const fileRef = storageRef.child(user.displayName + file.name);
-        fileRef.put(file).then(() => {
-          fileRef.getDownloadURL().then((doc) => {
-            console.log(doc);
-            setInputImgs(inputImgs.concat(doc))
+    if (file) {
+      if (file.size / (1024 * 1024) > 0.9) {
+        if (file.type === 'image/gif') {
+          console.log("Large gif using firebase storage");
+          const storageRef = storage.ref();
+          const fileRef = storageRef.child(user.displayName + file.name);
+          fileRef.put(file).then(() => {
+            fileRef.getDownloadURL().then((doc) => {
+              console.log(doc);
+              setInputImgs(inputImgs.concat(doc))
+              setSliderImages(sliderImages.concat({
+                src: doc,
+                style: getImageStyle()
+              }));
+              console.log(sliderImages);
+              var reference = user.displayName + file.name;
+              console.log(file, "name  =  ", reference);
+              setInputImg("");
+              setEditOptions(DEFAULT_EDIT_OPTIONS);
+              setLargeImages(largeImages.concat(reference));
+            });
+          });
+
+        }
+        else {
+          const compress = new Compress();
+          compress.compress([file], {
+            size: 0.8, // the max size in MB, defaults to 2MB
+            quality: .70, // the quality of the image, max is 1,
+            maxWidth: 1920, // the max width of the output image, defaults to 1920px
+            maxHeight: 1920, // the max height of the output image, defaults to 1920px
+            resize: true, // defaults to true, set false if you do not want to resize the image width and height
+          }).then((data) => {
+            // returns an array of compressed images
+            console.log(data);
+            var compressedb64 = data[0].prefix + data[0].data;
+            setInputImgs(inputImgs.concat(compressedb64))
             setSliderImages(sliderImages.concat({
-              src: doc,
+              src: compressedb64,
               style: getImageStyle()
-            }));
+            }))
             console.log(sliderImages);
-            var reference = user.displayName + file.name;
-            console.log(file, "name  =  ", reference);
+            console.log(file);
             setInputImg("");
             setEditOptions(DEFAULT_EDIT_OPTIONS);
-            setLargeImages(largeImages.concat(reference));
-          });
-        });
+          })
+        }
       }
       else {
-        const compress = new Compress();
-        compress.compress([file], {
-          size: 0.8, // the max size in MB, defaults to 2MB
-          quality: .70, // the quality of the image, max is 1,
-          maxWidth: 1920, // the max width of the output image, defaults to 1920px
-          maxHeight: 1920, // the max height of the output image, defaults to 1920px
-          resize: true, // defaults to true, set false if you do not want to resize the image width and height
-        }).then((data) => {
-          // returns an array of compressed images
-          console.log(data);
-          var compressedb64 = data[0].prefix + data[0].data;
-          setInputImgs(inputImgs.concat(compressedb64))
-          setSliderImages(sliderImages.concat({
-            src: compressedb64,
-            style: getImageStyle()
-          }))
-          console.log(sliderImages);
-          console.log(file);
-          setInputImg("");
-          setEditOptions(DEFAULT_EDIT_OPTIONS);
-        })
+        setInputImgs(inputImgs.concat(inputImg))
+        setSliderImages(sliderImages.concat({
+          src: inputImg,
+          style: getImageStyle()
+        }))
+        console.log(sliderImages);
+        console.log(file);
+        setInputImg("");
+        setEditOptions(DEFAULT_EDIT_OPTIONS);
       }
     }
     else {
@@ -204,7 +219,6 @@ function Feed() {
       setInputImg("");
       setEditOptions(DEFAULT_EDIT_OPTIONS);
     }
-
   }
 
   const openCamera = (e) => { // On clicking the camera button this function is called
@@ -278,64 +292,87 @@ function Feed() {
 
 
         </div>
+        <Modal
+          show={inputImg}
+          onHide={() => {setInputImg("")}}
+          keyboard={false}
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Body>
 
-        {inputImg && (
-          <>
-            <br />
-            {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
-            <div className="photoEditor">
-              {/* Div in which to view the photo. */}
-              <img src={inputImg}
-                className="previewImage" alt="Preview" style={getImageStyle()}></img>
+            {inputImg && (
+              <>
+                <br />
+                {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
+                <div className="photoEditor">
+                  {/* Div in which to view the photo. */}
+                  <img src={inputImg}
+                    className="previewImage" alt="Preview" style={getImageStyle()}></img>
 
-              {/* {console.log(getImageStyle())} */}
-              <br></br>
-              {/* Div with 6 options like brightness, contrast, etc. */}
-              <div className="row">
-                {
-                  editOptions.map((option, index) => {
-                    return (
-                      <EditOption
-                        key={index}
-                        name={option.name}
-                        active={index === selectedOptionIndex ? true : false}
-                        handleClick={() => setSelectedOptionIndex(index)}
-                      />
-                    )
-                  })
-                }
-              </div>
-              <br></br>
-            </div>
-            {/* Slider to adjust edit values. */}
-            <Slider
-              min={selectedOption.range.min}
-              max={selectedOption.range.max}
-              value={selectedOption.value}
-              handleChange={handleSliderChange}
-            />
+                  {/* {console.log(getImageStyle())} */}
+                  <br></br>
+                  {/* Div with 6 options like brightness, contrast, etc. */}
+                  <div className="row">
+                    {
+                      editOptions.map((option, index) => {
+                        return (
+                          <EditOption
+                            key={index}
+                            name={option.name}
+                            active={index === selectedOptionIndex ? true : false}
+                            handleClick={() => setSelectedOptionIndex(index)}
+                          />
+                        )
+                      })
+                    }
+                  </div>
+                  <br></br>
+                </div>
+                {/* Slider to adjust edit values. */}
+                <Slider
+                  min={selectedOption.range.min}
+                  max={selectedOption.range.max}
+                  value={selectedOption.value}
+                  handleChange={handleSliderChange}
+                />
 
-          </>
-        )}
-        {inputImg && <div className="buttons"><button onClick={editingDone}>Done</button><button onClick={editingCancelled}>Cancel</button></div>}
-        {sliderImages && <ImageGallery sliderImages={sliderImages} />}
+              </>
+            )}
+            {inputImg && <div className="buttons"><button onClick={editingDone}>Done</button><button onClick={editingCancelled}>Cancel</button></div>}
 
+          </Modal.Body>
+        </Modal>
+        {sliderImages && <><br /><ImageGallery sliderImages={sliderImages} /><br /></>}
       </div>
 
+      <Modal
+        show={cameraActive}
+        onHide={() => {setCameraActive("")}}
+        keyboard={false}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Body>
 
-      {cameraActive && (
-        <div className="camera">
-          <br></br>
-          <Camera // Camera API
-            isImageMirror={false}
-            onTakePhoto={(dataUri) => {
-              handleTakePhoto(dataUri);
-            }}
-            idealFacingMode={FACING_MODES.ENVIRONMENT}
-          />
-          <button onClick={closeCamera}>Close Camera</button>
-        </div>
-      )}
+          {cameraActive && (
+            <div className="camera">
+              <br></br>
+              <Camera // Camera API
+                isImageMirror={false}
+                onTakePhoto={(dataUri) => {
+                  handleTakePhoto(dataUri);
+                }}
+                idealFacingMode={FACING_MODES.ENVIRONMENT}
+                imageCompression={0.97}
+              />
+              <button onClick={closeCamera}>Close Camera</button>
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
 
       <FlipMove>
 
@@ -346,17 +383,17 @@ function Feed() {
             id,
             data: { name, description, message, photoUrl, largeGifs },
           }) => (
-      
-              <Post
-                key={id}
-                id={id}
-                name={name}
-                description={description}
-                message={message}
-                photoUrl={photoUrl}
-                largeGifs={largeGifs}
-              />
-              
+
+            <Post
+              key={id}
+              id={id}
+              name={name}
+              description={description}
+              message={message}
+              photoUrl={photoUrl}
+              largeGifs={largeGifs}
+            />
+
           )
         )}
       </FlipMove>
