@@ -11,6 +11,7 @@ import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 
 const SignUp = ({ history }) => {
+
     // handleSubmit = What to do when the sign up form is submitted?
     const handleSubmit = useCallback(async event => {
         event.preventDefault() // Prevent default behavior of re-loading etc.
@@ -25,14 +26,29 @@ const SignUp = ({ history }) => {
                 contactNumber
         } = event.target.elements
 
+        const updateUserProfile = () => {
+            if(contactNumber) {
+                return firebase.auth().currentUser.updateProfile({
+                    displayName: username.value,
+                    phoneNumber: contactNumber.value
+                })
+            } else {
+                return firebase.auth().currentUser.updateProfile({
+                    displayName: username.value
+                })
+            }
+        }
+
         /* If both the 1st typed password and the confirmed password are
            same, then proceed to sign up. Else promt user to input matching
            passwords. */
         if (passwordConfirm.value === password.value) {
             try {
-                await FirebaseApp // Wait until the user has been added to authenticated users list in Firebase.
-                .auth()
-                .createUserWithEmailAndPassword(email.value, passwordConfirm.value)
+                const newUser = await FirebaseApp
+                                      .auth() // Wait until the user has been added to authenticated users list in Firebase.
+                                      .createUserWithEmailAndPassword(email.value, passwordConfirm.value)
+                await updateUserProfile()
+                console.log(firebase.auth().currentUser)
                 history.push("/") // Push the home page to history to redirect to it.
             } catch (error) {
                 alert(error)
@@ -56,10 +72,12 @@ const SignUp = ({ history }) => {
     return (
         <form className="sign-up" onSubmit={handleSubmit}>
             {/* Profile Picture */}
-            <ProfilePic 
+            <input 
                 name="profilePic"
-                imgSrc="https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814049_1280.png" 
-                value="https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814049_1280.png"
+                type="image" 
+                src="https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814049_1280.png" 
+                alt="Submit" 
+                id="profile-pic"
             />
 
             {/* Sign Up Heading */}
