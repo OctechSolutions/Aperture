@@ -3,8 +3,10 @@
    uploaded on May 5, 2019 by "Maksim Ivanov" */
 
 import React, { useCallback } from 'react'
-import FirebaseApp from '../../config/firebase'
-import { ProfilePic } from '../../components'
+import { FirebaseApp } from '../../config'
+import { ProfilePic, GoogleSignInBtn } from '../../components'
+import { SignInWithGoogle } from '../../config'
+import firebase from'firebase'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 
@@ -14,7 +16,8 @@ const SignUp = ({ history }) => {
         event.preventDefault() // Prevent default behavior of re-loading etc.
 
         // Object destructuring to extract form inputs.
-        const { name,
+        const { profilePic,
+                name,
                 username,
                 email, 
                 password,
@@ -27,8 +30,7 @@ const SignUp = ({ history }) => {
            passwords. */
         if (passwordConfirm.value === password.value) {
             try {
-                // Wait until the user has been added to authenticated users list in Firebase.
-                await FirebaseApp
+                await FirebaseApp // Wait until the user has been added to authenticated users list in Firebase.
                 .auth()
                 .createUserWithEmailAndPassword(email.value, passwordConfirm.value)
                 history.push("/") // Push the home page to history to redirect to it.
@@ -40,18 +42,32 @@ const SignUp = ({ history }) => {
         }
     }, [history])
 
-    const handleGoogleSignIn = useCallback(event => {
-        console.log("Google Sign In")
+    const handleGoogleSignIn = useCallback(async event => {
+        // console.log("Google Sign In")
+        try {
+            await SignInWithGoogle // Wait until the google authentication process is complete.
+            history.push("/") // Push the home page to history to redirect to it.
+        } catch (error) {
+            alert(error)
+        }
     }, [history])
 
     // Returns a Sign Up form.
     return (
         <form className="sign-up" onSubmit={handleSubmit}>
             {/* Profile Picture */}
-            <ProfilePic imgSrc="https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814049_1280.png" />
+            <ProfilePic 
+                name="profilePic"
+                imgSrc="https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814049_1280.png" 
+                value="https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814049_1280.png"
+            />
 
             {/* Sign Up Heading */}
-            <h1 style={{ textAlign: "center", marginBottom: "2%"}}>Sign Up</h1>
+            <p style={{ 
+                textAlign: "center", 
+                marginBottom: "2%",
+                fontSize: "2rem"
+            }}>Sign Up</p>
 
             {/* Name Input */}
             <input 
@@ -116,12 +132,10 @@ const SignUp = ({ history }) => {
             />
 
             {/* Google Sign Up Button Input */}
-            <button 
-                name="googleSignUpBtn"
-                className="btn btn-outline-primary mb-3" 
+            <GoogleSignInBtn 
                 style={{width: "100%"}}
-                onClick={handleGoogleSignIn}
-            > Sign In With Google </button>
+                handleSignInWithGoogle={handleGoogleSignIn}
+            />
 
         </form>
     )

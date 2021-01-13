@@ -12,6 +12,23 @@ const firebaseConfig = {
 };
 
 // Initializing Firebase App.
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig)
 
-export default firebaseApp
+// Google authentication provider.
+const googleProvider = new firebase.auth.GoogleAuthProvider()
+
+const auth = firebase.auth();
+
+const db = firebaseApp.firestore() //database
+
+const storage = firebaseApp.storage()
+
+const signInWithGoogle = () => {
+  auth.signInWithPopup(googleProvider).then((res) => { // Function to enable the popup sign in with google box
+    console.log(res.user) // Res is the result console.logged for debugging purposes
+  }).catch((error) => {
+    console.log(error.message) // On error with sign in this is logged, again for testing purposes.
+  })
+}
+
+export { firebaseApp, signInWithGoogle, db, storage, auth }

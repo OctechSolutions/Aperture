@@ -16,8 +16,8 @@ export function AuthProvider({ children }) {
        user is set as the current user. Once authentication
        is complete, the authenticating state is set to false. */
     useEffect(() => {
-        FirebaseApp.auth().onAuthStateChanged(curUser => {
-            setCurrentUser(curUser)
+        FirebaseApp.auth().onAuthStateChanged(userAuth => {
+            setCurrentUser(userAuth)
             setAuthenticating(false)
         })
     }, [])
