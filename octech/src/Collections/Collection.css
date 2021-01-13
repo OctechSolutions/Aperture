@@ -111,7 +111,7 @@ label {
     margin-bottom: 0.2rem;
 }
 
-p:hover {
+.post__delete > p:hover {
     color: red;
     cursor: pointer;
   }

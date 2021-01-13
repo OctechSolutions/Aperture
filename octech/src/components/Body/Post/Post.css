@@ -13,7 +13,9 @@
   display: flex;
   margin-bottom: 10px;
 }
-
+.post_body {
+  overflow: hidden;
+}
 .post_title {
   display: flex;
   margin-bottom: 10px;
@@ -43,11 +45,13 @@
 }
 
 .post__image > img{
-  max-width: 70vw;
-  max-height: 50vh;
+  max-width: 70%;
+  /*max-height: 50vh; */
+  width: auto;
+  height: auto;
   overflow: auto;
   margin-left: auto;
   margin-right: auto;
-  display: block;
+  display: flex;
   border-radius: 40px;
 }

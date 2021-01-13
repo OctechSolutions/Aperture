@@ -7,6 +7,8 @@ import { selectUser } from "../../../features/userSlice";
 import firebase from "firebase";
 import { Link } from "react-router-dom";
 import ImageGallery from '../Feed/ImageGallery';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }, ref) => {
 
@@ -31,6 +33,10 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
 
   const [images, setImages] = useState([]);
   const [refs, setRefs] = useState([]);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   useEffect(() => {
     db.collection("postImages").where("ref", "==", id).onSnapshot((snapshot) => {
       const tempImages = [];
@@ -100,19 +106,19 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
   if (images.length === 1) {
     slideshow = <div className="post__image"><img src={images[0].src} style={images[0].style} alt="User Post" /></div>;
   } else if (images.length > 1) {
-    slideshow = <div className="post__image"><ImageGallery sliderImages={images} /></div>;
+    slideshow = <div ><ImageGallery sliderImages={images} /></div>;
   }
   else {
     slideshow = <></>
   }
 
   return (
-    <div ref={ref} className="post">
+    <div ref={ref} className="post" >
       <div className="post_title">
         <div className="post_header">
           <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
           <div className="postInfo">
-            <Link style={{ textDecoration: 'none', fontSize: '12px', color: "black" }} to={`/user/${name}`}><h2>{name}</h2></Link>  {/* Link is a component from react router that redirects to a particular route on click */}
+            <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${name}`}>{name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
             {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
             <p>{description}</p>
           </div>
@@ -123,11 +129,41 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
 
         }
       </div>
-      <div className="post_body">
+      <div className="post_body" onClick={() => setShow(true)}>
         <p>{message}</p>
         <br />
       </div>
       {slideshow}
+      <Modal
+        show={show}
+        onHide={handleClose}
+        keyboard={false}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        {/* <Modal.Header closeButton onClick={handleClose}>
+                  <Modal.Title>Modal title</Modal.Title>
+                </Modal.Header> */}
+                <Modal.Header closeButton onClick={handleClose}>
+        <div className="post_header">
+              <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
+              <div className="postInfo">
+                <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${name}`}>{name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
+                {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
+                <p>{description}</p>
+              </div>
+            </div>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="post_body">
+            <p>{message}</p>
+            <br />
+          </div>
+          {slideshow}
+        </Modal.Body>
+      </Modal>
+
     </div>
   );
 });

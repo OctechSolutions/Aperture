@@ -346,15 +346,17 @@ function Feed() {
             id,
             data: { name, description, message, photoUrl, largeGifs },
           }) => (
-            <Post
-              key={id}
-              id={id}
-              name={name}
-              description={description}
-              message={message}
-              photoUrl={photoUrl}
-              largeGifs={largeGifs}
-            />
+      
+              <Post
+                key={id}
+                id={id}
+                name={name}
+                description={description}
+                message={message}
+                photoUrl={photoUrl}
+                largeGifs={largeGifs}
+              />
+              
           )
         )}
       </FlipMove>

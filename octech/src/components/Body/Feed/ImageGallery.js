@@ -4,18 +4,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function ImageGallery({ sliderImages }) {
+
     return (
         <div style={{
-            display: "block",
+            // display: "block",
             // maxHeight : "50vh",
-            marginLeft: "auto",
-            marginRight: "auto"
+            // marginLeft: "auto",
+            // marginRight: "auto",
         }}>
             <Carousel interval={null}>
                 {sliderImages.map((a) => 
-                    <Carousel.Item>
+                    <Carousel.Item className="post__image">
                         <img
-                            className="w-100"
                             src={a.src}
                             style={a.style}
                             alt="Carousel"
