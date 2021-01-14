@@ -11,24 +11,31 @@ import { db } from "./firebase";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Collection from './Collections/Collection.js';
 
+
 function App() {
   const user = useSelector(selectUser); // Select the currently logged in user from the slice using redux
   const dispatch = useDispatch(); // Keep track of changes on the user slice
 
   useEffect(() => { // useEffect keeps listening to the variables passed in the array at the end
     auth.onAuthStateChanged(userAuth => { // When the state of the user changes this function is called that is if the user logs in or out this function gets called
-      console.log(userAuth);
+      
+
       if (userAuth) { // If user logs in, userAuth becomes true as it holds some value
+        
+        console.log(userAuth);
         db.collection("users").where("email", "==", userAuth.email).get().then(function (querySnapshot) { //This is a firebase query to get all users in the db with the name of the current user
           if (querySnapshot.size === 0) { // If there is none in the db, it means its the first time the user is logging in and he is added to the db
             // This if condition will only be true when the user logs in for the first time
-            db.collection("users").doc(userAuth.displayName).set({
-              name: userAuth.displayName,
-              email: userAuth.email,
-              photoUrl: userAuth.photoURL,
-              posts: []
-            });
-            console.log(userAuth.displayName, "Added to the DB")
+            if (userAuth.displayName) {
+              db.collection("users").doc(userAuth.displayName).set({
+                name: userAuth.displayName,
+                email: userAuth.email,
+                photoUrl: userAuth.photoURL,
+                posts: []
+              });
+              console.log(userAuth.displayName, "Added to the DB")
+            }
+
           }
           else {
             // If already in db do nothing
@@ -54,11 +61,11 @@ function App() {
       {!user ? ( // This is basically an if condition (ternary operator) which checks if the user exists (this user variable is fetched using useSelector which is a redux function to get the user if he is logged in)
         <Login /> // The login component is called whenever the user attribute in the slice is false i.e. when the user is logged out
       ) : (
-        // When the user is logged in the following code is executed
+          // When the user is logged in the following code is executed
           <div className="app">
             <Header /> {/* The header is always rendered if the user is logged in */}
 
-            <Route path="/feed" exact component={Feed} /> 
+            <Route path="/feed" exact component={Feed} />
             <Route path="/user/:id" exact component={Profile} /> {/* Dynamically generated user pages, the user lands on /user/{username} when clicking on someone profile, the profile page of the user is rendered by the profile component */}
             <Route path="/user/:id/:collection" component={Collection} />
           </div>)}
