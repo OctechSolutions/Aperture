@@ -94,6 +94,8 @@ export default function Login() {
         centered
       >
         <Modal.Header closeButton onClick={() => { setShow(false) }}>
+          {/* Sign Up Heading */}
+          <h4 style = {{marginLeft : "auto", marginRight: "-25px"}}>Sign Up</h4>
         </Modal.Header>
         <Modal.Body>
           <SignUp />

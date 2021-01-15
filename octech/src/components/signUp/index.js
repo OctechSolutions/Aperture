@@ -133,12 +133,6 @@ const SignUp = () => {
                 />
 
 
-                {/* Sign Up Heading */}
-                <p style={{
-                    textAlign: "center",
-                    marginBottom: "2%",
-                    fontSize: "2rem"
-                }}>Sign Up</p>
 
                 {/* Name Input */}
                 <input
