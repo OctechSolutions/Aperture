@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import store from './app/store';
+import { ReduxStore } from './config';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-    <Provider store={store}>  {/*Redux wrapper*/}
+    <Provider store={ReduxStore}>  {/*Redux wrapper*/}
       <App /> {/*Main app being mounted*/}
     </Provider>,
   document.getElementById('root')
