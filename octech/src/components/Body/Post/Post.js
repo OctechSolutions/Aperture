@@ -1,7 +1,7 @@
 import { Avatar } from '@material-ui/core';
 import React, { forwardRef, useState, useEffect } from 'react';
 import './Post.css';
-import { db, storage } from "../../../firebase";
+import { Db, Storage } from "../../../config";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../features/userSlice";
 import firebase from "firebase";
@@ -13,7 +13,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
 
   // const displayPosts = () => {
   //   console.log("hello", name);
-  //   db.collection("posts").where("name", "==", name).get()
+  //   Db.collection("posts").where("name", "==", name).get()
   //     .then(function (querySnapshot) {
   //       var postArray = [];
   //       querySnapshot.forEach(function (doc) {
@@ -28,15 +28,13 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
   //     })
   // }
 
-
-
   const [images, setImages] = useState([]);
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   useEffect(() => {
-    db.collection("postImages").where("ref", "==", id).onSnapshot((snapshot) => {
+    Db.collection("postImages").where("ref", "==", id).onSnapshot((snapshot) => {
       const tempImages = [];
       const tempRefs = [];
       snapshot.forEach((doc) => {
@@ -59,7 +57,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
   const deletePost = () => { // This function is called when the delete button is clicked
 
 
-    db.collection("users").doc(user.displayName).update({
+    Db.collection("users").doc(user.displayName).update({
       posts: firebase.firestore.FieldValue.arrayRemove(id) // The post is removed from the users array of posts
     })
 
@@ -68,25 +66,25 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
     console.log(refs)
     refs.forEach((ids) => {
       console.log(ids);
-      db.collection('postImages').doc(ids).delete();
+      Db.collection('postImages').doc(ids).delete();
     });
 
     if (largeGifs) {
       largeGifs.forEach((name) => {
-        const storageRef = storage.ref()
+        const storageRef = Storage.ref()
         var ref = storageRef.child(name);
 
         // Delete the file
         ref.delete().then(function () {
           // File deleted successfully
-          console.log(name, " deleted from storage!")
+          console.log(name, " deleted from Storage!")
         })
       })
     }
 
 
 
-    db.collection("posts") // The post is removed from the posts database
+    Db.collection("posts") // The post is removed from the posts database
       .doc(id)
       .delete()
       .then(function () {

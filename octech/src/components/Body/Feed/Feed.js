@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Feed.css";
 import { Avatar } from "@material-ui/core";
 import Post from "../Post/Post";
-import { db, storage } from "../../../firebase";
+import { Db, Storage } from "../../../config";
 import firebase from "firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../features/userSlice";
@@ -94,8 +94,8 @@ function Feed() {
   }
 
 
-  useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
-    db.collection("posts")
+  useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the Db and stores them into the posts array
+    Db.collection("posts")
       .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
       .onSnapshot((snapshot) =>
         setPosts(
@@ -113,7 +113,7 @@ function Feed() {
 
     if (input) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
 
-      const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
+      const ref = Db.collection('posts').doc() // A reference to the next entry to the database is created in advance
       ref.set({ // This adds a new post to the databse
         name: user.displayName,
         description: user.email,
@@ -124,8 +124,8 @@ function Feed() {
       })
 
       sliderImages.forEach((image) => {
-        console.log(image, "added to db");
-        db.collection('postImages').doc().set({
+        console.log(image, "added to Db");
+        Db.collection('postImages').doc().set({
           url: image.src,
           styleModification: image.style,
           ref: ref.id
@@ -151,8 +151,8 @@ function Feed() {
     if (file) {
       if (file.size / (1024 * 1024) > 0.9) {
         if (file.type === 'image/gif') {
-          console.log("Large gif using firebase storage");
-          const storageRef = storage.ref();
+          console.log("Large gif using firebase Storage");
+          const storageRef = Storage.ref();
           const fileRef = storageRef.child(user.displayName + file.name);
           fileRef.put(file).then(() => {
             fileRef.getDownloadURL().then((doc) => {

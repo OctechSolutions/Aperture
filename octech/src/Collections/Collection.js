@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouteMatch, Link } from "react-router-dom";
 import { NewPhoto } from "./NewPhoto.js";
-import { db, storage } from "../firebase";
+import { Db, Storage } from "../config";
 import { useSelector } from "react-redux";
 import { selectUser } from "../features/userSlice";
 import Carousel from 'react-bootstrap/Carousel';
@@ -16,7 +16,7 @@ function Collection() {
     const { collection, id } = match.params;
 
     useEffect(() => {
-        db.collection("collections")
+        Db.collection("collections")
             .doc(id + "_" + collection)
             .onSnapshot((doc) => {
                 if (doc.exists) {
@@ -27,7 +27,7 @@ function Collection() {
     }, [collection, id]);
 
     useEffect(() => {
-        const unmount = db.collection("collectionImages").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        const unmount = Db.collection("collectionImages").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
             const tempCollections = [];
             snapshot.forEach((doc) => {
                 tempCollections.push({ ...doc.data() });
@@ -38,23 +38,23 @@ function Collection() {
     }, []);
 
     function deleteCollectionImage(ref) {
-        db.collection("collectionImages")
+        Db.collection("collectionImages")
             .where("ref", "==", ref)
             .get()
             .then(function (querySnapshot) {
                 querySnapshot.forEach(function (doc) {
                     if (doc.data().url[0] !== "d") {
-                        const storageRef = storage.ref()
+                        const storageRef = Storage.ref()
                         var ref = storageRef.child(doc.data().fileName);
 
 
                         // Delete the file
                         ref.delete().then(function () {
                             // File deleted successfully
-                            console.log(doc.data().fileName, " deleted from storage!")
+                            console.log(doc.data().fileName, " deleted from Storage!")
                         })
                     }
-                    db.collection("collectionImages") // The post is removed from the posts database
+                    Db.collection("collectionImages") // The post is removed from the posts database
                         .doc(doc.data().ref)
                         .delete()
                         .then(function () {

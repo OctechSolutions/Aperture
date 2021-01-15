@@ -4,7 +4,7 @@ import HeaderOption from './HeaderOption';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../features/userSlice';
-import { auth } from '../../firebase';
+import { Auth } from '../../config';
 import { logout } from '../../features/userSlice';
 import logo from './aperture_logo.svg';
 import { Link } from 'react-router-dom';
@@ -19,7 +19,7 @@ function Header() {
 
   const logoutOfApp = () => {
     dispatch(logout());
-    auth.signOut();
+    Auth.signOut();
     history.push('/');
     window.location.reload();
   }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db,storage } from "../../firebase";
+import { Db, Storage } from "../../config";
 import FlipMove from "react-flip-move";
 import Post from "../Body/Post/Post.js";
 import { Link } from 'react-router-dom';
@@ -11,11 +11,11 @@ import { selectUser } from "../../features/userSlice";
 
 function Profile({ match }) {
     const user = useSelector(selectUser); // Select current user from slice
-    const [profileInfo, setProfileInfo] = useState({}); // Stores the info of the user from the db
+    const [profileInfo, setProfileInfo] = useState({}); // Stores the info of the user from the Db
     const [posts, setPosts] = useState([]); // Stores the posts of the user
     const [collections, setCollections] = useState([])
     useEffect(() => {
-        const unmount = db.collection("collections").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        const unmount = Db.collection("collections").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
             const tempCollections = [];
             snapshot.forEach((doc) => {
                 tempCollections.push({ ...doc.data(), id: doc.id });
@@ -27,10 +27,10 @@ function Profile({ match }) {
 
     useEffect(() => {
         console.log(match); // match returns a lot of properties from the react router dom including the id we set for the urls of the router to be dynamic
-        db.collection("users").doc(match.params.id) // We get the user from the db whose id matches the name of the user
+        Db.collection("users").doc(match.params.id) // We get the user from the Db whose id matches the name of the user
             .get().then(function (doc) {
                 if (doc.exists) {
-                    setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
+                    setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the Db
                 } else {
                     console.log("No such document!");
                 }
@@ -41,7 +41,7 @@ function Profile({ match }) {
 
     useEffect(() => {
 
-        db.collection("posts") // Posts are fetched from the db
+        Db.collection("posts") // Posts are fetched from the Db
             .orderBy("timestamp", "desc")
             .onSnapshot((snapshot) =>
                 setPosts(
@@ -55,24 +55,24 @@ function Profile({ match }) {
 
     function deleteCollection(collection) {
 
-        db.collection("collectionImages")
+        Db.collection("collectionImages")
             .where("name", "==", collection.name)
             .where("creator", "==", collection.creator)
             .get()
             .then(function (querySnapshot) {
                 querySnapshot.forEach(function (doc) {
                     if (doc.data().url[0] !== "d") {
-                        const storageRef = storage.ref()
+                        const storageRef = Storage.ref()
                         var ref = storageRef.child(doc.data().fileName);
 
 
                         // Delete the file
                         ref.delete().then(function () {
                             // File deleted successfully
-                            console.log(doc.data().fileName, " deleted from storage!")
+                            console.log(doc.data().fileName, " deleted from Storage!")
                         })
                     }
-                    db.collection("collectionImages") // The post is removed from the posts database
+                    Db.collection("collectionImages") // The post is removed from the posts database
                         .doc(doc.data().ref)
                         .delete()
                         .then(function () {
@@ -86,18 +86,18 @@ function Profile({ match }) {
                 });
             })
 
-        db.collection("collections").doc(collection.id).get().then(function (doc) {
+        Db.collection("collections").doc(collection.id).get().then(function (doc) {
             if (doc.data().cover && (doc.data().cover[0] !== 'd')) {
-                const storageRef = storage.ref()
+                const storageRef = Storage.ref()
                 var ref = storageRef.child(doc.data().fileName);
                 // Delete the file
                 ref.delete().then(function () {
                     // File deleted successfully
-                    console.log(doc.data().fileName, " deleted from storage!")
+                    console.log(doc.data().fileName, " deleted from Storage!")
                 })
             }
         }).then(function () {
-            db.collection("collections").doc(collection.id).delete().then(function () {
+            Db.collection("collections").doc(collection.id).delete().then(function () {
                 console.log("deleted collection successfully!");
                 console.log(collection.id);
               })

@@ -6,8 +6,8 @@ import Header from './components/Header/Header';
 import Login from './components/Login/Login';
 import Profile from './components/userProfile/Profile';
 import { login, logout, selectUser } from './features/userSlice';
-import { auth } from './firebase';
-import { db } from "./firebase";
+import { Auth } from './config';
+import { Db } from "./config";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Collection from './Collections/Collection.js';
 
@@ -17,17 +17,17 @@ function App() {
   const dispatch = useDispatch(); // Keep track of changes on the user slice
 
   useEffect(() => { // useEffect keeps listening to the variables passed in the array at the end
-    auth.onAuthStateChanged(userAuth => { // When the state of the user changes this function is called that is if the user logs in or out this function gets called
+    Auth.onAuthStateChanged(userAuth => { // When the state of the user changes this function is called that is if the user logs in or out this function gets called
       
 
       if (userAuth) { // If user logs in, userAuth becomes true as it holds some value
         
         console.log(userAuth);
-        db.collection("users").where("email", "==", userAuth.email).get().then(function (querySnapshot) { //This is a firebase query to get all users in the db with the name of the current user
-          if (querySnapshot.size === 0) { // If there is none in the db, it means its the first time the user is logging in and he is added to the db
+        Db.collection("users").where("email", "==", userAuth.email).get().then(function (querySnapshot) { //This is a firebase query to get all users in the Db with the name of the current user
+          if (querySnapshot.size === 0) { // If there is none in the Db, it means its the first time the user is logging in and he is added to the Db
             // This if condition will only be true when the user logs in for the first time
             if (userAuth.displayName) {
-              db.collection("users").doc(userAuth.displayName).set({
+              Db.collection("users").doc(userAuth.displayName).set({
                 name: userAuth.displayName,
                 email: userAuth.email,
                 photoUrl: userAuth.photoURL,
@@ -38,7 +38,7 @@ function App() {
 
           }
           else {
-            // If already in db do nothing
+            // If already in Db do nothing
             console.log("Already in DB")
           }
         })

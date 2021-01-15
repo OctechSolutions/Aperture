@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { db,storage } from "../firebase";
+import { Db, Storage } from "../config";
 import firebase from 'firebase'
 import { useSelector } from "react-redux";
 import { selectUser } from "../features/userSlice";
@@ -26,7 +26,7 @@ export const NewCollectionForm = () => {
         if (largeFile === "") {
             console.log("Small file using base64");
             const name = user.displayName + "_" + collectionName;
-            db.collection("collections").doc(name).set({
+            Db.collection("collections").doc(name).set({
                 name: collectionName,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 creator: user.displayName,
@@ -35,11 +35,11 @@ export const NewCollectionForm = () => {
           }
     
           else {
-            console.log("Large file using firebase storage");
-            const storageRef = storage.ref()
+            console.log("Large file using firebase Storage");
+            const storageRef = Storage.ref()
             const fileRef = storageRef.child(file.name)
             await fileRef.put(file)
-            db.collection("collections").doc(user.displayName + "_" + collectionName).set({
+            Db.collection("collections").doc(user.displayName + "_" + collectionName).set({
                 name: collectionName,
                 fileName: file.name,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),

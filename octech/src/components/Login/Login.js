@@ -2,15 +2,11 @@ import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import './Login.css';
-import { signInWithGoogle } from '../../firebase';
-import { auth } from "../../firebase"
+import { SignInWithGoogle, Auth } from '../../config';
 import SignUp from "../signUp";
 import { useDispatch } from 'react-redux';
 import { login } from '../../features/userSlice';
 import Modal from 'react-bootstrap/Modal';
-
-
-
 
 export default function Login() {
 
@@ -30,7 +26,7 @@ export default function Login() {
     setError("")
     setLoading(true)
     // await login(emailRef.current.value, passwordRef.current.value)
-    auth.signInWithEmailAndPassword(emailRef.current.value, passwordRef.current.value)
+    Auth.signInWithEmailAndPassword(emailRef.current.value, passwordRef.current.value)
       .then(function (result) {
         history.push("/feed")
         console.log(result)
@@ -78,7 +74,7 @@ export default function Login() {
                 </Form.Group><center> <Form.Label style={{ marginBottom: "15px" }}>OR</Form.Label> </center>
                 <Form.Group>
                   <Form.Label type="button" style={{ marginLeft: "auto", marginRight: "auto" }}>
-                    <Button disabled={loading} className="w-100" onClick={signInWithGoogle}>
+                    <Button disabled={loading} className="w-100" onClick={SignInWithGoogle}>
                       Log In with Google
                     </Button>
                   </Form.Label>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import firebase from 'firebase'
-import { db, storage } from '../firebase'
+import { Db, Storage } from '../config'
 import { useRouteMatch } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../features/userSlice";
@@ -37,10 +37,10 @@ export const NewPhoto = () => {
         if (file) {
             console.log(file);
             if (largeImage !== "") {
-                const storageRef = storage.ref()
+                const storageRef = Storage.ref()
                 const fileRef = storageRef.child(file.name)
                 await fileRef.put(file);
-                const ref = db.collection('collectionImages').doc() // A reference to the next entry to the database is created in advance
+                const ref = Db.collection('collectionImages').doc() // A reference to the next entry to the database is created in advance
                 ref.set({
                     ref: ref.id,
                     name: match.params.collection,
@@ -52,7 +52,7 @@ export const NewPhoto = () => {
                 });
             }
             else {
-                const ref = db.collection('collectionImages').doc() // A reference to the next entry to the database is created in advance
+                const ref = Db.collection('collectionImages').doc() // A reference to the next entry to the database is created in advance
                 ref.set({
                     ref: ref.id,
                     name: match.params.collection,
