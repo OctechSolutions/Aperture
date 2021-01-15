@@ -59,25 +59,34 @@ export default function Login() {
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
                 <Form.Group id="email">
-                  <Form.Label style = {{marginLeft : "auto", marginRight: "auto"}}>Email Address</Form.Label>
-                  <Form.Control type="email" ref={emailRef} required  style = {{marginLeft : "auto", marginRight: "auto"}}/>
+                  <Form.Label style={{ marginLeft: "auto", marginRight: "auto" }}>Email Address</Form.Label>
+                  <Form.Control type="email" ref={emailRef} required style={{ marginLeft: "auto", marginRight: "auto" }} />
                 </Form.Group>
                 <Form.Group id="password">
-                  <Form.Label style = {{marginLeft : "auto", marginRight: "auto"}}>Password</Form.Label>
-                  <Form.Control type="password" ref={passwordRef} required style = {{marginLeft : "auto", marginRight: "auto"}} />
+                  <Form.Label style={{ marginLeft: "auto", marginRight: "auto" }}>Password</Form.Label>
+                  <Form.Control type="password" ref={passwordRef} required style={{ marginLeft: "auto", marginRight: "auto" }} />
                   <div className="w-100 text-center mt-3">
                     <Link to="/forgot-password">Forgot Password?</Link>
                   </div>
                 </Form.Group>
-                <Button disabled={loading} className="w-100" type="submit">
-                  Log In
-            </Button>
+                <Form.Group>
+                  <Form.Label type="button" style={{ marginLeft: "auto", marginRight: "auto" }}>
+                    <Button disabled={loading} className="w-100" type="submit">
+                      Log In
+                    </Button>
+                  </Form.Label>
+                </Form.Group><center> <Form.Label style={{ marginBottom: "15px" }}>OR</Form.Label> </center>
+                <Form.Group>
+                  <Form.Label type="button" style={{ marginLeft: "auto", marginRight: "auto" }}>
+                    <Button disabled={loading} className="w-100" onClick={signInWithGoogle}>
+                      Log In with Google
+                    </Button>
+                  </Form.Label>
+                </Form.Group>
 
               </Form>
-              <center> <Form.Label>OR</Form.Label> </center>
-              <Button disabled={loading} className="w-100" onClick={signInWithGoogle}>
-                Log In with Google
-            </Button>
+
+
             </Card.Body>
           </Card>
           <div className="w-100 text-center mt-2">
@@ -95,7 +104,7 @@ export default function Login() {
       >
         <Modal.Header closeButton onClick={() => { setShow(false) }}>
           {/* Sign Up Heading */}
-          <h4 style = {{marginLeft : "auto", marginRight: "-25px"}}>Sign Up</h4>
+          <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>Sign Up</h4>
         </Modal.Header>
         <Modal.Body>
           <SignUp />
