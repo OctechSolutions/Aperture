@@ -2,17 +2,17 @@ import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import './Login.css';
-import { SignInWithGoogle, Auth } from '../../config';
+import { SignInWithGoogle, Auth, LoginAction } from '../../config';
 import SignUp from "../signUp";
 import { useDispatch } from 'react-redux';
-import { login } from '../../features/userSlice';
 import Modal from 'react-bootstrap/Modal';
+
 
 export default function Login() {
 
   const emailRef = useRef()
   const passwordRef = useRef()
-  // const { login } = useContext(React.createContext())
+  // const { LoginAction } = useContext(React.createContext())
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [show, setShow] = useState(false)
@@ -25,12 +25,12 @@ export default function Login() {
 
     setError("")
     setLoading(true)
-    // await login(emailRef.current.value, passwordRef.current.value)
+    // await LoginAction(emailRef.current.value, passwordRef.current.value)
     Auth.signInWithEmailAndPassword(emailRef.current.value, passwordRef.current.value)
       .then(function (result) {
         history.push("/feed")
         console.log(result)
-        dispatch(login({
+        dispatch(LoginAction({
           email: result.user.email,
           uid: result.user.uid,
           displayName: result.user.displayName,

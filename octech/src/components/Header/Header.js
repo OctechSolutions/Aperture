@@ -3,9 +3,7 @@ import './Header.css';
 import HeaderOption from './HeaderOption';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { selectUser } from '../../features/userSlice';
-import { Auth } from '../../config';
-import { logout } from '../../features/userSlice';
+import { Auth, SelectUser, LogoutAction } from '../../config';
 import logo from './aperture_logo.svg';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
@@ -18,13 +16,13 @@ function Header() {
   const history = useHistory();
 
   const logoutOfApp = () => {
-    dispatch(logout());
+    dispatch(LogoutAction());
     Auth.signOut();
     history.push('/');
     window.location.reload();
   }
 
-  const user = useSelector(selectUser);
+  const user = useSelector(SelectUser);
 
   return (
     <div className="header">
@@ -34,7 +32,7 @@ function Header() {
           <h6>Aperture</h6>
         </div>
       </Link>
-      <Button onClick={logoutOfApp}>Logout</Button>
+      <Button onClick={logoutOfApp}>LogoutAction</Button>
       <div className="header__right">
         <Link style={{ textDecoration: 'none', color: "black" }} to={`/user/${user?.displayName}`}>
           {/* This link takes the user to their profile */}

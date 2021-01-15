@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import firebase from 'firebase'
-import { Db, Storage } from '../config'
-import { useRouteMatch } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUser } from "../features/userSlice";
+import { Db, Storage, SelectUser } from '../config'
+import { useRouteMatch } from "react-router-dom"
+import { useSelector } from "react-redux"
 
 
 export const NewPhoto = () => {
-    const user = useSelector(selectUser); // Select current user from slice
+    const user = useSelector(SelectUser); // Select current user from slice
     const [file, setFile] = useState(null)
     const [inputImg, setInputImg] = useState("");
     const [largeImage, setLargeImage] = useState("");

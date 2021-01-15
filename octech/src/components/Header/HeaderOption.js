@@ -1,11 +1,11 @@
-import { Avatar } from '@material-ui/core';
+import { Avatar } from '@material-ui/core'
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../features/userSlice';
+import { useSelector } from 'react-redux'
+import { SelectUser } from '../../config'
 import './HeaderOption.css';
 
 function HeaderOption({ avatar, Icon, onClick }) {
-  const user = useSelector(selectUser);
+  const user = useSelector(SelectUser);
   
   return (
     <div onClick={onClick} className="headerOption">

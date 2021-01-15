@@ -1,9 +1,8 @@
 import { Avatar } from '@material-ui/core';
 import React, { forwardRef, useState, useEffect } from 'react';
 import './Post.css';
-import { Db, Storage } from "../../../config";
+import { Db, Storage, SelectUser } from "../../../config";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../../features/userSlice";
 import firebase from "firebase";
 import { Link } from "react-router-dom";
 import ImageGallery from '../Feed/ImageGallery';
@@ -53,7 +52,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
 
 
 
-  const user = useSelector(selectUser); // Select current user from slice
+  const user = useSelector(SelectUser); // Select current user from slice
   const deletePost = () => { // This function is called when the delete button is clicked
 
 

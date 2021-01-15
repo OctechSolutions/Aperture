@@ -7,14 +7,14 @@ import {
     Auth, 
     SignInWithGoogle,
     Storage,
-    Db
+    Db,
+    LoginAction
 } from '../../config';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { login } from '../../features/userSlice';
 
 const SignUp = () => {
 
@@ -69,7 +69,7 @@ const SignUp = () => {
                                 realName: name,
                                 contactNumber: contactNumber
                             }, { merge: true });
-                            dispatch(login({
+                            dispatch(LoginAction({
                                 email: email,
                                 displayName: username,
                                 photoUrl: doc
@@ -83,7 +83,7 @@ const SignUp = () => {
                 return Auth.currentUser.updateProfile({
                     displayName: username
                 }).then(() => {
-                    dispatch(login({
+                    dispatch(LoginAction({
                         email: email,
                         displayName: username,
                     }))

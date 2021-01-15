@@ -5,15 +5,19 @@ import Feed from './components/Body/Feed/Feed';
 import Header from './components/Header/Header';
 import Login from './components/Login/Login';
 import Profile from './components/userProfile/Profile';
-import { login, logout, selectUser } from './features/userSlice';
-import { Auth } from './config';
-import { Db } from "./config";
+import { 
+  Auth, 
+  Db,
+  LoginAction,
+  LogoutAction,
+  SelectUser
+} from './config';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Collection from './Collections/Collection.js';
 
 
 function App() {
-  const user = useSelector(selectUser); // Select the currently logged in user from the slice using redux
+  const user = useSelector(SelectUser); // Select the currently logged in user from the slice using redux
   const dispatch = useDispatch(); // Keep track of changes on the user slice
 
   useEffect(() => { // useEffect keeps listening to the variables passed in the array at the end
@@ -42,8 +46,8 @@ function App() {
             console.log("Already in DB")
           }
         })
-        // The dispatch function sets the user in the redux slice so that we know which user is logged in, all this info is stored in the login state
-        dispatch(login({
+        // The dispatch function sets the user in the redux slice so that we know which user is logged in, all this info is stored in the LoginAction state
+        dispatch(LoginAction({
           email: userAuth.email,
           uid: userAuth.uid,
           displayName: userAuth.displayName,
@@ -51,7 +55,7 @@ function App() {
         }))
       } else {
         // This else part evaluates true when the userAuth is null i.e. the user has logged out
-        dispatch(logout()); // Simply calls the logout state in the slice
+        dispatch(LogoutAction()); // Simply calls the LogoutAction state in the slice
       }
     })
   }, [dispatch]); // dispatch is the variable which is always listened to by the use effect which means it only executes when there is a change in dispatch
@@ -59,7 +63,7 @@ function App() {
   return (
     <Router> {/* BrowserRouter (renamed to router) is used to route the user to different pages in our app everything wrapped under it can use the router functions */}
       {!user ? ( // This is basically an if condition (ternary operator) which checks if the user exists (this user variable is fetched using useSelector which is a redux function to get the user if he is logged in)
-        <Login /> // The login component is called whenever the user attribute in the slice is false i.e. when the user is logged out
+        <Login /> // The LoginAction component is called whenever the user attribute in the slice is false i.e. when the user is logged out
       ) : (
           // When the user is logged in the following code is executed
           <div className="app">

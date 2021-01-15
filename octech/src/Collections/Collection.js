@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useRouteMatch, Link } from "react-router-dom";
 import { NewPhoto } from "./NewPhoto.js";
-import { Db, Storage } from "../config";
+import { Db, Storage, SelectUser } from "../config";
 import { useSelector } from "react-redux";
-import { selectUser } from "../features/userSlice";
 import Carousel from 'react-bootstrap/Carousel';
 
 
 function Collection() {
-    const user = useSelector(selectUser); // Select current user from slice
+    const user = useSelector(SelectUser); // Select current user from slice
     const [images, setImages] = useState([]);
     const [collectionName, setCollectionName] = useState("");
 

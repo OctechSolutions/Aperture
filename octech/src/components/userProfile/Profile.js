@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Db, Storage } from "../../config";
+import { Db, Storage, SelectUser } from "../../config";
 import FlipMove from "react-flip-move";
 import Post from "../Body/Post/Post.js";
 import { Link } from 'react-router-dom';
 import { NewCollectionForm } from '../../Collections/NewCollectionForm';
 import '../../Collections/Collection.css';
 import { useSelector } from "react-redux";
-import { selectUser } from "../../features/userSlice";
 
 
 function Profile({ match }) {
-    const user = useSelector(selectUser); // Select current user from slice
+    const user = useSelector(SelectUser); // Select current user from slice
     const [profileInfo, setProfileInfo] = useState({}); // Stores the info of the user from the Db
     const [posts, setPosts] = useState([]); // Stores the posts of the user
     const [collections, setCollections] = useState([])

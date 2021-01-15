@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./Feed.css";
 import { Avatar } from "@material-ui/core";
 import Post from "../Post/Post";
-import { Db, Storage } from "../../../config";
+import { Db, Storage, SelectUser } from "../../../config";
 import firebase from "firebase";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../../features/userSlice";
 import FlipMove from "react-flip-move";
 import ImageIcon from "@material-ui/icons/Image";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
@@ -58,7 +57,7 @@ const DEFAULT_EDIT_OPTIONS = [
 ]
 
 function Feed() {
-  const user = useSelector(selectUser);
+  const user = useSelector(SelectUser);
 
   const [input, setInput] = useState("");
   const [file, setFile] = useState(null)

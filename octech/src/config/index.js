@@ -9,8 +9,8 @@ export {
 
 export {
     default as UserReducer,
-    login as Login,
-    logout as Logout,
+    login as LoginAction,
+    logout as LogoutAction,
     selectUser as SelectUser
 } from "./userSlice"
 
