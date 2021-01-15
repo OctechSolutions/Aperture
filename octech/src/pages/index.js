@@ -1,5 +1,5 @@
 // pages folder consits of different pages in the web app.
-export { default as Login } from "./login"
-export { default as PhotoEditor } from "./photoEditor"
-export { default as SignUp } from "./signUp"
-export { default as Home } from "./home"
+export { default as LoginPage } from "./loginPage"
+export { default as PhotoEditorPage } from "./photoEditorPage"
+export { default as SignUpPage } from "./signUpPage"
+export { default as HomePage } from "./homePage"

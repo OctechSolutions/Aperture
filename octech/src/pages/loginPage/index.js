@@ -3,7 +3,7 @@ import logo_white_bg from '../../images/logo/aperture_lens_white_bg.jpg'
 import './index.css'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
-class Login extends React.Component {
+class LoginPage extends React.Component {
     render(){
         return (
             <div className="container-fluid login">
@@ -47,4 +47,4 @@ class Login extends React.Component {
     }
 }
 
-export default Login
+export default LoginPage
