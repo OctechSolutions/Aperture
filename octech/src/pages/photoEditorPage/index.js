@@ -13,9 +13,12 @@ import React, { useState, useRef} from 'react'
 import './index.css'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
-import { Slider, EditOption} from '../../components'
-import { Giphy } from '../../components'
-import { Dragable } from '../../containers'
+import { 
+    Slider, 
+    EditOption,
+    Giphy, 
+    Dragable
+} from '../../components'
 
 /* List of initial values of properties that will be assigned to the image. */
 const DEFAULT_EDIT_OPTIONS = [

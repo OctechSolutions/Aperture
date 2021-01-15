@@ -1,5 +1,5 @@
 import React from 'react'
-import logo_white_bg from '../../images/logo/aperture_lens_white_bg.jpg'
+import logo_white_bg from './aperture_lens_white_bg.jpg'
 import './index.css'
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 

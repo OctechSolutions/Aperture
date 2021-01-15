@@ -5,6 +5,7 @@ import App from './App';
 import { ReduxStore } from './config';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
+import { PhotoEditorPage } from './pages'
 
 ReactDOM.render(
     <Provider store={ReduxStore}>  {/*Redux wrapper*/}

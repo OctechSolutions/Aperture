@@ -10,7 +10,7 @@ import ImageIcon from "@material-ui/icons/Image";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import Camera, { FACING_MODES } from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
-import { Slider, EditOption } from '../ImageManipulation';
+import { Slider, EditOption } from '../../../components';
 import ImageGallery from "./ImageGallery";
 import Modal from 'react-bootstrap/Modal';
 
