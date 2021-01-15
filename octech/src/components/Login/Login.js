@@ -59,12 +59,12 @@ export default function Login() {
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
                 <Form.Group id="email">
-                  <Form.Label>Email Address</Form.Label>
-                  <Form.Control type="email" ref={emailRef} required />
+                  <Form.Label style = {{marginLeft : "auto", marginRight: "auto"}}>Email Address</Form.Label>
+                  <Form.Control type="email" ref={emailRef} required  style = {{marginLeft : "auto", marginRight: "auto"}}/>
                 </Form.Group>
                 <Form.Group id="password">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" ref={passwordRef} required />
+                  <Form.Label style = {{marginLeft : "auto", marginRight: "auto"}}>Password</Form.Label>
+                  <Form.Control type="password" ref={passwordRef} required style = {{marginLeft : "auto", marginRight: "auto"}} />
                   <div className="w-100 text-center mt-3">
                     <Link to="/forgot-password">Forgot Password?</Link>
                   </div>

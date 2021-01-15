@@ -8,7 +8,7 @@ import { signInWithGoogle } from '../../firebase';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 import EditIcon from '@material-ui/icons/Edit';
-import { storage,db } from '../../firebase';
+import { storage, db } from '../../firebase';
 import { useHistory } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { login } from '../../features/userSlice';
@@ -48,7 +48,7 @@ const SignUp = () => {
         event.preventDefault() // Prevent default behavior of re-loading etc.
 
         const updateUserProfile = async () => {
-            if (file!==undefined) {
+            if (file !== undefined) {
                 const storageRef = storage.ref();
                 const fileRef = storageRef.child(file.name);
                 fileRef.put(file).then(() => {
@@ -65,12 +65,12 @@ const SignUp = () => {
                                 photoUrl: doc,
                                 realName: name,
                                 contactNumber: contactNumber
-                              }, { merge: true });
-                              dispatch(login({
+                            }, { merge: true });
+                            dispatch(login({
                                 email: email,
                                 displayName: username,
                                 photoUrl: doc
-                              }))
+                            }))
                         })
 
                     })
@@ -83,7 +83,7 @@ const SignUp = () => {
                     dispatch(login({
                         email: email,
                         displayName: username,
-                      }))
+                    }))
                 })
             }
         }
@@ -132,7 +132,7 @@ const SignUp = () => {
                     id="profile-pic"
                 />
 
-
+                <br></br>
 
                 {/* Name Input */}
                 <input
