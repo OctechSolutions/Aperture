@@ -7,6 +7,7 @@ import { auth } from "../../firebase"
 import SignUp from "../signUp";
 import { useDispatch } from 'react-redux';
 import { login } from '../../features/userSlice';
+import Modal from 'react-bootstrap/Modal';
 
 
 
@@ -85,10 +86,19 @@ export default function Login() {
         </>
       }
 
-      {
-        show &&
-        <SignUp />
-      }
+      <Modal
+        show={show}
+        keyboard={false}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton onClick={() => { setShow(false) }}>
+        </Modal.Header>
+        <Modal.Body>
+          <SignUp />
+        </Modal.Body>
+      </Modal>
 
 
     </>

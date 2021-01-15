@@ -344,7 +344,7 @@ function Feed() {
 
           </Modal.Body>
         </Modal>
-        {sliderImages && <><br /><ImageGallery sliderImages={sliderImages} /><br /></>}
+        {sliderImages && <ImageGallery sliderImages={sliderImages} />}
       </div>
 
       <Modal
