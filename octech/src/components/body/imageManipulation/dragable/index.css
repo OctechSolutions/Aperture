@@ -1,0 +1,7 @@
+.dragable {
+    background-color: none;
+    position: relative;
+    max-width: 20%;
+    top: 10%;
+    left: 30%;
+}
