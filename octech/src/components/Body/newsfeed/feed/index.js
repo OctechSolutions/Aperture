@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import "./Feed.css";
+import "./index.css";
 import { Avatar } from "@material-ui/core";
-import Post from "../Post/Post";
-import { Db, Storage, SelectUser } from "../../../config";
+import Post from "../../Post/Post";
+import { Db, Storage, SelectUser } from "../../../../config";
 import firebase from "firebase";
 import { useSelector } from "react-redux";
 import FlipMove from "react-flip-move";
@@ -10,8 +10,7 @@ import ImageIcon from "@material-ui/icons/Image";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import Camera, { FACING_MODES } from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
-import { Slider, EditOption } from '../../../components';
-import ImageGallery from "./ImageGallery";
+import { Slider, EditOption, ImageGallery } from '../../../../components';
 import Modal from 'react-bootstrap/Modal';
 
 

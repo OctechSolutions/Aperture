@@ -5,7 +5,7 @@ import { Db, Storage, SelectUser } from "../../../config";
 import { useSelector } from "react-redux";
 import firebase from "firebase";
 import { Link } from "react-router-dom";
-import ImageGallery from '../Feed/ImageGallery';
+import { ImageGallery } from '../../../components';
 import Modal from 'react-bootstrap/Modal';
 
 const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }, ref) => {

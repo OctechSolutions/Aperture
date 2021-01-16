@@ -3,7 +3,7 @@ import { Form, Button, Card, Alert } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import './Login.css';
 import { SignInWithGoogle, Auth, LoginAction } from '../../config';
-import SignUp from "../signUp";
+import { SignUp } from "../../components";
 import { useDispatch } from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
 

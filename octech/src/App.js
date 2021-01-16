@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
-import Feed from './components/Body/Feed/Feed';
+import { Feed } from './components';
 import Header from './components/Header/Header';
 import Login from './components/Login/Login';
 import Profile from './components/userProfile/Profile';
