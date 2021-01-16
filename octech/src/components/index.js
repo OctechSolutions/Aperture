@@ -15,4 +15,4 @@ export {
     Feed,
     ImageGallery,
     Post
-} from './body'
+} from './Body'
