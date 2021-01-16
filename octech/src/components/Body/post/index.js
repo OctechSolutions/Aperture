@@ -1,11 +1,11 @@
 import { Avatar } from '@material-ui/core';
 import React, { forwardRef, useState, useEffect } from 'react';
-import './Post.css';
+import './index.css';
 import { Db, Storage, SelectUser } from "../../../config";
 import { useSelector } from "react-redux";
 import firebase from "firebase";
 import { Link } from "react-router-dom";
-import { ImageGallery } from '../../../components';
+import { ImageGallery } from '../..';
 import Modal from 'react-bootstrap/Modal';
 
 const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }, ref) => {
@@ -49,18 +49,12 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
     });
   }, [id]);
 
-
-
-
   const user = useSelector(SelectUser); // Select current user from slice
   const deletePost = () => { // This function is called when the delete button is clicked
-
 
     Db.collection("users").doc(user.displayName).update({
       posts: firebase.firestore.FieldValue.arrayRemove(id) // The post is removed from the users array of posts
     })
-
-
 
     console.log(refs)
     refs.forEach((ids) => {
@@ -81,8 +75,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
       })
     }
 
-
-
     Db.collection("posts") // The post is removed from the posts database
       .doc(id)
       .delete()
@@ -93,9 +85,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
       .catch(function (error) {
         console.log(`Error post info delete ${error}`);
       });
-
   };
-
 
   var slideshow;
   if (images.length === 1) {
@@ -121,7 +111,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
         {
           (user.displayName === name) &&
           <p onClick={deletePost} className="post__delete">Delete</p>
-
         }
       </div>
       <div className="post_body" onClick={() => setShow(true)}>

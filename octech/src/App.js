@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
-import { Feed } from './components';
+import { Feed, UserProfile } from './components';
 import Header from './components/Header/Header';
 import Login from './components/Login/Login';
-import Profile from './components/userProfile/Profile';
 import { 
   Auth, 
   Db,
@@ -70,7 +69,7 @@ function App() {
             <Header /> {/* The header is always rendered if the user is logged in */}
 
             <Route path="/feed" exact component={Feed} />
-            <Route path="/user/:id" exact component={Profile} /> {/* Dynamically generated user pages, the user lands on /user/{username} when clicking on someone profile, the profile page of the user is rendered by the profile component */}
+            <Route path="/user/:id" exact component={UserProfile} /> {/* Dynamically generated user pages, the user lands on /user/{username} when clicking on someone profile, the profile page of the user is rendered by the profile component */}
             <Route path="/user/:id/:collection" component={Collection} />
           </div>)}
     </Router>

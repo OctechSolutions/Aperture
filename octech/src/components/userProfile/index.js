@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Db, Storage, SelectUser } from "../../config";
 import FlipMove from "react-flip-move";
-import Post from "../Body/Post/Post.js";
+import { Post } from "../../components";
 import { Link } from 'react-router-dom';
 import { NewCollectionForm } from '../../Collections/NewCollectionForm';
 import '../../Collections/Collection.css';
 import { useSelector } from "react-redux";
+import "./index.css"
 
 
-function Profile({ match }) {
+function UserProfile({ match }) {
     const user = useSelector(SelectUser); // Select current user from slice
     const [profileInfo, setProfileInfo] = useState({}); // Stores the info of the user from the Db
     const [posts, setPosts] = useState([]); // Stores the posts of the user
@@ -154,4 +155,4 @@ function Profile({ match }) {
     )
 }
 
-export default Profile
+export default UserProfile
