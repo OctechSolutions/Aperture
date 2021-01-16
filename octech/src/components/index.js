@@ -12,3 +12,5 @@ export {
     Post
 } from './body'
 export {default as UserProfile} from "./userProfile"
+export {Header, HeaderOption} from './header'
+export {default as Login} from './login'

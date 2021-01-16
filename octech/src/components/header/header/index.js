@@ -1,9 +1,9 @@
 import React from 'react';
-import './Header.css';
-import HeaderOption from './HeaderOption';
+import './index.css';
+import { HeaderOption } from '../../../components';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { Auth, SelectUser, LogoutAction } from '../../config';
+import { Auth, SelectUser, LogoutAction } from '../../../config';
 import logo from './aperture_logo.svg';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';

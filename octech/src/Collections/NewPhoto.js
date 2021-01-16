@@ -4,7 +4,6 @@ import { Db, Storage, SelectUser } from '../config'
 import { useRouteMatch } from "react-router-dom"
 import { useSelector } from "react-redux"
 
-
 export const NewPhoto = () => {
     const user = useSelector(SelectUser); // Select current user from slice
     const [file, setFile] = useState(null)
@@ -47,7 +46,6 @@ export const NewPhoto = () => {
                     url: await fileRef.getDownloadURL(),
                     creator: user.displayName,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-
                 });
             }
             else {

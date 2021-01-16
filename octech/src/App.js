@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
-import { Feed, UserProfile } from './components';
-import Header from './components/Header/Header';
-import Login from './components/Login/Login';
+import { Feed, UserProfile, Login, Header } from './components';
 import { 
   Auth, 
   Db,
