@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouteMatch, Link } from "react-router-dom";
-import { NewPhoto } from "./NewPhoto.js";
-import { Db, Storage, SelectUser } from "../config";
+import { NewPhoto } from "../../../components";
+import { Db, Storage, SelectUser } from "../../../config";
 import { useSelector } from "react-redux";
 import Carousel from 'react-bootstrap/Carousel';
-
+import './index.css'
 
 function Collection() {
     const user = useSelector(SelectUser); // Select current user from slice

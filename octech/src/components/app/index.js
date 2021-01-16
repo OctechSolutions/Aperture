@@ -1,21 +1,20 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import './App.css';
-import { Feed, UserProfile, Login, Header } from './components';
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import './index.css'
+import { Feed, UserProfile, Login, Header, Collection } from '../../components'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { 
   Auth, 
   Db,
   LoginAction,
   LogoutAction,
   SelectUser
-} from './config';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Collection from './Collections/Collection.js';
+} from '../../config'
 
 
 function App() {
-  const user = useSelector(SelectUser); // Select the currently logged in user from the slice using redux
-  const dispatch = useDispatch(); // Keep track of changes on the user slice
+  const user = useSelector(SelectUser) // Select the currently logged in user from the slice using redux
+  const dispatch = useDispatch() // Keep track of changes on the user slice
 
   useEffect(() => { // useEffect keeps listening to the variables passed in the array at the end
     Auth.onAuthStateChanged(userAuth => { // When the state of the user changes this function is called that is if the user logs in or out this function gets called

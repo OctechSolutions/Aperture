@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import { ReduxStore } from './config';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { PhotoEditorPage } from './pages'
-import { Feed, UserProfile } from './components'
+import { App, Feed, UserProfile } from './components'
+import './index.css';
 
 ReactDOM.render(
     <Provider store={ReduxStore}>  {/*Redux wrapper*/}

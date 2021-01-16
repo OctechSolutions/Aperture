@@ -1,2 +1,2 @@
-export {default as Auth} from './auth'
+export {AuthContext, AuthProvider} from './authProvider'
 export {default as PrivateRoute} from './privateRoute'

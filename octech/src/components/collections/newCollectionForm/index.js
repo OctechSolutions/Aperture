@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Db, Storage, SelectUser } from "../config";
+import { Db, Storage, SelectUser } from "../../../config";
 import firebase from 'firebase'
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-
 
 export const NewCollectionForm = () => {
     const user = useSelector(SelectUser); // Select current user from slice

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import firebase from 'firebase'
-import { Db, Storage, SelectUser } from '../config'
+import { Db, Storage, SelectUser } from '../../../config'
 import { useRouteMatch } from "react-router-dom"
 import { useSelector } from "react-redux"
 

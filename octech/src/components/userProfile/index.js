@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Db, Storage, SelectUser } from "../../config";
 import FlipMove from "react-flip-move";
-import { Post } from "../../components";
+import { Post, NewCollectionForm } from "../../components";
 import { Link } from 'react-router-dom';
-import { NewCollectionForm } from '../../Collections/NewCollectionForm';
-import '../../Collections/Collection.css';
 import { useSelector } from "react-redux";
 import "./index.css"
 
