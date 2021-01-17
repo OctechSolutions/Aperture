@@ -1,0 +1,37 @@
+div {
+    /* border: 1px solid #793AFF; */
+    justify-content: space-evenly;
+    padding: 1%;
+}
+
+.photoEditor {
+    height: 80%;
+    width: 100%;
+}
+
+.view-image {
+    position: absolute;
+    left:0;
+    right:0;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 2%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.edit-options {
+    margin-top: 0%;
+}
+
+@media all and (max-width: 800px) {
+    .row {
+        flex-direction: column;
+    }
+    .view-image {
+        max-width: 100%;
+    }
+    .div{
+        padding: 0%;
+    }
+}

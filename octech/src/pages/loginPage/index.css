@@ -1,0 +1,170 @@
+.login {
+    background-image: url("https://cdn.pixabay.com/photo/2020/09/02/06/08/cheetah-5537416_1280.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #FAFAF8;
+    background-position: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#aperture-heading {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1.5rem;
+}
+
+#tagline {
+    font-size: 1.6rem;
+}
+
+#logo_white_bg {
+    height: 6rem;
+    border-radius: 50%;
+}
+
+.login, .col-md-5, .col-md-7{
+    height: 100vh;
+}
+
+.login .col-md-5 {
+    display: flex;
+    align-self: flex-start;
+    justify-content: center;
+    height: auto;
+    padding-top: 5%;
+}
+
+.tapered-frame h1 {
+    font-size: 2rem;
+}
+
+.text {
+    color: #00142C;
+    text-align: center;
+    text-shadow: 0.5px 0.5px 0px #00142C;
+    padding: 3% 5% 0% 0%;
+}
+
+.tapered-frame .form-control {
+    font-size: 0.8rem;
+    font-weight: 900;
+}
+
+.login .col-md-7 {
+    padding: 5% 10%;
+    justify-content: center;
+}
+
+.black-veil {
+    width: auto;
+    height: auto;
+    background-color: rgba(0, 20, 44, 0.5);
+    border-radius: 30% 0% 30% 0%;
+    padding: 5%;
+}
+
+.corner-frame {
+    height: 100%;
+    width: 100%;
+    border: 2px solid #FF4584;
+    border-radius: 30% 0% 30% 0%;
+    padding: 3%;
+}
+
+.tapered-frame {
+    height: 100%;
+    width: 100%;
+    border: 2px solid #F6F65E;
+    border-radius: 30% 0% 30% 0%;
+    padding: 15%;
+}
+
+.form-group .text-muted {
+    color: #F6F65E!important;
+}
+
+.tapered-frame .log-in-btn {
+    background-color: #793AFF;
+    border: 2px solid #793AFF;
+    font-weight: 800;
+    width: 100%;
+}
+
+.tapered-frame .sign-up-btn {
+    background-color: #FF4584;
+    border: 2px solid #FF4584;
+    font-weight: 800;
+    width: 100%;
+}
+
+.tapered-frame .sign-up-btn:hover,  .tapered-frame .log-in-btn:hover{
+    background-color: #F6F65E;
+    color: #00142C;
+    border: 2px solid #FAFAF8;
+}
+
+@media screen and (max-width: 766px) {
+    .text {
+        color: #00142C;
+        margin: 0% 0%;
+        padding-top: 0%;
+    }
+
+    #aperture-heading {
+        font-size: 2.5rem;
+        padding-top: 10%;
+    }
+    
+    #tagline {
+        font-size: 1.4rem;
+    }
+    
+    #logo_white_bg {
+        margin-top: 3%;
+        height: 4.7rem;
+    }
+
+    .col-md-5 {
+        align-items:flex-start;
+        padding-bottom: 0%;
+        padding-top: 5%;
+    }
+
+    .login .col-md-7 {
+        margin: 0%;
+        padding: 10% 0%;
+        height: 100%;
+    }
+
+    .black-veil {
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 20, 44, 0.5);
+        border-radius: 0;
+        padding: 5%;
+        margin: 0%;
+    }
+
+    .corner-frame {
+        padding: 1%;
+    }
+
+    .tapered-frame, .corner-frame {
+        height: auto;
+        width: 100%;
+        border-radius: 0;
+        padding: 5%;
+        margin: 0;
+    }
+
+    @media screen and (max-width: 300px) {
+        #aperture-heading {
+            font-size: 2.1rem;
+        }
+        
+        #tagline {
+            font-size: 1.2rem;
+        }
+    }
+}

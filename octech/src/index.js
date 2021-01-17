@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import store from './app/store';
+import { ReduxStore } from './config';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
+import { PhotoEditorPage } from './pages'
+import { App, Feed, UserProfile } from './components'
+import './index.css';
 
 ReactDOM.render(
-    <Provider store={store}>  {/*Redux wrapper*/}
+    <Provider store={ReduxStore}>  {/*Redux wrapper*/}
       <App /> {/*Main app being mounted*/}
     </Provider>,
   document.getElementById('root')
