@@ -12,7 +12,10 @@ function ImageGallery({ sliderImages }) {
             // marginLeft: "auto",
             // marginRight: "auto",
         }}>
-            <Carousel interval={null}>
+            <Carousel 
+            interval={null}
+            controls={(sliderImages.length > 1)?true:false}
+            >
                 {sliderImages.map((a) => 
                     <Carousel.Item className="post__image">
                         <img

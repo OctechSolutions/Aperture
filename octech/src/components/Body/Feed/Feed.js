@@ -14,6 +14,10 @@ import "react-html5-camera-photo/build/css/index.css";
 import { Slider, EditOption } from '../ImageManipulation';
 import ImageGallery from "./ImageGallery";
 import Modal from 'react-bootstrap/Modal';
+import Alert from 'react-bootstrap/Alert';
+import Spinner from 'react-bootstrap/Spinner';
+require('@tensorflow/tfjs-backend-cpu');
+require('@tensorflow/tfjs-backend-webgl');
 
 
 const Compress = require('compress.js');
@@ -71,6 +75,12 @@ function Feed() {
   const selectedOption = editOptions[selectedOptionIndex];
   const [sliderImages, setSliderImages] = useState([]);
   const [largeImages, setLargeImages] = useState([]);
+  const [nohuman, setNohuman] = useState(false);
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const cocoSsd = require('@tensorflow-models/coco-ssd');
+
 
   function handleSliderChange(event) {
     setEditOptions(prevEditOptions => {
@@ -105,6 +115,7 @@ function Feed() {
           }))
         )
       );
+
   }, []);
 
   const sendPost = async (e) => { // When the new post is submitted this function is called
@@ -147,6 +158,7 @@ function Feed() {
   }
 
   const editingDone = async () => {
+    setNohuman(false);
 
     if (file) {
       if (file.size / (1024 * 1024) > 0.9) {
@@ -245,6 +257,34 @@ function Feed() {
       console.log("RESULT", reader.result);
       setInputImg(reader.result);
       // alert("Image Uploaded Sucessfully!")
+      setLoading(true);
+
+      cocoSsd.load().then((model) => {
+        setLoading(false);
+        // detect objects in the image.
+
+        const img = document.getElementById("img");
+        model.detect(img).then((predictions) => {
+
+          console.log("Predictions: ", predictions);
+          if (predictions.length) {
+            predictions.forEach((prediction) => {
+              if (prediction.class === "person") {
+                setInputImg("");
+                console.log("HUMAN DETECTED!!!")
+                setShow(true);
+              }
+              else {
+                setNohuman(true);
+              }
+            })
+          }
+          else {
+            setNohuman(true);
+          }
+
+        })
+      });
     };
   };
 
@@ -288,13 +328,22 @@ function Feed() {
                 </button>}
               </div>
             </div>
+
           </form>
 
 
         </div>
+        {show &&
+          <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+            <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
+            <p>
+              The image uploaded had a Human detected in it!
+            </p>
+          </Alert>
+        }
         <Modal
           show={inputImg}
-          onHide={() => {setInputImg("")}}
+          onHide={() => { setInputImg("") }}
           keyboard={false}
           size="xl"
           aria-labelledby="contained-modal-title-vcenter"
@@ -302,14 +351,14 @@ function Feed() {
         >
           <Modal.Body>
 
-            {inputImg && (
+            {inputImg && (!loading) && (
               <>
                 <br />
                 {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
                 <div className="photoEditor">
                   {/* Div in which to view the photo. */}
                   <img src={inputImg}
-                    className="previewImage" alt="Preview" style={getImageStyle()}></img>
+                    className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
 
                   {/* {console.log(getImageStyle())} */}
                   <br></br>
@@ -340,7 +389,17 @@ function Feed() {
 
               </>
             )}
-            {inputImg && <div className="buttons"><button onClick={editingDone}>Done</button><button onClick={editingCancelled}>Cancel</button></div>}
+            {loading && 
+            <div>
+              <Spinner animation="border" role="status">
+              </Spinner> 
+              <span>{'  '}Scanning Image...</span>
+            </div>}
+            {inputImg &&
+              <div className="buttons">
+                {nohuman && <button onClick={editingDone}>Done</button>}
+                <button onClick={editingCancelled}>Cancel</button>
+              </div>}
 
           </Modal.Body>
         </Modal>
@@ -349,7 +408,7 @@ function Feed() {
 
       <Modal
         show={cameraActive}
-        onHide={() => {setCameraActive("")}}
+        onHide={() => { setCameraActive("") }}
         keyboard={false}
         size="xl"
         aria-labelledby="contained-modal-title-vcenter"
