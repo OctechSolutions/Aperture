@@ -45,7 +45,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
           style: doc.data().styleModification
         });
         tempRefs.push(doc.id);
-        console.log(doc.data(), doc.id)
+        // console.log(doc.data(), doc.id)
       });
       setImages(tempImages);
       setRefs(tempRefs);

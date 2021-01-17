@@ -61,7 +61,7 @@ const DEFAULT_EDIT_OPTIONS = [
   }
 ]
 
-function Feed() {
+function Feed({ match }) {
   const user = useSelector(selectUser);
 
   const [input, setInput] = useState("");
@@ -132,6 +132,7 @@ function Feed() {
         photoUrl: user.photoUrl || "",
         largeGifs: largeImages,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        channel: match.params.channel || ""
       })
 
       sliderImages.forEach((image) => {
@@ -297,115 +298,117 @@ function Feed() {
 
   return (
     <div className="feed">
+      {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))}
+      {((match.params.id === user.displayName) || (match.path === "/feed")) &&
+        <div className="feed_inputContainer">
+          <div className="feed_input">
+            <Avatar src={user?.photoUrl}></Avatar> {/*Avatar using materialui*/}
+            <form onSubmit={sendPost}>
+              <input
+                className="feed_inputbox"
+                placeholder="Caption..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
+                type="text"
+                required
+              />
+              <div className="imagePreview">
+                <div className="buttons">
+                  {!inputImg && <div className="upload-btn-wrapper">
+                    <button className="btn">
+                      <ImageIcon />
+                    </button>
+                    <input type="file" multiple name="myfile" onChange={handleChange} />
+                  </div>}
+                  {!inputImg && <button className="btn" onClick={openCamera}>
+                    <PhotoCameraIcon />
+                  </button>}
 
-
-      <div className="feed_inputContainer">
-        <div className="feed_input">
-          <Avatar src={user?.photoUrl}></Avatar> {/*Avatar using materialui*/}
-          <form onSubmit={sendPost}>
-            <input
-              className="feed_inputbox"
-              placeholder="Caption..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
-              type="text"
-              required
-            />
-            <div className="imagePreview">
-              <div className="buttons">
-                {!inputImg && <div className="upload-btn-wrapper">
-                  <button className="btn">
-                    <ImageIcon />
-                  </button>
-                  <input type="file" multiple name="myfile" onChange={handleChange} />
-                </div>}
-                {!inputImg && <button className="btn" onClick={openCamera}>
-                  <PhotoCameraIcon />
+                  {!inputImg && <button onClick={sendPost} type="submit">
+                    Post
                 </button>}
-
-                {!inputImg && <button onClick={sendPost} type="submit">
-                  Post
-                </button>}
-              </div>
-            </div>
-
-          </form>
-
-
-        </div>
-        {show &&
-          <Alert variant="danger" onClose={() => setShow(false)} dismissible>
-            <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
-            <p>
-              The image uploaded had a Human detected in it!
-            </p>
-          </Alert>
-        }
-        <Modal
-          show={inputImg}
-          onHide={() => { setInputImg("") }}
-          keyboard={false}
-          size="xl"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Body>
-
-            {inputImg && (!loading) && (
-              <>
-                <br />
-                {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
-                <div className="photoEditor">
-                  {/* Div in which to view the photo. */}
-                  <img src={inputImg}
-                    className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
-
-                  {/* {console.log(getImageStyle())} */}
-                  <br></br>
-                  {/* Div with 6 options like brightness, contrast, etc. */}
-                  <div className="row">
-                    {
-                      editOptions.map((option, index) => {
-                        return (
-                          <EditOption
-                            key={index}
-                            name={option.name}
-                            active={index === selectedOptionIndex ? true : false}
-                            handleClick={() => setSelectedOptionIndex(index)}
-                          />
-                        )
-                      })
-                    }
-                  </div>
-                  <br></br>
                 </div>
-                {/* Slider to adjust edit values. */}
-                <Slider
-                  min={selectedOption.range.min}
-                  max={selectedOption.range.max}
-                  value={selectedOption.value}
-                  handleChange={handleSliderChange}
-                />
+              </div>
 
-              </>
-            )}
-            {loading && 
-            <div>
-              <Spinner animation="border" role="status">
-              </Spinner> 
-              <span>{'  '}Scanning Image...</span>
-            </div>}
-            {inputImg &&
-              <div className="buttons">
-                {nohuman && <button onClick={editingDone}>Done</button>}
-                <button onClick={editingCancelled}>Cancel</button>
-              </div>}
+            </form>
 
-          </Modal.Body>
-        </Modal>
-        {sliderImages && <ImageGallery sliderImages={sliderImages} />}
-      </div>
 
+          </div>
+
+
+          {show &&
+            <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+              <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
+              <p>
+                The image uploaded had a Human detected in it!
+            </p>
+            </Alert>
+          }
+          <Modal
+            show={inputImg}
+            onHide={() => { setInputImg("") }}
+            keyboard={false}
+            size="xl"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Modal.Body>
+
+              {inputImg && (!loading) && (
+                <>
+                  <br />
+                  {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
+                  <div className="photoEditor">
+                    {/* Div in which to view the photo. */}
+                    <img src={inputImg}
+                      className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
+
+                    {/* {console.log(getImageStyle())} */}
+                    <br></br>
+                    {/* Div with 6 options like brightness, contrast, etc. */}
+                    <div className="row">
+                      {
+                        editOptions.map((option, index) => {
+                          return (
+                            <EditOption
+                              key={index}
+                              name={option.name}
+                              active={index === selectedOptionIndex ? true : false}
+                              handleClick={() => setSelectedOptionIndex(index)}
+                            />
+                          )
+                        })
+                      }
+                    </div>
+                    <br></br>
+                  </div>
+                  {/* Slider to adjust edit values. */}
+                  <Slider
+                    min={selectedOption.range.min}
+                    max={selectedOption.range.max}
+                    value={selectedOption.value}
+                    handleChange={handleSliderChange}
+                  />
+
+                </>
+              )}
+              {loading &&
+                <div>
+                  <Spinner animation="border" role="status">
+                  </Spinner>
+                  <span>{'  '}Scanning Image...</span>
+                </div>}
+              {inputImg &&
+                <div className="buttons">
+                  {nohuman && <button onClick={editingDone}>Done</button>}
+                  <button onClick={editingCancelled}>Cancel</button>
+                </div>}
+
+            </Modal.Body>
+          </Modal>
+          {sliderImages && <ImageGallery sliderImages={sliderImages} />}
+        </div>
+      }
       <Modal
         show={cameraActive}
         onHide={() => { setCameraActive("") }}
@@ -433,29 +436,54 @@ function Feed() {
         </Modal.Body>
       </Modal>
 
-      <FlipMove>
+      {(!match.params.channel) ?
+        <FlipMove>
 
+          {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
+          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+            ({
+              id,
+              data: { name, description, message, photoUrl, largeGifs },
+            }) => (
 
-        {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-        {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
-          ({
-            id,
-            data: { name, description, message, photoUrl, largeGifs },
-          }) => (
+              <Post
+                key={id}
+                id={id}
+                name={name}
+                description={description}
+                message={message}
+                photoUrl={photoUrl}
+                largeGifs={largeGifs}
+              />
 
-            <Post
-              key={id}
-              id={id}
-              name={name}
-              description={description}
-              message={message}
-              photoUrl={photoUrl}
-              largeGifs={largeGifs}
-            />
+            )
+          )}
+        </FlipMove>
+        :
+        <FlipMove>
 
-          )
-        )}
-      </FlipMove>
+          {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
+          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+            ({
+              id,
+              data: { name, description, message, photoUrl, largeGifs, channel },
+            }) => (name === match.params.id) && (channel === match.params.channel) && (
+
+              <Post
+                key={id}
+                id={id}
+                name={name}
+                description={description}
+                message={message}
+                photoUrl={photoUrl}
+                largeGifs={largeGifs}
+              />
+
+            )
+          )}
+        </FlipMove>
+      }
+
     </div>
   );
 }

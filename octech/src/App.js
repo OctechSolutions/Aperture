@@ -67,7 +67,8 @@ function App() {
 
             <Route path="/feed" exact component={Feed} />
             <Route path="/user/:id" exact component={Profile} /> {/* Dynamically generated user pages, the user lands on /user/{username} when clicking on someone profile, the profile page of the user is rendered by the profile component */}
-            <Route path="/user/:id/:collection" component={Collection} />
+            <Route path="/user/:id/:collection" exact component={Collection} />
+            <Route path="/user/:id/channel/:channel" exact component={Feed} />
           </div>)}
     </Router>
   );
