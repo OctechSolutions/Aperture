@@ -75,13 +75,25 @@ function Channels({ profileName }) {
         }
     }
 
-    function deleteChannel(id) {
+    function deleteChannel(channel) {
         db.collection("channels")
-            .doc(id)
+            .doc(channel.id)
             .delete()
             .then(() => {
                 // window.location.reload();
             });
+        console.log(channel.data());
+        db.collection("posts").where("channel", "==", channel.data().name).get().then((a) => {
+            a.forEach((b) => {
+                console.log(b.id)
+                db.collection("postImages").where("ref", "==", b.id).get().then(function (querySnapshot) {
+                    querySnapshot.forEach(function (doc) {
+                        doc.ref.delete();
+                    });
+                });
+                b.ref.delete();
+            })
+        })
     }
 
     return (
@@ -99,15 +111,17 @@ function Channels({ profileName }) {
                         : channels.map(channel => {
                             let info = channel.data();
                             return (
-                                <Link to={`/user/${profileName + "/channel/" + info.name}`}>
-                                    <div className="card my-2">
-                                        <div className="card-body">
+
+                                <div className="card my-2">
+                                    <div className="card-body">
+                                        <Link to={`/user/${profileName + "/channel/" + info.name}`}>
                                             <h3 className="card-title">{info.name} [{info.theme}]</h3>
                                             <h6 className="card-subtitle mb-2 text-muted text-truncate">{info.description}</h6>
-                                            {(profileName === user.displayName) && <button type="button" class="btn btn-outline-danger" onClick={e => deleteChannel(channel.id)}>Delete</button>}
-                                        </div>
+                                        </Link>
+                                        {(profileName === user.displayName) && <button type="button" class="btn btn-outline-danger" onClick={e => deleteChannel(channel)}>Delete</button>}
                                     </div>
-                                </Link>
+                                </div>
+
                             );
                         })}
                 </div>

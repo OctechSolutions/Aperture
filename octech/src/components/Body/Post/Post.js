@@ -69,6 +69,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
     refs.forEach((ids) => {
       console.log(ids);
       db.collection('postImages').doc(ids).delete();
+      console.log("Post image deleted!")
     });
 
     if (largeGifs) {
