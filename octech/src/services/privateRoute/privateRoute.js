@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { AuthContext } from '../../services'
+import { AuthContext } from '../../services/services'
 
 // PrivateRoute = Will render the sign up page if user is not signed in.
 const PrivateRoute = ({ component: RouteComponent, ...rest }) => {

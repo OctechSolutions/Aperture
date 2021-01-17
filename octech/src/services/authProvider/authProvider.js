@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FirebaseApp, Login, Logout, SelectUser, Auth, Db } from '../../config';
+import { FirebaseApp, Login, Logout, SelectUser, Auth, Db } from '../../config/config';
 
 export const AuthContext = React.createContext()
 
