@@ -8,11 +8,10 @@ import { auth } from '../firebase';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 export default function NewsfeedPage(props) {
-    console.log(props.emailVerified)
     return(
         <>
             {
-                props.emailVerified ?
+                props.isVerified ?
                 (
                     <div className="app">
                         <Header /> {/* The header is always rendered if the user is logged in */}
@@ -25,10 +24,11 @@ export default function NewsfeedPage(props) {
                 ):
                 (
                     <div className="verify-email">
-                        <h1>You have been sent<br/>a verification e-mail.</h1>
-                        <button className="btn btn-primary mb-3" onClick={props.checkEmailVerification}>
-                            I have verified!
-                        </button>
+                        <h1>
+                            You have been sent<br/>
+                            a verification e-mail.<br/>
+                            Please verify and reload page to proceed.
+                        </h1>
                     </div>
                 )
             } 

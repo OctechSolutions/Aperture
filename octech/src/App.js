@@ -11,11 +11,13 @@ import { db } from "./firebase";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Collection from './Collections/Collection.js';
 import NewsfeedPage from './pages/NewsFeedPage'
+import createHistory from 'history/createBrowserHistory'
 
 
 function App() {
   const user = useSelector(selectUser); // Select the currently logged in user from the slice using redux
   const dispatch = useDispatch(); // Keep track of changes on the user slice
+  const [isVerified, setIsVerified] = useState(false)
 
   // User must verify his/her email.
   const sendVerificationEmail = (curUser) => {
@@ -26,12 +28,6 @@ function App() {
         alert("Error : " + error)
     })
 
-  }
-
-  const checkEmailVerification = async() => {
-    await auth.currentUser.reload()
-    console.log(user)
-    return (user.emailVerified)
   }
 
   useEffect(() => { // useEffect keeps listening to the variables passed in the array at the end
@@ -84,8 +80,7 @@ function App() {
         (
           // When the user is logged in the following code is executed
           <NewsfeedPage 
-            emailVerified = {user.emailVerified}
-            checkEmailVerification = {checkEmailVerification}
+            isVerified = {user.emailVerified}
           />
         )
       }
