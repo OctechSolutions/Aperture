@@ -1,0 +1,18 @@
+
+/* button {
+    padding: 1% 2% 0% 2%;
+    vertical-align: middle;
+    cursor: pointer;
+    border-radius: 5%;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+button:hover {
+    color: #FF4584;
+    transition: all 250ms;
+} */
+
+.active {
+    color: #793AFF;
+}

@@ -3,18 +3,15 @@
    uploaded on May 5, 2019 by "Maksim Ivanov" */
 
 import React, { useCallback, useState } from 'react';
-import { 
-    Auth, 
-    SignInWithGoogle,
-    Storage,
-    Db,
-    LoginAction
-} from '../../config/config';
+import { auth } from '../../firebase';
+import { signInWithGoogle } from '../../firebase';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './signUp.css'
 import EditIcon from '@material-ui/icons/Edit';
+import { storage, db } from '../../firebase';
 import { useHistory } from "react-router-dom";
 import { useDispatch } from 'react-redux';
+import { login } from '../../features/userSlice';
 
 const SignUp = () => {
 
@@ -52,24 +49,24 @@ const SignUp = () => {
 
         const updateUserProfile = async () => {
             if (file !== undefined) {
-                const storageRef = Storage.ref();
+                const storageRef = storage.ref();
                 const fileRef = storageRef.child(file.name);
                 fileRef.put(file).then(() => {
                     fileRef.getDownloadURL().then((doc) => {
-                        Auth.currentUser.updateProfile({
+                        auth.currentUser.updateProfile({
                             displayName: username,
                             photoURL: doc
                         }).then(() => {
-                            console.log(Auth.currentUser)
+                            console.log(auth.currentUser)
                             history.push("/feed") // Push the home page to history to redirect to it.
-                            Db.collection("users").doc(username).set({
+                            db.collection("users").doc(username).set({
                                 name: username,
                                 email: email,
                                 photoUrl: doc,
                                 realName: name,
                                 contactNumber: contactNumber
                             }, { merge: true });
-                            dispatch(LoginAction({
+                            dispatch(login({
                                 email: email,
                                 displayName: username,
                                 photoUrl: doc
@@ -80,10 +77,10 @@ const SignUp = () => {
                 })
 
             } else {
-                return Auth.currentUser.updateProfile({
+                return auth.currentUser.updateProfile({
                     displayName: username
                 }).then(() => {
-                    dispatch(LoginAction({
+                    dispatch(login({
                         email: email,
                         displayName: username,
                     }))
@@ -98,7 +95,7 @@ const SignUp = () => {
            passwords. */
         if (confirmPassword === password) {
             try {
-                await Auth // Wait until the user has been added to authenticated users list in Firebase.
+                await auth // Wait until the user has been added to authenticated users list in Firebase.
                     .createUserWithEmailAndPassword(email, confirmPassword)
                 await updateUserProfile()
 
@@ -209,7 +206,7 @@ const SignUp = () => {
                 {/* Google Sign Up Button Input */}
                 <button
                     style={{ width: "100%" }}
-                    onClick={SignInWithGoogle}
+                    onClick={signInWithGoogle}
                 >Log In with Google</button>
 
             </form></>
