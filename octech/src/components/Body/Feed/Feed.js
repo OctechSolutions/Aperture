@@ -299,7 +299,7 @@ function Feed({ match }) {
   return (
     <div className="feed">
       {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
-      {((match.params.id === user.displayName) || (match.path === "/feed")) &&
+      {((match.params.id === user.displayName) || (match.path === "/")) &&
         <div className="feed_inputContainer">
           <div className="feed_input">
             <Avatar src={user?.photoUrl}></Avatar> {/*Avatar using materialui*/}

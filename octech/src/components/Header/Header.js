@@ -28,7 +28,7 @@ function Header() {
 
   return (
     <div className="header">
-      <Link style={{ textDecoration: 'none', color: "black" }} to={'/feed'}> {/* Links to the home feed for the user */}
+      <Link style={{ textDecoration: 'none', color: "black" }} to={'/'}> {/* Links to the home feed for the user */}
         <div className="header__left">
           <img src={logo} alt="Aperture" />
           <h6>Aperture</h6>
