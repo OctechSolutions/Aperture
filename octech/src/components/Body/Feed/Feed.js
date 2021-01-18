@@ -162,6 +162,7 @@ function Feed({ match }) {
     setNohuman(false);
 
     if (file) {
+      cocoSsd.load();
       if (file.size / (1024 * 1024) > 0.9) {
         if (file.type === 'image/gif') {
           console.log("Large gif using firebase storage");
@@ -400,7 +401,7 @@ function Feed({ match }) {
                 </div>}
               {inputImg &&
                 <div className="buttons">
-                  {nohuman && <button onClick={editingDone}>Done</button>}
+                  <button onClick={editingDone}>Done</button>
                   <button onClick={editingCancelled}>Cancel</button>
                 </div>}
 
