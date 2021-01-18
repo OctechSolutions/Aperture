@@ -26,7 +26,6 @@ const SignUp = () => {
     const history = useHistory();
     const dispatch = useDispatch(); // Keep track of changes on the user slice
 
-
     const handleUpload = async (e) => { // When a file is uploaded this function is called
         e.preventDefault();
         var reader = new FileReader();
@@ -40,10 +39,9 @@ const SignUp = () => {
             setProfilePic(reader.result);
             // alert("Image Uploaded Sucessfully!")
         };
-    };
+    }
 
     // handleSubmit = What to do when the sign up form is submitted?
-    // eslint-disable-next-line
     const handleSubmit = useCallback(async event => {
         event.preventDefault() // Prevent default behavior of re-loading etc.
 
@@ -58,7 +56,6 @@ const SignUp = () => {
                             photoURL: doc
                         }).then(() => {
                             console.log(auth.currentUser)
-                            history.push("/feed") // Push the home page to history to redirect to it.
                             db.collection("users").doc(username).set({
                                 name: username,
                                 email: email,
@@ -72,7 +69,6 @@ const SignUp = () => {
                                 photoUrl: doc
                             }))
                         })
-
                     })
                 })
 
@@ -88,17 +84,14 @@ const SignUp = () => {
             }
         }
 
-
-
         /* If both the 1st typed password and the confirmed password are
            same, then proceed to sign up. Else promt user to input matching
            passwords. */
         if (confirmPassword === password) {
             try {
                 await auth // Wait until the user has been added to authenticated users list in Firebase.
-                    .createUserWithEmailAndPassword(email, confirmPassword)
-                await updateUserProfile()
-
+                      .createUserWithEmailAndPassword(email, confirmPassword)
+                await updateUserProfile()     
             } catch (error) {
                 alert(error)
                 console.log(error)
@@ -108,13 +101,11 @@ const SignUp = () => {
         }
     })
 
-    // Returns a Sign Up form.
     return (
         <>
             <div>
                 <label htmlFor="fileUpload">
                     <div>
-
                         <EditIcon />
                     </div>
                 </label>
@@ -122,8 +113,6 @@ const SignUp = () => {
             </div>
             <form className="sign-up" >
                 {/* Profile Picture */}
-
-
                 <input
                     name="profilePic"
                     type="image"
@@ -205,11 +194,12 @@ const SignUp = () => {
 
                 {/* Google Sign Up Button Input */}
                 <button
+                    className="btn btn-primary mb-3"
                     style={{ width: "100%" }}
                     onClick={signInWithGoogle}
                 >Log In with Google</button>
-
-            </form></>
+            </form>
+        </>
     )
 }
 
