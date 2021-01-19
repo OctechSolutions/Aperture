@@ -84,17 +84,47 @@ const SignUp = () => {
             }
         }
 
+        async function doesUsernameExists() {
+            let toReturn = false
+            await db.collection("users").where("name", "==", username)
+            .get()
+            .then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                    if(doc.data()){
+                        // doc.data() is never undefined for query doc snapshots
+                        console.log(doc.id, " => ", doc.data());
+                        toReturn = true
+                    }
+                });
+            })
+            .catch(function(error) {
+                console.log("Error getting documents: ", error);
+            });
+            return toReturn
+        }
+
         /* If both the 1st typed password and the confirmed password are
            same, then proceed to sign up. Else promt user to input matching
            passwords. */
         if (confirmPassword === password) {
-            try {
-                await auth // Wait until the user has been added to authenticated users list in Firebase.
-                      .createUserWithEmailAndPassword(email, confirmPassword)
-                await updateUserProfile()     
-            } catch (error) {
-                alert(error)
-                console.log(error)
+            let usernameExists = false
+
+            await doesUsernameExists().then((res) => {
+                console.log(res)
+                usernameExists = res
+            })
+            
+            if(usernameExists){
+                alert("Sorry. This username already exists.")
+            } else {
+                try {
+                    await auth // Wait until the user has been added to authenticated users list in Firebase.
+                          .createUserWithEmailAndPassword(email, confirmPassword)
+                    await updateUserProfile()     
+                } catch (error) {
+                    alert(error)
+                    console.log(error)
+                }
             }
         } else {
             alert("The password and the confirmed password must match.")
