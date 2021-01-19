@@ -15,8 +15,8 @@ export default function NewsfeedPage(props) {
                 (
                     <div className="app">
                         <Header /> {/* The header is always rendered if the user is logged in */}
-
-                        <Route path="/feed" exact component={Feed} />
+            
+                        <Route path="/" exact component={Feed} />
                         <Route path="/user/:id" exact component={Profile} /> {/* Dynamically generated user pages, the user lands on /user/{username} when clicking on someone profile, the profile page of the user is rendered by the profile component */}
                         <Route path="/user/:id/:collection" exact component={Collection} />
                         <Route path="/user/:id/channel/:channel" exact component={Feed} />

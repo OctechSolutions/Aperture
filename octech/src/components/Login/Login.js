@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import './Login.css';
 import { signInWithGoogle } from '../../firebase';
 import { auth } from "../../firebase"
@@ -18,8 +18,11 @@ export default function Login() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [show, setShow] = useState(false)
+  const [resetEmail, setResetEmail] = useState("")
+  const [resetEmailSent, setResetEmailSent] = useState(false)
   const history = useHistory();
   const dispatch = useDispatch(); // Keep track of changes on the user slice
+  const [forgotPasswordClicked, setForgotPasswordClicked] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -28,7 +31,7 @@ export default function Login() {
     // await login(emailRef.current.value, passwordRef.current.value)
     auth.signInWithEmailAndPassword(emailRef.current.value, passwordRef.current.value)
       .then(function (result) {
-        history.push("/feed")
+        history.push("/")
         console.log(result)
         dispatch(login({
           email: result.user.email,
@@ -42,6 +45,23 @@ export default function Login() {
       });
 
     setLoading(false)
+  }
+
+  const forgotPassword = () => {
+    console.log("Forgot Password Clicked");
+    setForgotPasswordClicked(true);
+  }
+
+  const submitForgotPassword = () => {
+    if(resetEmail) {
+      auth.sendPasswordResetEmail(resetEmail).then(function() {
+        // Email sent.
+        setResetEmailSent(true);
+      }).catch(function(error) {
+        // An error happened.
+      });
+      
+    }
   }
 
   return (
@@ -61,7 +81,7 @@ export default function Login() {
                   <Form.Label style={{ marginLeft: "auto", marginRight: "auto" }}>Password</Form.Label>
                   <Form.Control type="password" ref={passwordRef} required style={{ marginLeft: "auto", marginRight: "auto" }} />
                   <div className="w-100 text-center mt-3">
-                    <Link to="/forgot-password">Forgot Password?</Link>
+                    <p style={{ cursor: "pointer" }} onClick={forgotPassword}>Forgot Password?</p>
                   </div>
                 </Form.Group>
                 <Form.Group>
@@ -103,6 +123,37 @@ export default function Login() {
         </Modal.Header>
         <Modal.Body>
           <SignUp />
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={forgotPasswordClicked}
+        keyboard={false}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton onClick={() => { setForgotPasswordClicked(false) }}>
+          {/* Sign Up Heading */}
+          <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>Forgot Password</h4>
+        </Modal.Header>
+        <Modal.Body>
+          {resetEmailSent?<>Reset Email Sent!</>:
+             
+          <Form>
+            <Form.Group id="email">
+              <Form.Label style={{ marginLeft: "auto", marginRight: "auto" }}>Email Address</Form.Label>
+              <Form.Control type="email" onChange={(e) => setResetEmail(e.target.value)} required style={{ marginLeft: "auto", marginRight: "auto" }} />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label type="button" style={{ marginLeft: "auto", marginRight: "auto" }}>
+                <Button className="w-100" onClick={submitForgotPassword}>
+                  Send Password Reset Email
+                </Button>
+              </Form.Label>
+            </Form.Group>
+          </Form>
+          }
         </Modal.Body>
       </Modal>
     </>

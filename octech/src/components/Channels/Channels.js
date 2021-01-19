@@ -100,14 +100,15 @@ function Channels({ profileName }) {
         <div className="container pb-5" id="channels">
             <div className="row" id="title">
                 <div className="col text-center">
-                    <p className="display-3">My Channels</p>
+                    <p className="display-3">Channels</p>
                     <hr />
                 </div>
             </div>
             <div className="row py-5" id="channelList">
                 <div className="col">
                     {(hasNoChannels) ?
-                        <p className="text-muted">Looks like you have no channels. How about creating one?</p>
+                        // <p className="text-muted">Looks like you have no channels. How about creating one?</p>
+                        <></>
                         : channels.map(channel => {
                             let info = channel.data();
                             return (
