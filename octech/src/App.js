@@ -13,6 +13,7 @@ function App() {
   const user = useSelector(selectUser); // Select the currently logged in user from the slice using redux
   const dispatch = useDispatch(); // Keep track of changes on the user slice
 
+
   // User must verify his/her email.
   const sendVerificationEmail = (curUser) => {
     curUser.sendEmailVerification().then(function() {
@@ -43,7 +44,6 @@ function App() {
             }
             sendVerificationEmail(userAuth)
             console.log(userAuth.displayName, "Added to the DB")
-
           }
           else {
             // If already in db do nothing
