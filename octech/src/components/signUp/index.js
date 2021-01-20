@@ -2,14 +2,13 @@
    "Firebase React Authentication Tutorial For Beginners - Private Route With Hooks"
    uploaded on May 5, 2019 by "Maksim Ivanov" */
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { auth } from '../../firebase';
 import { signInWithGoogle } from '../../firebase';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 import EditIcon from '@material-ui/icons/Edit';
 import { storage, db } from '../../firebase';
-import { useHistory } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { login } from '../../features/userSlice';
 
@@ -23,9 +22,7 @@ const SignUp = () => {
     const [email, setEmail] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [contactNumber, setContactNumber] = useState("");
-    const history = useHistory();
     const dispatch = useDispatch(); // Keep track of changes on the user slice
-
 
     const handleUpload = async (e) => { // When a file is uploaded this function is called
         e.preventDefault();
@@ -40,11 +37,10 @@ const SignUp = () => {
             setProfilePic(reader.result);
             // alert("Image Uploaded Sucessfully!")
         };
-    };
+    }
 
     // handleSubmit = What to do when the sign up form is submitted?
-    // eslint-disable-next-line
-    const handleSubmit = useCallback(async event => {
+    const handleSubmit = (async event => {
         event.preventDefault() // Prevent default behavior of re-loading etc.
 
         const updateUserProfile = async () => {
@@ -58,7 +54,6 @@ const SignUp = () => {
                             photoURL: doc
                         }).then(() => {
                             console.log(auth.currentUser)
-                            history.push("/feed") // Push the home page to history to redirect to it.
                             db.collection("users").doc(username).set({
                                 name: username,
                                 email: email,
@@ -72,7 +67,6 @@ const SignUp = () => {
                                 photoUrl: doc
                             }))
                         })
-
                     })
                 })
 
@@ -88,33 +82,58 @@ const SignUp = () => {
             }
         }
 
-
+        async function doesUsernameExists() {
+            let toReturn = false
+            await db.collection("users").where("name", "==", username)
+            .get()
+            .then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                    if(doc.data()){
+                        // doc.data() is never undefined for query doc snapshots
+                        console.log(doc.id, " => ", doc.data());
+                        toReturn = true
+                    }
+                });
+            })
+            .catch(function(error) {
+                console.log("Error getting documents: ", error);
+            });
+            return toReturn
+        }
 
         /* If both the 1st typed password and the confirmed password are
            same, then proceed to sign up. Else promt user to input matching
            passwords. */
         if (confirmPassword === password) {
-            try {
-                await auth // Wait until the user has been added to authenticated users list in Firebase.
-                    .createUserWithEmailAndPassword(email, confirmPassword)
-                await updateUserProfile()
+            let usernameExists = false
 
-            } catch (error) {
-                alert(error)
-                console.log(error)
+            await doesUsernameExists().then((res) => {
+                console.log(res)
+                usernameExists = res
+            })
+            
+            if(usernameExists){
+                alert("Sorry. This username already exists.")
+            } else {
+                try {
+                    await auth // Wait until the user has been added to authenticated users list in Firebase.
+                          .createUserWithEmailAndPassword(email, confirmPassword)
+                    await updateUserProfile()     
+                } catch (error) {
+                    alert(error)
+                    console.log(error)
+                }
             }
         } else {
             alert("The password and the confirmed password must match.")
         }
     })
 
-    // Returns a Sign Up form.
     return (
         <>
             <div>
                 <label htmlFor="fileUpload">
                     <div>
-
                         <EditIcon />
                     </div>
                 </label>
@@ -122,8 +141,6 @@ const SignUp = () => {
             </div>
             <form className="sign-up" >
                 {/* Profile Picture */}
-
-
                 <input
                     name="profilePic"
                     type="image"
@@ -205,11 +222,12 @@ const SignUp = () => {
 
                 {/* Google Sign Up Button Input */}
                 <button
+                    className="btn btn-primary mb-3"
                     style={{ width: "100%" }}
                     onClick={signInWithGoogle}
                 >Log In with Google</button>
-
-            </form></>
+            </form>
+        </>
     )
 }
 

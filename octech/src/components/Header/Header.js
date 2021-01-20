@@ -11,15 +11,13 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from "react-router-dom";
 
-
-
 function Header() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const logoutOfApp = () => {
+  const logoutOfApp = async () => {
     dispatch(logout());
-    auth.signOut();
+    await auth.signOut();
     history.push('/');
     window.location.reload();
   }

@@ -10,8 +10,6 @@ import { login } from '../../features/userSlice';
 import Modal from 'react-bootstrap/Modal';
 
 
-
-
 export default function Login() {
 
   const emailRef = useRef()
@@ -28,8 +26,6 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault()
-
-
     setError("")
     setLoading(true)
     // await login(emailRef.current.value, passwordRef.current.value)
@@ -47,7 +43,6 @@ export default function Login() {
         console.log(error)
         setError("Failed to log in")
       });
-
 
     setLoading(false)
   }
@@ -144,7 +139,7 @@ export default function Login() {
         </Modal.Header>
         <Modal.Body>
           {resetEmailSent?<>Reset Email Sent!</>:
-         
+             
           <Form>
             <Form.Group id="email">
               <Form.Label style={{ marginLeft: "auto", marginRight: "auto" }}>Email Address</Form.Label>
@@ -161,8 +156,6 @@ export default function Login() {
           }
         </Modal.Body>
       </Modal>
-
-
     </>
   )
 }
