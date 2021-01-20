@@ -1,23 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
-import Feed from './components/Body/Feed/Feed';
-import Header from './components/Header/Header';
 import Login from './components/Login/Login';
-import Profile from './components/userProfile/Profile';
 import { login, logout, selectUser } from './features/userSlice';
 import { auth } from './firebase';
 import { db } from "./firebase";
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Collection from './Collections/Collection.js';
+import { BrowserRouter as Router } from 'react-router-dom';
 import NewsfeedPage from './pages/NewsFeedPage'
-import createHistory from 'history/createBrowserHistory'
 
 
 function App() {
   const user = useSelector(selectUser); // Select the currently logged in user from the slice using redux
   const dispatch = useDispatch(); // Keep track of changes on the user slice
-  const [isVerified, setIsVerified] = useState(false)
+
 
   // User must verify his/her email.
   const sendVerificationEmail = (curUser) => {
@@ -45,11 +40,10 @@ function App() {
                 email: userAuth.email,
                 photoUrl: userAuth.photoURL,
                 posts: []
-              });
-              sendVerificationEmail(userAuth)
-              console.log(userAuth.displayName, "Added to the DB")
+              });         
             }
-
+            sendVerificationEmail(userAuth)
+            console.log(userAuth.displayName, "Added to the DB")
           }
           else {
             // If already in db do nothing

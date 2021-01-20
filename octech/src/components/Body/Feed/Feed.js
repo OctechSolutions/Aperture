@@ -75,7 +75,7 @@ function Feed({ match }) {
   const selectedOption = editOptions[selectedOptionIndex];
   const [sliderImages, setSliderImages] = useState([]);
   const [largeImages, setLargeImages] = useState([]);
-  const [nohuman, setNohuman] = useState(false);
+  const [, setNohuman] = useState(false);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -162,7 +162,7 @@ function Feed({ match }) {
     setNohuman(false);
 
     if (file) {
-      cocoSsd.load();
+      
       if (file.size / (1024 * 1024) > 0.9) {
         if (file.type === 'image/gif') {
           console.log("Large gif using firebase storage");
@@ -254,6 +254,7 @@ function Feed({ match }) {
     if (e.target.files[0] !== undefined) {
       reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
       setFile(e.target.files[0]);
+      cocoSsd.load();
     }
     reader.onloadend = function () { // Since this is asyncronous on completion of the loading the image is set with the base64 string
       console.log("RESULT", reader.result);
