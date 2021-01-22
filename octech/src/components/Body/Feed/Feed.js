@@ -445,7 +445,7 @@ function Feed({ match }) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs },
+              data: { name, description, message, photoUrl, largeGifs, comments },
             }) => (
 
               <Post
@@ -456,6 +456,7 @@ function Feed({ match }) {
                 message={message}
                 photoUrl={photoUrl}
                 largeGifs={largeGifs}
+                comments={comments}
               />
 
             )
@@ -468,7 +469,7 @@ function Feed({ match }) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, channel },
+              data: { name, description, message, photoUrl, largeGifs, channel, comments },
             }) => (name === match.params.id) && (channel === match.params.channel) && (
 
               <Post
@@ -479,6 +480,7 @@ function Feed({ match }) {
                 message={message}
                 photoUrl={photoUrl}
                 largeGifs={largeGifs}
+                comments={comments}
               />
 
             )

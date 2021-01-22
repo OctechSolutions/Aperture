@@ -119,13 +119,14 @@ function Profile({ match }) {
                 id="controlled-tab-example"
                 activeKey={key}
                 onSelect={(k) => setKey(k)}
+                variant="pills"
             >
                 <Tab eventKey="posts" title="Posts" style={{color: "black", width: "100%"}}>
                     {<FlipMove>
                         {posts.map(
                             ({
                                 id,
-                                data: { name, description, message, photoUrl, photoBase, styleModification },
+                                data: { name, description, message, photoUrl, photoBase, styleModification, comments },
                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
                                 <Post
                                     key={id}
@@ -136,6 +137,7 @@ function Profile({ match }) {
                                     photoUrl={photoUrl}
                                     photoBase={photoBase}
                                     styleModification={styleModification}
+                                    comments={comments}
                                 />
                             )
                         )}
@@ -162,6 +164,9 @@ function Profile({ match }) {
                 </Tab>
                 <Tab eventKey="channels" title="Channels" style={{color: "black", width: "100%"}}>
                     <Channels profileName = {match.params.id}/>
+                </Tab>
+                <Tab eventKey="portfolio" title="Portfolio" style={{color: "black", width: "100%"}}>
+                    <>Coming Soon...</>
                 </Tab>
             </Tabs>
 

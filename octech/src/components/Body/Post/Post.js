@@ -8,8 +8,11 @@ import firebase from "firebase";
 import { Link } from "react-router-dom";
 import ImageGallery from '../Feed/ImageGallery';
 import Modal from 'react-bootstrap/Modal';
+import CommentIcon from '@material-ui/icons/Comment';
+import { Form, Button } from "react-bootstrap";
+import SendIcon from '@material-ui/icons/Send';
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments }, ref) => {
 
   // const displayPosts = () => {
   //   console.log("hello", name);
@@ -30,9 +33,17 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
 
 
 
+
+  if (comments === undefined) {
+    comments = [];
+  }
+
+
   const [images, setImages] = useState([]);
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [comment, setComment] = useState("");
 
   const handleClose = () => setShow(false);
   useEffect(() => {
@@ -53,7 +64,20 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
   }, [id]);
 
 
+  const postComment = () => {
+    console.log(comment, id);
+    if (comment) {
+      db.collection("posts").doc(id).update({
+        comments: firebase.firestore.FieldValue.arrayUnion({
+          name: user.displayName,
+          comment: comment,
+          number: comments.length
+        }) // The post is removed from the users array of posts
+      })
+      setComment("");
+    }
 
+  }
 
   const user = useSelector(selectUser); // Select current user from slice
   const deletePost = () => { // This function is called when the delete button is clicked
@@ -111,6 +135,41 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
     slideshow = <></>
   }
 
+  const commentsModal = () => {
+    return (
+      <Modal
+        show={showComments}
+        keyboard={false}
+        onHide={() => { setShowComments(false) }}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        scrollable={true}
+        centered
+      >
+        <Modal.Header closeButton onClick={() => { setShowComments(false) }}>
+          <h3>Comments</h3>
+        </Modal.Header>
+        <Modal.Body>
+          <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
+            <Form.Group className="w-100">
+              <Form.Control type="text" placeholder="Comment..." value={comment} onChange={(e) => setComment(e.target.value)} required style={{ marginLeft: "auto", marginRight: "auto" }} />
+            </Form.Group>
+            <Form.Group>
+              <SendIcon style={{ fontSize: "45px" }} onClick={postComment} />
+            </Form.Group>
+          </Form>
+          <br />
+          {
+            comments.sort((a, b) => b.number - a.number).map((c) => {
+              return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
+            })
+
+          }
+        </Modal.Body>
+      </Modal>
+    )
+  }
+
   return (
     <div ref={ref} className="post" >
       <div className="post_title">
@@ -133,23 +192,28 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
         <br />
       </div>
       {slideshow}
+      <div>
+        <CommentIcon onClick={() => { setShowComments(true) }} />
+      </div>
+      {commentsModal()}
       <Modal
         show={show}
         onHide={handleClose}
         keyboard={false}
         size="xl"
         aria-labelledby="contained-modal-title-vcenter"
+        scrollable={true}
         centered
       >
         <Modal.Header closeButton onClick={handleClose}>
-        <div className="post_header">
-              <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
-              <div className="postInfo">
-                <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${name}`}>{name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
-                {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
-                <p>{description}</p>
-              </div>
+          <div className="post_header">
+            <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
+            <div className="postInfo">
+              <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${name}`}>{name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
+              {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
+              <p>{description}</p>
             </div>
+          </div>
         </Modal.Header>
         <Modal.Body>
           <div className="post_body">
@@ -157,6 +221,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs }
             <br />
           </div>
           {slideshow}
+          {!showComments && <Button onClick={() => { setShowComments(true) }}>Show Comments</Button>}
+          {commentsModal()}
+
         </Modal.Body>
       </Modal>
 
