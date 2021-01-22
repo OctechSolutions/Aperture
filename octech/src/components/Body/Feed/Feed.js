@@ -122,7 +122,7 @@ function Feed({ match }) {
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
     console.log(sliderImages);
 
-    if (input) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
+    if (input.replace(/\s/g, '').length) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
 
       const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
       ref.set({ // This adds a new post to the databse

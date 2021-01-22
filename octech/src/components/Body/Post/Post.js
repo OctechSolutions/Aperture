@@ -66,7 +66,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   const postComment = () => {
     console.log(comment, id);
-    if (comment) {
+    if (comment.replace(/\s/g, '').length) {
       db.collection("posts").doc(id).update({
         comments: firebase.firestore.FieldValue.arrayUnion({
           name: user.displayName,
