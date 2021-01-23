@@ -445,7 +445,7 @@ function Feed({ match }) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, comments },
+              data: { name, description, message, photoUrl, largeGifs, comments, channel },
             }) => (
 
               <Post
@@ -457,6 +457,7 @@ function Feed({ match }) {
                 photoUrl={photoUrl}
                 largeGifs={largeGifs}
                 comments={comments}
+                channel={channel}
               />
 
             )
