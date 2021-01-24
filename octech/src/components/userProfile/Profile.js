@@ -138,6 +138,7 @@ function Profile({ match }) {
                                     photoBase={photoBase}
                                     styleModification={styleModification}
                                     comments={comments}
+                                    channel={channel}
                                     hasCoordinates={hasCoordinates}
                                     lat={lat}
                                     lng={lng}

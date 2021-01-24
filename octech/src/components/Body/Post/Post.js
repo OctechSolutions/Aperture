@@ -196,9 +196,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       </div>
       <div className="post_body" onClick={() => setShow(true)}>
         <p>{message}</p>
-        <br />
       </div>
       {slideshow}
+      <br />
       <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
         <CommentIcon onClick={() => { setShowComments(true) }} />
         {hasCoordinates && <MapIcon onClick={() => { setShowMap(true) }} />}
@@ -229,7 +229,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             <br />
           </div>
           {slideshow}
-          <br />
           <h3>Comments</h3>
           <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
             <Form.Group className="w-100">
