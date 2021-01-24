@@ -126,7 +126,7 @@ function Profile({ match }) {
                         {posts.map(
                             ({
                                 id,
-                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, hasCoordinates, lat, lng },
+                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng },
                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
                                 <Post
                                     key={id}

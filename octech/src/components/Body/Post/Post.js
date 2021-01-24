@@ -14,7 +14,7 @@ import SendIcon from '@material-ui/icons/Send';
 import MapIcon from '@material-ui/icons/Map';
 import Map from '../Map/Map';
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, hasCoordinates, lat, lng }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng }, ref) => {
 
   // const displayPosts = () => {
   //   console.log("hello", name);
@@ -175,6 +175,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   return (
     <div ref={ref} className="post" >
+      { (channel?.length > 0) ? <div className="post_channel">
+        <p className="h4">Posted in <b><Link to={`/user/${name + "/channel/" + channel}`}>{channel}</Link></b></p>
+        <hr />
+      </div>
+      : ''}
       <div className="post_title">
         <div className="post_header">
           <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
@@ -187,7 +192,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         {
           (user.displayName === name) &&
           <p onClick={deletePost} className="post__delete">Delete</p>
-
         }
       </div>
       <div className="post_body" onClick={() => setShow(true)}>
