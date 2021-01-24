@@ -156,7 +156,9 @@ function Feed({ match }, props) {
           largeGifs: largeImages,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           channel: match.params.channel || "",
-          hasCoordinates : false
+          hasCoordinates : false,
+          stars:{}, 
+          totalStars: 0
         })
       }
 

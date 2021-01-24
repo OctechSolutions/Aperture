@@ -50,13 +50,12 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
   // //Sanity Check so that all posts have stars
-  // if(totalStar===undefined||star===undefined||isNaN(totalStar)){
-  //   totalStar=0
-  //   star={}
-  //   const post = db.collection("posts").doc(id);
-  //   post.update({totalStars : totalStar,stars:star});
-  //   console.log("Hello")
-  // }
+  if(totalStar===undefined||star===undefined||isNaN(totalStar)){
+    totalStar=0
+    star={}
+    const post = db.collection("posts").doc(id);
+    post.update({totalStars : totalStar,stars:star});
+  }
   //Total Stars of the post
   const [totalStars, setTotalStars] =  useState(totalStar);
   //Stars given by the user on the post
@@ -76,7 +75,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     let profile ;
     user.get().then(doc =>{
       let profilePoints = doc.data().profilePoints;
-      if(profilePoints===undefined)
+      if(profilePoints===undefined||profilePoints<0)
         profilePoints = 0;
       let newProfilePoints = profilePoints + (givenStars - stars);
       user.update({profilePoints : newProfilePoints});  
