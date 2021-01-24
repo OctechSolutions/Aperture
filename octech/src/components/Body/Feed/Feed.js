@@ -397,7 +397,11 @@ function Feed({ match }, props) {
                   <div className="photoEditor">
                     {/* Div in which to view the photo. */}
                     <img src={inputImg}
-                      className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
+                      className="previewImage" 
+                      id="img" 
+                      alt="Preview" 
+                      width="100%"
+                      style={getImageStyle()}></img>
 
                     {/* {console.log(getImageStyle())} */}
                     <br></br>
