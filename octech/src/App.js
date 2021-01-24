@@ -39,18 +39,10 @@ function App() {
                 email: userAuth.email,
                 photoUrl: userAuth.photoURL,
                 posts: []
-<<<<<<< HEAD
-              });
-              sendVerificationEmail(userAuth)
-              console.log(userAuth.displayName, "Added to the DB")
-            }
-
-=======
               });         
             }
             sendVerificationEmail(userAuth)
             console.log(userAuth.displayName, "Added to the DB")
->>>>>>> b9b02ddeb3def043065b29a60262488675fb49fd
           }
           else {
             // If already in db do nothing
