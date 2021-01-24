@@ -229,9 +229,23 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             <br />
           </div>
           {slideshow}
-          {!showComments && <Button onClick={() => { setShowComments(true) }}>Show Comments</Button>}
-          {commentsModal()}
+          <br />
+          <h3>Comments</h3>
+          <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
+            <Form.Group className="w-100">
+              <Form.Control type="text" placeholder="Comment..." value={comment} onChange={(e) => setComment(e.target.value)} required style={{ marginLeft: "auto", marginRight: "auto" }} />
+            </Form.Group>
+            <Form.Group>
+              <SendIcon style={{ fontSize: "45px" }} onClick={postComment} />
+            </Form.Group>
+          </Form>
+          <br />
+          {
+            comments.sort((a, b) => b.number - a.number).map((c) => {
+              return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
+            })
 
+          }
         </Modal.Body>
       </Modal>
 
