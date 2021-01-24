@@ -24,4 +24,4 @@ const signInWithGoogle = () => {
 }
 
 
-export { db, auth, signInWithGoogle, storage }; 
+export { db, auth, signInWithGoogle, storage, firebaseApp }; 

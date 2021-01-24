@@ -6,8 +6,9 @@
   justify-content: space-around;
   border-bottom: 0.1px solid lightgray;
   width: 100%;
-  z-index: 500;
+  z-index: 100;
   padding: 5px;
+  height: 75px;
 }
 
 .header__left {
@@ -22,14 +23,10 @@
   /* margin-right: 10px; */
 }
 
-.header__center {
-  margin-top:auto;
-  margin-bottom:auto;
-}
 
 .header__right {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .header__left > button {
