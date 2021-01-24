@@ -11,8 +11,10 @@ import Modal from 'react-bootstrap/Modal';
 import CommentIcon from '@material-ui/icons/Comment';
 import { Form, Button } from "react-bootstrap";
 import SendIcon from '@material-ui/icons/Send';
+import MapIcon from '@material-ui/icons/Map';
+import Map from '../Map/Map';
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, hasCoordinates, lat, lng }, ref) => {
 
   // const displayPosts = () => {
   //   console.log("hello", name);
@@ -43,6 +45,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
 
   const handleClose = () => setShow(false);
@@ -192,8 +195,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         <br />
       </div>
       {slideshow}
-      <div>
+      <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
         <CommentIcon onClick={() => { setShowComments(true) }} />
+        {hasCoordinates && <MapIcon onClick={() => { setShowMap(true) }} />}
       </div>
       {commentsModal()}
       <Modal
@@ -224,6 +228,25 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           {!showComments && <Button onClick={() => { setShowComments(true) }}>Show Comments</Button>}
           {commentsModal()}
 
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={showMap}
+        onHide={() => {setShowMap(false)}}
+        keyboard={false}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton onClick={() => {setShowMap(false)}}><h3 style={{marginLeft: "auto"}}>Map View</h3></Modal.Header>
+        <Modal.Body>
+        <Map
+            center={{ lat: lat, lng: lng }}
+            height='100vh'
+            zoom={15}
+            draggable={false}
+          />
         </Modal.Body>
       </Modal>
 
