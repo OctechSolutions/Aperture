@@ -2,14 +2,13 @@
    "Firebase React Authentication Tutorial For Beginners - Private Route With Hooks"
    uploaded on May 5, 2019 by "Maksim Ivanov" */
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { auth } from '../../firebase';
 import { signInWithGoogle } from '../../firebase';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css'
 import EditIcon from '@material-ui/icons/Edit';
 import { storage, db } from '../../firebase';
-import { useHistory } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { login } from '../../features/userSlice';
 
@@ -23,7 +22,6 @@ const SignUp = () => {
     const [email, setEmail] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [contactNumber, setContactNumber] = useState("");
-    const history = useHistory();
     const dispatch = useDispatch(); // Keep track of changes on the user slice
 
     const handleUpload = async (e) => { // When a file is uploaded this function is called
@@ -42,7 +40,7 @@ const SignUp = () => {
     }
 
     // handleSubmit = What to do when the sign up form is submitted?
-    const handleSubmit = useCallback(async event => {
+    const handleSubmit = (async event => {
         event.preventDefault() // Prevent default behavior of re-loading etc.
 
         const updateUserProfile = async () => {

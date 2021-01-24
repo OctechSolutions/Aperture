@@ -16,6 +16,8 @@ import ImageGallery from "./ImageGallery";
 import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
+import EditLocationIcon from '@material-ui/icons/EditLocation';
+import Map from "../Map/Map";
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -61,7 +63,7 @@ const DEFAULT_EDIT_OPTIONS = [
   }
 ]
 
-function Feed({ match }) {
+function Feed({ match }, props) {
   const user = useSelector(selectUser);
 
   const [input, setInput] = useState("");
@@ -75,9 +77,13 @@ function Feed({ match }) {
   const selectedOption = editOptions[selectedOptionIndex];
   const [sliderImages, setSliderImages] = useState([]);
   const [largeImages, setLargeImages] = useState([]);
-  const [nohuman, setNohuman] = useState(false);
+  const [, setNohuman] = useState(false);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showEditMap, setShowEditMap] = useState(false);
+  const [lat, setLat] = useState(25.1972);
+  const [lng, setLng] = useState(55.2744);
+  const [coordinatesSelected, setCoordinatesSelected] = useState(false);
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
@@ -122,18 +128,36 @@ function Feed({ match }) {
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
     console.log(sliderImages);
 
-    if (input) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
+    if (input.replace(/\s/g, '').length) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
 
       const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
-      ref.set({ // This adds a new post to the databse
-        name: user.displayName,
-        description: user.email,
-        message: input,
-        photoUrl: user.photoUrl || "",
-        largeGifs: largeImages,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        channel: match.params.channel || ""
-      })
+      if (coordinatesSelected) {
+        ref.set({ // This adds a new post to the databse
+          name: user.displayName,
+          description: user.email,
+          message: input,
+          photoUrl: user.photoUrl || "",
+          largeGifs: largeImages,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          channel: match.params.channel || "",
+          hasCoordinates : true,
+          lat: lat,
+          lng: lng
+        })
+      }
+      else {
+        ref.set({ // This adds a new post to the databse
+          name: user.displayName,
+          description: user.email,
+          message: input,
+          photoUrl: user.photoUrl || "",
+          largeGifs: largeImages,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          channel: match.params.channel || "",
+          hasCoordinates : false
+        })
+      }
+
 
       sliderImages.forEach((image) => {
         console.log(image, "added to db");
@@ -162,7 +186,7 @@ function Feed({ match }) {
     setNohuman(false);
 
     if (file) {
-      cocoSsd.load();
+
       if (file.size / (1024 * 1024) > 0.9) {
         if (file.type === 'image/gif') {
           console.log("Large gif using firebase storage");
@@ -244,6 +268,13 @@ function Feed({ match }) {
     setCameraActive(""); // Setting this to an empty state stops the rendering of the camera component
   };
 
+  const getData = (val) => {
+    // do not forget to bind getData in constructor
+    console.log(val);
+    setLat(val[0]);
+    setLng(val[1]);
+  }
+
   const handleChange = async (e) => { // When a file is uploaded this function is called
     setCameraActive("");
     e.preventDefault();
@@ -254,6 +285,7 @@ function Feed({ match }) {
     if (e.target.files[0] !== undefined) {
       reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
       setFile(e.target.files[0]);
+      cocoSsd.load();
     }
     reader.onloadend = function () { // Since this is asyncronous on completion of the loading the image is set with the base64 string
       console.log("RESULT", reader.result);
@@ -315,17 +347,20 @@ function Feed({ match }) {
               />
               <div className="imagePreview">
                 <div className="buttons">
-                  {!inputImg && <div className="upload-btn-wrapper">
+                  {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
                     <button className="btn">
                       <ImageIcon />
                     </button>
                     <input type="file" multiple name="myfile" onChange={handleChange} />
                   </div>}
-                  {!inputImg && <button className="btn" onClick={openCamera}>
+                  {!inputImg && !showEditMap && <button className="btn" onClick={openCamera}>
                     <PhotoCameraIcon />
                   </button>}
+                  {!inputImg && !showEditMap && <button className="btn" onClick={(e) => { e.preventDefault(); setShowEditMap(true) }}>
+                    <EditLocationIcon />
+                  </button>}
 
-                  {!inputImg && <button onClick={sendPost} type="submit">
+                  {!inputImg && !showEditMap && <button onClick={sendPost} type="submit">
                     Post
                 </button>}
                 </div>
@@ -410,6 +445,20 @@ function Feed({ match }) {
           {sliderImages && <ImageGallery sliderImages={sliderImages} />}
         </div>
       }
+      {showEditMap &&
+        <>
+          <Map
+            center={{ lat: lat, lng: lng }}
+            height='30vh'
+            zoom={15}
+            sendData={getData}
+            draggable={true}
+            setCoordinatesSelected={setCoordinatesSelected}
+            setShowEditMap={setShowEditMap}
+          />
+          
+        </>
+      }
       <Modal
         show={cameraActive}
         onHide={() => { setCameraActive("") }}
@@ -444,7 +493,7 @@ function Feed({ match }) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs },
+              data: { name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng },
             }) => (
 
               <Post
@@ -455,6 +504,11 @@ function Feed({ match }) {
                 message={message}
                 photoUrl={photoUrl}
                 largeGifs={largeGifs}
+                comments={comments}
+                hasCoordinates={hasCoordinates}
+                lat={lat}
+                lng={lng}
+                channel={channel}
               />
 
             )
@@ -467,7 +521,7 @@ function Feed({ match }) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, channel },
+              data: { name, description, message, photoUrl, largeGifs, channel, comments, hasCoordinates, lat, lng },
             }) => (name === match.params.id) && (channel === match.params.channel) && (
 
               <Post
@@ -478,6 +532,10 @@ function Feed({ match }) {
                 message={message}
                 photoUrl={photoUrl}
                 largeGifs={largeGifs}
+                comments={comments}
+                hasCoordinates={hasCoordinates}
+                lat={lat}
+                lng={lng}
               />
 
             )

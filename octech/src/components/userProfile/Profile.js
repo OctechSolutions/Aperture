@@ -113,19 +113,20 @@ function Profile({ match }) {
 
 
     return (
-        <div className="profile" style={{color: "black", width: "100%"}}>
+        <div className="profile" style={{ color: "black", width: "100%" }}>
             {profileInfo && <center><h1>{profileInfo.name}</h1></center>}
             <Tabs
                 id="controlled-tab-example"
                 activeKey={key}
                 onSelect={(k) => setKey(k)}
+                variant="pills"
             >
-                <Tab eventKey="posts" title="Posts" style={{color: "black", width: "100%"}}>
+                <Tab eventKey="posts" title="Posts" style={{ color: "black", width: "100%" }}>
                     {<FlipMove>
                         {posts.map(
                             ({
                                 id,
-                                data: { name, description, message, photoUrl, photoBase, styleModification },
+                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng },
                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
                                 <Post
                                     key={id}
@@ -136,13 +137,18 @@ function Profile({ match }) {
                                     photoUrl={photoUrl}
                                     photoBase={photoBase}
                                     styleModification={styleModification}
+                                    comments={comments}
+                                    channel={channel}
+                                    hasCoordinates={hasCoordinates}
+                                    lat={lat}
+                                    lng={lng}
                                 />
                             )
                         )}
                     </FlipMove>
                     }
                 </Tab>
-                <Tab eventKey="collections" title="Collections" style={{color: "black", width: "100%"}}>
+                <Tab eventKey="collections" title="Collections" style={{ color: "black", width: "100%" }}>
                     {(profileInfo.name === user.displayName) && <footer><NewCollectionForm /></footer>}
                     <section>
                         {collections.map((collection) => (
@@ -160,8 +166,11 @@ function Profile({ match }) {
                         ))}
                     </section>
                 </Tab>
-                <Tab eventKey="channels" title="Channels" style={{color: "black", width: "100%"}}>
-                    <Channels profileName = {match.params.id}/>
+                <Tab eventKey="channels" title="Channels" style={{ color: "black", width: "100%" }}>
+                    <Channels profileName={match.params.id} />
+                </Tab>
+                <Tab eventKey="portfolio" title="Portfolio" style={{ color: "black", width: "100%" }}>
+                    <>Coming Soon...</>
                 </Tab>
             </Tabs>
 
