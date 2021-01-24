@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import ImageGallery from '../Feed/ImageGallery';
 import Modal from 'react-bootstrap/Modal';
 import CommentIcon from '@material-ui/icons/Comment';
-import { Form, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import SendIcon from '@material-ui/icons/Send';
 import MapIcon from '@material-ui/icons/Map';
 import Map from '../Map/Map';
