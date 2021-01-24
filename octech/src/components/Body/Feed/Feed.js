@@ -400,8 +400,6 @@ function Feed({ match }, props) {
                       className="previewImage" 
                       id="img" 
                       alt="Preview" 
-                      width="auto"
-                      height="auto"
                       style={getImageStyle()}></img>
 
                     {/* {console.log(getImageStyle())} */}

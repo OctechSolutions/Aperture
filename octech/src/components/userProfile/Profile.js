@@ -10,6 +10,7 @@ import { selectUser } from "../../features/userSlice";
 import Channels from "../Channels/Channels";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from 'react-bootstrap/Tab';
+import Portfolio from '../Body/Portfolio/Portfolio.js';
 
 
 function Profile({ match }) {
@@ -170,7 +171,7 @@ function Profile({ match }) {
                     <Channels profileName={match.params.id} />
                 </Tab>
                 <Tab eventKey="portfolio" title="Portfolio" style={{ color: "black", width: "100%" }}>
-                    <>Coming Soon...</>
+                    <Portfolio />
                 </Tab>
             </Tabs>
 

@@ -33,13 +33,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   //     })
   // }
 
-
-
-
   if (comments === undefined) {
     comments = [];
   }
-
 
   const [images, setImages] = useState([]);
   const [refs, setRefs] = useState([]);
