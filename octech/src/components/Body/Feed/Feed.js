@@ -156,7 +156,9 @@ function Feed({ match }, props) {
           largeGifs: largeImages,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           channel: match.params.channel || "",
-          hasCoordinates : false
+          hasCoordinates : false,
+          stars:{}, 
+          totalStars: 0
         })
       }
 
@@ -392,7 +394,7 @@ function Feed({ match }, props) {
           >
             <Modal.Body>
 
-              {inputImg && (!loading) && (
+              {inputImg && (
                 <>
                   <br />
                   {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
@@ -436,7 +438,7 @@ function Feed({ match }, props) {
                   </Spinner>
                   <span>{'  '}Scanning Image...</span>
                 </div>}
-              {inputImg &&
+              {(!loading) &&
                 <div className="buttons">
                   <button onClick={editingDone}>Done</button>
                   <button onClick={editingCancelled}>Cancel</button>
