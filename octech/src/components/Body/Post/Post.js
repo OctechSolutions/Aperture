@@ -47,7 +47,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
   const [showComments, setShowComments] = useState(false);
-  const [showStars, setShowStars] = useState((name===viewingUser.displayName)? false : true);
+  const [showStars, ] = useState((name===viewingUser.displayName)? false : true);
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
   // //Sanity Check so that all posts have stars
@@ -72,6 +72,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     post.update({totalStars : newTotalStars,stars:star});
     console.log(post.get().then(doc => console.log(doc.data())))
     const user = db.collection("users").doc(name);
+    
     user.get().then(doc =>{
       let profilePoints = doc.data().profilePoints;
       if(profilePoints===undefined||profilePoints<0)
@@ -292,7 +293,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           <Rating
           max={3}
           value={stars}
-          onChange={updateStars}/>
+          onChange={updateStars}
+          />
           <span style={{float :"right"}}>{totalStars}</span>
         </Box> : 
         <Box>
