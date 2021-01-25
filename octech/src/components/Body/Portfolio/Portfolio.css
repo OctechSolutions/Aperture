@@ -1,0 +1,10 @@
+.no-portfolio {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 5% 20%;    
+}
+
+.no-portfolio p {
+    text-align: center;
+}
