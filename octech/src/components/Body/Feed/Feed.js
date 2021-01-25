@@ -18,6 +18,7 @@ import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
 import Map from "../Map/Map";
+import Button from 'react-bootstrap/Button';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -67,6 +68,7 @@ function Feed({ match }, props) {
   const user = useSelector(selectUser);
 
   const [input, setInput] = useState("");
+  const [profileInfo, setProfileInfo] = useState("");
   const [file, setFile] = useState(null)
   const [inputImg, setInputImg] = useState("");
   const [inputImgs, setInputImgs] = useState([]);
@@ -122,7 +124,16 @@ function Feed({ match }, props) {
         )
       );
 
-  }, []);
+    db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
+      .onSnapshot(doc => {
+        if (doc.exists) {
+          setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
+        } else {
+          console.log("No such document!");
+        }
+      });
+
+  }, [user.displayName]);
 
   const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
@@ -140,10 +151,10 @@ function Feed({ match }, props) {
           largeGifs: largeImages,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           channel: match.params.channel || "",
-          hasCoordinates : true,
+          hasCoordinates: true,
           lat: lat,
           lng: lng,
-          stars:{}, 
+          stars: {},
           totalStars: 0
         })
       }
@@ -156,8 +167,8 @@ function Feed({ match }, props) {
           largeGifs: largeImages,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           channel: match.params.channel || "",
-          hasCoordinates : false,
-          stars:{}, 
+          hasCoordinates: false,
+          stars: {},
           totalStars: 0
         })
       }
@@ -298,7 +309,7 @@ function Feed({ match }, props) {
       setLoading(true);
 
       cocoSsd.load().then((model) => {
-        setLoading(false);
+
         // detect objects in the image.
 
         const img = document.getElementById("img");
@@ -320,7 +331,7 @@ function Feed({ match }, props) {
           else {
             setNohuman(true);
           }
-
+          setLoading(false);
         })
       });
     };
@@ -331,11 +342,62 @@ function Feed({ match }, props) {
     setInputImg(await dataUri); // The inputImg is set with the result that is returned from the camera
     // alert("Image Uploaded Sucessfully!");
     setCameraActive("");
+    setLoading(true);
+
+    cocoSsd.load().then((model) => {
+
+      // detect objects in the image.
+
+      const img = document.getElementById("img");
+      model.detect(img).then((predictions) => {
+
+        console.log("Predictions: ", predictions);
+        if (predictions.length) {
+          predictions.forEach((prediction) => {
+            if (prediction.class === "person") {
+              setInputImg("");
+              console.log("HUMAN DETECTED!!!")
+              setShow(true);
+            }
+            else {
+              setNohuman(true);
+            }
+          })
+        }
+        else {
+          setNohuman(true);
+        }
+        setLoading(false);
+      })
+    });
+  }
+
+  const followChannel = (e) => {
+    db.collection("users").doc(profileInfo.name).update({
+      followingChannels: firebase.firestore.FieldValue.arrayUnion(match.params.channel)
+    });
+  }
+
+  const unfollowChannel = (e) => {
+    db.collection("users").doc(profileInfo.name).update({
+      followingChannels: firebase.firestore.FieldValue.arrayRemove(match.params.channel)
+    });
   }
 
   return (
     <div className="feed">
       {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
+      {(profileInfo && (match.params.id !== user.displayName) && (match.params.channel)) ?
+        <center>
+          <h1>{match.params.channel}</h1>
+          {(profileInfo.followingChannels.includes(match.params.channel)) ?
+            <Button onClick={unfollowChannel} variant="success">Following</Button>
+            :
+            <Button onClick={followChannel} variant="outline-primary">Follow</Button>}
+        </center>
+        :
+        <>
+        </>}
       {((match.params.id === user.displayName) || (match.path === "/")) &&
         <div className="feed_inputContainer">
           <div className="feed_input">
@@ -355,7 +417,7 @@ function Feed({ match }, props) {
                     <button className="btn">
                       <ImageIcon />
                     </button>
-                    <input type="file" multiple name="myfile" onChange={handleChange} />
+                    <input type="file" name="myfile" onChange={handleChange} />
                   </div>}
                   {!inputImg && !showEditMap && <button className="btn" onClick={openCamera}>
                     <PhotoCameraIcon />
@@ -460,7 +522,7 @@ function Feed({ match }, props) {
             setCoordinatesSelected={setCoordinatesSelected}
             setShowEditMap={setShowEditMap}
           />
-          
+
         </>
       }
       <Modal
@@ -497,7 +559,7 @@ function Feed({ match }, props) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng , stars , totalStars },
+              data: { name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng, stars, totalStars },
             }) => (
 
               <Post
@@ -513,9 +575,9 @@ function Feed({ match }, props) {
                 lat={lat}
                 lng={lng}
                 channel={channel}
-                viewingUser = {user}
-                star = {stars}
-                totalStar = {totalStars}
+                viewingUser={user}
+                star={stars}
+                totalStar={totalStars}
               />
 
             )
@@ -528,7 +590,7 @@ function Feed({ match }, props) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, channel, comments, hasCoordinates, lat, lng , stars , totalStars },
+              data: { name, description, message, photoUrl, largeGifs, channel, comments, hasCoordinates, lat, lng, stars, totalStars },
             }) => (name === match.params.id) && (channel === match.params.channel) && (
 
               <Post
@@ -543,9 +605,9 @@ function Feed({ match }, props) {
                 hasCoordinates={hasCoordinates}
                 lat={lat}
                 lng={lng}
-                viewingUser = {user}
-                star = {stars}
-                totalStar = {totalStars}
+                viewingUser={user}
+                star={stars}
+                totalStar={totalStars}
               />
 
             )

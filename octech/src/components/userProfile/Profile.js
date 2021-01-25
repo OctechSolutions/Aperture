@@ -10,6 +10,8 @@ import { selectUser } from "../../features/userSlice";
 import Channels from "../Channels/Channels";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from 'react-bootstrap/Tab';
+import Button from 'react-bootstrap/Button';
+import firebase from "firebase";
 
 
 function Profile({ match }) {
@@ -109,10 +111,43 @@ function Profile({ match }) {
         })
     }
 
+    const follow = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            followers: firebase.firestore.FieldValue.arrayUnion(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            following: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
+        });
+    }
+
+    const unfollow = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            followers: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            following: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+        });
+    }
 
     return (
         <div className="profile" style={{ color: "black", width: "100%" }}>
-            {profileInfo && <center><h1>{profileInfo.name}</h1> <h1>Profile Points :{profileInfo.profilePoints}</h1></center>}
+
+
+            {profileInfo &&
+                <center>
+                    <h1>{profileInfo.name}</h1>
+                    {(profileInfo.followers && (profileInfo.name !== user.displayName)) ?
+                        <>
+                            {(profileInfo.followers.includes(user.displayName)) ?
+                                <Button onClick={unfollow} variant="success">Following</Button>
+                                :
+                                <Button onClick={follow} variant="outline-primary">Follow</Button>}
+                        </>
+                        :
+                        <>
+                        </>}
+                    <h1>Profile Points :{profileInfo.profilePoints}</h1>
+                </center>}
             <Tabs
                 id="controlled-tab-example"
                 activeKey={key}
@@ -124,7 +159,7 @@ function Profile({ match }) {
                         {posts.map(
                             ({
                                 id,
-                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng , stars , totalStars },
+                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng, stars, totalStars },
                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
                                 <Post
                                     key={id}
@@ -140,9 +175,9 @@ function Profile({ match }) {
                                     hasCoordinates={hasCoordinates}
                                     lat={lat}
                                     lng={lng}
-                                    viewingUser = {user}
-                                    star = {stars}
-                                    totalStar = {totalStars}
+                                    viewingUser={user}
+                                    star={stars}
+                                    totalStar={totalStars}
                                 />
                             )
                         )}
@@ -174,8 +209,6 @@ function Profile({ match }) {
                     <>Coming Soon...</>
                 </Tab>
             </Tabs>
-
-            {console.log(profileInfo.posts)}
 
         </div>
     )
