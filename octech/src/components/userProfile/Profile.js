@@ -140,7 +140,7 @@ function Profile({ match }) {
                                     hasCoordinates={hasCoordinates}
                                     lat={lat}
                                     lng={lng}
-                                    viewingUserID = {user.uid}
+                                    viewingUser = {user}
                                     star = {stars}
                                     totalStar = {totalStars}
                                     uploaderID = {uploaderID}

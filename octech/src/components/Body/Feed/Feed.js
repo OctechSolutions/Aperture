@@ -513,7 +513,7 @@ function Feed({ match }, props) {
                 lat={lat}
                 lng={lng}
                 channel={channel}
-                viewingUserID = {user.uid}
+                viewingUser = {user}
                 star = {stars}
                 totalStar = {totalStars}
               />
@@ -543,7 +543,7 @@ function Feed({ match }, props) {
                 hasCoordinates={hasCoordinates}
                 lat={lat}
                 lng={lng}
-                viewingUserID = {user.uid}
+                viewingUser = {user}
                 star = {stars}
                 totalStar = {totalStars}
               />

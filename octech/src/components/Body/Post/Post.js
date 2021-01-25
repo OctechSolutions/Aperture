@@ -16,7 +16,7 @@ import Map from '../Map/Map';
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng , viewingUserID , star , totalStar , uploaderID}, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng , viewingUser , star , totalStar , uploaderID}, ref) => {
 
   // const displayPosts = () => {
   //   console.log("hello", name);
@@ -47,6 +47,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showStars, setShowStars] = useState((name===viewingUser.displayName)? false : true);
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
   // //Sanity Check so that all posts have stars
@@ -59,7 +60,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   //Total Stars of the post
   const [totalStars, setTotalStars] =  useState(totalStar);
   //Stars given by the user on the post
-  const [stars, setStars] =  useState((star[viewingUserID]===undefined)? 0 : star[viewingUserID]);
+  const [stars, setStars] =  useState((star[viewingUser.uid]===undefined)? 0 : star[viewingUser.uid]);
   //TO update the stars after the user has given the stars
   const updateStars = (e) => { 
     let givenStars = parseInt(e.target.value); 
@@ -67,7 +68,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       givenStars=0;
     let newTotalStars = totalStars + (givenStars - stars);
     const post = db.collection("posts").doc(id);
-    star[viewingUserID]=givenStars;
+    star[viewingUser.uid]=givenStars;
     post.update({totalStars : newTotalStars,stars:star});
     console.log(post.get().then(doc => console.log(doc.data())))
     const user = db.collection("users").doc(name);
@@ -285,6 +286,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         </Modal.Body>
       </Modal>
       <div className="rate">
+        {showStars ?
         <Box>
           Rate 
           <span style={{float :"right"}}>Total Rating</span>
@@ -294,7 +296,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           value={stars}
           onChange={updateStars}/>
           <span style={{float :"right"}}>{totalStars}</span>
-        </Box>
+        </Box> : 
+        <Box>
+          Total Rating : {totalStars} 
+          <br/> 
+        </Box>}
       </div>
       <Modal
         show={showMap}
