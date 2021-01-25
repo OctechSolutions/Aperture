@@ -142,7 +142,9 @@ function Feed({ match }, props) {
           channel: match.params.channel || "",
           hasCoordinates : true,
           lat: lat,
-          lng: lng
+          lng: lng,
+          stars:{}, 
+          totalStars: 0
         })
       }
       else {
@@ -493,7 +495,7 @@ function Feed({ match }, props) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng },
+              data: { name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng , stars , totalStars },
             }) => (
 
               <Post
@@ -509,6 +511,9 @@ function Feed({ match }, props) {
                 lat={lat}
                 lng={lng}
                 channel={channel}
+                viewingUser = {user}
+                star = {stars}
+                totalStar = {totalStars}
               />
 
             )
@@ -521,7 +526,7 @@ function Feed({ match }, props) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, channel, comments, hasCoordinates, lat, lng },
+              data: { name, description, message, photoUrl, largeGifs, channel, comments, hasCoordinates, lat, lng , stars , totalStars },
             }) => (name === match.params.id) && (channel === match.params.channel) && (
 
               <Post
@@ -536,6 +541,9 @@ function Feed({ match }, props) {
                 hasCoordinates={hasCoordinates}
                 lat={lat}
                 lng={lng}
+                viewingUser = {user}
+                star = {stars}
+                totalStar = {totalStars}
               />
 
             )

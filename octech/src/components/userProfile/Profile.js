@@ -32,14 +32,12 @@ function Profile({ match }) {
     useEffect(() => {
         console.log(match); // match returns a lot of properties from the react router dom including the id we set for the urls of the router to be dynamic
         db.collection("users").doc(match.params.id) // We get the user from the db whose id matches the name of the user
-            .get().then(function (doc) {
+            .onSnapshot(doc => {
                 if (doc.exists) {
                     setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
                 } else {
                     console.log("No such document!");
                 }
-            }).catch(function (error) {
-                console.log("Error getting document:", error);
             });
     }, [match]);
 
@@ -114,7 +112,7 @@ function Profile({ match }) {
 
     return (
         <div className="profile" style={{ color: "black", width: "100%" }}>
-            {profileInfo && <center><h1>{profileInfo.name}</h1></center>}
+            {profileInfo && <center><h1>{profileInfo.name}</h1> <h1>Profile Points :{profileInfo.profilePoints}</h1></center>}
             <Tabs
                 id="controlled-tab-example"
                 activeKey={key}
@@ -126,7 +124,7 @@ function Profile({ match }) {
                         {posts.map(
                             ({
                                 id,
-                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng },
+                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng , stars , totalStars },
                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
                                 <Post
                                     key={id}
@@ -142,6 +140,9 @@ function Profile({ match }) {
                                     hasCoordinates={hasCoordinates}
                                     lat={lat}
                                     lng={lng}
+                                    viewingUser = {user}
+                                    star = {stars}
+                                    totalStar = {totalStars}
                                 />
                             )
                         )}
