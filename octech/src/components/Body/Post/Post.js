@@ -64,7 +64,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   //TO update the stars after the user has given the stars
   const updateStars = (e) => { 
     let givenStars = parseInt(e.target.value); 
-    if(givenStars==stars)
+    if(givenStars===stars)
       givenStars=0;
     let newTotalStars = totalStars + (givenStars - stars);
     const post = db.collection("posts").doc(id);
@@ -72,8 +72,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     post.update({totalStars : newTotalStars,stars:star});
     console.log(post.get().then(doc => console.log(doc.data())))
     const user = db.collection("users").doc(name);
-    
-    let profile ;
     user.get().then(doc =>{
       let profilePoints = doc.data().profilePoints;
       if(profilePoints===undefined||profilePoints<0)
