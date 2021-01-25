@@ -29,7 +29,7 @@ const DEFAULT_EDIT_OPTIONS = [
   {
     name: 'Brightness',
     property: 'brightness',
-    value: 100,
+    value: 100, 
     range: { min: 0, max: 200 },
     unit: '%'
   },

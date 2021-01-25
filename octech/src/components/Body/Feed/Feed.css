@@ -142,3 +142,8 @@ button {
   justify-content: space-between;
   display: flex;
 }
+.carousel-control-next,
+.carousel-control-prev ,
+.carousel-indicators{
+    filter: invert(100%);
+}

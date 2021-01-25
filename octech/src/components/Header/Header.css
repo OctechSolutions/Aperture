@@ -22,8 +22,6 @@
   height: 40px;
   /* margin-right: 10px; */
 }
-
-
 .header__right {
   display: flex;
   flex-direction: row;
