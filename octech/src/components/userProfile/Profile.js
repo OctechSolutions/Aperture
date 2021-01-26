@@ -139,9 +139,9 @@ function Profile({ match }) {
                     {(profileInfo.followers && (profileInfo.name !== user.displayName)) ?
                         <>
                             {(profileInfo.followers.includes(user.displayName)) ?
-                                <Button onClick={unfollow} variant="success">Following</Button>
+                                <Button onClick={unfollow} variant="success">Following {profileInfo.name}</Button>
                                 :
-                                <Button onClick={follow} variant="outline-primary">Follow</Button>}
+                                <Button onClick={follow} variant="outline-primary">Follow {profileInfo.name}</Button>}
                         </>
                         :
                         <>
