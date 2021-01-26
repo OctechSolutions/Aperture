@@ -6,25 +6,32 @@ import './Portfolio.css'
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 export default function Portfolio() {
-    const portfolioRef =db.collection("portfolios")
+    const portfolioDocRef = db.collection("portfolios").doc(auth.currentUser.uid)
 
     const [hasPortfolio, setHasPortfolio] = useState(false)
     const [showCreatePortfolio, setShowCreatePortfolio] = useState(false)
+    const [portfolio, setPortfolio] = useState(null)
 
     /* Method that will set the value of state hasPortfolio to 
        true if the current user alredy has a portfolio and 
        will set it to false otherwise. */
-    const checkIfPortfolioExists = () => {
-        portfolioRef.where("creator", "==", auth.currentUser.displayName).get()
-        .then( (userPortfolio) => { 
-            console.log(userPortfolio.data)
-            if(userPortfolio.data && hasPortfolio != true) {
-                setHasPortfolio(true)
-            } 
+    const checkIfPortfolioExists = async () => {
+        portfolioDocRef.get().then(function(doc) {
+            if (doc.exists) {
+                if(!hasPortfolio) { setHasPortfolio(true) }
+                setPortfolio(doc.data())
+                console.log("Document data:", portfolio)
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!")
+                if(hasPortfolio) { setHasPortfolio(false) }
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error)
         })
     }
 
-    useEffect(() => {checkIfPortfolioExists()}, [hasPortfolio])
+    useEffect(() => { checkIfPortfolioExists() }, [hasPortfolio])
 
     /* If the user has a portfolio, then display it and enable him/her
        to edit it. If the user does not have a portfolio, then 
@@ -40,7 +47,7 @@ export default function Portfolio() {
         )
     } else {
         return (
-            <div className="no-portfolio">
+            <div className="portfolio">
                 <p>Looks like you're still on the hunt for the perfect portfolio!</p>
                 <button 
                     className="create-portfolio-btn btn btn-dark"
@@ -55,7 +62,10 @@ export default function Portfolio() {
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                 >
-                    <Modal.Header closeButton onClick={() => { setShowCreatePortfolio(false) }}>
+                    <Modal.Header 
+                        closeButton 
+                        onClick={() => { setShowCreatePortfolio(false) }}
+                    >
                         {/* Portfolio Creation Heading */}
                         <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>
                             {auth.currentUser.displayName}, Kindly Let the World Know ...
@@ -63,7 +73,10 @@ export default function Portfolio() {
                     </Modal.Header>
                     
                     <Modal.Body>
-                        <CreatePortfolioInfo />
+                        <CreatePortfolioInfo 
+                            set_show_create_portfolio={setShowCreatePortfolio}
+                            set_has_portfolio={setHasPortfolio}
+                        />
                     </Modal.Body>
                 </Modal>
             </div>

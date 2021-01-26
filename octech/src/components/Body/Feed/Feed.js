@@ -24,7 +24,6 @@ require('@tensorflow/tfjs-backend-webgl');
 
 const Compress = require('compress.js');
 
-
 const DEFAULT_EDIT_OPTIONS = [
   {
     name: 'Brightness',
@@ -122,17 +121,17 @@ function Feed({ match }, props) {
         )
       );
 
-  }, []);
+  }, [])
 
-  const sendPost = async (e) => { // When the new post is submitted this function is called
-    e.preventDefault(); // This is to prevent the default behaviour of submitting a form
+  const sendPost = async (e) => { // When the new post is submitted this function is called.
+    e.preventDefault(); // This is to prevent the default behaviour of submitting a form.
     console.log(sliderImages);
 
-    if (input.replace(/\s/g, '').length) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
+    if (input.replace(/\s/g, '').length) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier.
 
-      const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
+      const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance.
       if (coordinatesSelected) {
-        ref.set({ // This adds a new post to the databse
+        ref.set({ // This adds a new post to the database.
           name: user.displayName,
           description: user.email,
           message: input,
@@ -146,7 +145,7 @@ function Feed({ match }, props) {
         })
       }
       else {
-        ref.set({ // This adds a new post to the databse
+        ref.set({ // This adds a new post to the database.
           name: user.displayName,
           description: user.email,
           message: input,
@@ -157,7 +156,6 @@ function Feed({ match }, props) {
           hasCoordinates : false
         })
       }
-
 
       sliderImages.forEach((image) => {
         console.log(image, "added to db");
@@ -175,7 +173,7 @@ function Feed({ match }, props) {
       setInput(""); // On posting the input value is set to an empty string
       setCameraActive("");
     }
-  };
+  }
 
   const editingCancelled = async () => {
     setInputImg("");
@@ -213,13 +211,13 @@ function Feed({ match }, props) {
         else {
           const compress = new Compress();
           compress.compress([file], {
-            size: 0.8, // the max size in MB, defaults to 2MB
-            quality: .70, // the quality of the image, max is 1,
-            maxWidth: 1920, // the max width of the output image, defaults to 1920px
-            maxHeight: 1920, // the max height of the output image, defaults to 1920px
-            resize: true, // defaults to true, set false if you do not want to resize the image width and height
+            size: 0.8, // The max size in MB, defaults to 2MB.
+            quality: .70, // The quality of the image, max is 1.
+            maxWidth: 1920, // The max width of the output image, defaults to 1920px.
+            maxHeight: 1920, // The max height of the output image, defaults to 1920px.
+            resize: true, // Defaults to true, set false if you do not want to resize the image width and height.
           }).then((data) => {
-            // returns an array of compressed images
+            // Returns an array of compressed images.
             console.log(data);
             var compressedb64 = data[0].prefix + data[0].data;
             setInputImgs(inputImgs.concat(compressedb64))
