@@ -1,13 +1,13 @@
-import React, { useRef, useState } from "react";
-import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
-import './Login.css';
-import { signInWithGoogle } from '../../firebase';
+import React, { useRef, useState } from "react"
+import { Form, Button, Card, Alert } from "react-bootstrap"
+import { useHistory } from "react-router-dom"
+import './Login.css'
+import { signInWithGoogle } from '../../firebase'
 import { auth } from "../../firebase"
-import SignUp from "../signUp";
-import { useDispatch } from 'react-redux';
-import { login } from '../../features/userSlice';
-import Modal from 'react-bootstrap/Modal';
+import SignUp from "../signUp"
+import { useDispatch } from 'react-redux'
+import { login } from '../../features/userSlice'
+import Modal from 'react-bootstrap/Modal'
 
 
 export default function Login() {
@@ -20,9 +20,9 @@ export default function Login() {
   const [show, setShow] = useState(false)
   const [resetEmail, setResetEmail] = useState("")
   const [resetEmailSent, setResetEmailSent] = useState(false)
-  const history = useHistory();
-  const dispatch = useDispatch(); // Keep track of changes on the user slice
-  const [forgotPasswordClicked, setForgotPasswordClicked] = useState(false);
+  const history = useHistory()
+  const dispatch = useDispatch() // Keep track of changes on the user slice
+  const [forgotPasswordClicked, setForgotPasswordClicked] = useState(false)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -42,24 +42,24 @@ export default function Login() {
       }).catch(function (error) {
         console.log(error)
         setError("Failed to log in")
-      });
+      })
 
     setLoading(false)
   }
 
   const forgotPassword = () => {
-    console.log("Forgot Password Clicked");
-    setForgotPasswordClicked(true);
+    console.log("Forgot Password Clicked")
+    setForgotPasswordClicked(true)
   }
 
   const submitForgotPassword = () => {
     if(resetEmail) {
       auth.sendPasswordResetEmail(resetEmail).then(function() {
         // Email sent.
-        setResetEmailSent(true);
+        setResetEmailSent(true)
       }).catch(function(error) {
         // An error happened.
-      });
+      })
       
     }
   }

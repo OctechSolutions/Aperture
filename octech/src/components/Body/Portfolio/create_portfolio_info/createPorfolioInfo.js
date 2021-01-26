@@ -5,6 +5,7 @@ import './createPortfolioInfo.css'
 export default function CreatePortfolioInfo() {
     return (
         <form className="create-portfolio-info">
+            {/* Quote Label & Input */}
             <label>A quote by you!</label>
             <input
                     name="quote"
@@ -12,6 +13,7 @@ export default function CreatePortfolioInfo() {
                     id="quote"
             />
 
+            {/* Description Label & Input */}
             <label>Who are you? (A Short Discription)</label>
             <input
                     name="description"
@@ -19,6 +21,7 @@ export default function CreatePortfolioInfo() {
                     id="description"
             />
 
+            {/* Headshot Label and Image Input */}
             <label>Your headshot!</label>
             <input 
                 name="headshot"
@@ -28,6 +31,7 @@ export default function CreatePortfolioInfo() {
                 onChange={() => {console.log("Must handleUpload headshot")}} 
             />
 
+            {/* Best Work Label and Image Inputs */}
             <label>Images that showcase your Photography at its Best!</label>
             <input 
                 multiple
@@ -38,6 +42,7 @@ export default function CreatePortfolioInfo() {
                 onChange={() => {console.log("Must handleUpload best work.")}} 
             />
 
+            {/* Submit Button */}
             <input
                 name="submitBtn"
                 className="btn btn-primary mb-3"
