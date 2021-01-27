@@ -15,7 +15,7 @@ import MapIcon from '@material-ui/icons/Map';
 import Map from '../Map/Map';
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
-import PetsIcon from '@material-ui/icons/Pets';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import { withStyles } from '@material-ui/core/styles';
 
 const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng , viewingUser , star , totalStar , uploaderID}, ref) => {
@@ -305,7 +305,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           max={3}
           value={stars}
           onChange={updateStars}
-          icon={<PetsIcon fontSize="inherit" />}
+          icon={<FavoriteIcon fontSize="inherit" />}
           />
           <span style={{float :"right"}}>{totalStars}</span>
         </Box> : 
