@@ -15,6 +15,8 @@ import MapIcon from '@material-ui/icons/Map';
 import Map from '../Map/Map';
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
+import PetsIcon from '@material-ui/icons/Pets';
+import { withStyles } from '@material-ui/core/styles';
 
 const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng , viewingUser , star , totalStar , uploaderID}, ref) => {
 
@@ -50,6 +52,15 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [showStars, ] = useState((name===viewingUser.displayName)? false : true);
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
+  const StyledRating = withStyles({
+    iconFilled: {
+      color: '#ff6d75',
+    },
+    iconHover: {
+      color: '#ff3d47',
+    },
+  })(Rating);
+  
   // //Sanity Check so that all posts have stars
   if(totalStar===undefined||star===undefined||isNaN(totalStar)){
     totalStar=0
@@ -290,10 +301,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           Rate 
           <span style={{float :"right"}}>Total Rating</span>
           <br/> 
-          <Rating
+          <StyledRating
           max={3}
           value={stars}
           onChange={updateStars}
+          icon={<PetsIcon fontSize="inherit" />}
           />
           <span style={{float :"right"}}>{totalStars}</span>
         </Box> : 

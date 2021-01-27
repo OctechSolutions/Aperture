@@ -46,7 +46,7 @@ function Header() {
           <h6>Aperture</h6>
         </div>
       </Link>
-      <div className = "searchBar" style={{ width: 450 }}>
+      <div className = "searchBar" style={{ width: "30vw" }}>
       <ReactSearchAutocomplete 
         items={users}
         onFocus={openSearchHandler}
@@ -57,7 +57,7 @@ function Header() {
         placeholder ="Search"
         styling={
           {
-            border: "2px grey solid"
+            border: "2px grey solid",
           }
         }
       />
