@@ -28,12 +28,12 @@ function Alert(props) {
 
 const useStyles = makeStyles((theme) => ({
     large: {
-        width: theme.spacing(20),
-        height: theme.spacing(20),
+        width: theme.spacing(15),
+        height: theme.spacing(15),
     },
     medium: {
-        width: theme.spacing(8),
-        height: theme.spacing(8),
+        width: theme.spacing(5),
+        height: theme.spacing(5),
     }
 }));
 

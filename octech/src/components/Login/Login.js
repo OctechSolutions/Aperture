@@ -95,7 +95,7 @@ export default function Login() {
   return (
     <div>
       {!show &&
-        <div className="logInContainer" style={{ margin: "150px auto" }}>
+        <div className="logInContainer" style={{ marginTop: "10vh", marginLeft: "auto", marginRight: "auto" }}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon className={classes.icon} />
           </Avatar>

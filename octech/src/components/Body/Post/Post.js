@@ -16,6 +16,7 @@ import Map from '../Map/Map';
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import GradeIcon from '@material-ui/icons/Grade';
 import { withStyles } from '@material-ui/core/styles';
 
 const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng , viewingUser , star , totalStar , uploaderID}, ref) => {
@@ -53,12 +54,12 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
   const StyledRating = withStyles({
-    iconFilled: {
-      color: '#ff6d75',
-    },
-    iconHover: {
-      color: '#ff3d47',
-    },
+    // iconFilled: {
+    //   color: '#ff6d75',
+    // },
+    // iconHover: {
+    //   color: '#ff3d47',
+    // },
   })(Rating);
   
   // //Sanity Check so that all posts have stars
@@ -305,7 +306,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           max={3}
           value={stars}
           onChange={updateStars}
-          icon={<FavoriteIcon fontSize="inherit" />}
+          icon={<GradeIcon fontSize="inherit" />}
           />
           <span style={{float :"right"}}>{totalStars}</span>
         </Box> : 
