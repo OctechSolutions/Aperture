@@ -4,13 +4,13 @@ import Modal from 'react-bootstrap/Modal'
 import CreatePortfolioInfo from './create_portfolio_info/createPorfolioInfo'
 import './Portfolio.css'
 import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import PortfolioDisplay from './portfolio_display/PortfolioDisplay'
 
 export default function Portfolio() {
     const portfolioDocRef = db.collection("portfolios").doc(auth.currentUser.uid)
 
     const [hasPortfolio, setHasPortfolio] = useState(false)
     const [showCreatePortfolio, setShowCreatePortfolio] = useState(false)
-    const [portfolio, setPortfolio] = useState(null)
 
     /* Method that will set the value of state hasPortfolio to 
        true if the current user alredy has a portfolio and 
@@ -19,16 +19,24 @@ export default function Portfolio() {
         portfolioDocRef.get().then(function(doc) {
             if (doc.exists) {
                 if(!hasPortfolio) { setHasPortfolio(true) }
-                setPortfolio(doc.data())
-                console.log("Document data:", portfolio)
             } else {
                 // doc.data() will be undefined in this case
-                console.log("No such document!")
+                console.log("No Portfolio!")
                 if(hasPortfolio) { setHasPortfolio(false) }
             }
         }).catch(function(error) {
             console.log("Error getting document:", error)
         })
+    }
+
+    /* Method that will delete the created portfolio. */
+    const deletePortfolio = async () => {
+        portfolioDocRef.delete().then(function() {
+            console.log("Portfolio successfully deleted!")
+        }).catch(function(error) {
+            console.error("Error removing portfolio: ", error)
+        })
+        setHasPortfolio(false)
     }
 
     useEffect(() => { checkIfPortfolioExists() }, [hasPortfolio])
@@ -39,9 +47,12 @@ export default function Portfolio() {
     if(hasPortfolio) {
         return (
             <div className="portfolio">
-                <p>Awesome! You have a portfolio!</p>
-                <button className="edit-portfolio-btn btn btn-dark">
-                    Edit
+                <PortfolioDisplay /><br />
+                <button 
+                    className="edit-portfolio-btn btn btn-dark"
+                    onClick={deletePortfolio}
+                >
+                    Delete Portfolio
                 </button>
             </div>
         )

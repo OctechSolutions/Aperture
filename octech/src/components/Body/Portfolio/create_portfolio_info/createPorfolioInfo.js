@@ -59,9 +59,12 @@ export default function CreatePortfolioInfo({ set_show_create_portfolio, set_has
         console.log(newPortfolio)
         try {
             ref.doc(user.uid).set(newPortfolio) // This adds a new post to the database.
-            // set_show_create_portfolio(false) // Close the pop-up.
+            set_show_create_portfolio(false) // Close the pop-up.
             set_has_portfolio(true) // A portfolio has been created.
-        } catch (e) { console.log("Error! : ", e) }
+        } catch (e) { 
+            set_has_portfolio(false) // Portfolio creation didnt work.
+            console.log("Error! : ", e) 
+        }
     }
 
     return (
