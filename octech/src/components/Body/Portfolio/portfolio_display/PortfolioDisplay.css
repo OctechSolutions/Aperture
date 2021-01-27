@@ -1,10 +1,7 @@
-/* .row {
-    border: 1px solid red;
+#bestwork-row {
+    display: flex;
+    justify-content: center;
 }
-
-.col-sm-4, .col-sm-8 {
-    border: 1px solid blue;
-}  */
 
 #headshotImg {
     max-width: 100%;

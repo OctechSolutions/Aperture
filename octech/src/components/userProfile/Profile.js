@@ -11,6 +11,7 @@ import Channels from "../Channels/Channels";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from 'react-bootstrap/Tab';
 import Portfolio from '../Body/Portfolio/Portfolio.js';
+import AddToPortfolioBtn from '../Body/Portfolio/add_to_portfolio_btn/AddToPortfolioBtn.js'
 
 
 function Profile({ match }) {
@@ -128,22 +129,25 @@ function Profile({ match }) {
                             ({
                                 id,
                                 data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng },
-                            }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
-                                <Post
-                                    key={id}
-                                    id={id}
-                                    name={name}
-                                    description={description}
-                                    message={message}
-                                    photoUrl={photoUrl}
-                                    photoBase={photoBase}
-                                    styleModification={styleModification}
-                                    comments={comments}
-                                    channel={channel}
-                                    hasCoordinates={hasCoordinates}
-                                    lat={lat}
-                                    lng={lng}
-                                />
+                            }) => (name === match.params.id) && ( // Only the posts the current user has made are shown.
+                                <>
+                                    <Post
+                                        key={id}
+                                        id={id}
+                                        name={name}
+                                        description={description}
+                                        message={message}
+                                        photoUrl={photoUrl}
+                                        photoBase={photoBase}
+                                        styleModification={styleModification}
+                                        comments={comments}
+                                        channel={channel}
+                                        hasCoordinates={hasCoordinates}
+                                        lat={lat}
+                                        lng={lng}
+                                    />
+                                    <AddToPortfolioBtn postId={id} />
+                                </>
                             )
                         )}
                     </FlipMove>

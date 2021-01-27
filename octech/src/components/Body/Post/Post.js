@@ -87,7 +87,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     })
 
 
-
     console.log(refs)
     refs.forEach((ids) => {
       console.log(ids);
@@ -107,7 +106,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         })
       })
     }
-
 
 
     db.collection("posts") // The post is removed from the posts database
@@ -162,7 +160,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             comments.sort((a, b) => b.number - a.number).map((c) => {
               return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
             })
-
           }
         </Modal.Body>
       </Modal>
@@ -237,9 +234,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           <br />
           {
             comments.sort((a, b) => b.number - a.number).map((c) => {
-              return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
+              return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>{c.comment}</div>
             })
-
           }
         </Modal.Body>
       </Modal>

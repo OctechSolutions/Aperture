@@ -7,7 +7,7 @@ export default function ImgSlideshow({ imageArray }) {
     const carousalItems = imageArray.map((img) => {
         return (
             <Carousel.Item>
-                    <img src= {img}/>
+                <img src= {img}/>
             </Carousel.Item>
         )
     })

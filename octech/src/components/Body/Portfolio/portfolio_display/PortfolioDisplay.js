@@ -37,17 +37,27 @@ export default function PortfolioDisplay() {
     
     return (
         <div className="portfolio-display">
-            <div className="row bestwork">
+            <div 
+                className="row quote"
+                style={{
+                    backgroundColor : "dodgerblue", 
+                    padding: "2%",
+                    borderRadius: "25px 0 25px 0",
+                    display: "flex",
+                    justifyContent: "center",
+                    color: "white"
+                }}
+            > 
+                <h3>"{localStorage.getItem("quote")}" - {auth.currentUser.displayName} </h3>  
+            </div><br /> 
+            <div className="row" id="bestwork-row">
                 <ImgSlideshow imageArray={JSON.parse(localStorage.getItem("bestWork"))} />
             </div><br/>
             <div className="row heading-headshot">
-                <div className="col-sm-4 quote"> 
-                    <p>"{localStorage.getItem("quote")}" <br /> - {auth.currentUser.displayName} </p>  
-                </div> 
                 <div className="col-sm-4 headshotDiv"> 
                     <img id = "headshotImg" src={localStorage.getItem("headshot")} alt="Headshot"></img>
                 </div>
-                <div className="col-sm-4 description"> {localStorage.getItem("description")} </div>
+                <div className="col-sm-8 description"> {localStorage.getItem("description")} </div>
             </div>
         </div>
     )
