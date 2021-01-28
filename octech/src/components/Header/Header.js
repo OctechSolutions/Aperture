@@ -25,17 +25,26 @@ function Header() {
   }
 
   const user = useSelector(selectUser);
-  //User List
+  
+  //User and channel List
   const [users,setUsers] = useState([]);
   //Fetch Users from the database
   const openSearchHandler = () =>{
+    let list = [];
     db.collection("users").get().then(result =>{
-      setUsers (result.docs.map(doc => doc.data()));
+      list.push(...result.docs.map(doc => doc.data()));
+    })
+    db.collection("channels").get().then(result =>{
+      list.push(...result.docs.map(doc => doc.data()));
     }) 
+    setUsers(list);
   }
   //Open the selected users profile
   const openUser = (selectedUser) => {
-    history.push(`/user/${selectedUser.name}`);
+    if(selectedUser.creator === undefined)
+      history.push(`/user/${selectedUser.name}`); 
+    else
+      history.push(`/user/${selectedUser.creator + "/channel/" + selectedUser.name}`);
   }
 
   return (

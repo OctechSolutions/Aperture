@@ -63,7 +63,6 @@ const DEFAULT_EDIT_OPTIONS = [
     unit: 'deg'
   }
 ]
-
 function Feed({ match }, props) {
   const user = useSelector(selectUser);
 
@@ -89,7 +88,11 @@ function Feed({ match }, props) {
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
-
+  const addPosts = post =>{
+    let newPosts = posts.concat(post);
+    newPosts.sort((a,b)=> a.data.timestamp.valueOf() < b.data.timestamp.valueOf())
+    setPosts(newPosts);
+  }
   function handleSliderChange(event) {
     setEditOptions(prevEditOptions => {
       return (
@@ -111,30 +114,70 @@ function Feed({ match }, props) {
     return { filter: filters.join(` `) }
   }
 
-
+  // const fixDB =()=>{
+  //   db.collection("posts").get().then(result => {
+  //     result.forEach(element => {
+  //       if(element.data().channel!=""){
+  //         db.collection("posts").doc(element.id).update({
+  //           channelBy:element.data().name,
+  //           name : element.data().channel,
+  //           channel:"",
+  //         })
+  //       }
+  //       else{
+  //         db.collection("posts").doc(element.id).update({
+  //           channelBy:""
+  //         })
+  //       }
+  //     });
+  //   })
+    
+  // }
+  // fixDB()
   useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
-    db.collection("posts")
-      .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
-      .onSnapshot((snapshot) =>
-        setPosts(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            data: doc.data(),
-          }))
-        )
-      );
-
     db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
       .onSnapshot(doc => {
         if (doc.exists) {
           setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
+          if(!match.params.channel){
+            let list = [doc.data().name,...doc.data().friends,...doc.data().followingChannels];
+            while (list.length>0){
+              let subList = list.splice(0,10);
+              db.collection("posts")
+                .where("name","in",subList)
+                .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+                .onSnapshot((snapshot) =>
+                  addPosts(
+                    snapshot.docs.map((doc) => ({
+                      id: doc.id,
+                      key:doc.id,
+                      data: doc.data(),
+                    }))
+                  )                  
+                );
+            }
+          }
+          else{
+            db.collection("posts")
+            .where("name","==",match.params.channel)
+            .where("channelBy","==",match.params.id)
+            .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+            .onSnapshot((snapshot) =>
+              setPosts(
+                snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  key:doc.id,
+                  data: doc.data(),
+                }))
+              )                  
+            );
+          }
         } else {
           console.log("No such document!");
         }
       });
-
-  }, [user.displayName]);
-
+    }, [user.displayName]);
+    
   const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
     console.log(sliderImages);
@@ -144,13 +187,13 @@ function Feed({ match }, props) {
       const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
       if (coordinatesSelected) {
         ref.set({ // This adds a new post to the databse
-          name: user.displayName,
+          name: match.params.channel || user.displayName,
           description: user.email,
           message: input,
           photoUrl: user.photoUrl || "",
           largeGifs: largeImages,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          channel: match.params.channel || "",
+          channelBy: (match.params.channel) ? user.displayName : "" ,
           hasCoordinates: true,
           lat: lat,
           lng: lng,
@@ -160,13 +203,13 @@ function Feed({ match }, props) {
       }
       else {
         ref.set({ // This adds a new post to the databse
-          name: user.displayName,
+          name: match.params.channel || user.displayName,
           description: user.email,
           message: input,
           photoUrl: user.photoUrl || "",
           largeGifs: largeImages,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          channel: match.params.channel || "",
+          channelBy: (match.params.channel) ? user.displayName : "" ,
           hasCoordinates: false,
           stars: {},
           totalStars: 0
@@ -336,7 +379,7 @@ function Feed({ match }, props) {
       });
     };
   };
-
+  
   async function handleTakePhoto(dataUri) { // This function is called when the photo using the camera is taken
     console.log(dataUri);
     setInputImg(await dataUri); // The inputImg is set with the result that is returned from the camera
@@ -552,69 +595,35 @@ function Feed({ match }, props) {
         </Modal.Body>
       </Modal>
 
-      {(!match.params.channel) ?
-        <FlipMove>
+      <FlipMove>
+        {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
+        {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+          ({
+            id,
+            data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars },
+          }) => (
 
-          {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
-            ({
-              id,
-              data: { name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng, stars, totalStars },
-            }) => (
+            <Post
+              key={id}
+              id={id}
+              name={name}
+              description={description}
+              message={message}
+              photoUrl={photoUrl}
+              largeGifs={largeGifs}
+              comments={comments}
+              hasCoordinates={hasCoordinates}
+              lat={lat}
+              lng={lng}
+              channelBy={channelBy}
+              viewingUser={user}
+              star={stars}
+              totalStar={totalStars}
+            />
 
-              <Post
-                key={id}
-                id={id}
-                name={name}
-                description={description}
-                message={message}
-                photoUrl={photoUrl}
-                largeGifs={largeGifs}
-                comments={comments}
-                hasCoordinates={hasCoordinates}
-                lat={lat}
-                lng={lng}
-                channel={channel}
-                viewingUser={user}
-                star={stars}
-                totalStar={totalStars}
-              />
-
-            )
-          )}
-        </FlipMove>
-        :
-        <FlipMove>
-
-          {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
-            ({
-              id,
-              data: { name, description, message, photoUrl, largeGifs, channel, comments, hasCoordinates, lat, lng, stars, totalStars },
-            }) => (name === match.params.id) && (channel === match.params.channel) && (
-
-              <Post
-                key={id}
-                id={id}
-                name={name}
-                description={description}
-                message={message}
-                photoUrl={photoUrl}
-                largeGifs={largeGifs}
-                comments={comments}
-                hasCoordinates={hasCoordinates}
-                lat={lat}
-                lng={lng}
-                viewingUser={user}
-                star={stars}
-                totalStar={totalStars}
-              />
-
-            )
-          )}
-        </FlipMove>
-      }
-
+          )
+        )}
+      </FlipMove>
     </div>
   );
 }

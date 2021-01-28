@@ -106,7 +106,8 @@ const SignUp = () => {
                                     email: email,
                                     photoUrl: doc,
                                     realName: name,
-                                    contactNumber: contactNumber
+                                    contactNumber: contactNumber,
+                                    
                                 }, { merge: true });
                                 dispatch(login({
                                     email: email,

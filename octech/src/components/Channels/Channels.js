@@ -3,6 +3,7 @@ import { db } from "../../firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userSlice";
 import { Link } from 'react-router-dom';
+import firebase from "firebase";
 
 function Channels({ profileName }) {
 
@@ -57,6 +58,9 @@ function Channels({ profileName }) {
             }).then(() => {
                 // window.location.reload();
             });
+        db.collection("users").doc(user.displayName).update({
+            followingChannels : firebase.firestore.FieldValue.arrayUnion(channelName)
+        });
     }
 
     function checkChannelExistence(name) {
@@ -83,7 +87,7 @@ function Channels({ profileName }) {
                 // window.location.reload();
             });
         console.log(channel.data());
-        db.collection("posts").where("channel", "==", channel.data().name).get().then((a) => {
+        db.collection("posts").where("name", "==", channel.data().name).get().then((a) => {
             a.forEach((b) => {
                 console.log(b.id)
                 db.collection("postImages").where("ref", "==", b.id).get().then(function (querySnapshot) {
@@ -94,6 +98,9 @@ function Channels({ profileName }) {
                 b.ref.delete();
             })
         })
+        db.collection("users").doc(user.displayName).update({
+            followingChannels : firebase.firestore.FieldValue.arrayRemove(channelName)
+        });
     }
 
     return (
@@ -119,7 +126,7 @@ function Channels({ profileName }) {
                                             <h3 className="card-title">{info.name} [{info.theme}]</h3>
                                             <h6 className="card-subtitle mb-2 text-muted text-truncate">{info.description}</h6>
                                         </Link>
-                                        {(profileName === user.displayName) && <button type="button" class="btn btn-outline-danger" onClick={e => deleteChannel(channel)}>Delete</button>}
+                                        {(profileName === user.displayName) && <button type="button" className="btn btn-outline-danger" onClick={e => deleteChannel(channel)}>Delete</button>}
                                     </div>
                                 </div>
 
