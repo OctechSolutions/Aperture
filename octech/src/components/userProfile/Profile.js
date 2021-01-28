@@ -111,24 +111,51 @@ function Profile({ match }) {
         })
     }
 
-    const follow = (e) => {
+    const acceptfriendRequest = (e) => {
         db.collection("users").doc(profileInfo.name).update({
-            followers: firebase.firestore.FieldValue.arrayUnion(user.displayName)
+            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName),
+            friends: firebase.firestore.FieldValue.arrayUnion(user.displayName)
+        });
+        
+        db.collection("users").doc(user.displayName).update({
+            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
+            friends: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
+        });
+    }
+    const cancelfriendRequest = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(user.displayName)
         });
         db.collection("users").doc(user.displayName).update({
-            following: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
+            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+        });
+    }
+    const rejectfriendRequest = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+        });
+    }
+    const sendfriendRequest = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            friendRequestReceived: firebase.firestore.FieldValue.arrayUnion(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            friendRequestSent: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
         });
     }
 
-    const unfollow = (e) => {
+    const unfriend = (e) => {
         db.collection("users").doc(profileInfo.name).update({
-            followers: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+            friends: firebase.firestore.FieldValue.arrayRemove(user.displayName)
         });
         db.collection("users").doc(user.displayName).update({
-            following: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+            friends: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
     }
-
+    
     return (
         <div className="profile" style={{ color: "black", width: "100%" }}>
 
@@ -136,12 +163,19 @@ function Profile({ match }) {
             {profileInfo &&
                 <center>
                     <h1>{profileInfo.name}</h1>
-                    {(profileInfo.followers && (profileInfo.name !== user.displayName)) ?
+                    {(profileInfo.friends && (profileInfo.name !== user.displayName)) ?
                         <>
-                            {(profileInfo.followers.includes(user.displayName)) ?
-                                <Button onClick={unfollow} variant="success">Following {profileInfo.name}</Button>
-                                :
-                                <Button onClick={follow} variant="outline-primary">Follow {profileInfo.name}</Button>}
+                            {(profileInfo.friends.includes(user.displayName)) ?
+                                <Button onClick={unfriend} variant="success">Remove friend : {profileInfo.name}</Button>
+                                : ((profileInfo.friendRequestReceived.includes(user.displayName)) ? 
+                                (<Button onClick={cancelfriendRequest} variant="outline-primary">Cancel friend Request : {profileInfo.name}</Button>)
+                                : ((profileInfo.friendRequestSent.includes(user.displayName)) ?
+                                (<div>
+                                    <Button onClick={acceptfriendRequest} variant="outline-primary">Accept friend Request : {profileInfo.name}</Button>
+                                    <Button onClick={rejectfriendRequest} variant="outline-primary">Reject friend Request : {profileInfo.name}</Button> 
+                                </div>) 
+                                : (<Button onClick={sendfriendRequest} variant="outline-primary">Send friend Request : {profileInfo.name}</Button>) 
+                                ))}
                         </>
                         :
                         <>
@@ -159,7 +193,7 @@ function Profile({ match }) {
                         {posts.map(
                             ({
                                 id,
-                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng, stars, totalStars },
+                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars },
                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
                                 <Post
                                     key={id}
@@ -171,7 +205,7 @@ function Profile({ match }) {
                                     photoBase={photoBase}
                                     styleModification={styleModification}
                                     comments={comments}
-                                    channel={channel}
+                                    channelBy={channelBy}
                                     hasCoordinates={hasCoordinates}
                                     lat={lat}
                                     lng={lng}

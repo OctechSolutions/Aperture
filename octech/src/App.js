@@ -39,9 +39,11 @@ function App() {
                 name: userAuth.displayName,
                 email: userAuth.email,
                 photoUrl: userAuth.photoURL,
-                followers: [],
-                following: [],
-                followingChannels: []
+                friends: [],
+                friendRequestReceived: [],
+                friendRequestSent: [],
+                followingChannels: [],
+                profilePoints:0
               });         
             }
             sendVerificationEmail(userAuth)

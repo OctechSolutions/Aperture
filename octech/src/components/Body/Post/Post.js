@@ -19,7 +19,7 @@ import Box from '@material-ui/core/Box';
 import GradeIcon from '@material-ui/icons/Grade';
 import { withStyles } from '@material-ui/core/styles';
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng , viewingUser , star , totalStar , uploaderID}, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng , viewingUser , star , totalStar }, ref) => {
 
   // const displayPosts = () => {
   //   console.log("hello", name);
@@ -62,13 +62,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     // },
   })(Rating);
   
-  // //Sanity Check so that all posts have stars
-  if(totalStar===undefined||star===undefined||isNaN(totalStar)){
-    totalStar=0
-    star={}
-    const post = db.collection("posts").doc(id);
-    post.update({totalStars : totalStar,stars:star});
-  }
+  
   //Total Stars of the post
   const [totalStars, setTotalStars] =  useState(totalStar);
   //Stars given by the user on the post
@@ -82,20 +76,17 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     const post = db.collection("posts").doc(id);
     star[viewingUser.uid]=givenStars;
     post.update({totalStars : newTotalStars,stars:star});
-    console.log(post.get().then(doc => console.log(doc.data())))
-    const user = db.collection("users").doc(name);
-    
-    user.get().then(doc =>{
+
+    const user = db.collection("users").doc((channelBy!=="") ? channelBy : name);
+    db.runTransaction(transaction =>(
+      transaction.get(user).then(doc =>{
       let profilePoints = doc.data().profilePoints;
-      if(profilePoints===undefined||profilePoints<0)
-        profilePoints = 0;
       let newProfilePoints = profilePoints + (givenStars - stars);
-      user.update({profilePoints : newProfilePoints});  
-   });  
+      transaction.update(user,{profilePoints : newProfilePoints});  
+    })));  
     setStars(givenStars);
     setTotalStars(newTotalStars);
   }
-
 
   const handleClose = () => setShow(false);
   useEffect(() => {
@@ -224,8 +215,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   return (
     <div ref={ref} className="post" >
-      { (channel?.length > 0) ? <div className="post_channel">
-        <p className="h4">Posted in <b><Link to={`/user/${name + "/channel/" + channel}`}>{channel}</Link></b></p>
+      { (channelBy?.length > 0) ? <div className="post_channel">
+        <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
         <hr />
       </div>
       : ''}
@@ -239,7 +230,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </div>
         </div>
         {
-          (user.displayName === name) &&
+          (user.displayName === (()=>channelBy? channelBy:name)) &&
           <p onClick={deletePost} className="post__delete">Delete</p>
         }
       </div>
