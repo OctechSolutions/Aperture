@@ -224,7 +224,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         <div className="post_header">
           <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
           <div className="postInfo">
-            <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${name}`}>{name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
+            <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy?channelBy:name}`}>{channelBy?channelBy:name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
             {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
             <p>{description}</p>
           </div>
