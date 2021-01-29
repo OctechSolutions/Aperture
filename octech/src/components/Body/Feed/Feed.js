@@ -253,12 +253,14 @@ function Feed({ match }, props) {
       setLargeImages([]);
       setInput(""); // On posting the input value is set to an empty string
       setCameraActive("");
+      setIsPrivatePost(false);
     }
   };
 
   const editingCancelled = async () => {
     setInputImg("");
     setEditOptions(DEFAULT_EDIT_OPTIONS);
+    setIsPrivatePost(false);
   }
 
   const editingDone = async () => {
