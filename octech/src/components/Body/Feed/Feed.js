@@ -90,9 +90,10 @@ function Feed({ match }, props) {
 
   const addPosts = post =>{
     let newPosts = posts.concat(post);
-    newPosts.sort((a,b)=> a.data.timestamp.valueOf() < b.data.timestamp.valueOf())
+    newPosts.sort((a,b)=> a.data.timestamp < b.data.timestamp)
     setPosts(newPosts);
   }
+  
   function handleSliderChange(event) {
     setEditOptions(prevEditOptions => {
       return (
@@ -163,7 +164,7 @@ function Feed({ match }, props) {
                 .where("name","in",subList)
                 .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
                 .onSnapshot((snapshot) =>
-                  setPosts(
+                 addPosts(
                     snapshot.docs.map((doc) => ({
                       id: doc.id,
                       key:doc.id,
