@@ -88,11 +88,11 @@ function Feed({ match }, props) {
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
-  // const addPosts = post =>{
-  //   let newPosts = posts.concat(post);
-  //   newPosts.sort((a,b)=> a.data.timestamp.valueOf() < b.data.timestamp.valueOf())
-  //   setPosts(newPosts);
-  // }
+  const addPosts = post =>{
+    let newPosts = posts.concat(post);
+    newPosts.sort((a,b)=> a.data.timestamp.valueOf() < b.data.timestamp.valueOf())
+    setPosts(newPosts);
+  }
   function handleSliderChange(event) {
     setEditOptions(prevEditOptions => {
       return (
@@ -115,25 +115,41 @@ function Feed({ match }, props) {
   }
 
   // const fixDB =()=>{
+  //   db.collection("users").get().then(result => {
+  //     result.forEach(element => {
+  //       db.collection("users").doc(element.id).update({
+  //         followingChannels:[],
+  //         friendRequestReceived:[],
+  //         friendRequestSent : [],
+  //         friends:[],
+  //         profilePoints:0
+  //       })
+  //     });
+  //   })
   //   db.collection("posts").get().then(result => {
   //     result.forEach(element => {
-  //       if(element.data().channel!=""){
-  //         db.collection("posts").doc(element.id).update({
-  //           channelBy:element.data().name,
-  //           name : element.data().channel,
-  //           channel:"",
-  //         })
-  //       }
-  //       else{
-  //         db.collection("posts").doc(element.id).update({
-  //           channelBy:""
-  //         })
-  //       }
+  //       db.collection("posts").doc(element.id).update({
+  //         stars:{},
+  //         totalStars:0
+  //       })
+  //       // if(element.data().channel!=""){
+  //       //   db.collection("posts").doc(element.id).update({
+  //       //     channelBy:element.data().name,
+  //       //     name : element.data().channel,
+  //       //     channel:"",
+  //       //   })
+  //       // }
+  //       // else{
+  //       //   db.collection("posts").doc(element.id).update({
+  //       //     channelBy:""
+  //       //   })
+  //       // }
   //     });
   //   })
     
   // }
   // fixDB()
+
   useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
     db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
       .onSnapshot(doc => {
