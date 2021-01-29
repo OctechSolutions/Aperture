@@ -241,7 +241,7 @@ function Profile({ match }) {
                     <Channels profileName={match.params.id} />
                 </Tab>
                 <Tab eventKey="portfolio" title="Portfolio" style={{ color: "black", width: "100%" }}>
-                    {/* <Portfolio /> */}
+                    <Portfolio match = {match} user={user}/>
                 </Tab>
             </Tabs>
 

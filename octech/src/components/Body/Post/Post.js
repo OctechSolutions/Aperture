@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import ImageGallery from '../Feed/ImageGallery';
 import Modal from 'react-bootstrap/Modal';
 import CommentIcon from '@material-ui/icons/Comment';
-import { Form } from "react-bootstrap";
 import SendIcon from '@material-ui/icons/Send';
 import MapIcon from '@material-ui/icons/Map';
 import Map from '../Map/Map';
@@ -27,6 +26,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { setOpHandler } from '@tensorflow/tfjs-core/dist/tensor';
+
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 
 const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar }, ref) => {
@@ -64,6 +71,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarType, setSnackbarType] = useState("");
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
@@ -268,6 +278,26 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     )
   }
 
+  const addToPortfolio = () => {
+
+    db.collection("portfolios").doc(user.displayName).get().then((doc) => {
+      if (doc.data() === undefined) {
+        setSnackbarOpen(true);
+        setSnackbarMessage("Create a Portfolio First!");
+        setSnackbarType("error");
+      }
+      else {
+          db.collection("portfolios").doc(user.displayName).update({
+            imageRef: firebase.firestore.FieldValue.arrayUnion(...refs)
+        });
+          setSnackbarOpen(true);
+          setSnackbarMessage("Added image/s to portfolio!");
+          setSnackbarType("success");
+      }
+    })
+
+  }
+
   return (
     <div ref={ref} className="post" >
       { (channelBy?.length > 0) ? <div className="post_channel">
@@ -314,14 +344,13 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                 </ListItemIcon>
               Delete
             </MenuItem>
-              {images.length ?
-                <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose() }}>
+              {(images.length > 0) &&
+                <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
                   <ListItemIcon>
                     <AddToPhotosIcon />
                   </ListItemIcon>
               Add To Portfolio
           </MenuItem>
-                : <></>
               }
             </Menu>
           </>
@@ -398,13 +427,13 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                     onMouseDown={() => { }}
                     edge="end"
                   >
-                    <SendIcon/>
+                    <SendIcon />
                   </IconButton>
                 </InputAdornment>
 
             }}
             onChange={(e) => setComment(e.target.value)}
-            style={{width: "80%", marginLeft: "10%"}}
+            style={{ width: "80%", marginLeft: "10%" }}
           />
           <br />
           {
@@ -452,7 +481,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           />
         </Modal.Body>
       </Modal>
-
+      <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
+        <Alert onClose={() => { setSnackbarOpen(false) }} severity={snackbarType}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 });
