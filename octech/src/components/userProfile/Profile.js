@@ -12,6 +12,7 @@ import Tabs from "react-bootstrap/Tabs";
 import Tab from 'react-bootstrap/Tab';
 import Button from 'react-bootstrap/Button';
 import firebase from "firebase";
+import Portfolio from "../Body/Portfolio/Portfolio"
 
 
 function Profile({ match }) {
@@ -240,7 +241,7 @@ function Profile({ match }) {
                     <Channels profileName={match.params.id} />
                 </Tab>
                 <Tab eventKey="portfolio" title="Portfolio" style={{ color: "black", width: "100%" }}>
-                    <>Coming Soon...</>
+                    {/* <Portfolio /> */}
                 </Tab>
             </Tabs>
 

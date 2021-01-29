@@ -88,11 +88,11 @@ function Feed({ match }, props) {
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
-  const addPosts = post =>{
-    let newPosts = posts.concat(post);
-    newPosts.sort((a,b)=> a.data.timestamp.valueOf() < b.data.timestamp.valueOf())
-    setPosts(newPosts);
-  }
+  // const addPosts = post =>{
+  //   let newPosts = posts.concat(post);
+  //   newPosts.sort((a,b)=> a.data.timestamp.valueOf() < b.data.timestamp.valueOf())
+  //   setPosts(newPosts);
+  // }
   function handleSliderChange(event) {
     setEditOptions(prevEditOptions => {
       return (
@@ -147,7 +147,7 @@ function Feed({ match }, props) {
                 .where("name","in",subList)
                 .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
                 .onSnapshot((snapshot) =>
-                  addPosts(
+                  setPosts(
                     snapshot.docs.map((doc) => ({
                       id: doc.id,
                       key:doc.id,
