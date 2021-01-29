@@ -85,6 +85,7 @@ function Feed({ match }, props) {
   const [lat, setLat] = useState(25.1972);
   const [lng, setLng] = useState(55.2744);
   const [coordinatesSelected, setCoordinatesSelected] = useState(false);
+  const [isPrivatePost,setIsPrivatePost] = useState(false)
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
@@ -116,35 +117,36 @@ function Feed({ match }, props) {
   }
 
   // const fixDB =()=>{
-  //   db.collection("users").get().then(result => {
-  //     result.forEach(element => {
-  //       db.collection("users").doc(element.id).update({
-  //         followingChannels:[],
-  //         friendRequestReceived:[],
-  //         friendRequestSent : [],
-  //         friends:[],
-  //         profilePoints:0
-  //       })
-  //     });
-  //   })
+  //   // db.collection("users").get().then(result => {
+  //   //   result.forEach(element => {
+  //   //     db.collection("users").doc(element.id).update({
+  //   //       // followingChannels:[],
+  //   //       // friendRequestReceived:[],
+  //   //       // friendRequestSent : [],
+  //   //       // friends:[],
+  //   //       // profilePoints:0,
+  //   //       blocked:[],
+  //   //       blockedBy:[],
+  //   //     })
+  //   //   });
+  //   // })
   //   db.collection("posts").get().then(result => {
   //     result.forEach(element => {
   //       db.collection("posts").doc(element.id).update({
-  //         stars:{},
-  //         totalStars:0
+  //         isPrivate:false
   //       })
-  //       // if(element.data().channel!=""){
-  //       //   db.collection("posts").doc(element.id).update({
-  //       //     channelBy:element.data().name,
-  //       //     name : element.data().channel,
-  //       //     channel:"",
-  //       //   })
-  //       // }
-  //       // else{
-  //       //   db.collection("posts").doc(element.id).update({
-  //       //     channelBy:""
-  //       //   })
-  //       // }
+  //   //     // if(element.data().channel!=""){
+  //   //     //   db.collection("posts").doc(element.id).update({
+  //   //     //     channelBy:element.data().name,
+  //   //     //     name : element.data().channel,
+  //   //     //     channel:"",
+  //   //     //   })
+  //   //     // }
+  //   //     // else{
+  //   //     //   db.collection("posts").doc(element.id).update({
+  //   //     //     channelBy:""
+  //   //     //   })
+  //   //     // }
   //     });
   //   })
     
@@ -215,7 +217,8 @@ function Feed({ match }, props) {
           lat: lat,
           lng: lng,
           stars: {},
-          totalStars: 0
+          totalStars: 0,
+          isPrivate : isPrivatePost
         })
       }
       else {
@@ -229,7 +232,8 @@ function Feed({ match }, props) {
           channelBy: (match.params.channel) ? user.displayName : "" ,
           hasCoordinates: false,
           stars: {},
-          totalStars: 0
+          totalStars: 0,
+          isPrivate : isPrivatePost
         })
       }
 
@@ -564,6 +568,7 @@ function Feed({ match }, props) {
                 <div className="buttons">
                   <button onClick={editingDone}>Done</button>
                   <button onClick={editingCancelled}>Cancel</button>
+                  <button onClick={()=>setIsPrivatePost(!isPrivatePost)}>Make Post {isPrivatePost?"Public":"Private"} </button>
                 </div>}
 
             </Modal.Body>
@@ -617,7 +622,7 @@ function Feed({ match }, props) {
         {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
           ({
             id,
-            data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars },
+            data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars , isPrivate},
           }) => (
 
             <Post
@@ -636,6 +641,7 @@ function Feed({ match }, props) {
               viewingUser={user}
               star={stars}
               totalStar={totalStars}
+              isPrivate={isPrivate}
             />
 
           )
