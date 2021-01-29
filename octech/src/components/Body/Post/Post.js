@@ -28,6 +28,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 
 
 function Alert(props) {
@@ -286,12 +287,12 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         setSnackbarType("error");
       }
       else {
-          db.collection("portfolios").doc(user.displayName).update({
-            imageRef: firebase.firestore.FieldValue.arrayUnion(...refs)
+        db.collection("portfolios").doc(user.displayName).update({
+          imageRef: firebase.firestore.FieldValue.arrayUnion(...refs)
         });
-          setSnackbarOpen(true);
-          setSnackbarMessage("Added image/s to portfolio!");
-          setSnackbarType("success");
+        setSnackbarOpen(true);
+        setSnackbarMessage("Added image/s to portfolio!");
+        setSnackbarType("success");
       }
     })
 
@@ -348,9 +349,15 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   <ListItemIcon>
                     <AddToPhotosIcon />
                   </ListItemIcon>
-              Add To Portfolio
-          </MenuItem>
+                  Add To Portfolio
+                </MenuItem>
               }
+              <MenuItem key={"addToCollections"} selected={false} onClick={() => { console.log("Add to collection clicked, assad call function here");}}>
+                <ListItemIcon>
+                  <AddPhotoAlternateIcon />
+                </ListItemIcon>
+                  Add To Collections
+                </MenuItem>
             </Menu>
           </>
         }
