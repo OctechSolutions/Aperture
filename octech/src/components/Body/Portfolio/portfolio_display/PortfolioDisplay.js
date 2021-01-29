@@ -40,7 +40,7 @@ export default function PortfolioDisplay() {
             <div 
                 className="row quote"
                 style={{
-                    backgroundColor : "dodgerblue", 
+                    backgroundColor : "#fc0388", 
                     padding: "2%",
                     borderRadius: "25px 0 25px 0",
                     display: "flex",

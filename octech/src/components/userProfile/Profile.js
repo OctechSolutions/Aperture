@@ -14,7 +14,6 @@ import Portfolio from '../Body/Portfolio/Portfolio.js';
 import AddToPortfolioBtn from '../Body/Portfolio/add_to_portfolio_btn/AddToPortfolioBtn.js'
 import Button from 'react-bootstrap/Button';
 import firebase from "firebase";
-import Portfolio from "../Body/Portfolio/Portfolio"
 
 
 function Profile({ match }) {
@@ -196,47 +195,29 @@ function Profile({ match }) {
                         {posts.map(
                             ({
                                 id,
-// <<<<<<< HEAD
-//                                 data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng },
-//                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown.
-//                                 <>
-//                                     <Post
-//                                         key={id}
-//                                         id={id}
-//                                         name={name}
-//                                         description={description}
-//                                         message={message}
-//                                         photoUrl={photoUrl}
-//                                         photoBase={photoBase}
-//                                         styleModification={styleModification}
-//                                         comments={comments}
-//                                         channel={channel}
-//                                         hasCoordinates={hasCoordinates}
-//                                         lat={lat}
-//                                         lng={lng}
-//                                     />
-//                                     <AddToPortfolioBtn postId={id} />
-//                                 </>
                                 data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars },
                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
-                                <Post
-                                    key={id}
-                                    id={id}
-                                    name={name}
-                                    description={description}
-                                    message={message}
-                                    photoUrl={photoUrl}
-                                    photoBase={photoBase}
-                                    styleModification={styleModification}
-                                    comments={comments}
-                                    channelBy={channelBy}
-                                    hasCoordinates={hasCoordinates}
-                                    lat={lat}
-                                    lng={lng}
-                                    viewingUser={user}
-                                    star={stars}
-                                    totalStar={totalStars}
-                                />
+                                <>
+                                    <Post
+                                        key={id}
+                                        id={id}
+                                        name={name}
+                                        description={description}
+                                        message={message}
+                                        photoUrl={photoUrl}
+                                        photoBase={photoBase}
+                                        styleModification={styleModification}
+                                        comments={comments}
+                                        channelBy={channelBy}
+                                        hasCoordinates={hasCoordinates}
+                                        lat={lat}
+                                        lng={lng}
+                                        viewingUser={user}
+                                        star={stars}
+                                        totalStar={totalStars}
+                                    />
+                                    <AddToPortfolioBtn postId={id} />
+                                </>
                             )
                         )}
                     </FlipMove>
@@ -264,7 +245,7 @@ function Profile({ match }) {
                     <Channels profileName={match.params.id} />
                 </Tab>
                 <Tab eventKey="portfolio" title="Portfolio" style={{ color: "black", width: "100%" }}>
-                    {/* <Portfolio /> */}
+                    <Portfolio />
                 </Tab>
             </Tabs>
 

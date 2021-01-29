@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import React, { useRef, useState } from "react"
-import { Form, Button, Card, Alert } from "react-bootstrap"
-import { useHistory } from "react-router-dom"
-import './Login.css'
-import { signInWithGoogle } from '../../firebase'
-import { auth } from "../../firebase"
-import SignUp from "../signUp"
-import { useDispatch } from 'react-redux'
-import { login } from '../../features/userSlice'
-import Modal from 'react-bootstrap/Modal'
-=======
 import React, { useState } from "react";
 import { Form, Alert } from "react-bootstrap";
 import Button from '@material-ui/core/Button';
@@ -29,7 +17,6 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
->>>>>>> 01ef07b614ef08abdd8f4a4bcdc136c64989203a
 
 
 
@@ -55,11 +42,6 @@ export default function Login() {
   const [show, setShow] = useState(false)
   const [resetEmail, setResetEmail] = useState("")
   const [resetEmailSent, setResetEmailSent] = useState(false)
-<<<<<<< HEAD
-  const history = useHistory()
-  const dispatch = useDispatch() // Keep track of changes on the user slice
-  const [forgotPasswordClicked, setForgotPasswordClicked] = useState(false)
-=======
   const history = useHistory();
   const dispatch = useDispatch(); // Keep track of changes on the user slice
   const [forgotPasswordClicked, setForgotPasswordClicked] = useState(false);
@@ -73,7 +55,6 @@ export default function Login() {
     event.preventDefault();
   };
 
->>>>>>> 01ef07b614ef08abdd8f4a4bcdc136c64989203a
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -91,13 +72,7 @@ export default function Login() {
       }).catch(function (error) {
         console.log(error)
         setError("Failed to log in")
-<<<<<<< HEAD
-      })
-
-    setLoading(false)
-=======
       });
->>>>>>> 01ef07b614ef08abdd8f4a4bcdc136c64989203a
   }
 
   const forgotPassword = () => {
@@ -109,19 +84,11 @@ export default function Login() {
     if (resetEmail) {
       auth.sendPasswordResetEmail(resetEmail).then(function () {
         // Email sent.
-<<<<<<< HEAD
-        setResetEmailSent(true)
-      }).catch(function(error) {
-        // An error happened.
-      })
-      
-=======
         setResetEmailSent(true);
       }).catch(function (error) {
         // An error happened.
       });
 
->>>>>>> 01ef07b614ef08abdd8f4a4bcdc136c64989203a
     }
   }
 
