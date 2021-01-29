@@ -10,14 +10,11 @@ import { selectUser } from "../../features/userSlice";
 import Channels from "../Channels/Channels";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from 'react-bootstrap/Tab';
-<<<<<<< HEAD
 import Portfolio from '../Body/Portfolio/Portfolio.js';
 import AddToPortfolioBtn from '../Body/Portfolio/add_to_portfolio_btn/AddToPortfolioBtn.js'
-=======
 import Button from 'react-bootstrap/Button';
 import firebase from "firebase";
 import Portfolio from "../Body/Portfolio/Portfolio"
->>>>>>> 01ef07b614ef08abdd8f4a4bcdc136c64989203a
 
 
 function Profile({ match }) {
