@@ -18,6 +18,7 @@ import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
 import Map from "../Map/Map";
+import Button from 'react-bootstrap/Button';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -28,7 +29,7 @@ const DEFAULT_EDIT_OPTIONS = [
   {
     name: 'Brightness',
     property: 'brightness',
-    value: 100,
+    value: 100, 
     range: { min: 0, max: 200 },
     unit: '%'
   },
@@ -61,11 +62,11 @@ const DEFAULT_EDIT_OPTIONS = [
     unit: 'deg'
   }
 ]
-
 function Feed({ match }, props) {
   const user = useSelector(selectUser);
 
   const [input, setInput] = useState("");
+  const [profileInfo, setProfileInfo] = useState("");
   const [file, setFile] = useState(null)
   const [inputImg, setInputImg] = useState("");
   const [inputImgs, setInputImgs] = useState([]);
@@ -86,7 +87,12 @@ function Feed({ match }, props) {
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
-
+  const addPosts = post =>{
+    let newPosts = posts.concat(post);
+    newPosts.sort((a,b)=> a.data.timestamp < b.data.timestamp)
+    setPosts(newPosts);
+  }
+  
   function handleSliderChange(event) {
     setEditOptions(prevEditOptions => {
       return (
@@ -108,52 +114,121 @@ function Feed({ match }, props) {
     return { filter: filters.join(` `) }
   }
 
+  // const fixDB =()=>{
+  //   db.collection("users").get().then(result => {
+  //     result.forEach(element => {
+  //       db.collection("users").doc(element.id).update({
+  //         followingChannels:[],
+  //         friendRequestReceived:[],
+  //         friendRequestSent : [],
+  //         friends:[],
+  //         profilePoints:0
+  //       })
+  //     });
+  //   })
+  //   db.collection("posts").get().then(result => {
+  //     result.forEach(element => {
+  //       db.collection("posts").doc(element.id).update({
+  //         stars:{},
+  //         totalStars:0
+  //       })
+  //       // if(element.data().channel!=""){
+  //       //   db.collection("posts").doc(element.id).update({
+  //       //     channelBy:element.data().name,
+  //       //     name : element.data().channel,
+  //       //     channel:"",
+  //       //   })
+  //       // }
+  //       // else{
+  //       //   db.collection("posts").doc(element.id).update({
+  //       //     channelBy:""
+  //       //   })
+  //       // }
+  //     });
+  //   })
+    
+  // }
+  // fixDB()
 
   useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
-    db.collection("posts")
-      .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
-      .onSnapshot((snapshot) =>
-        setPosts(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            data: doc.data(),
-          }))
-        )
-      );
-
-  }, [])
-
-  const sendPost = async (e) => { // When the new post is submitted this function is called.
-    e.preventDefault(); // This is to prevent the default behaviour of submitting a form.
+    db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
+      .onSnapshot(doc => {
+        if (doc.exists) {
+          setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
+          if(!match.params.channel){
+            let list = [doc.data().name,...doc.data().friends,...doc.data().followingChannels];
+            while (list.length>0){
+              let subList = list.splice(0,10);
+              db.collection("posts")
+                .where("name","in",subList)
+                .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+                .onSnapshot((snapshot) =>
+                 addPosts(
+                    snapshot.docs.map((doc) => ({
+                      id: doc.id,
+                      key:doc.id,
+                      data: doc.data(),
+                    }))
+                  )                  
+                );
+            }
+          }
+          else{
+            db.collection("posts")
+            .where("name","==",match.params.channel)
+            .where("channelBy","==",match.params.id)
+            .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+            .onSnapshot((snapshot) =>
+              setPosts(
+                snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  key:doc.id,
+                  data: doc.data(),
+                }))
+              )                  
+            );
+          }
+        } else {
+          console.log("No such document!");
+        }
+      });
+    }, [user.displayName]);
+    
+  const sendPost = async (e) => { // When the new post is submitted this function is called
+    e.preventDefault(); // This is to prevent the default behaviour of submitting a form
     console.log(sliderImages);
 
     if (input.replace(/\s/g, '').length) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier.
 
       const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance.
       if (coordinatesSelected) {
-        ref.set({ // This adds a new post to the database.
-          name: user.displayName,
+        ref.set({ // This adds a new post to the databse
+          name: match.params.channel || user.displayName,
           description: user.email,
           message: input,
           photoUrl: user.photoUrl || "",
           largeGifs: largeImages,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          channel: match.params.channel || "",
-          hasCoordinates : true,
+          channelBy: (match.params.channel) ? user.displayName : "" ,
+          hasCoordinates: true,
           lat: lat,
-          lng: lng
+          lng: lng,
+          stars: {},
+          totalStars: 0
         })
       }
       else {
-        ref.set({ // This adds a new post to the database.
-          name: user.displayName,
+        ref.set({ // This adds a new post to the databse
+          name: match.params.channel || user.displayName,
           description: user.email,
           message: input,
           photoUrl: user.photoUrl || "",
           largeGifs: largeImages,
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          channel: match.params.channel || "",
-          hasCoordinates : false
+          channelBy: (match.params.channel) ? user.displayName : "" ,
+          hasCoordinates: false,
+          stars: {},
+          totalStars: 0
         })
       }
 
@@ -292,7 +367,7 @@ function Feed({ match }, props) {
       setLoading(true);
 
       cocoSsd.load().then((model) => {
-        setLoading(false);
+
         // detect objects in the image.
 
         const img = document.getElementById("img");
@@ -314,22 +389,73 @@ function Feed({ match }, props) {
           else {
             setNohuman(true);
           }
-
+          setLoading(false);
         })
       });
     };
   };
-
+  
   async function handleTakePhoto(dataUri) { // This function is called when the photo using the camera is taken
     console.log(dataUri);
     setInputImg(await dataUri); // The inputImg is set with the result that is returned from the camera
     // alert("Image Uploaded Sucessfully!");
     setCameraActive("");
+    setLoading(true);
+
+    cocoSsd.load().then((model) => {
+
+      // detect objects in the image.
+
+      const img = document.getElementById("img");
+      model.detect(img).then((predictions) => {
+
+        console.log("Predictions: ", predictions);
+        if (predictions.length) {
+          predictions.forEach((prediction) => {
+            if (prediction.class === "person") {
+              setInputImg("");
+              console.log("HUMAN DETECTED!!!")
+              setShow(true);
+            }
+            else {
+              setNohuman(true);
+            }
+          })
+        }
+        else {
+          setNohuman(true);
+        }
+        setLoading(false);
+      })
+    });
+  }
+
+  const followChannel = (e) => {
+    db.collection("users").doc(profileInfo.name).update({
+      followingChannels: firebase.firestore.FieldValue.arrayUnion(match.params.channel)
+    });
+  }
+
+  const unfollowChannel = (e) => {
+    db.collection("users").doc(profileInfo.name).update({
+      followingChannels: firebase.firestore.FieldValue.arrayRemove(match.params.channel)
+    });
   }
 
   return (
     <div className="feed">
       {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
+      {(profileInfo && (match.params.id !== user.displayName) && (match.params.channel)) ?
+        <center>
+          <h1>{match.params.channel}</h1>
+          {(profileInfo.followingChannels.includes(match.params.channel)) ?
+            <Button onClick={unfollowChannel} variant="success">Following</Button>
+            :
+            <Button onClick={followChannel} variant="outline-primary">Follow</Button>}
+        </center>
+        :
+        <>
+        </>}
       {((match.params.id === user.displayName) || (match.path === "/")) &&
         <div className="feed_inputContainer">
           <div className="feed_input">
@@ -349,7 +475,7 @@ function Feed({ match }, props) {
                     <button className="btn">
                       <ImageIcon />
                     </button>
-                    <input type="file" multiple name="myfile" onChange={handleChange} />
+                    <input type="file" name="myfile" onChange={handleChange} />
                   </div>}
                   {!inputImg && !showEditMap && <button className="btn" onClick={openCamera}>
                     <PhotoCameraIcon />
@@ -388,7 +514,7 @@ function Feed({ match }, props) {
           >
             <Modal.Body>
 
-              {inputImg && (!loading) && (
+              {inputImg && (
                 <>
                   <br />
                   {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
@@ -435,7 +561,7 @@ function Feed({ match }, props) {
                   </Spinner>
                   <span>{'  '}Scanning Image...</span>
                 </div>}
-              {inputImg &&
+              {(!loading) &&
                 <div className="buttons">
                   <button onClick={editingDone}>Done</button>
                   <button onClick={editingCancelled}>Cancel</button>
@@ -457,7 +583,7 @@ function Feed({ match }, props) {
             setCoordinatesSelected={setCoordinatesSelected}
             setShowEditMap={setShowEditMap}
           />
-          
+
         </>
       }
       <Modal
@@ -487,63 +613,35 @@ function Feed({ match }, props) {
         </Modal.Body>
       </Modal>
 
-      {(!match.params.channel) ?
-        <FlipMove>
+      <FlipMove>
+        {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
+        {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+          ({
+            id,
+            data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars },
+          }) => (
 
-          {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
-            ({
-              id,
-              data: { name, description, message, photoUrl, largeGifs, comments, channel, hasCoordinates, lat, lng },
-            }) => (
+            <Post
+              key={id}
+              id={id}
+              name={name}
+              description={description}
+              message={message}
+              photoUrl={photoUrl}
+              largeGifs={largeGifs}
+              comments={comments}
+              hasCoordinates={hasCoordinates}
+              lat={lat}
+              lng={lng}
+              channelBy={channelBy}
+              viewingUser={user}
+              star={stars}
+              totalStar={totalStars}
+            />
 
-              <Post
-                key={id}
-                id={id}
-                name={name}
-                description={description}
-                message={message}
-                photoUrl={photoUrl}
-                largeGifs={largeGifs}
-                comments={comments}
-                hasCoordinates={hasCoordinates}
-                lat={lat}
-                lng={lng}
-                channel={channel}
-              />
-
-            )
-          )}
-        </FlipMove>
-        :
-        <FlipMove>
-
-          {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
-            ({
-              id,
-              data: { name, description, message, photoUrl, largeGifs, channel, comments, hasCoordinates, lat, lng },
-            }) => (name === match.params.id) && (channel === match.params.channel) && (
-
-              <Post
-                key={id}
-                id={id}
-                name={name}
-                description={description}
-                message={message}
-                photoUrl={photoUrl}
-                largeGifs={largeGifs}
-                comments={comments}
-                hasCoordinates={hasCoordinates}
-                lat={lat}
-                lng={lng}
-              />
-
-            )
-          )}
-        </FlipMove>
-      }
-
+          )
+        )}
+      </FlipMove>
     </div>
   );
 }

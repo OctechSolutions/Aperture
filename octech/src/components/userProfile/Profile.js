@@ -10,8 +10,14 @@ import { selectUser } from "../../features/userSlice";
 import Channels from "../Channels/Channels";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from 'react-bootstrap/Tab';
+<<<<<<< HEAD
 import Portfolio from '../Body/Portfolio/Portfolio.js';
 import AddToPortfolioBtn from '../Body/Portfolio/add_to_portfolio_btn/AddToPortfolioBtn.js'
+=======
+import Button from 'react-bootstrap/Button';
+import firebase from "firebase";
+import Portfolio from "../Body/Portfolio/Portfolio"
+>>>>>>> 01ef07b614ef08abdd8f4a4bcdc136c64989203a
 
 
 function Profile({ match }) {
@@ -34,14 +40,12 @@ function Profile({ match }) {
     useEffect(() => {
         console.log(match); // match returns a lot of properties from the react router dom including the id we set for the urls of the router to be dynamic
         db.collection("users").doc(match.params.id) // We get the user from the db whose id matches the name of the user
-            .get().then(function (doc) {
+            .onSnapshot(doc => {
                 if (doc.exists) {
                     setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
                 } else {
                     console.log("No such document!");
                 }
-            }).catch(function (error) {
-                console.log("Error getting document:", error);
             });
     }, [match]);
 
@@ -113,10 +117,77 @@ function Profile({ match }) {
         })
     }
 
+    const acceptfriendRequest = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName),
+            friends: firebase.firestore.FieldValue.arrayUnion(user.displayName)
+        });
+        
+        db.collection("users").doc(user.displayName).update({
+            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
+            friends: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
+        });
+    }
+    const cancelfriendRequest = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+        });
+    }
+    const rejectfriendRequest = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+        });
+    }
+    const sendfriendRequest = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            friendRequestReceived: firebase.firestore.FieldValue.arrayUnion(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            friendRequestSent: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
+        });
+    }
 
+    const unfriend = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            friends: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            friends: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+        });
+    }
+    
     return (
         <div className="profile" style={{ color: "black", width: "100%" }}>
-            {profileInfo && <center><h1>{profileInfo.name}</h1></center>}
+
+
+            {profileInfo &&
+                <center>
+                    <h1>{profileInfo.name}</h1>
+                    {(profileInfo.friends && (profileInfo.name !== user.displayName)) ?
+                        <>
+                            {(profileInfo.friends.includes(user.displayName)) ?
+                                <Button onClick={unfriend} variant="success">Remove friend : {profileInfo.name}</Button>
+                                : ((profileInfo.friendRequestReceived.includes(user.displayName)) ? 
+                                (<Button onClick={cancelfriendRequest} variant="outline-primary">Cancel friend Request : {profileInfo.name}</Button>)
+                                : ((profileInfo.friendRequestSent.includes(user.displayName)) ?
+                                (<div>
+                                    <Button onClick={acceptfriendRequest} variant="outline-primary">Accept friend Request : {profileInfo.name}</Button>
+                                    <Button onClick={rejectfriendRequest} variant="outline-primary">Reject friend Request : {profileInfo.name}</Button> 
+                                </div>) 
+                                : (<Button onClick={sendfriendRequest} variant="outline-primary">Send friend Request : {profileInfo.name}</Button>) 
+                                ))}
+                        </>
+                        :
+                        <>
+                        </>}
+                    <h1>Profile Points :{profileInfo.profilePoints}</h1>
+                </center>}
             <Tabs
                 id="controlled-tab-example"
                 activeKey={key}
@@ -128,26 +199,47 @@ function Profile({ match }) {
                         {posts.map(
                             ({
                                 id,
-                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng },
-                            }) => (name === match.params.id) && ( // Only the posts the current user has made are shown.
-                                <>
-                                    <Post
-                                        key={id}
-                                        id={id}
-                                        name={name}
-                                        description={description}
-                                        message={message}
-                                        photoUrl={photoUrl}
-                                        photoBase={photoBase}
-                                        styleModification={styleModification}
-                                        comments={comments}
-                                        channel={channel}
-                                        hasCoordinates={hasCoordinates}
-                                        lat={lat}
-                                        lng={lng}
-                                    />
-                                    <AddToPortfolioBtn postId={id} />
-                                </>
+// <<<<<<< HEAD
+//                                 data: { name, description, message, photoUrl, photoBase, styleModification, comments, channel, hasCoordinates, lat, lng },
+//                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown.
+//                                 <>
+//                                     <Post
+//                                         key={id}
+//                                         id={id}
+//                                         name={name}
+//                                         description={description}
+//                                         message={message}
+//                                         photoUrl={photoUrl}
+//                                         photoBase={photoBase}
+//                                         styleModification={styleModification}
+//                                         comments={comments}
+//                                         channel={channel}
+//                                         hasCoordinates={hasCoordinates}
+//                                         lat={lat}
+//                                         lng={lng}
+//                                     />
+//                                     <AddToPortfolioBtn postId={id} />
+//                                 </>
+                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars },
+                            }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
+                                <Post
+                                    key={id}
+                                    id={id}
+                                    name={name}
+                                    description={description}
+                                    message={message}
+                                    photoUrl={photoUrl}
+                                    photoBase={photoBase}
+                                    styleModification={styleModification}
+                                    comments={comments}
+                                    channelBy={channelBy}
+                                    hasCoordinates={hasCoordinates}
+                                    lat={lat}
+                                    lng={lng}
+                                    viewingUser={user}
+                                    star={stars}
+                                    totalStar={totalStars}
+                                />
                             )
                         )}
                     </FlipMove>
@@ -175,11 +267,9 @@ function Profile({ match }) {
                     <Channels profileName={match.params.id} />
                 </Tab>
                 <Tab eventKey="portfolio" title="Portfolio" style={{ color: "black", width: "100%" }}>
-                    <Portfolio />
+                    {/* <Portfolio /> */}
                 </Tab>
             </Tabs>
-
-            {console.log(profileInfo.posts)}
 
         </div>
     )

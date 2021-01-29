@@ -1,0 +1,27 @@
+.logInContainer{
+    width: 30vw;
+}
+
+@media (max-width: 1000px) {
+    .logInContainer{
+        width: 50vw;
+    }
+}
+
+@media (max-width: 750px) {
+    .logInContainer{
+        width: 65vw;
+    }
+}
+
+@media (max-width: 600px) {
+    .logInContainer{
+        width: 80vw;
+    }
+}
+
+@media (max-width: 300px) {
+    .logInContainer{
+        width: 90vw;
+    }
+}
