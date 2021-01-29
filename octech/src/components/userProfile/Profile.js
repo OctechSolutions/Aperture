@@ -38,6 +38,31 @@ function Profile({ match }) {
             .onSnapshot(doc => {
                 if (doc.exists) {
                     setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
+                    if(doc.data().friends.includes(user.displayName)){
+                        db.collection("posts") // Posts are fetched from the db
+                            .orderBy("timestamp", "desc")
+                            .onSnapshot((snapshot) =>
+                                setPosts(
+                                    snapshot.docs.map((doc) => ({
+                                        id: doc.id,
+                                        data: doc.data(),
+                                    }))
+                                )
+                            );
+                    }
+                    else{
+                        db.collection("posts") // Posts are fetched from the db
+                            .where("isPrivate","==",false)
+                            .orderBy("timestamp", "desc")
+                            .onSnapshot((snapshot) =>
+                                setPosts(
+                                    snapshot.docs.map((doc) => ({
+                                        id: doc.id,
+                                        data: doc.data(),
+                                    }))
+                                )
+                            );
+                    }   
                 } else {
                     console.log("No such document!");
                 }
@@ -45,17 +70,8 @@ function Profile({ match }) {
     }, [match]);
 
     useEffect(() => {
-
-        db.collection("posts") // Posts are fetched from the db
-            .orderBy("timestamp", "desc")
-            .onSnapshot((snapshot) =>
-                setPosts(
-                    snapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        data: doc.data(),
-                    }))
-                )
-            );
+        
+        
     }, []);
 
     function deleteCollection(collection) {
@@ -156,11 +172,33 @@ function Profile({ match }) {
             friends: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
     }
+    const unBlock = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            blockedBy: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            blocked: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+        });
+    }
+    const block = (e) => {
+        db.collection("users").doc(profileInfo.name).update({
+            blockedBy:firebase.firestore.FieldValue.arrayUnion(user.displayName),
+            friends: firebase.firestore.FieldValue.arrayRemove(user.displayName),
+            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName),
+            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+        });
+        db.collection("users").doc(user.displayName).update({
+            blocked:firebase.firestore.FieldValue.arrayUnion(profileInfo.name),
+            friends: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
+            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
+            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+        });
+    }
     
     return (
         <div className="profile" style={{ color: "black", width: "100%" }}>
-
-
+           {((profileInfo.blockedBy&& (!profileInfo.blockedBy.includes(user.displayName))) && (profileInfo.blocked && (!profileInfo.blocked.includes(user.displayName))))?
+            <>
             {profileInfo &&
                 <center>
                     <h1>{profileInfo.name}</h1>
@@ -177,6 +215,7 @@ function Profile({ match }) {
                                 </div>) 
                                 : (<Button onClick={sendfriendRequest} variant="outline-primary">Send friend Request : {profileInfo.name}</Button>) 
                                 ))}
+                        {<Button onClick={block} variant="success">Block : {profileInfo.name}</Button>}
                         </>
                         :
                         <>
@@ -194,7 +233,7 @@ function Profile({ match }) {
                         {posts.map(
                             ({
                                 id,
-                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars },
+                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars , isPrivate},
                             }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
                                 <Post
                                     key={id}
@@ -213,6 +252,7 @@ function Profile({ match }) {
                                     viewingUser={user}
                                     star={stars}
                                     totalStar={totalStars}
+                                    isPrivate={isPrivate}
                                 />
                             )
                         )}
@@ -245,6 +285,16 @@ function Profile({ match }) {
                 </Tab>
             </Tabs>
 
+        </>
+        :
+        <>
+        {(profileInfo.blocked && (profileInfo.blocked.includes(user.displayName))) ? <p>{profileInfo.name} has blocked you</p> 
+        :
+        <p>You have blocked this user!
+        {<Button onClick={unBlock} variant="success">UnBlock : {profileInfo.name}</Button>}</p>
+        }
+        </>
+        }
         </div>
     )
 }

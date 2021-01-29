@@ -36,7 +36,7 @@ function Alert(props) {
 }
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar , isPrivate }, ref) => {
 
   // const displayPosts = () => {
   //   console.log("hello", name);
@@ -312,6 +312,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>{channelBy ? channelBy : name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
             {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
             <p>{description}</p>
+            <p>{isPrivate?"Private":"Public"}Post</p>
           </div>
         </div>
         {

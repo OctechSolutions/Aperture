@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './Header.css';
 import HeaderOption from './HeaderOption';
 import { useDispatch } from 'react-redux';
@@ -25,15 +25,28 @@ function Header() {
   }
 
   const user = useSelector(selectUser);
-  
+  const [viewingUserData,setViewingUserData] = useState([])
+  useEffect(() => {
+    db.collection("users").doc(user.displayName)
+        .onSnapshot((snapshot) =>
+          setViewingUserData(snapshot.data())
+        );
+}, []);
   //User and channel List
   const [users,setUsers] = useState([]);
   //Fetch Users from the database
   const openSearchHandler = () =>{
     let list = [];
-    db.collection("users").get().then(result =>{
+    ((viewingUserData.blockedBy.length>0) ?
+    db.collection("users")
+    .where("name","not-in",viewingUserData.blockedBy)
+    .get().then(result =>{
       list.push(...result.docs.map(doc => doc.data()));
-    })
+    }) :
+    db.collection("users")
+    .get().then(result =>{
+      list.push(...result.docs.map(doc => doc.data()));
+    }))
     db.collection("channels").get().then(result =>{
       list.push(...result.docs.map(doc => doc.data()));
     }) 
