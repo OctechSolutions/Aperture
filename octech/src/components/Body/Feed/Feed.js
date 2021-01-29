@@ -163,7 +163,7 @@ function Feed({ match }, props) {
                 .where("name","in",subList)
                 .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
                 .onSnapshot((snapshot) =>
-                  addPosts(
+                  setPosts(
                     snapshot.docs.map((doc) => ({
                       id: doc.id,
                       key:doc.id,

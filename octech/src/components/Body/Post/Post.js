@@ -18,8 +18,18 @@ import Box from '@material-ui/core/Box';
 // import FavoriteIcon from '@material-ui/icons/Favorite';
 import GradeIcon from '@material-ui/icons/Grade';
 import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import TextField from '@material-ui/core/TextField';
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng , viewingUser , star , totalStar }, ref) => {
+
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar }, ref) => {
 
   // const displayPosts = () => {
   //   console.log("hello", name);
@@ -38,7 +48,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   //     })
   // }
 
-  
+
 
 
   if (comments === undefined) {
@@ -50,9 +60,19 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
   const [showComments, setShowComments] = useState(false);
-  const [showStars, ] = useState((name===viewingUser.displayName)? false : true);
+  const [showStars,] = useState((name === viewingUser.displayName) ? false : true);
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
   const StyledRating = withStyles({
     // iconFilled: {
     //   color: '#ff6d75',
@@ -61,29 +81,29 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     //   color: '#ff3d47',
     // },
   })(Rating);
-  
-  
+
+
   //Total Stars of the post
-  const [totalStars, setTotalStars] =  useState(totalStar);
+  const [totalStars, setTotalStars] = useState(totalStar);
   //Stars given by the user on the post
-  const [stars, setStars] =  useState((star[viewingUser.uid]===undefined)? 0 : star[viewingUser.uid]);
+  const [stars, setStars] = useState((star[viewingUser.uid] === undefined) ? 0 : star[viewingUser.uid]);
   //TO update the stars after the user has given the stars
-  const updateStars = (e) => { 
-    let givenStars = parseInt(e.target.value); 
-    if(givenStars===stars)
-      givenStars=0;
+  const updateStars = (e) => {
+    let givenStars = parseInt(e.target.value);
+    if (givenStars === stars)
+      givenStars = 0;
     let newTotalStars = totalStars + (givenStars - stars);
     const post = db.collection("posts").doc(id);
-    star[viewingUser.uid]=givenStars;
-    post.update({totalStars : newTotalStars,stars:star});
+    star[viewingUser.uid] = givenStars;
+    post.update({ totalStars: newTotalStars, stars: star });
 
-    const user = db.collection("users").doc((channelBy!=="") ? channelBy : name);
-    db.runTransaction(transaction =>(
-      transaction.get(user).then(doc =>{
-      let profilePoints = doc.data().profilePoints;
-      let newProfilePoints = profilePoints + (givenStars - stars);
-      transaction.update(user,{profilePoints : newProfilePoints});  
-    })));  
+    const user = db.collection("users").doc((channelBy !== "") ? channelBy : name);
+    db.runTransaction(transaction => (
+      transaction.get(user).then(doc => {
+        let profilePoints = doc.data().profilePoints;
+        let newProfilePoints = profilePoints + (givenStars - stars);
+        transaction.update(user, { profilePoints: newProfilePoints });
+      })));
     setStars(givenStars);
     setTotalStars(newTotalStars);
   }
@@ -184,7 +204,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         show={showComments}
         keyboard={false}
         onHide={() => { setShowComments(false) }}
-        size="xl"
+        size="l"
         aria-labelledby="contained-modal-title-vcenter"
         scrollable={true}
         centered
@@ -193,14 +213,49 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           <h3>Comments</h3>
         </Modal.Header>
         <Modal.Body>
-          <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
+          {/* <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
             <Form.Group className="w-100">
               <Form.Control type="text" placeholder="Comment..." value={comment} onChange={(e) => setComment(e.target.value)} required style={{ marginLeft: "auto", marginRight: "auto" }} />
             </Form.Group>
             <Form.Group>
               <SendIcon style={{ fontSize: "45px" }} onClick={postComment} />
             </Form.Group>
-          </Form>
+          </Form> */}
+          <TextField
+            variant="outlined"
+            margin="normal"
+            multiline
+            rowsMax={4}
+            fullWidth
+            value={comment}
+            name="commentBox"
+            label="Comment"
+            id="commentBox"
+            onKeyPress={(ev) => {
+              if (ev.key === 'Enter') {
+                // Do code here
+                ev.preventDefault();
+                postComment();
+              }
+            }}
+            InputProps=
+            {{
+              endAdornment:
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle confirm password visibility"
+                    onClick={postComment}
+                    onMouseDown={() => { }}
+                    edge="end"
+                  >
+                    <SendIcon />
+                  </IconButton>
+                </InputAdornment>
+
+            }}
+            onChange={(e) => setComment(e.target.value)}
+
+          />
           <br />
           {
             comments.sort((a, b) => b.number - a.number).map((c) => {
@@ -219,19 +274,57 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
         <hr />
       </div>
-      : ''}
+        : ''}
       <div className="post_title">
         <div className="post_header">
           <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
           <div className="postInfo">
-            <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy?channelBy:name}`}>{channelBy?channelBy:name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
+            <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>{channelBy ? channelBy : name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
             {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
             <p>{description}</p>
           </div>
         </div>
         {
-          (user.displayName === (()=>channelBy? channelBy:name)) &&
-          <p onClick={deletePost} className="post__delete">Delete</p>
+          ((user.displayName === channelBy) || (user.displayName === name)) &&
+          // <p onClick={deletePost} className="post__delete">Delete</p>
+          <>
+            <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              onClick={handleClick}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              open={open}
+              onClose={handleMenuClose}
+            // PaperProps={{
+            //   style: {
+            //     maxHeight: ITEM_HEIGHT * 4.5,
+            //     width: '20ch',
+            //   },
+            // }}
+            >
+              <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
+                <ListItemIcon>
+                  <DeleteIcon />
+                </ListItemIcon>
+              Delete
+            </MenuItem>
+              {images.length ?
+                <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose() }}>
+                  <ListItemIcon>
+                    <AddToPhotosIcon />
+                  </ListItemIcon>
+              Add To Portfolio
+          </MenuItem>
+                : <></>
+              }
+            </Menu>
+          </>
         }
       </div>
       <div className="post_body" onClick={() => setShow(true)}>
@@ -239,7 +332,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       </div>
       {slideshow}
       <br />
-      <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
         <CommentIcon onClick={() => { setShowComments(true) }} />
         {hasCoordinates && <MapIcon onClick={() => { setShowMap(true) }} />}
       </div>
@@ -270,14 +363,49 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </div>
           {slideshow}
           <h3>Comments</h3>
-          <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
+          {/* <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
             <Form.Group className="w-100">
               <Form.Control type="text" placeholder="Comment..." value={comment} onChange={(e) => setComment(e.target.value)} required style={{ marginLeft: "auto", marginRight: "auto" }} />
             </Form.Group>
             <Form.Group>
               <SendIcon style={{ fontSize: "45px" }} onClick={postComment} />
             </Form.Group>
-          </Form>
+          </Form> */}
+          <TextField
+            variant="outlined"
+            margin="normal"
+            multiline
+            rowsMax={4}
+            // fullWidth
+            name="commentBox"
+            label="Comment"
+            id="commentBox"
+            value={comment}
+            onKeyPress={(ev) => {
+              if (ev.key === 'Enter') {
+                // Do code here
+                ev.preventDefault();
+                postComment();
+              }
+            }}
+            InputProps=
+            {{
+              endAdornment:
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="comment send"
+                    onClick={postComment}
+                    onMouseDown={() => { }}
+                    edge="end"
+                  >
+                    <SendIcon/>
+                  </IconButton>
+                </InputAdornment>
+
+            }}
+            onChange={(e) => setComment(e.target.value)}
+            style={{width: "80%", marginLeft: "10%"}}
+          />
           <br />
           {
             comments.sort((a, b) => b.number - a.number).map((c) => {
@@ -289,34 +417,34 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       </Modal>
       <div className="rate">
         {showStars ?
-        <Box>
-          Rate 
-          <span style={{float :"right"}}>Total Rating</span>
-          <br/> 
-          <StyledRating
-          max={3}
-          value={stars}
-          onChange={updateStars}
-          icon={<GradeIcon fontSize="inherit" />}
-          />
-          <span style={{float :"right"}}>{totalStars}</span>
-        </Box> : 
-        <Box>
-          Total Rating : {totalStars} 
-          <br/> 
-        </Box>}
+          <Box>
+            Rate
+          <span style={{ float: "right" }}>Total Rating</span>
+            <br />
+            <StyledRating
+              max={3}
+              value={stars}
+              onChange={updateStars}
+              icon={<GradeIcon fontSize="inherit" />}
+            />
+            <span style={{ float: "right" }}>{totalStars}</span>
+          </Box> :
+          <Box>
+            Total Rating : {totalStars}
+            <br />
+          </Box>}
       </div>
       <Modal
         show={showMap}
-        onHide={() => {setShowMap(false)}}
+        onHide={() => { setShowMap(false) }}
         keyboard={false}
         size="xl"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton onClick={() => {setShowMap(false)}}><h3 style={{marginLeft: "auto"}}>Map View</h3></Modal.Header>
+        <Modal.Header closeButton onClick={() => { setShowMap(false) }}><h3 style={{ marginLeft: "auto" }}>Map View</h3></Modal.Header>
         <Modal.Body>
-        <Map
+          <Map
             center={{ lat: lat, lng: lng }}
             height='100vh'
             zoom={15}
