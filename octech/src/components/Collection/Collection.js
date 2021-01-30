@@ -23,10 +23,13 @@ function Collection({ match, user }) {
     const [description, setDescription] = useState("");
     const [open, setOpen] = useState(false);
     const [sliderImages, setSliderImages] = useState([]);
-    const [images, setImages] = useState([]);
+   // const [images, setImages] = useState([]);
     const [CollectionExists, setCollectionExists] = useState(false);
-    const [Collection, setCollection] = useState([]);
+    //const [Collection, setCollection] = useState([]);
     const [Collections, setCollections] = useState([]);
+
+    // To store the images that we added to the collection from already uploaded post
+    const [alreadyUploadedImage,setAlreadyUploadedImage] = useState([])
 
     useEffect(() => {
         db.collection("collections").where("creator", "==", match.params.id).onSnapshot((snapshot) => {
@@ -37,11 +40,22 @@ function Collection({ match, user }) {
                 setCollectionExists(true);
 
                 setCollections(
-                    snapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        key: doc.id,
-                        data: doc.data(),
-                    }))
+                    snapshot.docs.map((doc) => 
+                    {   
+                        let imgs = []
+                        doc.data().imageRef.forEach((id) => {
+                            db.collection("postImages").doc(id).get().then((doc) => {
+                                imgs.push(doc.data().url);
+                            });
+                        })
+                        setAlreadyUploadedImage(imgs);
+                        return ({
+                            id: doc.id,
+                            key: doc.id,
+                            data: doc.data(),
+                            })
+                    }
+                    )
                 )
             }
         })
@@ -98,13 +112,13 @@ function Collection({ match, user }) {
 
 
     return (
-        <>
+        <div>
             {
                 (match.params.id === user.displayName) &&
                 <div style={{ padding: "20px" }}>
-                    <p>Looks like you're still on the hunt for the perfect Collection!</p>
+                    <p>Ready to Create the Perfect Collection?</p>
                     <Button variant="contained"
-                        color="primary" onClick={() => { setOpen(true) }}><b>I'm Ready! Lets Make One Now!</b></Button>
+                        color="primary" onClick={() => { setOpen(true) }}><b>Build a Collection</b></Button>
                 </div>
             }
             <Modal
@@ -158,12 +172,12 @@ function Collection({ match, user }) {
                                     <Divider orientation="vertical" />
                                     <Divider orientation="vertical" />
                                     <Divider orientation="vertical" />
-                                    <b>Upload Images</b>
+                                    <b>Choose Your Fondest Memories</b>
                                 </Button>
                             </label>
                         </div>
 
-                        <center style={{ fontSize: "12px" }}>(Upload Images that showcase your Photography at its Best!)</center>
+                        <center style={{ fontSize: "12px" }}>(Upload your memories)</center>
 
                         <Carousel
                             interval={null}
@@ -198,11 +212,14 @@ function Collection({ match, user }) {
             </Modal>
 
             {
-                CollectionExists &&
+                CollectionExists && 
 
                 <div>
                     {
-                        Collections.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+                         Collections.map( 
+                            //  The posts from the useEffect hook that were saved are 
+                            //  iterated over and a new Post component is created corresponding to the posts it is iterating over
+                            
                             ({
                                 id,
                                 data
@@ -215,9 +232,9 @@ function Collection({ match, user }) {
                                     <p>Theme - {data.theme} [{data.description}]</p>
                                     <Carousel
                                         interval={null}
-                                        controls={((data.images.length) > 1) ? true : false}
+                                        controls={((data.images.length + alreadyUploadedImage.length) > 1) ? true : false}
                                     >
-                                        {data.images.map((a) =>
+                                        {[...(data.images.map((a) =>
 
                                             <Carousel.Item className="post__image">
                                                 <img
@@ -225,19 +242,20 @@ function Collection({ match, user }) {
                                                     alt="Carousel"
                                                 />
                                             </Carousel.Item>
-                                        )}
+                                        )),...(alreadyUploadedImage.map((a) =>
 
-                                        {/* {images.map((a) =>
-
-                                            <Carousel.Item className="post__image">
-                                                <img
-                                                    src={a}
-                                                    alt="Carousel"
-                                                />
-                                            </Carousel.Item>
-                                        )} */}
-
+                                        <Carousel.Item className="post__image">
+                                            <img
+                                                src={a}
+                                                alt="Carousel"
+                                            />
+                                        </Carousel.Item>
+                                        ))]
+                                        }
+    
                                     </Carousel>
+
+                                    
                                     {(match.params.id === user.displayName) &&
                                         <Button
                                             variant="contained"
@@ -248,20 +266,19 @@ function Collection({ match, user }) {
                                                     collections: firebase.firestore.FieldValue.arrayRemove(data.name)
                                                 });
                                             }}
-                                            style={{ marginTop: "10px" }}>
+                                            style={{ marginTop: "20px" }}>
 
                                             <b>Delete Collection</b>
 
                                         </Button>}
                                 </div>
-
                             )
                         )
                     }
 
                 </div>
             }
-        </>
+        </div>
     )
 }
 
