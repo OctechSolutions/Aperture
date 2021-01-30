@@ -59,7 +59,7 @@ function Channels({ profileName }) {
                 // window.location.reload();
             });
         db.collection("users").doc(user.displayName).update({
-            followingChannels : firebase.firestore.FieldValue.arrayUnion(channelName)
+            followingChannels : firebase.firestore.FieldValue.arrayUnion({name:channelName,creator:user.displayName})
         });
     }
 
@@ -99,7 +99,7 @@ function Channels({ profileName }) {
             })
         })
         db.collection("users").doc(user.displayName).update({
-            followingChannels : firebase.firestore.FieldValue.arrayRemove(channelName)
+            followingChannels : firebase.firestore.FieldValue.arrayRemove({name:channelName,creator:user.displayName})
         });
     }
 

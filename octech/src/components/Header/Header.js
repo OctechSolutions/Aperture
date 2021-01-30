@@ -31,7 +31,7 @@ function Header() {
         .onSnapshot((snapshot) =>
           setViewingUserData(snapshot.data())
         );
-}, []);
+}, [user.displayName]);
   //User and channel List
   const [users,setUsers] = useState([]);
   //Fetch Users from the database
