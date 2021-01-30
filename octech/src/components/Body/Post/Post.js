@@ -378,7 +378,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   Add To Portfolio
                 </MenuItem>
                 }
-                {(collections.length > 0) &&
+                {(images.length > 0) && (collections.length > 0) &&
                   <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
                     <ListItemIcon>
                       <AddPhotoAlternateIcon />
