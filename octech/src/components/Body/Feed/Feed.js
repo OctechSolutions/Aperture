@@ -98,10 +98,16 @@ function Feed({ match }, props) {
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
+  //Timestamp of last post that was rendered . So to minimize queries from db
+  const [timeStamp,setTimeStamp] = useState(0);
   const addPosts = post =>{
+    if(posts.length>0 && post.length>0 && post[post.length-1].id === posts[0].id)
+      post.splice(-1,1)
     let newPosts = posts.concat(post);
     newPosts.sort((a,b)=> a.data.timestamp < b.data.timestamp)
     setPosts(newPosts);
+    if(newPosts.length>0)
+      setTimeStamp(newPosts[0].data.timestamp)
   }
   
   function handleSliderChange(event) {
@@ -140,22 +146,22 @@ function Feed({ match }, props) {
   //     });
   //   })
 
-  //   db.collection("channels").get().then(result => {
-  //     result.forEach(element => {
-  //       db.collection("channels").doc(element.id).update({
-  //         followers:[]
-  //       })
-  //     })
-  //   })
+  //   // db.collection("channels").get().then(result => {
+  //   //   result.forEach(element => {
+  //   //     db.collection("channels").doc(element.id).update({
+  //   //       followers:[]
+  //   //     })
+  //   //   })
+  //   // })
 
-  //   db.collection("posts").get().then(result => {
-  //     result.forEach(element => {
-  //       db.collection("posts").doc(element.id).update({
-  //         stars:{},
-  //         totalStars:0
-  //       })
-  //     })
-  //   });  
+  //   // db.collection("posts").get().then(result => {
+  //   //   result.forEach(element => {
+  //   //     db.collection("posts").doc(element.id).update({
+  //   //       stars:{},
+  //   //       totalStars:0
+  //   //     })
+  //   //   })
+  //   // });  
 
   // }
   // fixDB()
@@ -170,18 +176,35 @@ function Feed({ match }, props) {
             let list = [doc.data().name,...(doc.data().friends.map(user => user.name)),...(doc.data().followingChannels.map(channel => channel.name))];
             while (list.length>0){
               let subList = list.splice(0,10);
-              db.collection("posts")
-                .where("name","in",subList)
-                .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
-                .onSnapshot((snapshot) =>
-                 addPosts(
-                    snapshot.docs.map((doc) => ({
-                      id: doc.id,
-                      key:doc.id,
-                      data: doc.data(),
-                    }))
-                  )                  
-                );
+              if(timeStamp){
+                db.collection("posts")
+                  .where("name","in",subList)
+                  .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+                  .endAt(timeStamp)
+                  .onSnapshot((snapshot) =>
+                  addPosts(
+                      snapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        key:doc.id,
+                        data: doc.data(),
+                      }))
+                    )                  
+                  );
+                }
+                else{
+                  db.collection("posts")
+                    .where("name","in",subList)
+                    .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+                    .onSnapshot((snapshot) =>
+                    addPosts(
+                        snapshot.docs.map((doc) => ({
+                          id: doc.id,
+                          key:doc.id,
+                          data: doc.data(),
+                        }))
+                      )                  
+                    );
+                }  
             }
           }
           else{

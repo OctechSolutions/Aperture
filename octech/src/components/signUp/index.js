@@ -107,7 +107,13 @@ const SignUp = () => {
                                     photoUrl: doc,
                                     realName: name,
                                     contactNumber: contactNumber,
-                                    
+                                    friends: [],
+                                    friendRequestReceived: [],
+                                    friendRequestSent: [],
+                                    followingChannels: [],
+                                    profilePoints:0,
+                                    blocked:[],
+                                    blockedBy: [],
                                 }, { merge: true });
                                 dispatch(login({
                                     email: email,
