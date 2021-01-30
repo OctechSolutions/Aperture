@@ -22,6 +22,7 @@ import Button from 'react-bootstrap/Button';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useHistory } from "react-router-dom";
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -125,44 +126,37 @@ function Feed({ match }, props) {
   }
 
   // const fixDB =()=>{
-  //   // db.collection("users").get().then(result => {
-  //   //   result.forEach(element => {
-  //   //     db.collection("users").doc(element.id).update({
-  //   //       // followingChannels:[],
-  //   //       // friendRequestReceived:[],
-  //   //       // friendRequestSent : [],
-  //   //       // friends:[],
-  //   //       // profilePoints:0,
-  //   //       blocked:[],
-  //   //       blockedBy:[],
-  //   //     })
-  //   //   });
-  //   // })
+  //   db.collection("users").get().then(result => {
+  //     result.forEach(element => {
+  //       db.collection("users").doc(element.id).update({
+  //         followingChannels:[],
+  //         friendRequestReceived:[],
+  //         friendRequestSent : [],
+  //         friends:[],
+  //         profilePoints:0,
+  //         blocked:[],
+  //         blockedBy:[],
+  //       })
+  //     });
+  //   })
+
   //   db.collection("channels").get().then(result => {
   //     result.forEach(element => {
   //       db.collection("channels").doc(element.id).update({
   //         followers:[]
   //       })
-  //   // db.collection("posts").get().then(result => {
-  //   //   result.forEach(element => {
-  //   //     db.collection("posts").doc(element.id).update({
-  //   //       isPrivate:false
-  //   //     })
-  //   //     // if(element.data().channel!=""){
-  //   //     //   db.collection("posts").doc(element.id).update({
-  //   //     //     channelBy:element.data().name,
-  //   //     //     name : element.data().channel,
-  //   //     //     channel:"",
-  //   //     //   })
-  //   //     // }
-  //   //     // else{
-  //   //     //   db.collection("posts").doc(element.id).update({
-  //   //     //     channelBy:""
-  //   //     //   })
-  //   //     // }
-  //     });
+  //     })
   //   })
-    
+
+  //   db.collection("posts").get().then(result => {
+  //     result.forEach(element => {
+  //       db.collection("posts").doc(element.id).update({
+  //         stars:{},
+  //         totalStars:0
+  //       })
+  //     })
+  //   });  
+
   // }
   // fixDB()
 
@@ -173,7 +167,7 @@ function Feed({ match }, props) {
         if (doc.exists) {
           setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
           if(!match.params.channel){
-            let list = [doc.data().name,...doc.data().friends,...(doc.data().followingChannels.map(channel => channel.name))];
+            let list = [doc.data().name,...(doc.data().friends.map(user => user.name)),...(doc.data().followingChannels.map(channel => channel.name))];
             while (list.length>0){
               let subList = list.splice(0,10);
               db.collection("posts")
@@ -466,7 +460,7 @@ function Feed({ match }, props) {
       followingChannels: firebase.firestore.FieldValue.arrayUnion({name: match.params.channel, creator:match.params.id})
     });
     db.collection("channels").doc(channelInfo.id).update({
-      followers: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
+      followers: firebase.firestore.FieldValue.arrayUnion({name:profileInfo.name, photoUrl:profileInfo.photoUrl})
     });
 
   }
@@ -476,19 +470,22 @@ function Feed({ match }, props) {
       followingChannels: firebase.firestore.FieldValue.arrayRemove({name: match.params.channel, creator:match.params.id})
     });
     db.collection("channels").doc(channelInfo.id).update({
-      followers: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+      followers: firebase.firestore.FieldValue.arrayRemove({name:profileInfo.name, photoUrl:profileInfo.photoUrl})
     });
   }
 
   const setFollowersList = (l) =>
     (l.map(item =>
         <ListItem
-            key={item}
+            key={item.name}
             button
-            onClick={() => {setShowFollowers(false); history.push(`/user/${item}`)}
+            onClick={() => {setShowFollowers(false); history.push(`/user/${item.name}`)}
           }    
         >
-            <ListItemText primary={item} />
+          <ListItemAvatar>
+            <Avatar src={item.photoUrl}/>
+          </ListItemAvatar>
+          <ListItemText primary={item.name} />
         </ListItem>
     ))
     

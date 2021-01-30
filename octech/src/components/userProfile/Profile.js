@@ -14,6 +14,9 @@ import { useHistory } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import ImageIcon from '@material-ui/icons/Image';
 import Collection from '../Collection/Collection';
 
 
@@ -26,6 +29,7 @@ function Profile({ match }) {
     const [key, setKey] = useState('posts');
     const [showFriendList,setShowFriendList] = useState(false);
     const [showFollowingList,setShowFollowingList] = useState(false);
+    const [viewingUserInfo,setViewingUserInfo] = useState({});
     useEffect(() => {
         const unmount = db.collection("collections").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
             const tempCollections = [];
@@ -43,7 +47,7 @@ function Profile({ match }) {
             .onSnapshot(doc => {
                 if (doc.exists) {
                     setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
-                    if(doc.data().friends.includes(user.displayName)){
+                    if(doc.data().friends.some(u => u.name === user.displayName)){
                         db.collection("posts") // Posts are fetched from the db
                             .orderBy("timestamp", "desc")
                             .onSnapshot((snapshot) =>
@@ -72,6 +76,14 @@ function Profile({ match }) {
                     console.log("No such document!");
                 }
             });
+        db.collection("users").doc(user.displayName)
+        .onSnapshot(snapshot =>{
+            if(snapshot.exists){
+                setViewingUserInfo(snapshot.data());
+            }
+            else 
+                console.log("No Such Document!")
+        })
     }, [match,user.displayName]);
 
     useEffect(() => {
@@ -136,12 +148,12 @@ function Profile({ match }) {
     const acceptfriendRequest = (e) => {
         db.collection("users").doc(profileInfo.name).update({
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName),
-            friends: firebase.firestore.FieldValue.arrayUnion(user.displayName)
+            friends: firebase.firestore.FieldValue.arrayUnion({name:viewingUserInfo.name, photoUrl:viewingUserInfo.photoUrl})
         });
         
         db.collection("users").doc(user.displayName).update({
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
-            friends: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
+            friends: firebase.firestore.FieldValue.arrayUnion({name:profileInfo.name, photoUrl:profileInfo.photoUrl})
         });
     }
     const cancelfriendRequest = (e) => {
@@ -171,10 +183,10 @@ function Profile({ match }) {
 
     const unfriend = (e) => {
         db.collection("users").doc(profileInfo.name).update({
-            friends: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+            friends: firebase.firestore.FieldValue.arrayRemove({name:viewingUserInfo.name, photoUrl:viewingUserInfo.photoUrl})
         });
         db.collection("users").doc(user.displayName).update({
-            friends: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+            friends: firebase.firestore.FieldValue.arrayRemove({name:profileInfo.name, photoUrl:profileInfo.photoUrl})
         });
     }
     const unBlock = (e) => {
@@ -188,13 +200,13 @@ function Profile({ match }) {
     const block = (e) => {
         db.collection("users").doc(profileInfo.name).update({
             blockedBy:firebase.firestore.FieldValue.arrayUnion(user.displayName),
-            friends: firebase.firestore.FieldValue.arrayRemove(user.displayName),
+            friends: firebase.firestore.FieldValue.arrayRemove({name:viewingUserInfo.name, photoUrl:viewingUserInfo.photoUrl}),
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName),
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(user.displayName)
         });
         db.collection("users").doc(user.displayName).update({
             blocked:firebase.firestore.FieldValue.arrayUnion(profileInfo.name),
-            friends: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
+            friends: firebase.firestore.FieldValue.arrayRemove({name:profileInfo.name, photoUrl:profileInfo.photoUrl}),
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
@@ -203,11 +215,14 @@ function Profile({ match }) {
     const setUserList = (l) =>
         (l.map(item =>
             <ListItem
-                key={item}
+                key={item.name}
                 button
-                onClick={() => {setShowFriendList(false); history.push(`/user/${item}`)}}    
+                onClick={() => {setShowFriendList(false); history.push(`/user/${item.name}`)}}    
             >
-                <ListItemText primary={item} />
+            <ListItemAvatar>
+                <Avatar src={item.photoUrl}/>
+            </ListItemAvatar>
+            <ListItemText primary={item.name} />
             </ListItem>
         ))
     const setFollowingList = (l) =>
@@ -217,6 +232,11 @@ function Profile({ match }) {
                 button
                 onClick={() => {setShowFollowingList(false); history.push(`/user/${item.creator + "/channel/" + item.name}`)}}   
             >
+                <ListItemAvatar>
+                    <Avatar>
+                        <ImageIcon/>
+                    </Avatar>
+               </ListItemAvatar>
                 <ListItemText primary={item.name} secondary = {item.creator} />
             </ListItem>
         ))
@@ -228,7 +248,7 @@ function Profile({ match }) {
             {profileInfo &&
                 <center>
                     <h1>{profileInfo.name}</h1> <p onClick= {()=>setShowFriendList(true)}>Friends: {profileInfo.friends && profileInfo.friends.length}</p> <p onClick = {()=>setShowFollowingList(true)}>Channels Following: {profileInfo.followingChannels && profileInfo.followingChannels.length}</p>
-                    {(profileInfo.friends && ((profileInfo.friends.includes(user.displayName)) || (profileInfo.name === user.displayName))) &&
+                    {(profileInfo.friends && ((profileInfo.friends.some(u => u.name === user.displayName)) || (profileInfo.name === user.displayName))) &&
                         <>
                         <Modal
                             show={showFriendList}
@@ -258,7 +278,7 @@ function Profile({ match }) {
                     }
                     {(profileInfo.friends && (profileInfo.name !== user.displayName)) ?
                         <>
-                            {(profileInfo.friends.includes(user.displayName)) ?
+                            {(profileInfo.friends.some(u => u.name === user.displayName)) ?
                                 <Button onClick={unfriend} variant="success">Remove friend : {profileInfo.name}</Button>
                                 : ((profileInfo.friendRequestReceived.includes(user.displayName)) ? 
                                 (<Button onClick={cancelfriendRequest} variant="outline-primary">Cancel friend Request : {profileInfo.name}</Button>)
@@ -331,6 +351,7 @@ function Profile({ match }) {
         :
         <p>You have blocked this user!
         {<Button onClick={unBlock} variant="success">Unblock : {profileInfo.name}</Button>}</p>
+
         }
         </>
         }
