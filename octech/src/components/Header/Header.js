@@ -1,19 +1,25 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import './Header.css';
-import HeaderOption from './HeaderOption';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../features/userSlice';
 import { auth } from '../../firebase';
 import { logout } from '../../features/userSlice';
-import logo from './aperture_logo.svg';
+import logo from './aperture_logo.png';
 import { Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
 import { useHistory } from "react-router-dom";
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 import { db } from "../../firebase";
+import { Avatar } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Tooltip from '@material-ui/core/Tooltip';
 
-function Header() {
+function Header({ setValue }) {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -25,75 +31,118 @@ function Header() {
   }
 
   const user = useSelector(selectUser);
-  const [viewingUserData,setViewingUserData] = useState([])
+  const [viewingUserData, setViewingUserData] = useState([])
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
   useEffect(() => {
     db.collection("users").doc(user.displayName)
-        .onSnapshot((snapshot) =>
-          setViewingUserData(snapshot.data())
-        );
-}, [user.displayName]);
+      .onSnapshot((snapshot) =>
+        setViewingUserData(snapshot.data())
+      );
+  }, [user.displayName]);
+  
   //User and channel List
-  const [users,setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
   //Fetch Users from the database
-  const openSearchHandler = () =>{
+  const openSearchHandler = () => {
     let list = [];
-    ((viewingUserData.blockedBy.length>0) ?
-    db.collection("users")
-    .where("name","not-in",viewingUserData.blockedBy)
-    .get().then(result =>{
+    ((viewingUserData.blockedBy.length > 0) ?
+      db.collection("users")
+        .where("name", "not-in", viewingUserData.blockedBy)
+        .get().then(result => {
+          list.push(...result.docs.map(doc => doc.data()));
+        }) :
+      db.collection("users")
+        .get().then(result => {
+          list.push(...result.docs.map(doc => doc.data()));
+        }))
+    db.collection("channels").get().then(result => {
       list.push(...result.docs.map(doc => doc.data()));
-    }) :
-    db.collection("users")
-    .get().then(result =>{
-      list.push(...result.docs.map(doc => doc.data()));
-    }))
-    db.collection("channels").get().then(result =>{
-      list.push(...result.docs.map(doc => doc.data()));
-    }) 
+    })
     setUsers(list);
   }
   //Open the selected users profile
   const openUser = (selectedUser) => {
-    if(selectedUser.creator === undefined)
-      history.push(`/user/${selectedUser.name}`); 
+    if (selectedUser.creator === undefined)
+      history.push(`/user/${selectedUser.name}`);
     else
       history.push(`/user/${selectedUser.creator + "/channel/" + selectedUser.name}`);
   }
 
   return (
     <div className="header">
-      <Link style={{ textDecoration: 'none', color: "black" }} to={'/'}> {/* Links to the home feed for the user */}
-        <div className="header__left">
-          <img src={logo} alt="Aperture" />
-          <h6>Aperture</h6>
-        </div>
+      <Link style={{ textDecoration: 'none', color: "black" }} onClick={() => { setValue("") }} to={'/'}> {/* Links to the home feed for the user */}
+        <IconButton
+          aria-label="logo"
+        >
+          <img className="apertureLogo" src={logo} style={{ marginTop: "2px" }} alt="Aperture" />
+        </IconButton>
       </Link>
-      <div className = "searchBar" style={{ width: "30vw" }}>
-      <ReactSearchAutocomplete 
-        items={users}
-        onFocus={openSearchHandler}
-        useOptions={{ keys: ["name", "email"] }}
-        resultStringKeyName = "name"
-        // onSearch={(string,result)=>{console.log(string,result)}}
-        onSelect = {selectedUser => openUser(selectedUser)}
-        placeholder ="Search"
-        styling={
-          {
-            border: "2px grey solid",
+      {/* <div className="searchBar" style={{ width: "30vw" }}>
+        <ReactSearchAutocomplete
+          items={users}
+          onFocus={openSearchHandler}
+          useOptions={{ keys: ["name", "email"] }}
+          resultStringKeyName="name"
+          // onSearch={(string,result)=>{console.log(string,result)}}
+          onSelect={selectedUser => openUser(selectedUser)}
+          placeholder="Search"
+          styling={
+            {
+              border: "2px grey solid",
+            }
           }
-        }
-      />
-      </div>
-      <Button onClick={logoutOfApp}>Logout</Button>
-      <div className="header__right">
-        <Link style={{ textDecoration: 'none', color: "black" }} to={`/user/${user?.displayName}`}>
-          {/* This link takes the user to their profile */}
-          <HeaderOption
-            avatar={true}
-          />
-          <p>{user?.displayName}</p>
-        </Link>
-      </div>
+        />
+      </div> */}
+      {/* <Button onClick={logoutOfApp}>Logout</Button> */}
+      {/* <Link style={{ textDecoration: 'none', color: "black" }} onClick={() => { setValue(`user/${user?.displayName}`) }} to={`/user/${user?.displayName}`}> */}
+      {/* This link takes the user to their profile */}
+      <IconButton
+        aria-label="avatar"
+        onClick={handleMenu}
+      >
+        <Tooltip title={user.displayName} aria-label="name">
+          <Avatar src={user?.photoUrl} />
+        </Tooltip>
+      </IconButton>
+      <Menu
+        id="menu-appbar"
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={() => { history.push(`/user/${user.displayName}`); setValue(`user/${user.displayName}`); handleClose() }}>
+          <ListItemIcon>
+            <PersonOutlineIcon />
+          </ListItemIcon>
+                  Profile
+                </MenuItem>
+        <MenuItem onClick={logoutOfApp}>
+          <ListItemIcon>
+            <ExitToAppIcon />
+          </ListItemIcon>
+                  Sign Out
+                </MenuItem>
+      </Menu>
     </div>
   )
 }

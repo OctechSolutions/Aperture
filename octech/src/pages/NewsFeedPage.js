@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import Feed from '../components/Body/Feed/Feed';
 import Header from '../components/Header/Header';
 import Profile from '../components/userProfile/Profile';
-import Collection from '../Collections/Collection';
+import Collection from '../components/Collection/Collection';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import Alert from 'react-bootstrap/Alert';
 import Modal from 'react-bootstrap/Modal';
@@ -31,7 +31,7 @@ export default function NewsfeedPage(props) {
     const history = useHistory();
     const classes = useStyles();
     const user = useSelector(selectUser); // Select current user from slice
-    const [value, setValue] = React.useState('recents');
+    const [value, setValue] = React.useState("");
 
     const handleChange = (event, newValue) => {
         console.log(newValue);
@@ -44,7 +44,7 @@ export default function NewsfeedPage(props) {
                 props.isVerified ?
                     (
                         <div className="app">
-                            <Header /> {/* The header is always rendered if the user is logged in */}
+                            <Header setValue = {setValue} /> {/* The header is always rendered if the user is logged in */}
 
                             <Route path="/" exact component={Feed} />
                             <Route path="/user/:id" exact component={Profile} /> {/* Dynamically generated user pages, the user lands on /user/{username} when clicking on someone profile, the profile page of the user is rendered by the profile component */}
@@ -74,7 +74,6 @@ export default function NewsfeedPage(props) {
                                 </Alert>
                             </Modal.Footer>
                         </Modal>
-
 
                     )
             }

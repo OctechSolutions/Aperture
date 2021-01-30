@@ -67,7 +67,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
   const [showComments, setShowComments] = useState(false);
-  const [showStars,] = useState((name === viewingUser.displayName) ? false : true);
+  const [showStars,] = useState(((name === viewingUser.displayName) || (channelBy === viewingUser.displayName)) ? false : true);
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
