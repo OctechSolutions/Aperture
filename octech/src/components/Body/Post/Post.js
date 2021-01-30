@@ -139,8 +139,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   }, [id]);
 
   useEffect(() => {
-    db.collection("users").doc(user.displayName).get().then((doc) => {
-      console.log(doc.data());
+    db.collection("users").doc(user.displayName).onSnapshot((doc) => {
+      // console.log(snapshot);
       setCollections(doc.data().collections);
     })
   }, []);
@@ -166,7 +166,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   const addImagesToCollection = (a) => {
 
-    db.collection("collections").doc(user.displayName+a).update({
+    db.collection("collections").doc(user.displayName + a).update({
       imageRef: firebase.firestore.FieldValue.arrayUnion(...refs)
     });
     setAddToChannelAnchorEl(null);
@@ -378,12 +378,14 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   Add To Portfolio
                 </MenuItem>
                 }
-                <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
-                  <ListItemIcon>
-                    <AddPhotoAlternateIcon />
-                  </ListItemIcon>
+                {(collections.length > 0) &&
+                  <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
+                    <ListItemIcon>
+                      <AddPhotoAlternateIcon />
+                    </ListItemIcon>
                   Add To Collections
                 </MenuItem>
+                }
               </Menu>
               <Menu
                 anchorEl={addToChannelAnchorEl}
