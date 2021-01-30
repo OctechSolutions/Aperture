@@ -324,8 +324,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   return (
     <div ref={ref} className="post" >
-      {collections &&
-       <>
+      <>
         { (channelBy?.length > 0) ? <div className="post_channel">
           <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
           <hr />
@@ -533,7 +532,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             {snackbarMessage}
           </Alert>
         </Snackbar>
-      </>}
+      </>
+      
     </div>
   );
 });
