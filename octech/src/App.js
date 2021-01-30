@@ -46,6 +46,7 @@ function App() {
                 profilePoints:0,
                 blocked:[],
                 blockedBy: [],
+                collections :[]
               });         
             }
             sendVerificationEmail(userAuth)

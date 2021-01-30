@@ -135,13 +135,14 @@ function Feed({ match }, props) {
   //   db.collection("users").get().then(result => {
   //     result.forEach(element => {
   //       db.collection("users").doc(element.id).update({
-  //         followingChannels:[],
-  //         friendRequestReceived:[],
-  //         friendRequestSent : [],
-  //         friends:[],
-  //         profilePoints:0,
-  //         blocked:[],
-  //         blockedBy:[],
+  //         // followingChannels:[],
+  //         // friendRequestReceived:[],
+  //         // friendRequestSent : [],
+  //         // friends:[],
+  //         // profilePoints:0,
+  //         // blocked:[],
+  //         // blockedBy:[],
+  //         collections :[]
   //       })
   //     });
   //   })

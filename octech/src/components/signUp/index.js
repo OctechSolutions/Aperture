@@ -114,6 +114,7 @@ const SignUp = () => {
                                     profilePoints:0,
                                     blocked:[],
                                     blockedBy: [],
+                                    collections :[]
                                 }, { merge: true });
                                 dispatch(login({
                                     email: email,
