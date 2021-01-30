@@ -10,14 +10,22 @@ import Tab from 'react-bootstrap/Tab';
 import Button from 'react-bootstrap/Button';
 import firebase from "firebase";
 import Portfolio from "../Body/Portfolio/Portfolio"
+import { useHistory } from "react-router-dom";
+import Modal from 'react-bootstrap/Modal';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Collection from '../Collection/Collection';
 
+
 function Profile({ match }) {
+    const history = useHistory();
     const user = useSelector(selectUser); // Select current user from slice
     const [profileInfo, setProfileInfo] = useState({}); // Stores the info of the user from the db
     const [posts, setPosts] = useState([]); // Stores the posts of the user
     const [collections, setCollections] = useState([]);
     const [key, setKey] = useState('posts');
+    const [showFriendList,setShowFriendList] = useState(false);
+    const [showFollowingList,setShowFollowingList] = useState(false);
     useEffect(() => {
         const unmount = db.collection("collections").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
             const tempCollections = [];
@@ -64,7 +72,7 @@ function Profile({ match }) {
                     console.log("No such document!");
                 }
             });
-    }, [match]);
+    }, [match,user.displayName]);
 
     useEffect(() => {
         
@@ -191,6 +199,27 @@ function Profile({ match }) {
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
     }
+
+    const setUserList = (l) =>
+        (l.map(item =>
+            <ListItem
+                key={item}
+                button
+                onClick={() => {setShowFriendList(false); history.push(`/user/${item}`)}}    
+            >
+                <ListItemText primary={item} />
+            </ListItem>
+        ))
+    const setFollowingList = (l) =>
+        (l.map(item =>
+            <ListItem
+                key={item.name}
+                button
+                onClick={() => {setShowFollowingList(false); history.push(`/user/${item.creator + "/channel/" + item.name}`)}}   
+            >
+                <ListItemText primary={item.name} secondary = {item.creator} />
+            </ListItem>
+        ))
     
     return (
         <div className="profile" style={{ color: "black", width: "100%" }}>
@@ -198,7 +227,35 @@ function Profile({ match }) {
             <>
             {profileInfo &&
                 <center>
-                    <h1>{profileInfo.name}</h1>
+                    <h1>{profileInfo.name}</h1> <p onClick= {()=>setShowFriendList(true)}>Friends: {profileInfo.friends && profileInfo.friends.length}</p> <p onClick = {()=>setShowFollowingList(true)}>Channels Following: {profileInfo.followingChannels && profileInfo.followingChannels.length}</p>
+                    {(profileInfo.friends && ((profileInfo.friends.includes(user.displayName)) || (profileInfo.name === user.displayName))) &&
+                        <>
+                        <Modal
+                            show={showFriendList}
+                            onHide={() => {setShowFriendList(false)}}
+                            keyboard={false}
+                            size="xl"
+                            aria-labelledby="contained-modal-title-vcenter"
+                            centered
+                        >
+                            <Modal.Body>
+                                {setUserList(profileInfo.friends)}
+                            </Modal.Body>
+                        </Modal>
+                        <Modal
+                            show={showFollowingList}
+                            onHide={() => { setShowFollowingList(false) }}
+                            keyboard={false}
+                            size="xl"
+                            aria-labelledby="contained-modal-title-vcenter"
+                            centered
+                        >
+                            <Modal.Body>
+                                {setFollowingList(profileInfo.followingChannels)}
+                            </Modal.Body>
+                        </Modal>
+                        </>
+                    }
                     {(profileInfo.friends && (profileInfo.name !== user.displayName)) ?
                         <>
                             {(profileInfo.friends.includes(user.displayName)) ?

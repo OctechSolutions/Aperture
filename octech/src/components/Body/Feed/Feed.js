@@ -19,6 +19,9 @@ import Spinner from 'react-bootstrap/Spinner';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
 import Map from "../Map/Map";
 import Button from 'react-bootstrap/Button';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { useHistory } from "react-router-dom";
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -65,6 +68,7 @@ const DEFAULT_EDIT_OPTIONS = [
 ]
 function Feed({ match }, props) {
   const user = useSelector(selectUser);
+  const history = useHistory();
 
   const [input, setInput] = useState("");
   const [profileInfo, setProfileInfo] = useState("");
@@ -85,7 +89,11 @@ function Feed({ match }, props) {
   const [lat, setLat] = useState(25.1972);
   const [lng, setLng] = useState(55.2744);
   const [coordinatesSelected, setCoordinatesSelected] = useState(false);
-  const [isPrivatePost,setIsPrivatePost] = useState(false)
+  const [isPrivatePost,setIsPrivatePost] = useState(false);
+  const [showFollowers,setShowFollowers] = useState(false);
+  
+
+  const [channelInfo,setChannelInfo] = useState("")
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
@@ -130,11 +138,16 @@ function Feed({ match }, props) {
   //   //     })
   //   //   });
   //   // })
-  //   db.collection("posts").get().then(result => {
+  //   db.collection("channels").get().then(result => {
   //     result.forEach(element => {
-  //       db.collection("posts").doc(element.id).update({
-  //         isPrivate:false
+  //       db.collection("channels").doc(element.id).update({
+  //         followers:[]
   //       })
+  //   // db.collection("posts").get().then(result => {
+  //   //   result.forEach(element => {
+  //   //     db.collection("posts").doc(element.id).update({
+  //   //       isPrivate:false
+  //   //     })
   //   //     // if(element.data().channel!=""){
   //   //     //   db.collection("posts").doc(element.id).update({
   //   //     //     channelBy:element.data().name,
@@ -153,13 +166,14 @@ function Feed({ match }, props) {
   // }
   // fixDB()
 
+
   useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
     db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
       .onSnapshot(doc => {
         if (doc.exists) {
           setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
           if(!match.params.channel){
-            let list = [doc.data().name,...doc.data().friends,...doc.data().followingChannels];
+            let list = [doc.data().name,...doc.data().friends,...(doc.data().followingChannels.map(channel => channel.name))];
             while (list.length>0){
               let subList = list.splice(0,10);
               db.collection("posts")
@@ -177,6 +191,15 @@ function Feed({ match }, props) {
             }
           }
           else{
+            db.collection("channels").where("name","==",match.params.channel)
+            .onSnapshot(snapshot =>{
+              snapshot.forEach(channel => {
+                setChannelInfo({
+                  id:channel.id,
+                  data: channel.data()})
+              });
+            })
+
             db.collection("posts")
             .where("name","==",match.params.channel)
             .where("channelBy","==",match.params.id)
@@ -195,7 +218,7 @@ function Feed({ match }, props) {
           console.log("No such document!");
         }
       });
-    }, [user.displayName]);
+    }, [user.displayName,match.params]);
     
   const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
@@ -440,26 +463,63 @@ function Feed({ match }, props) {
 
   const followChannel = (e) => {
     db.collection("users").doc(profileInfo.name).update({
-      followingChannels: firebase.firestore.FieldValue.arrayUnion(match.params.channel)
+      followingChannels: firebase.firestore.FieldValue.arrayUnion({name: match.params.channel, creator:match.params.id})
     });
+    db.collection("channels").doc(channelInfo.id).update({
+      followers: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
+    });
+
   }
 
   const unfollowChannel = (e) => {
     db.collection("users").doc(profileInfo.name).update({
-      followingChannels: firebase.firestore.FieldValue.arrayRemove(match.params.channel)
+      followingChannels: firebase.firestore.FieldValue.arrayRemove({name: match.params.channel, creator:match.params.id})
+    });
+    db.collection("channels").doc(channelInfo.id).update({
+      followers: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
     });
   }
 
+  const setFollowersList = (l) =>
+    (l.map(item =>
+        <ListItem
+            key={item}
+            button
+            onClick={() => {setShowFollowers(false); history.push(`/user/${item}`)}
+          }    
+        >
+            <ListItemText primary={item} />
+        </ListItem>
+    ))
+    
   return (
     <div className="feed">
       {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
-      {(profileInfo && (match.params.id !== user.displayName) && (match.params.channel)) ?
+      {(profileInfo && (match.params.channel)) ?
         <center>
           <h1>{match.params.channel}</h1>
-          {(profileInfo.followingChannels.includes(match.params.channel)) ?
+            <p onClick= {()=>setShowFollowers(true)} >Followers:{channelInfo && channelInfo.data.followers.length}</p>
+            <Modal
+              show={showFollowers}
+              onHide={() => { setShowFollowers(false) }}
+              keyboard={false}
+              size="xl"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Body>
+                {channelInfo.data && setFollowersList(channelInfo.data.followers)}
+              </Modal.Body>
+             </Modal>
+          {(match.params.id !== user.displayName) ?               
+          (profileInfo.followingChannels.some(channel=> channel.name === match.params.channel)) ?
             <Button onClick={unfollowChannel} variant="success">Following</Button>
             :
-            <Button onClick={followChannel} variant="outline-primary">Follow</Button>}
+            <Button onClick={followChannel} variant="outline-primary">Follow</Button>
+          :
+          <>
+          </>
+          }
         </center>
         :
         <>
