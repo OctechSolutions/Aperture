@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { db, storage } from "../../firebase";
 import FlipMove from "react-flip-move";
 import Post from "../Body/Post/Post.js";
-import { Link } from 'react-router-dom';
-import { NewCollectionForm } from '../../Collections/NewCollectionForm';
-import '../../Collections/Collection.css';
 import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userSlice";
 import Channels from "../Channels/Channels";
@@ -20,6 +17,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import ImageIcon from '@material-ui/icons/Image';
+import Collection from '../Collection/Collection';
 
 
 function Profile({ match }) {
@@ -336,22 +334,7 @@ function Profile({ match }) {
                     }
                 </Tab>
                 <Tab eventKey="collections" title="Collections" style={{ color: "black", width: "100%" }}>
-                    {(profileInfo.name === user.displayName) && <footer><NewCollectionForm /></footer>}
-                    <section>
-                        {collections.map((collection) => (
-                            (profileInfo.name === collection.creator) &&
-
-                            <aside key={collection.name}>
-                                {(collection.creator === user.displayName) && <p onClick={() => deleteCollection(collection)} className="post__delete">Delete</p>}
-
-                                <Link to={`/user/${collection.id.split("_")[0] + "/" + collection.id.split("_")[1]}`}>
-                                    {collection.cover ? <img src={collection.cover} alt="collection" /> :
-                                        <img src={"https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png"} alt="Empty-Collection" />}
-                                    <h3>{collection.name}</h3>
-                                </Link>
-                            </aside>
-                        ))}
-                    </section>
+                   <Collection match = {match} user={user} />
                 </Tab>
                 <Tab eventKey="channels" title="Channels" style={{ color: "black", width: "100%" }}>
                     <Channels profileName={match.params.id} />
