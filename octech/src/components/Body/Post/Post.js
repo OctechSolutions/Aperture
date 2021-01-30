@@ -36,7 +36,7 @@ function Alert(props) {
 }
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar , isPrivate }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate }, ref) => {
 
   // const displayPosts = () => {
   //   console.log("hello", name);
@@ -71,9 +71,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
+  const [addToChannelAnchorEl, setAddToChannelAnchorEl] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarType, setSnackbarType] = useState("");
+  const [collections, setCollections] = useState([]);
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
@@ -136,6 +138,12 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     });
   }, [id]);
 
+  useEffect(() => {
+    db.collection("users").doc(user.displayName).get().then((doc) => {
+      console.log(doc.data());
+      setCollections(doc.data().collections);
+    })
+  }, []);
 
   const postComment = () => {
     console.log(comment, id);
@@ -150,6 +158,22 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       setComment("");
     }
 
+  }
+
+  const addToCollection = (event) => {
+    setAddToChannelAnchorEl(event.currentTarget);
+  }
+
+  const addImagesToCollection = (a) => {
+
+    db.collection("collections").doc(user.displayName+a).update({
+      imageRef: firebase.firestore.FieldValue.arrayUnion(...refs)
+    });
+    setAddToChannelAnchorEl(null);
+    setAnchorEl(null);
+    setSnackbarOpen(true);
+    setSnackbarMessage(`Added image/s to the collection ${a}!`);
+    setSnackbarType("success");
   }
 
   const user = useSelector(selectUser); // Select current user from slice
@@ -300,106 +324,119 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   return (
     <div ref={ref} className="post" >
-      { (channelBy?.length > 0) ? <div className="post_channel">
-        <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
-        <hr />
-      </div>
-        : ''}
-      <div className="post_title">
-        <div className="post_header">
-          <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
-          <div className="postInfo">
-            <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>{channelBy ? channelBy : name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
-            {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
-            <p>{description}</p>
-            <p>{isPrivate?"Private":"Public"}Post</p>
-          </div>
+      {collections && <>
+        { (channelBy?.length > 0) ? <div className="post_channel">
+          <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
+          <hr />
         </div>
-        {
-          ((user.displayName === channelBy) || (user.displayName === name)) &&
-          // <p onClick={deletePost} className="post__delete">Delete</p>
-          <>
-            <IconButton
-              aria-label="more"
-              aria-controls="long-menu"
-              aria-haspopup="true"
-              onClick={handleClick}
-            >
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              keepMounted
-              open={open}
-              onClose={handleMenuClose}
-            // PaperProps={{
-            //   style: {
-            //     maxHeight: ITEM_HEIGHT * 4.5,
-            //     width: '20ch',
-            //   },
-            // }}
-            >
-              <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
-                <ListItemIcon>
-                  <DeleteIcon />
-                </ListItemIcon>
-              Delete
-            </MenuItem>
-              {(images.length > 0) &&
-                <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
-                  <ListItemIcon>
-                    <AddToPhotosIcon />
-                  </ListItemIcon>
-                  Add To Portfolio
-                </MenuItem>
-              }
-              <MenuItem key={"addToCollections"} selected={false} onClick={() => { console.log("Add to collection clicked, assad call function here");}}>
-                <ListItemIcon>
-                  <AddPhotoAlternateIcon />
-                </ListItemIcon>
-                  Add To Collections
-                </MenuItem>
-            </Menu>
-          </>
-        }
-      </div>
-      <div className="post_body" onClick={() => setShow(true)}>
-        <p>{message}</p>
-      </div>
-      {slideshow}
-      <br />
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-        <CommentIcon onClick={() => { setShowComments(true) }} />
-        {hasCoordinates && <MapIcon onClick={() => { setShowMap(true) }} />}
-      </div>
-      {commentsModal()}
-      <Modal
-        show={show}
-        onHide={handleClose}
-        keyboard={false}
-        size="xl"
-        aria-labelledby="contained-modal-title-vcenter"
-        scrollable={true}
-        centered
-      >
-        <Modal.Header closeButton onClick={handleClose}>
+          : ''}
+        <div className="post_title">
           <div className="post_header">
             <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
             <div className="postInfo">
-              <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${name}`}>{name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
+              <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>{channelBy ? channelBy : name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
               {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
               <p>{description}</p>
+              <p>{isPrivate ? "Private" : "Public"}Post</p>
             </div>
           </div>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="post_body">
-            <p>{message}</p>
-            <br />
-          </div>
-          {slideshow}
-          <h3>Comments</h3>
-          {/* <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
+          {
+            ((user.displayName === channelBy) || (user.displayName === name)) &&
+            // <p onClick={deletePost} className="post__delete">Delete</p>
+            <>
+              <IconButton
+                aria-label="more"
+                aria-controls="long-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+              >
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                keepMounted
+                open={open}
+                onClose={handleMenuClose}
+              // PaperProps={{
+              //   style: {
+              //     maxHeight: ITEM_HEIGHT * 4.5,
+              //     width: '20ch',
+              //   },
+              // }}
+              >
+                <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
+                  <ListItemIcon>
+                    <DeleteIcon />
+                  </ListItemIcon>
+              Delete
+            </MenuItem>
+                {(images.length > 0) &&
+                  <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
+                    <ListItemIcon>
+                      <AddToPhotosIcon />
+                    </ListItemIcon>
+                  Add To Portfolio
+                </MenuItem>
+                }
+                <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
+                  <ListItemIcon>
+                    <AddPhotoAlternateIcon />
+                  </ListItemIcon>
+                  Add To Collections
+                </MenuItem>
+              </Menu>
+              <Menu
+                anchorEl={addToChannelAnchorEl}
+                keepMounted
+                open={Boolean(addToChannelAnchorEl) && collections}
+                onClose={() => { setAddToChannelAnchorEl(null); }}
+              >
+                {
+                  collections.map((a) => {
+                    return <MenuItem onClick={() => { addImagesToCollection(a); }}>{a}</MenuItem>
+                  })
+                }
+              </Menu>
+            </>
+          }
+        </div>
+        <div className="post_body" onClick={() => setShow(true)}>
+          <p>{message}</p>
+        </div>
+        {slideshow}
+        <br />
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <CommentIcon onClick={() => { setShowComments(true) }} />
+          {hasCoordinates && <MapIcon onClick={() => { setShowMap(true) }} />}
+        </div>
+        {commentsModal()}
+        <Modal
+          show={show}
+          onHide={handleClose}
+          keyboard={false}
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          scrollable={true}
+          centered
+        >
+          <Modal.Header closeButton onClick={handleClose}>
+            <div className="post_header">
+              <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
+              <div className="postInfo">
+                <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${name}`}>{name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
+                {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
+                <p>{description}</p>
+              </div>
+            </div>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="post_body">
+              <p>{message}</p>
+              <br />
+            </div>
+            {slideshow}
+            <h3>Comments</h3>
+            {/* <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
             <Form.Group className="w-100">
               <Form.Control type="text" placeholder="Comment..." value={comment} onChange={(e) => setComment(e.target.value)} required style={{ marginLeft: "auto", marginRight: "auto" }} />
             </Form.Group>
@@ -407,92 +444,93 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               <SendIcon style={{ fontSize: "45px" }} onClick={postComment} />
             </Form.Group>
           </Form> */}
-          <TextField
-            variant="outlined"
-            margin="normal"
-            multiline
-            rowsMax={4}
-            // fullWidth
-            name="commentBox"
-            label="Comment"
-            id="commentBox"
-            value={comment}
-            onKeyPress={(ev) => {
-              if (ev.key === 'Enter') {
-                // Do code here
-                ev.preventDefault();
-                postComment();
-              }
-            }}
-            InputProps=
-            {{
-              endAdornment:
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="comment send"
-                    onClick={postComment}
-                    onMouseDown={() => { }}
-                    edge="end"
-                  >
-                    <SendIcon />
-                  </IconButton>
-                </InputAdornment>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              multiline
+              rowsMax={4}
+              // fullWidth
+              name="commentBox"
+              label="Comment"
+              id="commentBox"
+              value={comment}
+              onKeyPress={(ev) => {
+                if (ev.key === 'Enter') {
+                  // Do code here
+                  ev.preventDefault();
+                  postComment();
+                }
+              }}
+              InputProps=
+              {{
+                endAdornment:
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="comment send"
+                      onClick={postComment}
+                      onMouseDown={() => { }}
+                      edge="end"
+                    >
+                      <SendIcon />
+                    </IconButton>
+                  </InputAdornment>
 
-            }}
-            onChange={(e) => setComment(e.target.value)}
-            style={{ width: "80%", marginLeft: "10%" }}
-          />
-          <br />
-          {
-            comments.sort((a, b) => b.number - a.number).map((c) => {
-              return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
-            })
-
-          }
-        </Modal.Body>
-      </Modal>
-      <div className="rate">
-        {showStars ?
-          <Box>
-            Rate
-          <span style={{ float: "right" }}>Total Rating</span>
-            <br />
-            <StyledRating
-              max={3}
-              value={stars}
-              onChange={updateStars}
-              icon={<GradeIcon fontSize="inherit" />}
+              }}
+              onChange={(e) => setComment(e.target.value)}
+              style={{ width: "80%", marginLeft: "10%" }}
             />
-            <span style={{ float: "right" }}>{totalStars}</span>
-          </Box> :
-          <Box>
-            Total Rating : {totalStars}
             <br />
-          </Box>}
-      </div>
-      <Modal
-        show={showMap}
-        onHide={() => { setShowMap(false) }}
-        keyboard={false}
-        size="xl"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton onClick={() => { setShowMap(false) }}><h3 style={{ marginLeft: "auto" }}>Map View</h3></Modal.Header>
-        <Modal.Body>
-          <Map
-            center={{ lat: lat, lng: lng }}
-            height='100vh'
-            zoom={15}
-            draggable={false}
-          />
-        </Modal.Body>
-      </Modal>
-      <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
-        <Alert onClose={() => { setSnackbarOpen(false) }} severity={snackbarType}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+            {
+              comments.sort((a, b) => b.number - a.number).map((c) => {
+                return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
+              })
+
+            }
+          </Modal.Body>
+        </Modal>
+        <div className="rate">
+          {showStars ?
+            <Box>
+              Rate
+          <span style={{ float: "right" }}>Total Rating</span>
+              <br />
+              <StyledRating
+                max={3}
+                value={stars}
+                onChange={updateStars}
+                icon={<GradeIcon fontSize="inherit" />}
+              />
+              <span style={{ float: "right" }}>{totalStars}</span>
+            </Box> :
+            <Box>
+              Total Rating : {totalStars}
+              <br />
+            </Box>}
+        </div>
+        <Modal
+          show={showMap}
+          onHide={() => { setShowMap(false) }}
+          keyboard={false}
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton onClick={() => { setShowMap(false) }}><h3 style={{ marginLeft: "auto" }}>Map View</h3></Modal.Header>
+          <Modal.Body>
+            <Map
+              center={{ lat: lat, lng: lng }}
+              height='100vh'
+              zoom={15}
+              draggable={false}
+            />
+          </Modal.Body>
+        </Modal>
+        <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
+          <Alert onClose={() => { setSnackbarOpen(false) }} severity={snackbarType}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </>}
     </div>
   );
 });
