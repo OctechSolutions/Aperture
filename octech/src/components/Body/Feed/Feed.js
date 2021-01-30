@@ -19,6 +19,10 @@ import Spinner from 'react-bootstrap/Spinner';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
 import Map from "../Map/Map";
 import Button from 'react-bootstrap/Button';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { useHistory } from "react-router-dom";
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -64,6 +68,7 @@ const DEFAULT_EDIT_OPTIONS = [
 ]
 function Feed({ match }, props) {
   const user = useSelector(selectUser);
+  const history = useHistory();
 
   const [input, setInput] = useState("");
   const [profileInfo, setProfileInfo] = useState("");
@@ -84,6 +89,11 @@ function Feed({ match }, props) {
   const [lat, setLat] = useState(25.1972);
   const [lng, setLng] = useState(55.2744);
   const [coordinatesSelected, setCoordinatesSelected] = useState(false);
+  const [isPrivatePost,setIsPrivatePost] = useState(false);
+  const [showFollowers,setShowFollowers] = useState(false);
+  
+
+  const [channelInfo,setChannelInfo] = useState("")
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
@@ -122,33 +132,33 @@ function Feed({ match }, props) {
   //         friendRequestReceived:[],
   //         friendRequestSent : [],
   //         friends:[],
-  //         profilePoints:0
+  //         profilePoints:0,
+  //         blocked:[],
+  //         blockedBy:[],
   //       })
   //     });
   //   })
+
+  //   db.collection("channels").get().then(result => {
+  //     result.forEach(element => {
+  //       db.collection("channels").doc(element.id).update({
+  //         followers:[]
+  //       })
+  //     })
+  //   })
+
   //   db.collection("posts").get().then(result => {
   //     result.forEach(element => {
   //       db.collection("posts").doc(element.id).update({
   //         stars:{},
   //         totalStars:0
   //       })
-  //       // if(element.data().channel!=""){
-  //       //   db.collection("posts").doc(element.id).update({
-  //       //     channelBy:element.data().name,
-  //       //     name : element.data().channel,
-  //       //     channel:"",
-  //       //   })
-  //       // }
-  //       // else{
-  //       //   db.collection("posts").doc(element.id).update({
-  //       //     channelBy:""
-  //       //   })
-  //       // }
-  //     });
-  //   })
-    
+  //     })
+  //   });  
+
   // }
   // fixDB()
+
 
   useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
     db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
@@ -156,7 +166,7 @@ function Feed({ match }, props) {
         if (doc.exists) {
           setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
           if(!match.params.channel){
-            let list = [doc.data().name,...doc.data().friends,...doc.data().followingChannels];
+            let list = [doc.data().name,...(doc.data().friends.map(user => user.name)),...(doc.data().followingChannels.map(channel => channel.name))];
             while (list.length>0){
               let subList = list.splice(0,10);
               db.collection("posts")
@@ -174,6 +184,15 @@ function Feed({ match }, props) {
             }
           }
           else{
+            db.collection("channels").where("name","==",match.params.channel)
+            .onSnapshot(snapshot =>{
+              snapshot.forEach(channel => {
+                setChannelInfo({
+                  id:channel.id,
+                  data: channel.data()})
+              });
+            })
+
             db.collection("posts")
             .where("name","==",match.params.channel)
             .where("channelBy","==",match.params.id)
@@ -192,7 +211,7 @@ function Feed({ match }, props) {
           console.log("No such document!");
         }
       });
-    }, [user.displayName]);
+    }, [user.displayName,match.params]);
     
   const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
@@ -214,7 +233,8 @@ function Feed({ match }, props) {
           lat: lat,
           lng: lng,
           stars: {},
-          totalStars: 0
+          totalStars: 0,
+          isPrivate : isPrivatePost
         })
       }
       else {
@@ -228,7 +248,8 @@ function Feed({ match }, props) {
           channelBy: (match.params.channel) ? user.displayName : "" ,
           hasCoordinates: false,
           stars: {},
-          totalStars: 0
+          totalStars: 0,
+          isPrivate : isPrivatePost
         })
       }
 
@@ -247,12 +268,14 @@ function Feed({ match }, props) {
       setLargeImages([]);
       setInput(""); // On posting the input value is set to an empty string
       setCameraActive("");
+      setIsPrivatePost(false);
     }
   }
 
   const editingCancelled = async () => {
     setInputImg("");
     setEditOptions(DEFAULT_EDIT_OPTIONS);
+    setIsPrivatePost(false);
   }
 
   const editingDone = async () => {
@@ -432,26 +455,66 @@ function Feed({ match }, props) {
 
   const followChannel = (e) => {
     db.collection("users").doc(profileInfo.name).update({
-      followingChannels: firebase.firestore.FieldValue.arrayUnion(match.params.channel)
+      followingChannels: firebase.firestore.FieldValue.arrayUnion({name: match.params.channel, creator:match.params.id})
     });
+    db.collection("channels").doc(channelInfo.id).update({
+      followers: firebase.firestore.FieldValue.arrayUnion({name:profileInfo.name, photoUrl:profileInfo.photoUrl})
+    });
+
   }
 
   const unfollowChannel = (e) => {
     db.collection("users").doc(profileInfo.name).update({
-      followingChannels: firebase.firestore.FieldValue.arrayRemove(match.params.channel)
+      followingChannels: firebase.firestore.FieldValue.arrayRemove({name: match.params.channel, creator:match.params.id})
+    });
+    db.collection("channels").doc(channelInfo.id).update({
+      followers: firebase.firestore.FieldValue.arrayRemove({name:profileInfo.name, photoUrl:profileInfo.photoUrl})
     });
   }
 
+  const setFollowersList = (l) =>
+    (l.map(item =>
+        <ListItem
+            key={item.name}
+            button
+            onClick={() => {setShowFollowers(false); history.push(`/user/${item.name}`)}
+          }    
+        >
+          <ListItemAvatar>
+            <Avatar src={item.photoUrl}/>
+          </ListItemAvatar>
+          <ListItemText primary={item.name} />
+        </ListItem>
+    ))
+    
   return (
     <div className="feed">
       {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
-      {(profileInfo && (match.params.id !== user.displayName) && (match.params.channel)) ?
+      {(profileInfo && (match.params.channel)) ?
         <center>
           <h1>{match.params.channel}</h1>
-          {(profileInfo.followingChannels.includes(match.params.channel)) ?
+            <p onClick= {()=>setShowFollowers(true)} >Followers:{channelInfo && channelInfo.data.followers.length}</p>
+            <Modal
+              show={showFollowers}
+              onHide={() => { setShowFollowers(false) }}
+              keyboard={false}
+              size="xl"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+              <Modal.Body>
+                {channelInfo.data && setFollowersList(channelInfo.data.followers)}
+              </Modal.Body>
+             </Modal>
+          {(match.params.id !== user.displayName) ?               
+          (profileInfo.followingChannels.some(channel=> channel.name === match.params.channel)) ?
             <Button onClick={unfollowChannel} variant="success">Following</Button>
             :
-            <Button onClick={followChannel} variant="outline-primary">Follow</Button>}
+            <Button onClick={followChannel} variant="outline-primary">Follow</Button>
+          :
+          <>
+          </>
+          }
         </center>
         :
         <>
@@ -565,6 +628,7 @@ function Feed({ match }, props) {
                 <div className="buttons">
                   <button onClick={editingDone}>Done</button>
                   <button onClick={editingCancelled}>Cancel</button>
+                  <button onClick={()=>setIsPrivatePost(!isPrivatePost)}>Make Post {isPrivatePost?"Public":"Private"} </button>
                 </div>}
 
             </Modal.Body>
@@ -618,7 +682,7 @@ function Feed({ match }, props) {
         {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
           ({
             id,
-            data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars },
+            data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars , isPrivate},
           }) => (
 
             <Post
@@ -637,6 +701,7 @@ function Feed({ match }, props) {
               viewingUser={user}
               star={stars}
               totalStar={totalStars}
+              isPrivate={isPrivate}
             />
 
           )
