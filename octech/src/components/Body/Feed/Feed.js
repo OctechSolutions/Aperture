@@ -94,12 +94,12 @@ function Feed({ match }, props) {
   const [showFollowers,setShowFollowers] = useState(false);
   
 
-  const [channelInfo,setChannelInfo] = useState(0)
+  const [channelInfo,setChannelInfo] = useState("")
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
   //Timestamp of last post that was rendered . So to minimize queries from db
-  const [timeStamp,setTimeStamp] = useState("");
+  const [timeStamp,setTimeStamp] = useState(0);
   const addPosts = post =>{
     if(posts.length>0 && post.length>0 && post[post.length-1].id === posts[0].id)
       post.splice(-1,1)
