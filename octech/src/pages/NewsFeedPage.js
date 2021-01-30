@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import Feed from '../components/Body/Feed/Feed';
 import Header from '../components/Header/Header';
 import Profile from '../components/userProfile/Profile';
-import Collection from '../Collections/Collection';
+import Collection from '../components/Collections/Collection';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import Alert from 'react-bootstrap/Alert';
 import Modal from 'react-bootstrap/Modal';
