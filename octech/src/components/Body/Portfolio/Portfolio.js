@@ -145,120 +145,122 @@ function Portfolio({ match, user }) {
                 scrollable={true}
                 centered
             >
-                <div style={{ padding: "10px" }}>
-                    <div className="createPortfolio" style={{ display: "flex", flexDirection: "column" }} >
-                        {/* Portfolio Picture */}
+                <Modal.Body>
+                    <div style={{ padding: "10px" }}>
+                        <div className="createPortfolio" style={{ display: "flex", flexDirection: "column" }} >
+                            {/* Portfolio Picture */}
 
-                        <div style={{ margin: "5% auto" }}>
-                            <div>
-                                <Avatar
-                                    src={profilePic}
-                                    className={classes.large}>
-                                </Avatar>
+                            <div style={{ margin: "5% auto" }}>
+                                <div>
+                                    <Avatar
+                                        src={profilePic}
+                                        className={classes.large}>
+                                    </Avatar>
+                                </div>
                             </div>
-                        </div>
 
-                        <div style={{ margin: "0 auto" }}>
-                            <input accept="image/*" id="icon-button-file" type="file" style={{ display: "none" }} onChange={handleUpload} />
-                            <label htmlFor="icon-button-file">
-                                <Button variant="contained" color="primary" aria-label="upload picture" component="span">
-                                    <PhotoCamera />
-                                    <Divider orientation="vertical" />
-                                    <Divider orientation="vertical" />
-                                    <Divider orientation="vertical" />
-                                    <b>Headshot</b>
-                                </Button>
-                            </label>
-                        </div>
+                            <div style={{ margin: "0 auto" }}>
+                                <input accept="image/*" id="icon-button-file" type="file" style={{ display: "none" }} onChange={handleUpload} />
+                                <label htmlFor="icon-button-file">
+                                    <Button variant="contained" color="primary" aria-label="upload picture" component="span">
+                                        <PhotoCamera />
+                                        <Divider orientation="vertical" />
+                                        <Divider orientation="vertical" />
+                                        <Divider orientation="vertical" />
+                                        <b>Headshot</b>
+                                    </Button>
+                                </label>
+                            </div>
 
-                        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    label="First Name"
+                                    fullWidth
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                />
+                                <div style={{ width: "20px" }} />
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    margin="normal"
+                                    label="Last Name"
+                                    onChange={(e) => setLastName(e.target.value)}
+                                />
+                            </div>
+
+                            {/* Quote Input */}
                             <TextField
                                 variant="outlined"
                                 margin="normal"
-                                label="First Name"
                                 fullWidth
-                                onChange={(e) => setFirstName(e.target.value)}
+                                label="A quote by you!"
+                                onChange={(e) => setQuote(e.target.value)}
                             />
-                            <div style={{ width: "20px" }} />
+
+                            {/* Description Input */}
                             <TextField
-                                fullWidth
                                 variant="outlined"
                                 margin="normal"
-                                label="Last Name"
-                                onChange={(e) => setLastName(e.target.value)}
+                                fullWidth
+                                label="Who are you? (A Short Description)"
+                                onChange={(e) => setDescription(e.target.value)}
                             />
+
+
+
+                            <div style={{ margin: "0 auto" }}>
+                                <input required
+                                    multiple
+                                    name="bestWork"
+                                    id="bestWork"
+                                    type="file"
+                                    accept="image/*" style={{ display: "none" }} onChange={handleImagesUpload} />
+                                <label htmlFor="bestWork">
+                                    <Button variant="contained" color="primary" aria-label="upload picture" component="span">
+                                        <AddPhotoAlternateIcon />
+                                        <Divider orientation="vertical" />
+                                        <Divider orientation="vertical" />
+                                        <Divider orientation="vertical" />
+                                        <b>Upload Images</b>
+                                    </Button>
+                                </label>
+                            </div>
+
+                            <center style={{ fontSize: "12px" }}>(Upload Images that showcase your Photography at its Best!)</center>
+
+                            <Carousel
+                                interval={null}
+                                controls={(sliderImages.length > 1) ? true : false}
+                                style={{ margin: "auto" }}
+                            >
+                                {sliderImages.map((a) =>
+
+                                    <Carousel.Item >
+                                        <img
+                                            style={{ height: "25vh", width: "auto" }}
+                                            src={a}
+                                            alt="Carousel"
+                                        />
+                                    </Carousel.Item>
+                                )}
+
+                            </Carousel>
+
+                            {/* Submit Button Input */}
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                color="secondary"
+                                onClick={createPortfolio}
+                                style={{ marginTop: "10px" }}
+                            >
+                                <b>Create Portfolio!</b>
+                            </Button>
                         </div>
-
-                        {/* Quote Input */}
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                            label="A quote by you!"
-                            onChange={(e) => setQuote(e.target.value)}
-                        />
-
-                        {/* Description Input */}
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                            label="Who are you? (A Short Description)"
-                            onChange={(e) => setDescription(e.target.value)}
-                        />
-
-
-
-                        <div style={{ margin: "0 auto" }}>
-                            <input required
-                                multiple
-                                name="bestWork"
-                                id="bestWork"
-                                type="file"
-                                accept="image/*" style={{ display: "none" }} onChange={handleImagesUpload} />
-                            <label htmlFor="bestWork">
-                                <Button variant="contained" color="primary" aria-label="upload picture" component="span">
-                                    <AddPhotoAlternateIcon />
-                                    <Divider orientation="vertical" />
-                                    <Divider orientation="vertical" />
-                                    <Divider orientation="vertical" />
-                                    <b>Upload Images</b>
-                                </Button>
-                            </label>
-                        </div>
-
-                        <center style={{ fontSize: "12px" }}>(Upload Images that showcase your Photography at its Best!)</center>
-
-                        <Carousel
-                            interval={null}
-                            controls={(sliderImages.length > 1) ? true : false}
-                            style={{ margin: "auto" }}
-                        >
-                            {sliderImages.map((a) =>
-
-                                <Carousel.Item >
-                                    <img
-                                        style={{ height: "25vh", width: "auto" }}
-                                        src={a}
-                                        alt="Carousel"
-                                    />
-                                </Carousel.Item>
-                            )}
-
-                        </Carousel>
-
-                        {/* Submit Button Input */}
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="secondary"
-                            onClick={createPortfolio}
-                            style={{ marginTop: "10px" }}
-                        >
-                            <b>Create Portfolio!</b>
-                        </Button>
                     </div>
-                </div>
+                </Modal.Body>
             </Modal>
 
             {portfolioExists &&
