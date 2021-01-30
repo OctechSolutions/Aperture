@@ -1,7 +1,0 @@
-{
-    "name": "Aperture",
-    "integrations": {
-      "capacitor": {}
-    },
-    "type": "react"
-  }

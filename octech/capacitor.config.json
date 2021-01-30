@@ -1,8 +1,0 @@
-{
-    "appId": "io.ionic.aperture",
-    "appName": "Aperture",
-    "bundledWebRuntime": false,
-    "npmClient": "npm",
-    "webDir": "build",
-    "cordova": {}
-  }
