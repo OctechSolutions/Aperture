@@ -43,7 +43,9 @@ function App() {
                 friendRequestReceived: [],
                 friendRequestSent: [],
                 followingChannels: [],
-                profilePoints:0
+                profilePoints:0,
+                blocked:[],
+                blockedBy: [],
               });         
             }
             sendVerificationEmail(userAuth)
