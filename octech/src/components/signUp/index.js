@@ -46,6 +46,7 @@ const SignUp = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const [userConsent, setUserConsent] = useState(false);
     const [error, setError] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [contactNumber, setContactNumber] = useState("");
@@ -160,31 +161,37 @@ const SignUp = () => {
             return toReturn
         }
 
-        /* If both the 1st typed password and the confirmed password are
-           same, then proceed to sign up. Else promt user to input matching
-           passwords. */
-        if (confirmPassword === password) {
-            let usernameExists = false
+        // Sign up shall proceed only once the user has given consent.
+        if(userConsent){
+            /* If both the 1st typed password and the confirmed password are
+               same, then proceed to sign up. Else promt user to input matching
+               passwords. */
+            if (confirmPassword === password) {
+                let usernameExists = false
 
-            await doesUsernameExists().then((res) => {
-                console.log(res)
-                usernameExists = res
-            })
+                await doesUsernameExists().then((res) => {
+                    console.log(res)
+                    usernameExists = res
+                })
 
-            if (usernameExists) {
-                setError("Sorry. This username already exists.");
-                setOpen(true);
-            } else {
-                try {
-                    await updateUserProfile()
-                } catch (error) {
-                    setError(error.message);
-                    console.log(error);
+                if (usernameExists) {
+                    setError("Sorry. This username already exists.");
                     setOpen(true);
+                } else {
+                    try {
+                        await updateUserProfile()
+                    } catch (error) {
+                        setError(error.message);
+                        console.log(error);
+                        setOpen(true);
+                    }
                 }
+            } else {
+                setError("The password and the confirmed password must match.");
+                setOpen(true);
             }
         } else {
-            setError("The password and the confirmed password must match.");
+            alert("Your consent for us to store your image should you upload it to profile is required. Kindly check the box to continue.");
             setOpen(true);
         }
     })
@@ -193,7 +200,6 @@ const SignUp = () => {
         if (reason === 'clickaway') {
             return;
         }
-
         setOpen(false);
     };
 
@@ -336,6 +342,18 @@ const SignUp = () => {
                     autoComplete="contactNumber"
                     autoFocus
                     onChange={(e) => setContactNumber(e.target.value)}
+                />
+
+                {/* User Consent & Checkbox */}
+                <label id="userConsentLabel">
+                    Should I choose to set my own picture as my profile/headshot picture, I give Aperture full consent to store my image in their database.
+                </label>
+                <input 
+                    type="checkbox" 
+                    id="userConsent" 
+                    name="userConsent" 
+                    value="userConsent" 
+                    onClick={(e) => setUserConsent(e.target.checked)}
                 />
 
                 {/* Submit Button Input */}
