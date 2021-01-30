@@ -243,7 +243,10 @@ function Profile({ match }) {
     
     return (
         <div className="profile" style={{ color: "black", width: "100%" }}>
-           {((profileInfo.blockedBy&& (!profileInfo.blockedBy.includes(user.displayName))) && (profileInfo.blocked && (!profileInfo.blocked.includes(user.displayName))))?
+            {(profileInfo.blocked && (profileInfo.blocked.includes(user.displayName))) ? <p>{profileInfo.name} has blocked you</p> 
+            :
+            ((profileInfo.blockedBy && (profileInfo.blockedBy.includes(user.displayName))) ? <p>You have blocked this user! {<Button onClick={unBlock} variant="success">Unblock : {profileInfo.name}</Button>}</p>
+            :
             <>
             {profileInfo &&
                 <center>
@@ -257,7 +260,7 @@ function Profile({ match }) {
                             size="xl"
                             aria-labelledby="contained-modal-title-vcenter"
                             centered
-                        >
+                            >
                             <Modal.Body>
                                 {setUserList(profileInfo.friends)}
                             </Modal.Body>
@@ -269,7 +272,7 @@ function Profile({ match }) {
                             size="xl"
                             aria-labelledby="contained-modal-title-vcenter"
                             centered
-                        >
+                            >
                             <Modal.Body>
                                 {setFollowingList(profileInfo.followingChannels)}
                             </Modal.Body>
@@ -343,18 +346,9 @@ function Profile({ match }) {
                     <Portfolio match = {match} user={user}/>
                 </Tab>
             </Tabs>
-
-        </>
-        :
-        <>
-        {(profileInfo.blocked && (profileInfo.blocked.includes(user.displayName))) ? <p>{profileInfo.name} has blocked you</p> 
-        :
-        <p>You have blocked this user!
-        {<Button onClick={unBlock} variant="success">Unblock : {profileInfo.name}</Button>}</p>
-
-        }
-        </>
-        }
+            </>            
+            )
+            }
         </div>
     )
 }
