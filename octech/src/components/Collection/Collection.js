@@ -29,7 +29,7 @@ function Collection({ match, user }) {
     const [Collections, setCollections] = useState([]);
 
     useEffect(() => {
-        db.collection("collections").where("creator","==",match.params.id).onSnapshot((snapshot) => {
+        db.collection("collections").where("creator", "==", match.params.id).onSnapshot((snapshot) => {
             if (!snapshot.docs.length) {
                 setCollectionExists(false);
             }
@@ -38,9 +38,9 @@ function Collection({ match, user }) {
 
                 setCollections(
                     snapshot.docs.map((doc) => ({
-                      id: doc.id,
-                      key:doc.id,
-                      data: doc.data(),
+                        id: doc.id,
+                        key: doc.id,
+                        data: doc.data(),
                     }))
                 )
             }
@@ -73,7 +73,7 @@ function Collection({ match, user }) {
     }
 
     const createCollection = () => {
-        const collectionRef = db.collection("collections").doc(user.displayName+name);
+        const collectionRef = db.collection("collections").doc(user.displayName + name);
         collectionRef.set({
             creator: user.displayName,
             name: name,
@@ -88,7 +88,11 @@ function Collection({ match, user }) {
                 images: firebase.firestore.FieldValue.arrayUnion(a)
             })
         )
-    
+
+        db.collection("users").doc(user.displayName).update({
+            collections: firebase.firestore.FieldValue.arrayUnion(name)
+        });
+
         setOpen(false)
     }
 
@@ -195,38 +199,68 @@ function Collection({ match, user }) {
 
             {
                 CollectionExists &&
-                
+
                 <div>
                     {
                         Collections.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
                             ({
-                              id,
-                              data
+                                id,
+                                data
                             }) => (
-                                
+
                                 <div>
-                                {console.log(data)}
-                                {data.name}
-                                {data.theme}
-                                {data.description}
+                                    {console.log(data)}
 
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => {db.collection("collections").doc(id).delete();}}                                
-                                style={{ marginTop: "10px" }}>
-                                    
-                                <b>Delete Collection</b>
+                                    <p>Name - {data.name}</p>
+                                    <p>Theme - {data.theme} [{data.description}]</p>
+                                    <Carousel
+                                        interval={null}
+                                        controls={((data.images.length) > 1) ? true : false}
+                                    >
+                                        {data.images.map((a) =>
 
-                            </Button>
-                            </div>
-                            
+                                            <Carousel.Item className="post__image">
+                                                <img
+                                                    src={a}
+                                                    alt="Carousel"
+                                                />
+                                            </Carousel.Item>
+                                        )}
+
+                                        {/* {images.map((a) =>
+
+                                            <Carousel.Item className="post__image">
+                                                <img
+                                                    src={a}
+                                                    alt="Carousel"
+                                                />
+                                            </Carousel.Item>
+                                        )} */}
+
+                                    </Carousel>
+                                    {(match.params.id === user.displayName) &&
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={() => {
+                                                db.collection("collections").doc(id).delete();
+                                                db.collection("users").doc(user.displayName).update({
+                                                    collections: firebase.firestore.FieldValue.arrayRemove(data.name)
+                                                });
+                                            }}
+                                            style={{ marginTop: "10px" }}>
+
+                                            <b>Delete Collection</b>
+
+                                        </Button>}
+                                </div>
+
                             )
                         )
                     }
-                    
+
                 </div>
-            } 
+            }
         </>
     )
 }

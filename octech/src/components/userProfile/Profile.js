@@ -273,7 +273,7 @@ function Profile({ match }) {
         {(profileInfo.blocked && (profileInfo.blocked.includes(user.displayName))) ? <p>{profileInfo.name} has blocked you</p> 
         :
         <p>You have blocked this user!
-        {<Button onClick={unBlock} variant="success">UnBlock : {profileInfo.name}</Button>}</p>
+        {<Button onClick={unBlock} variant="success">Unblock : {profileInfo.name}</Button>}</p>
         }
         </>
         }
