@@ -136,44 +136,48 @@ export default function Explore() {
 
     return (
         <>
-            <div style={{ width: "80vw", marginTop: "60px" }}>
+            <div style={{ width: "80vw", marginTop: "10px" }}>
                 <center><h1>Explore</h1></center>
-                <Autocomplete
-                    autoComplete={true}
-                    autoHighlight={true}
-                    value={value}
-                    onChange={(event, newValue) => {
-                        setValue(newValue);
-                    }}
-                    inputValue={inputValue}
-                    onInputChange={(event, newInputValue) => {
-
-                        setInputValue(newInputValue);
-                        const selectedUser = users.filter(function (item) { return item.name === newInputValue; });
-                        if ((users.filter(function (item) { return item.name === newInputValue; }))[0]) {
-                            {
-                                if (selectedUser[0].creator === undefined)
-                                    history.push(`/user/${selectedUser[0].name}`);
-                                else
-                                    history.push(`/user/${selectedUser[0].creator + "/channel/" + selectedUser[0].name}`);
-                            }
-                        }
-                    }}
-                    id="search"
-                    freeSolo
-                    options={users.map((option) => option.name)}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Search"
-                            margin="normal"
-                            variant="outlined"
-                        />
-                    )}
-                />
             </div>
-            <div className={classes.root}>
-                <AppBar color="default" style={{ position: 'fixed', top: 60 }}>
+            <div className={classes.root} >
+                <div color="default" style={{ position: "sticky", zIndex: 100, top: 60, backgroundColor: "white" }}>
+                    <div style={{width: "80%", marginLeft: "10%"}}>
+                        <Autocomplete
+
+                            autoComplete={true}
+                            autoHighlight={true}
+                            value={value}
+                            onChange={(event, newValue) => {
+                                setValue(newValue);
+                            }}
+                            inputValue={inputValue}
+                            onInputChange={(event, newInputValue) => {
+
+                                setInputValue(newInputValue);
+                                const selectedUser = users.filter(function (item) { return item.name === newInputValue; });
+                                if ((users.filter(function (item) { return item.name === newInputValue; }))[0]) {
+                                    {
+                                        if (selectedUser[0].creator === undefined)
+                                            history.push(`/user/${selectedUser[0].name}`);
+                                        else
+                                            history.push(`/user/${selectedUser[0].creator + "/channel/" + selectedUser[0].name}`);
+                                    }
+                                }
+                            }}
+                            id="search"
+                            freeSolo
+                            options={users.map((option) => option.name)}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Search"
+                                    margin="normal"
+                                    variant="outlined"
+                                    style={{ position: "sticky", zIndex: 100, top: 200, backgroundColor: "white" }}
+                                />
+                            )}
+                        />
+                    </div>
                     <Tabs
                         value={tabValue}
                         onChange={handleChange}
@@ -185,7 +189,7 @@ export default function Explore() {
                         <Tab label="Posts" {...a11yProps(0)} />
                         <Tab label="Channels" {...a11yProps(1)} />
                     </Tabs>
-                </AppBar>
+                </div>
                 <SwipeableViews
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={tabValue}
