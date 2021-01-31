@@ -108,7 +108,6 @@ export default function Explore() {
         })
 
         db.collection("posts")
-            .where("isPrivate", "==", false)
             .orderBy("totalStars", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
             .onSnapshot((snapshot) =>
                 setPosts(
@@ -131,7 +130,7 @@ export default function Explore() {
                     }))
                 )
             );
-    }, [user.displayName]);
+    }, []);
 
 
 
@@ -201,26 +200,28 @@ export default function Explore() {
                                         id,
                                         data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate },
                                     }) => (
-
-                                        <Post
-                                            key={id}
-                                            id={id}
-                                            name={name}
-                                            description={description}
-                                            message={message}
-                                            photoUrl={photoUrl}
-                                            largeGifs={largeGifs}
-                                            comments={comments}
-                                            hasCoordinates={hasCoordinates}
-                                            lat={lat}
-                                            lng={lng}
-                                            channelBy={channelBy}
-                                            viewingUser={user}
-                                            star={stars}
-                                            totalStar={totalStars}
-                                            isPrivate={isPrivate}
-                                        />
-
+                                        <>
+                                            {!isPrivate &&
+                                                <Post
+                                                    key={id}
+                                                    id={id}
+                                                    name={name}
+                                                    description={description}
+                                                    message={message}
+                                                    photoUrl={photoUrl}
+                                                    largeGifs={largeGifs}
+                                                    comments={comments}
+                                                    hasCoordinates={hasCoordinates}
+                                                    lat={lat}
+                                                    lng={lng}
+                                                    channelBy={channelBy}
+                                                    viewingUser={user}
+                                                    star={stars}
+                                                    totalStar={totalStars}
+                                                    isPrivate={isPrivate}
+                                                />
+                                            }
+                                        </>
                                     )
                                 )}
                             </FlipMove>
