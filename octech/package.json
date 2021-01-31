@@ -16,6 +16,7 @@
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
+    "autosuggest-highlight": "^3.1.1",
     "bootstrap": "^4.5.3",
     "compress.js": "^1.1.2",
     "firebase": "^8.2.1",
@@ -32,6 +33,7 @@
     "react-scripts": "4.0.1",
     "react-search-autocomplete": "^5.0.2",
     "react-select-search": "^3.0.0",
+    "react-swipeable-views": "^0.13.9",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

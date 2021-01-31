@@ -16,6 +16,7 @@ import { selectUser } from "../features/userSlice";
 import HomeIcon from '@material-ui/icons/Home';
 import PersonIcon from '@material-ui/icons/Person';
 import SearchIcon from '@material-ui/icons/Search';
+import Explore from '../components/Explore/Explore';
 
 const useStyles = makeStyles({
     root: {
@@ -49,6 +50,7 @@ export default function NewsfeedPage(props) {
                             <Route path="/" exact component={Feed} />
                             <Route path="/user/:id" exact component={Profile} /> {/* Dynamically generated user pages, the user lands on /user/{username} when clicking on someone profile, the profile page of the user is rendered by the profile component */}
                             <Route path="/user/:id/:collection" exact component={Collection} />
+                            <Route path="/search" exact component={Explore} />
                             <Route path="/user/:id/channel/:channel" exact component={Feed} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
