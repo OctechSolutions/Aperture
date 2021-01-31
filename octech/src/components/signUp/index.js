@@ -20,6 +20,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import ConsentForm from '../ConsentForm/ConsentForm'
 
 
 function Alert(props) {
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 const SignUp = () => {
 
     const classes = useStyles();
+    const [profilePicEvent, setProfilePicEvent] = useState(null)
     const [profilePic, setProfilePic] = useState("");
     const [file, setFile] = useState();
     const [name, setName] = useState("");
@@ -51,6 +53,7 @@ const SignUp = () => {
     const [contactNumber, setContactNumber] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [showConsentForm, setShowConsentForm] = useState(false)
     const [open, setOpen] = React.useState(false);
     const dispatch = useDispatch(); // Keep track of changes on the user slice
 
@@ -70,7 +73,7 @@ const SignUp = () => {
     const handleUpload = async (e) => { // When a file is uploaded this function is called
         e.preventDefault();
         var reader = new FileReader();
-
+       
         if (e.target.files[0] !== undefined) {
             reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
             setFile(e.target.files[0])
@@ -210,7 +213,16 @@ const SignUp = () => {
                                 </Avatar>
                             </div>
                         </label>
-                        <input hidden id="fileUpload" type="file" accept="image/*" onChange={handleUpload} />
+                        <input 
+                            hidden 
+                            id="fileUpload" 
+                            type="file" 
+                            accept="image/*" 
+                            onClick={() => setShowConsentForm(true)}
+                            onChange={(e) => {
+                                setProfilePicEvent(e)
+                            }} 
+                        />
                     </div>
                 </div>
 
@@ -350,6 +362,14 @@ const SignUp = () => {
                     {error}
                 </Alert>
             </Snackbar>
+            <ConsentForm 
+                show={showConsentForm}
+                heading={"Dear User,"}
+                message={"We at Aperture would like to inform you that if you choose to upload an image of yourself as your profile picture, it will be stored in our db. Please comply to continue."}
+                btnLabel={"You Have My Consent"}
+                closeFun={() => {setShowConsentForm(false)}}
+                onBtnClickFun={() => {handleUpload(profilePicEvent)}}
+            />
         </>
     )
 }
