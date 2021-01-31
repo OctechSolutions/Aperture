@@ -50,7 +50,8 @@ function Portfolio({ match, user }) {
                 const tempImages = [];
                 doc.data().imageRef.forEach((id) => {
                     db.collection("postImages").doc(id).get().then((doc) => {
-                        tempImages.push(doc.data().url);
+                        if(doc.exists)
+                            tempImages.push(doc.data().url);
                     });
                 })
                 setImages(tempImages);

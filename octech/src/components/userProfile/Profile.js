@@ -27,9 +27,9 @@ function Profile({ match }) {
     const [posts, setPosts] = useState([]); // Stores the posts of the user
     const [collections, setCollections] = useState([]);
     const [key, setKey] = useState('posts');
-    const [showFriendList,setShowFriendList] = useState(false);
-    const [showFollowingList,setShowFollowingList] = useState(false);
-    const [viewingUserInfo,setViewingUserInfo] = useState({});
+    const [showFriendList, setShowFriendList] = useState(false);
+    const [showFollowingList, setShowFollowingList] = useState(false);
+    const [viewingUserInfo, setViewingUserInfo] = useState({});
     useEffect(() => {
         const unmount = db.collection("collections").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
             const tempCollections = [];
@@ -47,8 +47,9 @@ function Profile({ match }) {
             .onSnapshot(doc => {
                 if (doc.exists) {
                     setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
-                    if(doc.data().friends.some(u => u.name === user.displayName)){
+                    if (doc.data().friends.some(u => u.name === user.displayName)||(match.params.id===user.displayName)) {
                         db.collection("posts") // Posts are fetched from the db
+                            .where("name", "==", match.params.id)
                             .orderBy("timestamp", "desc")
                             .onSnapshot((snapshot) =>
                                 setPosts(
@@ -59,8 +60,9 @@ function Profile({ match }) {
                                 )
                             );
                     }
-                    else{
+                    else {
                         db.collection("posts") // Posts are fetched from the db
+                            .where("name", "==", match.params.id)
                             .where("isPrivate","==",false)
                             .orderBy("timestamp", "desc")
                             .onSnapshot((snapshot) =>
@@ -71,24 +73,24 @@ function Profile({ match }) {
                                     }))
                                 )
                             );
-                    }   
+                    }
                 } else {
                     console.log("No such document!");
                 }
             });
         db.collection("users").doc(user.displayName)
-        .onSnapshot(snapshot =>{
-            if(snapshot.exists){
-                setViewingUserInfo(snapshot.data());
-            }
-            else 
-                console.log("No Such Document!")
-        })
-    }, [match,user.displayName]);
+            .onSnapshot(snapshot => {
+                if (snapshot.exists) {
+                    setViewingUserInfo(snapshot.data());
+                }
+                else
+                    console.log("No Such Document!")
+            })
+    }, [match, user.displayName]);
 
     useEffect(() => {
-        
-        
+
+
     }, []);
 
     function deleteCollection(collection) {
@@ -148,12 +150,12 @@ function Profile({ match }) {
     const acceptfriendRequest = (e) => {
         db.collection("users").doc(profileInfo.name).update({
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName),
-            friends: firebase.firestore.FieldValue.arrayUnion({name:viewingUserInfo.name, photoUrl:viewingUserInfo.photoUrl})
+            friends: firebase.firestore.FieldValue.arrayUnion({ name: viewingUserInfo.name, photoUrl: viewingUserInfo.photoUrl })
         });
-        
+
         db.collection("users").doc(user.displayName).update({
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
-            friends: firebase.firestore.FieldValue.arrayUnion({name:profileInfo.name, photoUrl:profileInfo.photoUrl})
+            friends: firebase.firestore.FieldValue.arrayUnion({ name: profileInfo.name, photoUrl: profileInfo.photoUrl })
         });
     }
     const cancelfriendRequest = (e) => {
@@ -183,10 +185,10 @@ function Profile({ match }) {
 
     const unfriend = (e) => {
         db.collection("users").doc(profileInfo.name).update({
-            friends: firebase.firestore.FieldValue.arrayRemove({name:viewingUserInfo.name, photoUrl:viewingUserInfo.photoUrl})
+            friends: firebase.firestore.FieldValue.arrayRemove({ name: viewingUserInfo.name, photoUrl: viewingUserInfo.photoUrl })
         });
         db.collection("users").doc(user.displayName).update({
-            friends: firebase.firestore.FieldValue.arrayRemove({name:profileInfo.name, photoUrl:profileInfo.photoUrl})
+            friends: firebase.firestore.FieldValue.arrayRemove({ name: profileInfo.name, photoUrl: profileInfo.photoUrl })
         });
     }
     const unBlock = (e) => {
@@ -199,155 +201,157 @@ function Profile({ match }) {
     }
     const block = (e) => {
         db.collection("users").doc(profileInfo.name).update({
-            blockedBy:firebase.firestore.FieldValue.arrayUnion(user.displayName),
-            friends: firebase.firestore.FieldValue.arrayRemove({name:viewingUserInfo.name, photoUrl:viewingUserInfo.photoUrl}),
+            blockedBy: firebase.firestore.FieldValue.arrayUnion(user.displayName),
+            friends: firebase.firestore.FieldValue.arrayRemove({ name: viewingUserInfo.name, photoUrl: viewingUserInfo.photoUrl }),
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName),
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(user.displayName)
         });
         db.collection("users").doc(user.displayName).update({
-            blocked:firebase.firestore.FieldValue.arrayUnion(profileInfo.name),
-            friends: firebase.firestore.FieldValue.arrayRemove({name:profileInfo.name, photoUrl:profileInfo.photoUrl}),
+            blocked: firebase.firestore.FieldValue.arrayUnion(profileInfo.name),
+            friends: firebase.firestore.FieldValue.arrayRemove({ name: profileInfo.name, photoUrl: profileInfo.photoUrl }),
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
     }
 
     const setUserList = (l) =>
-        (l.map(item =>
-            <ListItem
-                key={item.name}
-                button
-                onClick={() => {setShowFriendList(false); history.push(`/user/${item.name}`)}}    
-            >
+    (l.map(item =>
+        <ListItem
+            key={item.name}
+            button
+            onClick={() => { setShowFriendList(false); history.push(`/user/${item.name}`) }}
+        >
             <ListItemAvatar>
-                <Avatar src={item.photoUrl}/>
+                <Avatar src={item.photoUrl} />
             </ListItemAvatar>
             <ListItemText primary={item.name} />
-            </ListItem>
-        ))
+        </ListItem>
+    ))
     const setFollowingList = (l) =>
-        (l.map(item =>
-            <ListItem
-                key={item.name}
-                button
-                onClick={() => {setShowFollowingList(false); history.push(`/user/${item.creator + "/channel/" + item.name}`)}}   
-            >
-                <ListItemAvatar>
-                    <Avatar>
-                        <ImageIcon/>
-                    </Avatar>
-               </ListItemAvatar>
-                <ListItemText primary={item.name} secondary = {item.creator} />
-            </ListItem>
-        ))
-    
+    (l.map(item =>
+        <ListItem
+            key={item.name}
+            button
+            onClick={() => { setShowFollowingList(false); history.push(`/user/${item.creator + "/channel/" + item.name}`) }}
+        >
+            <ListItemAvatar>
+                <Avatar>
+                    <ImageIcon />
+                </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={item.name} secondary={item.creator} />
+        </ListItem>
+    ))
+
     return (
         <div className="profile" style={{ color: "black", width: "100%" }}>
-            {(profileInfo.blocked && (profileInfo.blocked.includes(user.displayName))) ? <p>{profileInfo.name} has blocked you</p> 
-            :
-            ((profileInfo.blockedBy && (profileInfo.blockedBy.includes(user.displayName))) ? <p>You have blocked this user! {<Button onClick={unBlock} variant="success">Unblock : {profileInfo.name}</Button>}</p>
-            :
-            <>
-            {profileInfo &&
-                <center>
-                    <h1>{profileInfo.name}</h1> <p onClick= {()=>setShowFriendList(true)}>Friends: {profileInfo.friends && profileInfo.friends.length}</p> <p onClick = {()=>setShowFollowingList(true)}>Channels Following: {profileInfo.followingChannels && profileInfo.followingChannels.length}</p>
-                    {(profileInfo.friends && ((profileInfo.friends.some(u => u.name === user.displayName)) || (profileInfo.name === user.displayName))) &&
-                        <>
-                        <Modal
-                            show={showFriendList}
-                            onHide={() => {setShowFriendList(false)}}
-                            keyboard={false}
-                            size="xl"
-                            aria-labelledby="contained-modal-title-vcenter"
-                            centered
-                            >
-                            <Modal.Body>
-                                {setUserList(profileInfo.friends)}
-                            </Modal.Body>
-                        </Modal>
-                        <Modal
-                            show={showFollowingList}
-                            onHide={() => { setShowFollowingList(false) }}
-                            keyboard={false}
-                            size="xl"
-                            aria-labelledby="contained-modal-title-vcenter"
-                            centered
-                            >
-                            <Modal.Body>
-                                {setFollowingList(profileInfo.followingChannels)}
-                            </Modal.Body>
-                        </Modal>
-                        </>
-                    }
-                    {(profileInfo.friends && (profileInfo.name !== user.displayName)) ?
-                        <>
-                            {(profileInfo.friends.some(u => u.name === user.displayName)) ?
-                                <Button onClick={unfriend} variant="success">Remove friend : {profileInfo.name}</Button>
-                                : ((profileInfo.friendRequestReceived.includes(user.displayName)) ? 
-                                (<Button onClick={cancelfriendRequest} variant="outline-primary">Cancel friend Request : {profileInfo.name}</Button>)
-                                : ((profileInfo.friendRequestSent.includes(user.displayName)) ?
-                                (<div>
-                                    <Button onClick={acceptfriendRequest} variant="outline-primary">Accept friend Request : {profileInfo.name}</Button>
-                                    <Button onClick={rejectfriendRequest} variant="outline-primary">Reject friend Request : {profileInfo.name}</Button> 
-                                </div>) 
-                                : (<Button onClick={sendfriendRequest} variant="outline-primary">Send friend Request : {profileInfo.name}</Button>) 
-                                ))}
-                        {<Button onClick={block} variant="success">Block : {profileInfo.name}</Button>}
-                        </>
-                        :
-                        <>
-                        </>}
-                    <h1>Profile Points :{profileInfo.profilePoints}</h1>
-                </center>}
-            <Tabs
-                id="controlled-tab-example"
-                activeKey={key}
-                onSelect={(k) => setKey(k)}
-                variant="pills"
-            >
-                <Tab eventKey="posts" title="Posts" style={{ color: "black", width: "100%" }}>
-                    {<FlipMove>
-                        {posts.map(
-                            ({
-                                id,
-                                data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars , isPrivate},
-                            }) => (name === match.params.id) && ( // Only the posts the current user has made are shown
-                                <Post
-                                    key={id}
-                                    id={id}
-                                    name={name}
-                                    description={description}
-                                    message={message}
-                                    photoUrl={photoUrl}
-                                    photoBase={photoBase}
-                                    styleModification={styleModification}
-                                    comments={comments}
-                                    channelBy={channelBy}
-                                    hasCoordinates={hasCoordinates}
-                                    lat={lat}
-                                    lng={lng}
-                                    viewingUser={user}
-                                    star={stars}
-                                    totalStar={totalStars}
-                                    isPrivate={isPrivate}
-                                />
-                            )
-                        )}
-                    </FlipMove>
-                    }
-                </Tab>
-                <Tab eventKey="collections" title="Collections" style={{ color: "black", width: "100%" }}>
-                   <Collection match = {match} user={user} />
-                </Tab>
-                <Tab eventKey="channels" title="Channels" style={{ color: "black", width: "100%" }}>
-                    <Channels profileName={match.params.id} />
-                </Tab>
-                <Tab eventKey="portfolio" title="Portfolio" style={{ color: "black", width: "100%" }}>
-                    <Portfolio match = {match} user={user}/>
-                </Tab>
-            </Tabs>
-            </>            
-            )
+            {(profileInfo.blocked && (profileInfo.blocked.includes(user.displayName))) ? <p>{profileInfo.name} has blocked you</p>
+                :
+                ((profileInfo.blockedBy && (profileInfo.blockedBy.includes(user.displayName))) ? <p>You have blocked this user! {<Button onClick={unBlock} variant="success">Unblock : {profileInfo.name}</Button>}</p>
+                    :
+                    <>
+                        {profileInfo &&
+                            <center>
+                                <h1>{profileInfo.name}</h1> <p onClick={() => setShowFriendList(true)}>Friends: {profileInfo.friends && profileInfo.friends.length}</p> <p onClick={() => setShowFollowingList(true)}>Channels Following: {profileInfo.followingChannels && profileInfo.followingChannels.length}</p>
+                                {(profileInfo.friends && ((profileInfo.friends.some(u => u.name === user.displayName)) || (profileInfo.name === user.displayName))) &&
+                                    <>
+                                        <Modal
+                                            show={showFriendList}
+                                            onHide={() => { setShowFriendList(false) }}
+                                            keyboard={false}
+                                            size="xl"
+                                            aria-labelledby="contained-modal-title-vcenter"
+                                            centered
+                                        >
+                                            <Modal.Body>
+                                                {setUserList(profileInfo.friends)}
+                                            </Modal.Body>
+                                        </Modal>
+                                        <Modal
+                                            show={showFollowingList}
+                                            onHide={() => { setShowFollowingList(false) }}
+                                            keyboard={false}
+                                            size="xl"
+                                            aria-labelledby="contained-modal-title-vcenter"
+                                            centered
+                                        >
+                                            <Modal.Body>
+                                                {setFollowingList(profileInfo.followingChannels)}
+                                            </Modal.Body>
+                                        </Modal>
+                                    </>
+                                }
+                                {(profileInfo.friends && (profileInfo.name !== user.displayName)) ?
+                                    <>
+                                        {(profileInfo.friends.some(u => u.name === user.displayName)) ?
+                                            <Button onClick={unfriend} variant="success">Remove friend : {profileInfo.name}</Button>
+                                            : ((profileInfo.friendRequestReceived.includes(user.displayName)) ?
+                                                (<Button onClick={cancelfriendRequest} variant="outline-primary">Cancel friend Request : {profileInfo.name}</Button>)
+                                                : ((profileInfo.friendRequestSent.includes(user.displayName)) ?
+                                                    (<div>
+                                                        <Button onClick={acceptfriendRequest} variant="outline-primary">Accept friend Request : {profileInfo.name}</Button>
+                                                        <Button onClick={rejectfriendRequest} variant="outline-primary">Reject friend Request : {profileInfo.name}</Button>
+                                                    </div>)
+                                                    : (<Button onClick={sendfriendRequest} variant="outline-primary">Send friend Request : {profileInfo.name}</Button>)
+                                                ))}
+                                        {<Button onClick={block} variant="success">Block : {profileInfo.name}</Button>}
+                                    </>
+                                    :
+                                    <>
+                                    </>}
+                                <h1>Profile Points :{profileInfo.profilePoints}</h1>
+                            </center>}
+                        <Tabs
+                            id="controlled-tab-example"
+                            activeKey={key}
+                            onSelect={(k) => setKey(k)}
+                            variant="pills"
+                        >
+                            <Tab eventKey="posts" title="Posts" style={{ color: "black", width: "100%" }}>
+                                {<FlipMove>
+                                    {posts.map(
+                                        ({
+                                            id,
+                                            data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp },
+                                        }) => 
+                                            ( // Only the posts the current user has made are shown
+                                                <Post
+                                                    key={id}
+                                                    id={id}
+                                                    name={name}
+                                                    description={description}
+                                                    message={message}
+                                                    photoUrl={photoUrl}
+                                                    photoBase={photoBase}
+                                                    styleModification={styleModification}
+                                                    comments={comments}
+                                                    channelBy={channelBy}
+                                                    hasCoordinates={hasCoordinates}
+                                                    lat={lat}
+                                                    lng={lng}
+                                                    viewingUser={user}
+                                                    star={stars}
+                                                    totalStar={totalStars}
+                                                    isPrivate={isPrivate}
+                                                    timestamp={timestamp}
+                                                />
+                                            )  
+                                    )}
+                                </FlipMove>
+                                }
+                            </Tab>
+                            <Tab eventKey="collections" title="Collections" style={{ color: "black", width: "100%" }}>
+                                <Collection match={match} user={user} />
+                            </Tab>
+                            <Tab eventKey="channels" title="Channels" style={{ color: "black", width: "100%" }}>
+                                <Channels profileName={match.params.id} />
+                            </Tab>
+                            <Tab eventKey="portfolio" title="Portfolio" style={{ color: "black", width: "100%" }}>
+                                <Portfolio match={match} user={user} />
+                            </Tab>
+                        </Tabs>
+                    </>
+                )
             }
         </div>
     )

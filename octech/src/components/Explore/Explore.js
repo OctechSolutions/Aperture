@@ -202,7 +202,7 @@ export default function Explore() {
                                 {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
                                     ({
                                         id,
-                                        data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate },
+                                        data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp },
                                     }) => (
                                         <>
                                             {!isPrivate &&
@@ -223,6 +223,7 @@ export default function Explore() {
                                                     star={stars}
                                                     totalStar={totalStars}
                                                     isPrivate={isPrivate}
+                                                    timestamp={timestamp}
                                                 />
                                             }
                                         </>

@@ -29,6 +29,10 @@ import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
+import LockIcon from '@material-ui/icons/Lock';
+import PublicIcon from '@material-ui/icons/Public';
+import moment from 'moment';
+import { useHistory } from "react-router-dom";
 
 
 function Alert(props) {
@@ -36,27 +40,7 @@ function Alert(props) {
 }
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate }, ref) => {
-
-  // const displayPosts = () => {
-  //   console.log("hello", name);
-  //   db.collection("posts").where("name", "==", name).get()
-  //     .then(function (querySnapshot) {
-  //       var postArray = [];
-  //       querySnapshot.forEach(function (doc) {
-  //         // doc.data() is never undefined for query doc snapshots
-  //         console.log(doc.id, " => ", doc.data());
-  //         postArray.push(doc.id);
-  //       });
-  //       console.log(postArray);
-  //     })
-  //     .catch(function (error) {
-  //       console.log("Error getting documents: ", error);
-  //     })
-  // }
-
-
-
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp }, ref) => {
 
   if (comments === undefined) {
     comments = [];
@@ -99,6 +83,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [totalStars, setTotalStars] = useState(totalStar);
   //Stars given by the user on the post
   const [stars, setStars] = useState((star[viewingUser.uid] === undefined) ? 0 : star[viewingUser.uid]);
+  const history = useHistory();
   //TO update the stars after the user has given the stars
   const updateStars = (e) => {
     let givenStars = parseInt(e.target.value);
@@ -142,6 +127,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     db.collection("users").doc(user.displayName).onSnapshot((doc) => {
       // console.log(snapshot);
       setCollections(doc.data().collections);
+      if (timestamp) {
+        { console.log(moment(timestamp.toDate()).fromNow()) }
+      }
     })
   }, []);
 
@@ -226,7 +214,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   if (images.length === 1) {
     slideshow = <div className="post__image"><img src={images[0].src} style={images[0].style} alt="User Post" /></div>;
   } else if (images.length > 1) {
-    slideshow = <div ><ImageGallery sliderImages={images} /></div>;
+    slideshow = <div><ImageGallery sliderImages={images} /></div>;
   }
   else {
     slideshow = <></>
@@ -247,14 +235,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           <h3>Comments</h3>
         </Modal.Header>
         <Modal.Body>
-          {/* <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
-            <Form.Group className="w-100">
-              <Form.Control type="text" placeholder="Comment..." value={comment} onChange={(e) => setComment(e.target.value)} required style={{ marginLeft: "auto", marginRight: "auto" }} />
-            </Form.Group>
-            <Form.Group>
-              <SendIcon style={{ fontSize: "45px" }} onClick={postComment} />
-            </Form.Group>
-          </Form> */}
           <TextField
             variant="outlined"
             margin="normal"
@@ -332,17 +312,47 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           : ''}
         <div className="post_title">
           <div className="post_header">
-            <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
+            <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              onClick={() => { history.push(`/user/${channelBy ? channelBy : name}`) }}
+            >
+              <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
+            </IconButton>
             <div className="postInfo">
-              <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>{channelBy ? channelBy : name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
-              {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
-              <p>{description}</p>
-              <p>{isPrivate ? "Private" : "Public"}Post</p>
+              <div>
+                <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
+
+                  {channelBy ? channelBy : name}</Link><>
+                  <IconButton
+                    aria-label="more"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={() => { 
+                      if(name === user.displayName)
+                        db.collection("posts").doc(id).update({ isPrivate: !isPrivate }) 
+                    }}
+                  >
+                    {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
+                  </IconButton>
+                  {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
+                    a few seconds ago
+                      </div>}
+                </>  {/* Link is a component from react router that redirects to a particular route on click */}
+                {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
+
+              </div>
+
+              {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
+
             </div>
+
           </div>
+          <>
+          </>
           {
             ((user.displayName === channelBy) || (user.displayName === name)) &&
-            // <p onClick={deletePost} className="post__delete">Delete</p>
             <>
               <IconButton
                 aria-label="more"
@@ -357,12 +367,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                 keepMounted
                 open={open}
                 onClose={handleMenuClose}
-              // PaperProps={{
-              //   style: {
-              //     maxHeight: ITEM_HEIGHT * 4.5,
-              //     width: '20ch',
-              //   },
-              // }}
               >
                 <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
                   <ListItemIcon>
@@ -403,6 +407,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           }
         </div>
         <div className="post_body" onClick={() => setShow(true)}>
+          <br />
           <p>{message}</p>
         </div>
         {slideshow}
@@ -422,14 +427,44 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           centered
         >
           <Modal.Header closeButton onClick={handleClose}>
-            <div className="post_header">
+          <div className="post_header">
+            <IconButton
+              aria-label="more"
+              aria-controls="long-menu"
+              aria-haspopup="true"
+              onClick={() => { history.push(`/user/${channelBy ? channelBy : name}`)}}
+            >
               <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
-              <div className="postInfo">
-                <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${name}`}>{name}</Link>  {/* Link is a component from react router that redirects to a particular route on click */}
+            </IconButton>
+            <div className="postInfo">
+              <div>
+                <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
+
+                  {channelBy ? channelBy : name}</Link><>
+                  <IconButton
+                    aria-label="more"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={() => { 
+                      if(name === user.displayName)
+                        db.collection("posts").doc(id).update({ isPrivate: !isPrivate }) 
+                    }}
+                  >
+                    {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
+                  </IconButton>
+                  {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
+                    a few seconds ago
+                      </div>}
+                </>  {/* Link is a component from react router that redirects to a particular route on click */}
                 {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
-                <p>{description}</p>
+
               </div>
+
+              {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
+
             </div>
+
+          </div>
           </Modal.Header>
           <Modal.Body>
             <div className="post_body">
@@ -438,14 +473,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             </div>
             {slideshow}
             <h3>Comments</h3>
-            {/* <Form style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onSubmit={(e) => { e.preventDefault(); postComment() }}>
-            <Form.Group className="w-100">
-              <Form.Control type="text" placeholder="Comment..." value={comment} onChange={(e) => setComment(e.target.value)} required style={{ marginLeft: "auto", marginRight: "auto" }} />
-            </Form.Group>
-            <Form.Group>
-              <SendIcon style={{ fontSize: "45px" }} onClick={postComment} />
-            </Form.Group>
-          </Form> */}
             <TextField
               variant="outlined"
               margin="normal"
@@ -533,7 +560,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </Alert>
         </Snackbar>
       </>
-      
+
     </div>
   );
 });

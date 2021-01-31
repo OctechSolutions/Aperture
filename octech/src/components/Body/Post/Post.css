@@ -18,13 +18,8 @@
 }
 .post_title {
   display: flex;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   justify-content: space-between;
-}
-
-.post_title > p:hover {
-  color: red;
-  cursor: pointer;
 }
 
 .postInfo {
