@@ -2,7 +2,6 @@ import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 
 export default function ConsentForm({show, heading, message, btnLabel, closeFun, onBtnClickFun}) {
-    // console.log(show, heading, message, btnLabel, closeFun, onBtnClickFun)
     return (
         <Modal
             show={show}

@@ -41,13 +41,13 @@
    const SignUp = () => {
    
        const classes = useStyles();
-       const [profilePicEvent, setProfilePicEvent] = useState(null)
        const [profilePic, setProfilePic] = useState("");
        const [file, setFile] = useState();
        const [name, setName] = useState("");
        const [username, setUsername] = useState("");
        const [password, setPassword] = useState("");
        const [email, setEmail] = useState("");
+       const [profilePicConsent, setProfilePicConsent] = useState(false);
        const [error, setError] = useState("");
        const [confirmPassword, setConfirmPassword] = useState("");
        const [contactNumber, setContactNumber] = useState("");
@@ -208,21 +208,26 @@
                                    <Avatar
                                        src={profilePic}
                                        className={classes.large}
+                                       onClick={() => {
+                                           if(!profilePicConsent){
+                                               setShowConsentForm(true)
+                                           }
+                                       }}
                                    >
                                        {!profilePic && <EditIcon className={classes.medium} />}
                                    </Avatar>
                                </div>
                            </label>
-                           <input 
-                               hidden 
-                               id="fileUpload" 
-                               type="file" 
-                               accept="image/*" 
-                               onClick={() => setShowConsentForm(true)}
-                               onChange={(e) => {
-                                   setProfilePicEvent(e)
-                               }} 
-                           />
+                           {
+                                profilePicConsent && 
+                                <input 
+                                    hidden 
+                                    id="fileUpload" 
+                                    type="file" 
+                                    accept="image/*" 
+                                    onChange={handleUpload} 
+                                />
+                           }
                        </div>
                    </div>
    
@@ -363,12 +368,12 @@
                    </Alert>
                </Snackbar>
                <ConsentForm 
-                   show={showConsentForm}
-                   heading={"Dear User,"}
-                   message={"We at Aperture would like to inform you that if you choose to upload an image of yourself as your profile picture, it will be stored in our db. Please comply to continue."}
-                   btnLabel={"You Have My Consent"}
-                   closeFun={() => {setShowConsentForm(false)}}
-                   onBtnClickFun={() => {handleUpload(profilePicEvent)}}
+                    show={showConsentForm}
+                    heading={"Dear User,"}
+                    message={"We at Aperture would like to inform you that if you choose to upload an image of yourself as your profile picture, it will be stored in our db. Please comply to continue."}
+                    btnLabel={"You Have My Consent"}
+                    closeFun={() => {setShowConsentForm(false)}}
+                    onBtnClickFun={() => {setProfilePicConsent(true)}}
                />
            </>
        )
