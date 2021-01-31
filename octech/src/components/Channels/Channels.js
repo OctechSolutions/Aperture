@@ -54,8 +54,7 @@ function Channels({ profileName }) {
                 creator: user.displayName,
                 name: channelName,
                 description: channelDesc,
-                theme: channelTheme,
-                followers: []
+                theme: channelTheme
             }).then(() => {
                 // window.location.reload();
             });

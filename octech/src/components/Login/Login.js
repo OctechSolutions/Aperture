@@ -18,6 +18,7 @@ import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import SvgIcon from '@material-ui/core/SvgIcon';
+// import ConsentForm from '../ConsentForm/ConsentForm'
 
 
 
@@ -92,7 +93,7 @@ export default function Login() {
 
     }
   }
-
+  
   return (
     <div>
       {!show &&
@@ -202,9 +203,21 @@ export default function Login() {
 
         </Modal.Header>
         <Modal.Body>
+          {/* <SignUp onPicUpload={() => {setShowConsentForm(true)}}/> */}
           <SignUp />
         </Modal.Body>
       </Modal>
+
+      {/* <ConsentForm 
+          show={showConsentForm}
+          heading={"Dear User,"}
+          message={"We at Aperture would like to inform you that if you choose to upload an image of yourself as your profile picture, it will stored in our db. Please comply to continue."}
+          btnLabel={"You Have My Consent"}
+          closeFun={() => {setShowConsentForm(false)}}
+          onBtnClickFun={() => {
+            console.log("consent form btn clicked.")
+          }}
+      /> */}
 
       <Modal
         show={forgotPasswordClicked}
