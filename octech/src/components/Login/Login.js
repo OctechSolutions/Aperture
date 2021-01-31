@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import './Login.css';
 import { signInWithGoogle } from '../../firebase';
 import { auth } from "../../firebase"
-import SignUp from "../signUp";
+import SignUp from "../signUp/signUp";
 import { useDispatch } from 'react-redux';
 import { login } from '../../features/userSlice';
 import Modal from 'react-bootstrap/Modal';

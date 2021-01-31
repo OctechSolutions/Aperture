@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebase';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
-import './index.css'
+import './signUp.css'
 import EditIcon from '@material-ui/icons/Edit';
 import { storage, db } from '../../firebase';
 import { useDispatch } from 'react-redux';
