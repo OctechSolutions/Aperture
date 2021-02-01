@@ -43,7 +43,9 @@ function Collection({ match, user }) {
                         let imgs = []
                         doc.data().imageRef.forEach((id) => {
                             db.collection("postImages").doc(id).get().then((doc) => {
-                                imgs.push(doc.data().url);
+                                if(doc.exists) {
+                                    imgs.push(doc.data().url);
+                                }
                             });
                         })
                         return ({

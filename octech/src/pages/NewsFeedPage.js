@@ -17,6 +17,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import PersonIcon from '@material-ui/icons/Person';
 import SearchIcon from '@material-ui/icons/Search';
 import Explore from '../components/Explore/Explore';
+import ChatIcon from '@material-ui/icons/Chat';
 
 const useStyles = makeStyles({
     root: {
@@ -55,6 +56,7 @@ export default function NewsfeedPage(props) {
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
+                                <BottomNavigationAction label="Chat" value={'chat'} icon={<ChatIcon />} />
                                 <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} />
                             </BottomNavigation>
                         </div>
