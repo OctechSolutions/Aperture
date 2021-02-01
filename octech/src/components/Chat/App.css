@@ -1,0 +1,16 @@
+body {
+    --background-color-header: #00142C;
+    --background-color-sidebar: #793AFF;
+}
+
+.app {
+    text-align: center;
+    color: #00142C;
+}
+
+.app_body {
+    display: flex;
+    height: 99vh;
+    text-align: left;
+    color: #00142C;
+}
