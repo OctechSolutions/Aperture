@@ -161,11 +161,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   }
 
   const addToCollection = (event) => {
-    setAddToChannelAnchorEl(event.currentTarget);
+    setAddToChannelAnchorEl(event.currentTarget); 
   }
 
   const addImagesToCollection = (a) => {
-
+    console.log(a);
     db.collection("collections").doc(user.displayName + a).update({
       imageRef: firebase.firestore.FieldValue.arrayUnion(...refs)
     });

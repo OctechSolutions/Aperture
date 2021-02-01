@@ -28,8 +28,6 @@ function Collection({ match, user }) {
     //const [Collection, setCollection] = useState([]);
     const [Collections, setCollections] = useState([]);
 
-    // To store the images that we added to the collection from already uploaded post
-    const [alreadyUploadedImage,setAlreadyUploadedImage] = useState([])
 
     useEffect(() => {
         db.collection("collections").where("creator", "==", match.params.id).onSnapshot((snapshot) => {
@@ -50,11 +48,11 @@ function Collection({ match, user }) {
                                 }
                             });
                         })
-                        setAlreadyUploadedImage(imgs);
                         return ({
                             id: doc.id,
                             key: doc.id,
                             data: doc.data(),
+                            images: imgs, // To store the images that we added to the collection from already uploaded post
                             })
                     }
                     )
@@ -224,7 +222,8 @@ function Collection({ match, user }) {
                             
                             ({
                                 id,
-                                data
+                                data,
+                                images
                             }) => (
 
                                 <div>
@@ -234,7 +233,7 @@ function Collection({ match, user }) {
                                     <p>Theme - {data.theme} [{data.description}]</p>
                                     <Carousel
                                         interval={null}
-                                        controls={((data.images.length + alreadyUploadedImage.length) > 1) ? true : false}
+                                        controls={((data.images.length + images.length) > 1) ? true : false}
                                     >
                                         {[...(data.images.map((a) =>
 
@@ -244,7 +243,7 @@ function Collection({ match, user }) {
                                                     alt="Carousel"
                                                 />
                                             </Carousel.Item>
-                                        )),...(alreadyUploadedImage.map((a) =>
+                                        )),...(images.map((a) =>
 
                                         <Carousel.Item className="post__image">
                                             <img
