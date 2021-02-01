@@ -305,7 +305,8 @@ function Profile({ match }) {
                             id="controlled-tab-example"
                             activeKey={key}
                             onSelect={(k) => setKey(k)}
-                            variant="pills"
+                            style={{ position: "sticky", zIndex: 100, top: 60, backgroundColor: "whitesmoke" }}
+                            fill
                         >
                             <Tab eventKey="posts" title="Posts" style={{ color: "black", width: "100%" }}>
                                 {<FlipMove>
