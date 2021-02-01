@@ -13,7 +13,7 @@
 
 .sidebar > hr {
     margin-bottom: 0px;
-    border: 1px solid #FF4584;
+    border: 1px solid #00142C;
 }
 
 .sidebar_info {
@@ -41,7 +41,7 @@
 
 .sidebar_header > .MuiSvgIcon-root {
     padding: 8px;
-    color: #793AFF;
+    color: #00142C;
     font-size: 17px;
     background-color: #FFEADD;
     border-radius: 999px;
