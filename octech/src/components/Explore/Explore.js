@@ -61,7 +61,8 @@ const useStyles = makeStyles((theme) => ({
         width: "100%",
     },
     card: {
-        borderRadius: "20px"
+        borderRadius: "40px",
+        boxShadow: "3px 3px 5px 6px rgb(233, 233, 233)"
     }
 }));
 
@@ -141,7 +142,7 @@ export default function Explore() {
             </div>
             <div className={classes.root} >
                 <div color="default" style={{ position: "sticky", zIndex: 100, top: 60, backgroundColor: "white" }}>
-                    <div style={{width: "80%", marginLeft: "10%"}}>
+                    <div style={{ width: "80%", marginLeft: "10%" }}>
                         <Autocomplete
 
                             autoComplete={true}
@@ -249,15 +250,17 @@ export default function Explore() {
 
                                         >
                                             <CardContent style={{ borderRadius: "20" }}>
-                                                <div>
+                                                <center>
                                                     <Typography variant="h5" component="h2">
                                                         {data.name}
                                                     </Typography>
-                                                </div>
+                                                </center>
 
 
                                                 <Typography className={classes.pos} color="textSecondary">
-                                                    {data.theme}
+                                                    <center>
+                                                        Theme - {data.theme}
+                                                    </center>
                                                     <Divider />
                                                     <br />
                                                 </Typography>
