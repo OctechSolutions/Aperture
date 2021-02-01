@@ -16,12 +16,12 @@ function App() {
           <Sidebar />
 
           <Switch>
-            {/* {Wildcard} (any path besides main will have this) */}
+            
             
             <Route path="/groupChat/:groupChatId">
-              {/* <h1>Chat Window</h1> */}
+            
               
-              {/* <Chat /> */}
+             
               <GroupChat />
             </Route>
             
@@ -31,7 +31,7 @@ function App() {
 
           </Switch>
 
-          {/* React-Router Logic -> Chat screen */}
+          
         </div>
       </Router>
     </div>

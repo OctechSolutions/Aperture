@@ -17,17 +17,16 @@ function Header() {
                     // src={user?.photoURL}
                 />  
                 
-                {/* Time icon */}
-                {/* <AccessTimeIcon/> */}
+               
             </div>
             <div className="header_search">
-                {/* Search icon */}
+               
                 <SearchIcon/>
-                {/* input */}
+               
                 <input placeholder="Search for Friends"/>
             </div>
             <div className="header_right">
-                {/* help icon */}
+               
                 <HelpOutline/>
             </div>
         </div>

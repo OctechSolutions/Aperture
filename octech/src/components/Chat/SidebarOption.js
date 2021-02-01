@@ -1,8 +1,9 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import './SidebarOption.css';
+import db from "./firebase";
 
-function SidebarOption({Icon, title, id, onClick, addGroupChatOption}) {
+function SidebarOption({Icon, title, id, addGroupChatOption}) {
 
     const history = useHistory();
 //For selecting a Group Chat
@@ -13,12 +14,22 @@ function SidebarOption({Icon, title, id, onClick, addGroupChatOption}) {
             history.push(title);
         }
     };
+//For creating a Group Chat
+    const addGroupChat = () => {
 
+        const groupChatName = prompt('Please Enter the Group Chat Name')
+//Adding the entered name to the db
+        if (groupChatName) {
+            db.collection("groupChats").add({
+                name: groupChatName,
+            })
+        }
+    };
+    
     
     return (
-        //For creating a groupChat: If you click and you have addGroupChat option then, use
-        //addGroupChatOption. otherwise use selectGroupChatOption for selecting a groupChat
-        <div className="sidebarOption" onClick={onClick}>
+
+        <div className="sidebarOption" onClick={ addGroupChat /* addGroupChatOption ? addGroupChat : selectGroupChat */}>
             {/* Only render an Icon if an icon exists*/}
             {Icon && <Icon className="sidebarOption_icon"/>}
             {Icon ? (<h3>{title}</h3>) : (
