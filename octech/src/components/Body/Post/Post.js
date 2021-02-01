@@ -543,9 +543,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           <Modal.Body>
             <div className="post_body">
               <p>{message}</p>
-              <br />
             </div>
             {slideshow}
+            <br />
             <h3>Comments</h3>
             <TextField
               variant="outlined"
