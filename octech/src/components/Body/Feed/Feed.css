@@ -37,6 +37,7 @@
 .feed_input > form {
   display: flex;
   width: 100%;
+  flex-direction: column;
 }
 
 .feed_input > form > input {
@@ -78,6 +79,9 @@
 }
 
 @media (max-width: 947px) {
+  .feed {
+    max-width: 90vw;
+  }
   .feed_input > form {
     flex-direction: column;
   }

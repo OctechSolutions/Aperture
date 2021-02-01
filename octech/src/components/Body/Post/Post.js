@@ -25,6 +25,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -33,11 +34,21 @@ import LockIcon from '@material-ui/icons/Lock';
 import PublicIcon from '@material-ui/icons/Public';
 import moment from 'moment';
 import { useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core";
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
 
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
+const useStyles = makeStyles({
+  root: {
+    "&:hover": {
+      backgroundColor: "transparent"
+    }
+  }
+});
 
 
 const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp }, ref) => {
@@ -61,6 +72,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [snackbarType, setSnackbarType] = useState("");
   const [collections, setCollections] = useState([]);
   const open = Boolean(anchorEl);
+  const classes = useStyles();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -329,13 +341,23 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                     aria-label="more"
                     aria-controls="long-menu"
                     aria-haspopup="true"
-                    onClick={() => { 
-                      if(name === user.displayName)
-                        db.collection("posts").doc(id).update({ isPrivate: !isPrivate }) 
+                    onClick={() => {
+                      if (name === user.displayName)
+                        db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
                     }}
                   >
                     {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
                   </IconButton>
+                  {hasCoordinates &&
+                    <IconButton
+                      aria-label="comments"
+                      aria-controls="long-menu"
+                      aria-haspopup="true"
+                      onClick={() => { setShowMap(true) }}
+                    >
+                      <MapIcon />
+                    </IconButton>
+                  }
                   {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
                     a few seconds ago
                       </div>}
@@ -406,15 +428,67 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             </>
           }
         </div>
-        <div className="post_body" onClick={() => setShow(true)}>
+        <div className="post_body">
           <br />
           <p>{message}</p>
         </div>
         {slideshow}
         <br />
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-          <CommentIcon onClick={() => { setShowComments(true) }} />
-          {hasCoordinates && <MapIcon onClick={() => { setShowMap(true) }} />}
+        <div >
+
+          <div className="rate" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+            <>
+
+              {showStars ?
+                <IconButton
+                  aria-label="stars"
+                  aria-controls="long-menu"
+                  aria-haspopup="true"
+                  className={classes.root}
+                  disableRipple={true}
+                  disableFocusRipple={true}
+                >
+
+                  <StyledRating
+                    max={3}
+                    value={stars}
+                    onChange={updateStars}
+                    icon={<GradeIcon fontSize="inherit" />}
+                  />
+                  <h4>{totalStars}</h4>
+                </IconButton>
+                :
+                <IconButton
+                  aria-label="rating"
+                  aria-controls="long-menu"
+                  aria-haspopup="true"
+                  className={classes.root}
+                  disableRipple={true}
+                  disableFocusRipple={true}
+                >
+                  Rating : {totalStars}
+                </IconButton>}
+            </>
+            <div>
+              <IconButton
+                aria-label="comments"
+                aria-controls="long-menu"
+                aria-haspopup="true"
+                onClick={() => { setShowComments(true) }}
+              >
+                <CommentIcon />
+              </IconButton>
+              <IconButton
+                aria-label="comments"
+                aria-controls="long-menu"
+                aria-haspopup="true"
+                onClick={() => setShow(true)}
+              >
+                <FullscreenIcon />
+              </IconButton>
+            </div>
+          </div>
+
         </div>
         {commentsModal()}
         <Modal
@@ -427,44 +501,44 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           centered
         >
           <Modal.Header closeButton onClick={handleClose}>
-          <div className="post_header">
-            <IconButton
-              aria-label="more"
-              aria-controls="long-menu"
-              aria-haspopup="true"
-              onClick={() => { history.push(`/user/${channelBy ? channelBy : name}`)}}
-            >
-              <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
-            </IconButton>
-            <div className="postInfo">
-              <div>
-                <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
+            <div className="post_header">
+              <IconButton
+                aria-label="more"
+                aria-controls="long-menu"
+                aria-haspopup="true"
+                onClick={() => { history.push(`/user/${channelBy ? channelBy : name}`) }}
+              >
+                <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
+              </IconButton>
+              <div className="postInfo">
+                <div>
+                  <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
 
-                  {channelBy ? channelBy : name}</Link><>
-                  <IconButton
-                    aria-label="more"
-                    aria-controls="long-menu"
-                    aria-haspopup="true"
-                    onClick={() => { 
-                      if(name === user.displayName)
-                        db.collection("posts").doc(id).update({ isPrivate: !isPrivate }) 
-                    }}
-                  >
-                    {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
-                  </IconButton>
-                  {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
-                    a few seconds ago
+                    {channelBy ? channelBy : name}</Link><>
+                    <IconButton
+                      aria-label="more"
+                      aria-controls="long-menu"
+                      aria-haspopup="true"
+                      onClick={() => {
+                        if (name === user.displayName)
+                          db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
+                      }}
+                    >
+                      {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
+                    </IconButton>
+                    {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
+                      a few seconds ago
                       </div>}
-                </>  {/* Link is a component from react router that redirects to a particular route on click */}
-                {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
+                  </>  {/* Link is a component from react router that redirects to a particular route on click */}
+                  {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
+
+                </div>
+
+                {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
 
               </div>
 
-              {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
-
             </div>
-
-          </div>
           </Modal.Header>
           <Modal.Body>
             <div className="post_body">
@@ -517,25 +591,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             }
           </Modal.Body>
         </Modal>
-        <div className="rate">
-          {showStars ?
-            <Box>
-              Rate
-          <span style={{ float: "right" }}>Total Rating</span>
-              <br />
-              <StyledRating
-                max={3}
-                value={stars}
-                onChange={updateStars}
-                icon={<GradeIcon fontSize="inherit" />}
-              />
-              <span style={{ float: "right" }}>{totalStars}</span>
-            </Box> :
-            <Box>
-              Total Rating : {totalStars}
-              <br />
-            </Box>}
-        </div>
+
         <Modal
           show={showMap}
           onHide={() => { setShowMap(false) }}

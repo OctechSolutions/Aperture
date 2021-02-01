@@ -23,12 +23,36 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useHistory } from "react-router-dom";
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Fab from '@material-ui/core/Fab';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { makeStyles } from '@material-ui/core/styles';
+import { div } from "@tensorflow/tfjs-core";
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
 
 const Compress = require('compress.js');
 
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+    width: 500,
+    position: 'relative',
+    minHeight: 200,
+  },
+  fab: {
+    margin: 0,
+    top: 'auto',
+    right: 20,
+    bottom: 70,
+    left: 'auto',
+    position: 'fixed',
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  }
+}));
 
 const DEFAULT_EDIT_OPTIONS = [
   {
@@ -92,11 +116,14 @@ function Feed({ match }, props) {
   const [coordinatesSelected, setCoordinatesSelected] = useState(false);
   const [isPrivatePost, setIsPrivatePost] = useState(false);
   const [showFollowers, setShowFollowers] = useState(false);
+  const [showPostComponent, setShowPostComponent] = useState(false);
 
 
   const [channelInfo, setChannelInfo] = useState("")
 
   const cocoSsd = require('@tensorflow-models/coco-ssd');
+
+  const classes = useStyles();
 
   //Timestamp of last post that was rendered . So to minimize queries from db
   const [timeStamp, setTimeStamp] = useState(0);
@@ -296,6 +323,7 @@ function Feed({ match }, props) {
       setInput(""); // On posting the input value is set to an empty string
       setCameraActive("");
       setIsPrivatePost(false);
+      setShowPostComponent(false);
     }
   };
 
@@ -515,226 +543,255 @@ function Feed({ match }, props) {
   ))
 
   return (
-    <div className="feed">
-      {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
-      {(profileInfo && (match.params.channel)) ?
-        <center>
-          <h1>{match.params.channel}</h1>
-          <p onClick={() => setShowFollowers(true)} >Followers:{channelInfo && channelInfo.data.followers.length}</p>
-          <Modal
-            show={showFollowers}
-            onHide={() => { setShowFollowers(false) }}
-            keyboard={false}
-            size="xl"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-          >
-            <Modal.Body>
-              {channelInfo.data && setFollowersList(channelInfo.data.followers)}
-            </Modal.Body>
-          </Modal>
-          {(match.params.id !== user.displayName) ?
-            (profileInfo.followingChannels.some(channel => channel.name === match.params.channel)) ?
-              <Button onClick={unfollowChannel} variant="success">Following</Button>
-              :
-              <Button onClick={followChannel} variant="outline-primary">Follow</Button>
-            :
-            <>
-            </>
-          }
-        </center>
-        :
-        <>
-        </>}
-      {((match.params.id === user.displayName) || (match.path === "/")) &&
-        <div className="feed_inputContainer">
-          <div className="feed_input">
-            <Avatar src={user?.photoUrl}></Avatar> {/*Avatar using materialui*/}
-            <form onSubmit={sendPost}>
-              <input
-                className="feed_inputbox"
-                placeholder="Caption..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
-                type="text"
-                required
-              />
-              <div className="imagePreview">
-                <div className="buttons">
-                  {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
-                    <button className="btn">
-                      <ImageIcon />
-                    </button>
-                    <input type="file" name="myfile" onChange={handleChange} />
-                  </div>}
-                  {!inputImg && !showEditMap && <button className="btn" onClick={openCamera}>
-                    <PhotoCameraIcon />
-                  </button>}
-                  {!inputImg && !showEditMap && <button className="btn" onClick={(e) => { e.preventDefault(); setShowEditMap(true) }}>
-                    <EditLocationIcon />
-                  </button>}
+    <>
 
-                  {!inputImg && !showEditMap && <button onClick={sendPost} type="submit">
-                    Post
-                </button>}
-                </div>
-              </div>
+      <div className="feed">
 
-            </form>
-
-
-          </div>
-
-
-          {show &&
-            <Alert variant="danger" onClose={() => setShow(false)} dismissible>
-              <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
-              <p>
-                The image uploaded had a Human detected in it!
-            </p>
-            </Alert>
-          }
-          <Modal
-            show={inputImg}
-            onHide={() => { setInputImg("") }}
-            keyboard={false}
-            size="xl"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-          >
-            <Modal.Body>
-
-              {inputImg && (
-                <>
-                  <br />
-                  {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
-                  <div className="photoEditor">
-                    {/* Div in which to view the photo. */}
-                    <img src={inputImg}
-                      className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
-
-                    {/* {console.log(getImageStyle())} */}
-                    <br></br>
-                    {/* Div with 6 options like brightness, contrast, etc. */}
-                    <div className="row">
-                      {
-                        editOptions.map((option, index) => {
-                          return (
-                            <EditOption
-                              key={index}
-                              name={option.name}
-                              active={index === selectedOptionIndex ? true : false}
-                              handleClick={() => setSelectedOptionIndex(index)}
-                            />
-                          )
-                        })
-                      }
-                    </div>
-                    <br></br>
-                  </div>
-                  {/* Slider to adjust edit values. */}
-                  <Slider
-                    min={selectedOption.range.min}
-                    max={selectedOption.range.max}
-                    value={selectedOption.value}
-                    handleChange={handleSliderChange}
-                  />
-
-                </>
-              )}
-              {loading &&
-                <div>
-                  <Spinner animation="border" role="status">
-                  </Spinner>
-                  <span>{'  '}Scanning Image...</span>
-                </div>}
-              {(!loading) &&
-                <div className="buttons">
-                  <button onClick={editingDone}>Done</button>
-                  <button onClick={editingCancelled}>Cancel</button>
-                  <button onClick={() => setIsPrivatePost(!isPrivatePost)}>Make Post {isPrivatePost ? "Public" : "Private"} </button>
-                </div>}
-
-            </Modal.Body>
-          </Modal>
-          {sliderImages && <ImageGallery sliderImages={sliderImages} />}
-        </div>
-      }
-      {showEditMap &&
-        <>
-          <Map
-            center={{ lat: lat, lng: lng }}
-            height='30vh'
-            zoom={15}
-            sendData={getData}
-            draggable={true}
-            setCoordinatesSelected={setCoordinatesSelected}
-            setShowEditMap={setShowEditMap}
-          />
-
-        </>
-      }
-      <Modal
-        show={cameraActive}
-        onHide={() => { setCameraActive("") }}
-        keyboard={false}
-        size="xl"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Body>
-
-          {cameraActive && (
-            <div className="camera">
-              <br></br>
-              <Camera // Camera API
-                isImageMirror={false}
-                onTakePhoto={(dataUri) => {
-                  handleTakePhoto(dataUri);
-                }}
-                idealFacingMode={FACING_MODES.ENVIRONMENT}
-                imageCompression={0.97}
-              />
-              <button onClick={closeCamera}>Close Camera</button>
-            </div>
-          )}
-        </Modal.Body>
-      </Modal>
-
-      <FlipMove>
-        {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-        {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
-          ({
-            id,
-            data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp },
-          }) => (
-
-            <Post
-              key={id}
-              id={id}
-              name={name}
-              description={description}
-              message={message}
-              photoUrl={photoUrl}
-              largeGifs={largeGifs}
-              comments={comments}
-              hasCoordinates={hasCoordinates}
-              lat={lat}
-              lng={lng}
-              channelBy={channelBy}
-              viewingUser={user}
-              star={stars}
-              totalStar={totalStars}
-              isPrivate={isPrivate}
-              timestamp={timestamp}
+        {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
+        {(profileInfo && (match.params.channel)) ?
+          <center>
+            <h1>{match.params.channel}</h1>
+            <p onClick={() => setShowFollowers(true)} >Followers:{channelInfo && channelInfo.data.followers.length}</p>
+            <Modal
+              show={showFollowers}
+              onHide={() => { setShowFollowers(false) }}
+              keyboard={false}
+              size="xl"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
             >
-            </Post>
+              <Modal.Body>
+                {channelInfo.data && setFollowersList(channelInfo.data.followers)}
+              </Modal.Body>
+            </Modal>
+            {(match.params.id !== user.displayName) ?
+              (profileInfo.followingChannels.some(channel => channel.name === match.params.channel)) ?
+                <Button onClick={unfollowChannel} variant="success">Following</Button>
+                :
+                <Button onClick={followChannel} variant="outline-primary">Follow</Button>
+              :
+              <>
+              </>
+            }
+          </center>
+          :
+          <>
+          </>}
+        {((match.params.id === user.displayName) || (match.path === "/")) &&
+
+          <Modal
+            show={showPostComponent}
+            onHide={() => { setShowPostComponent(false) }}
+            keyboard={false}
+            size="xl"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Modal.Header closeButton onClick={() => { setShowPostComponent(false) }}>
+              {/* Sign Up Heading */}
+              <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>
+                 {(match.path === "/") ? <>{`Posting as ${user.displayName}`}</>:<>{`Posting in ${match.params.channel}`}</>}
+              </h4>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="feed_inputContainer">
+                <div className="feed_input">
+                  <Avatar src={user?.photoUrl}></Avatar> {/*Avatar using materialui*/}
+                  <form onSubmit={sendPost}>
+                    <input
+                      className="feed_inputbox"
+                      placeholder="Caption..."
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
+                      type="text"
+                      required
+                    />
+                    <div className="imagePreview">
+                      <div className="buttons">
+                        {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
+                          <button className="btn">
+                            <ImageIcon />
+                          </button>
+                          <input type="file" name="myfile" onChange={handleChange} />
+                        </div>}
+                        {!inputImg && !showEditMap && <button className="btn" onClick={openCamera}>
+                          <PhotoCameraIcon />
+                        </button>}
+                        {!inputImg && !showEditMap && <button className="btn" onClick={(e) => { e.preventDefault(); setShowEditMap(true) }}>
+                          <EditLocationIcon />
+                        </button>}
+
+                        {!inputImg && !showEditMap && <button onClick={sendPost} type="submit">
+                          Post
+                </button>}
+                      </div>
+                    </div>
+
+                  </form>
 
 
-          )
-        )}
-      </FlipMove>
-    </div>
+                </div>
+
+
+
+                {show &&
+                  <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+                    <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
+                    <p>
+                      The image uploaded had a Human detected in it!
+            </p>
+                  </Alert>
+                }
+                <Modal
+                  show={inputImg}
+                  onHide={() => { setInputImg("") }}
+                  keyboard={false}
+                  size="xl"
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+                >
+                  <Modal.Body>
+
+                    {inputImg && (
+                      <>
+                        <br />
+                        {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
+                        <div className="photoEditor">
+                          {/* Div in which to view the photo. */}
+                          <img src={inputImg}
+                            className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
+
+                          {/* {console.log(getImageStyle())} */}
+                          <br></br>
+                          {/* Div with 6 options like brightness, contrast, etc. */}
+                          <div className="row">
+                            {
+                              editOptions.map((option, index) => {
+                                return (
+                                  <EditOption
+                                    key={index}
+                                    name={option.name}
+                                    active={index === selectedOptionIndex ? true : false}
+                                    handleClick={() => setSelectedOptionIndex(index)}
+                                  />
+                                )
+                              })
+                            }
+                          </div>
+                          <br></br>
+                        </div>
+                        {/* Slider to adjust edit values. */}
+                        <Slider
+                          min={selectedOption.range.min}
+                          max={selectedOption.range.max}
+                          value={selectedOption.value}
+                          handleChange={handleSliderChange}
+                        />
+
+                      </>
+                    )}
+                    {loading &&
+                      <div>
+                        <Spinner animation="border" role="status">
+                        </Spinner>
+                        <span>{'  '}Scanning Image...</span>
+                      </div>}
+                    {(!loading) &&
+                      <div className="buttons">
+                        <button onClick={editingDone}>Done</button>
+                        <button onClick={editingCancelled}>Cancel</button>
+                        <button onClick={() => setIsPrivatePost(!isPrivatePost)}>Make Post {isPrivatePost ? "Public" : "Private"} </button>
+                      </div>}
+
+                  </Modal.Body>
+                </Modal>{showEditMap &&
+                  <>
+                    <Map
+                      center={{ lat: lat, lng: lng }}
+                      height='30vh'
+                      zoom={15}
+                      sendData={getData}
+                      draggable={true}
+                      setCoordinatesSelected={setCoordinatesSelected}
+                      setShowEditMap={setShowEditMap}
+                    />
+
+                  </>
+                }
+                {sliderImages && !showEditMap && <ImageGallery sliderImages={sliderImages} />}
+
+              </div>
+            </Modal.Body>
+          </Modal>
+
+        }
+
+        <Modal
+          show={cameraActive}
+          onHide={() => { setCameraActive("") }}
+          keyboard={false}
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Body>
+
+            {cameraActive && (
+              <div className="camera">
+                <br></br>
+                <Camera // Camera API
+                  isImageMirror={false}
+                  onTakePhoto={(dataUri) => {
+                    handleTakePhoto(dataUri);
+                  }}
+                  idealFacingMode={FACING_MODES.ENVIRONMENT}
+                  imageCompression={0.97}
+                />
+                <button onClick={closeCamera}>Close Camera</button>
+              </div>
+            )}
+          </Modal.Body>
+        </Modal>
+
+        <FlipMove>
+          {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
+          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+            ({
+              id,
+              data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp },
+            }) => (
+
+              <Post
+                key={id}
+                id={id}
+                name={name}
+                description={description}
+                message={message}
+                photoUrl={photoUrl}
+                largeGifs={largeGifs}
+                comments={comments}
+                hasCoordinates={hasCoordinates}
+                lat={lat}
+                lng={lng}
+                channelBy={channelBy}
+                viewingUser={user}
+                star={stars}
+                totalStar={totalStars}
+                isPrivate={isPrivate}
+                timestamp={timestamp}
+              >
+              </Post>
+
+
+            )
+          )}
+        </FlipMove>
+      </div>
+      <Fab variant="extended" className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
+        <AddCircleOutlineIcon className={classes.extendedIcon} />
+        <b>New Post</b>
+      </Fab>
+    </>
   );
 }
 
