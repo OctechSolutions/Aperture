@@ -1,0 +1,16 @@
+.groupChat {
+    flex: 0.7;
+    flex-grow: 1;
+    overflow-y: scroll;
+    padding-bottom: 150px;
+    text-align: center;
+}
+
+.groupChat_header {
+    padding: 20px;
+}
+
+.groupChat_header > hr {
+    border: 1px solid #FF4584;
+}
+
