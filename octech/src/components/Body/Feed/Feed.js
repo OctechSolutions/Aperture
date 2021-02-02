@@ -18,7 +18,7 @@ import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
 import Map from "../Map/Map";
-import Button from 'react-bootstrap/Button';
+import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useHistory } from "react-router-dom";
@@ -26,7 +26,11 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Fab from '@material-ui/core/Fab';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { makeStyles } from '@material-ui/core/styles';
-import { div } from "@tensorflow/tfjs-core";
+import IconButton from '@material-ui/core/IconButton';
+import SendIcon from '@material-ui/icons/Send';
+import InputBase from '@material-ui/core/InputBase';
+import LockIcon from '@material-ui/icons/Lock';
+import PublicIcon from '@material-ui/icons/Public';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -51,7 +55,11 @@ const useStyles = makeStyles((theme) => ({
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
-  }
+  },
+  input: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+  },
 }));
 
 const DEFAULT_EDIT_OPTIONS = [
@@ -270,7 +278,7 @@ function Feed({ match }, props) {
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
     console.log(sliderImages);
 
-    if (input.replace(/\s/g, '').length) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
+    if (sliderImages.length) {
 
       const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
       if (coordinatesSelected) {
@@ -333,57 +341,110 @@ function Feed({ match }, props) {
     setIsPrivatePost(false);
   }
 
+  // const editingDone = async () => {
+  //   setNohuman(false);
+
+  //   if (file) {
+
+  //     if (file.size / (1024 * 1024) > 0.9) {
+  //       if (file.type === 'image/gif') {
+  //         console.log("Large gif using firebase storage");
+  //         const storageRef = storage.ref();
+  //         const fileRef = storageRef.child(user.displayName + file.name);
+  //         fileRef.put(file).then(() => {
+  //           fileRef.getDownloadURL().then((doc) => {
+  //             console.log(doc);
+  //             setInputImgs(inputImgs.concat(doc))
+  //             setSliderImages(sliderImages.concat({
+  //               src: doc,
+  //               style: getImageStyle()
+  //             }));
+  //             console.log(sliderImages);
+  //             var reference = user.displayName + file.name;
+  //             console.log(file, "name  =  ", reference);
+  //             setInputImg("");
+  //             setEditOptions(DEFAULT_EDIT_OPTIONS);
+  //             setLargeImages(largeImages.concat(reference));
+  //           });
+  //         });
+
+  //       }
+  //       else {
+  //         const compress = new Compress();
+  //         compress.compress([file], {
+  //           size: 0.8, // the max size in MB, defaults to 2MB
+  //           quality: .70, // the quality of the image, max is 1,
+  //           maxWidth: 1920, // the max width of the output image, defaults to 1920px
+  //           maxHeight: 1920, // the max height of the output image, defaults to 1920px
+  //           resize: true, // defaults to true, set false if you do not want to resize the image width and height
+  //         }).then((data) => {
+  //           // returns an array of compressed images
+  //           console.log(data);
+  //           var compressedb64 = data[0].prefix + data[0].data;
+  //           setInputImgs(inputImgs.concat(compressedb64))
+  //           setSliderImages(sliderImages.concat({
+  //             src: compressedb64,
+  //             style: getImageStyle()
+  //           }))
+  //           console.log(sliderImages);
+  //           console.log(file);
+  //           setInputImg("");
+  //           setEditOptions(DEFAULT_EDIT_OPTIONS);
+  //         })
+  //       }
+  //     }
+  //     else {
+  //       setInputImgs(inputImgs.concat(inputImg))
+  //       setSliderImages(sliderImages.concat({
+  //         src: inputImg,
+  //         style: getImageStyle()
+  //       }))
+  //       console.log(sliderImages);
+  //       console.log(file);
+  //       setInputImg("");
+  //       setEditOptions(DEFAULT_EDIT_OPTIONS);
+  //     }
+  //   }
+  //   else {
+  //     setInputImgs(inputImgs.concat(inputImg))
+  //     setSliderImages(sliderImages.concat({
+  //       src: inputImg,
+  //       style: getImageStyle()
+  //     }))
+  //     console.log(sliderImages);
+  //     console.log(file);
+  //     setInputImg("");
+  //     setEditOptions(DEFAULT_EDIT_OPTIONS);
+  //   }
+  // }
+
   const editingDone = async () => {
     setNohuman(false);
 
-    if (file) {
+    if (inputImg) {
 
-      if (file.size / (1024 * 1024) > 0.9) {
-        if (file.type === 'image/gif') {
-          console.log("Large gif using firebase storage");
-          const storageRef = storage.ref();
-          const fileRef = storageRef.child(user.displayName + file.name);
-          fileRef.put(file).then(() => {
-            fileRef.getDownloadURL().then((doc) => {
-              console.log(doc);
-              setInputImgs(inputImgs.concat(doc))
-              setSliderImages(sliderImages.concat({
-                src: doc,
-                style: getImageStyle()
-              }));
-              console.log(sliderImages);
-              var reference = user.displayName + file.name;
-              console.log(file, "name  =  ", reference);
-              setInputImg("");
-              setEditOptions(DEFAULT_EDIT_OPTIONS);
-              setLargeImages(largeImages.concat(reference));
-            });
-          });
-
-        }
-        else {
-          const compress = new Compress();
-          compress.compress([file], {
-            size: 0.8, // the max size in MB, defaults to 2MB
-            quality: .70, // the quality of the image, max is 1,
-            maxWidth: 1920, // the max width of the output image, defaults to 1920px
-            maxHeight: 1920, // the max height of the output image, defaults to 1920px
-            resize: true, // defaults to true, set false if you do not want to resize the image width and height
-          }).then((data) => {
-            // returns an array of compressed images
-            console.log(data);
-            var compressedb64 = data[0].prefix + data[0].data;
-            setInputImgs(inputImgs.concat(compressedb64))
-            setSliderImages(sliderImages.concat({
-              src: compressedb64,
-              style: getImageStyle()
-            }))
-            console.log(sliderImages);
-            console.log(file);
-            setInputImg("");
-            setEditOptions(DEFAULT_EDIT_OPTIONS);
-          })
-        }
+      if (file) {
+        const compress = new Compress();
+        compress.compress([file], {
+          size: 0.7, // the max size in MB, defaults to 2MB
+          quality: .65, // the quality of the image, max is 1,
+          maxWidth: 1920, // the max width of the output image, defaults to 1920px
+          maxHeight: 1920, // the max height of the output image, defaults to 1920px
+          resize: true, // defaults to true, set false if you do not want to resize the image width and height
+        }).then((data) => {
+          // returns an array of compressed images
+          console.log(data);
+          var compressedb64 = data[0].prefix + data[0].data;
+          setInputImgs(inputImgs.concat(compressedb64))
+          setSliderImages(sliderImages.concat({
+            src: compressedb64,
+            style: getImageStyle()
+          }))
+          console.log(sliderImages);
+          console.log(file);
+          setInputImg("");
+          setEditOptions(DEFAULT_EDIT_OPTIONS);
+        })
       }
       else {
         setInputImgs(inputImgs.concat(inputImg))
@@ -395,18 +456,8 @@ function Feed({ match }, props) {
         console.log(file);
         setInputImg("");
         setEditOptions(DEFAULT_EDIT_OPTIONS);
+
       }
-    }
-    else {
-      setInputImgs(inputImgs.concat(inputImg))
-      setSliderImages(sliderImages.concat({
-        src: inputImg,
-        style: getImageStyle()
-      }))
-      console.log(sliderImages);
-      console.log(file);
-      setInputImg("");
-      setEditOptions(DEFAULT_EDIT_OPTIONS);
     }
   }
 
@@ -590,48 +641,82 @@ function Feed({ match }, props) {
             <Modal.Header closeButton onClick={() => { setShowPostComponent(false) }}>
               {/* Sign Up Heading */}
               <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>
-                 {(match.path === "/") ? <>{`Posting as ${user.displayName}`}</>:<>{`Posting in ${match.params.channel}`}</>}
+                {(match.path === "/") ? <>{`Posting as ${user.displayName}`}</> : <>{`Posting in ${match.params.channel}`}</>}
               </h4>
             </Modal.Header>
             <Modal.Body>
               <div className="feed_inputContainer">
                 <div className="feed_input">
-                  <Avatar src={user?.photoUrl}></Avatar> {/*Avatar using materialui*/}
-                  <form onSubmit={sendPost}>
-                    <input
+                  <IconButton
+                    aria-label="more"
+                  >
+                    <Avatar src={user.photoUrl}></Avatar>
+                  </IconButton>
+                  <form onSubmit={(e) => { e.preventDefault() }}>
+                    {/* <input
                       className="feed_inputbox"
                       placeholder="Caption..."
                       value={input}
                       onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
                       type="text"
                       required
+                    /> */}
+                    <InputBase
+                      className={classes.input}
+                      placeholder="Optional Caption..."
+                      inputProps={{ 'aria-label': 'caption' }}
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
                     />
-                    <div className="imagePreview">
-                      <div className="buttons">
-                        {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
-                          <button className="btn">
-                            <ImageIcon />
-                          </button>
-                          <input type="file" name="myfile" onChange={handleChange} />
-                        </div>}
-                        {!inputImg && !showEditMap && <button className="btn" onClick={openCamera}>
-                          <PhotoCameraIcon />
-                        </button>}
-                        {!inputImg && !showEditMap && <button className="btn" onClick={(e) => { e.preventDefault(); setShowEditMap(true) }}>
-                          <EditLocationIcon />
-                        </button>}
-
-                        {!inputImg && !showEditMap && <button onClick={sendPost} type="submit">
-                          Post
-                </button>}
-                      </div>
-                    </div>
 
                   </form>
-
-
+                  <IconButton
+                    aria-label="more"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={() => setIsPrivatePost(!isPrivatePost)}
+                  >
+                    {isPrivatePost ? <LockIcon /> : <PublicIcon />}
+                  </IconButton>
                 </div>
+                <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
+                  {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
+                    <input type="file" name="myfile" id="myFile" accept="image/*" onChange={handleChange} style={{ opacity: "0" }} />
+                    <label htmlFor="myFile">
+                      <IconButton
+                        aria-label="upload image"
+                        component="span"
+                      >
+                        <ImageIcon fontSize="large" />
+                      </IconButton>
+                    </label>
 
+                  </div>}
+                  {!inputImg && !showEditMap &&
+                    <label>
+                      <IconButton
+                        aria-label="open camera"
+                        component="span"
+                        onClick={openCamera}
+                      >
+                        <PhotoCameraIcon fontSize="large" />
+                      </IconButton>
+                    </label>
+                  }
+                  {!inputImg && !showEditMap && sliderImages.length > 0 &&
+
+                    <label>
+                      <IconButton
+                        aria-label="open map"
+                        component="span"
+                        onClick={(e) => { e.preventDefault(); setShowEditMap(true) }}
+                      >
+                        <EditLocationIcon fontSize="large" />
+                        {coordinatesSelected && <div style={{ color: "green" }}>✓</div>}
+                      </IconButton>
+                    </label>
+                  }
+                </div>
 
 
                 {show &&
@@ -639,7 +724,7 @@ function Feed({ match }, props) {
                     <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
                     <p>
                       The image uploaded had a Human detected in it!
-            </p>
+                    </p>
                   </Alert>
                 }
                 <Modal
@@ -719,7 +804,20 @@ function Feed({ match }, props) {
                   </>
                 }
                 {sliderImages && !showEditMap && <ImageGallery sliderImages={sliderImages} />}
+                {sliderImages.length > 0 && !showEditMap &&
 
+                  <center style={{ marginTop: "15px" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      endIcon={<SendIcon />}
+                      onClick={sendPost}
+                    >
+                      <b>Post</b>
+                    </Button>
+                  </center>
+                }
               </div>
             </Modal.Body>
           </Modal>

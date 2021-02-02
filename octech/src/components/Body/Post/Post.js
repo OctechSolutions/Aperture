@@ -350,7 +350,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   </IconButton>
                   {hasCoordinates &&
                     <IconButton
-                      aria-label="comments"
+                      aria-label="map"
                       aria-controls="long-menu"
                       aria-haspopup="true"
                       onClick={() => { setShowMap(true) }}
