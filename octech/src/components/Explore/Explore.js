@@ -159,9 +159,10 @@ export default function Explore() {
             zIndex: 100,
             top: 60,
             backgroundColor: "white",
+            marginBottom: "20px"
           }}
         >
-          <div style={{ width: "80%", marginLeft: "10%" }}>
+          <div style={{ width: "80%", marginLeft: "10%",marginBottom: "20px" }}>
             <Autocomplete
               autoComplete={true}
               autoHighlight={true}
@@ -208,6 +209,7 @@ export default function Explore() {
                     zIndex: 100,
                     top: 200,
                     backgroundColor: "white",
+                    marginBottom: "20px"
                   }}
                 />
               )}
