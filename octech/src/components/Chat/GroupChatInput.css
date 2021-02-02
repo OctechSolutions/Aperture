@@ -1,0 +1,23 @@
+.groupChatInput {
+    border-radius: 20px;
+}
+
+.groupChatInput > form {
+    display: flex;
+    position: relative;
+    justify-content: center;
+}
+
+.groupChatInput > form > input  {
+    position: fixed;
+    bottom: 30px;
+    width: 60%;
+    border: 1px solid gray;
+    border-radius: 3px;
+    padding: 20px;
+}
+
+/*Styling for hidden button which allows message to be sent upon hitting enter*/
+.groupChatInput > form > button {
+    display: none !important;
+}

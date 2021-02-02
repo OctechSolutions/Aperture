@@ -22,7 +22,7 @@ function SidebarOption({Icon, title, id, onClick, addGroupChatOption}) {
             {/* Only render an Icon if an icon exists*/}
             {Icon && <Icon className="sidebarOption_icon"/>}
             {Icon ? (<h3>{title}</h3>) : (
-            <h3 className="sidebarOption_channel">
+            <h3 className="sidebarOption_groupChat">
             <span className="SidebarOption_hash">#</span> {title} </h3>)}
         </div>
     )

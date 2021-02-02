@@ -4,6 +4,7 @@ import { useParams, Redirect } from "react-router-dom";
 import db from './firebase';
 import { Message } from '@material-ui/icons';
 import message from "./Message";
+import GroupChatInput from "./GroupChatInput";
 
 function GroupChat() {
     const { groupChatId } = useParams();
@@ -65,6 +66,7 @@ function GroupChat() {
                 ))}
             </div>
         </div>
+            <GroupChatInput groupChatName={groupChatDetails?.name} groupChatId
         </div>
     );
 };
