@@ -663,8 +663,9 @@ function Feed({ match }, props) {
             }
           </center>
           :
-          <>
-          </>}
+          <center>
+          <h1>Home</h1>
+        </center>}
         {((match.params.id === user.displayName) || (match.path === "/")) &&
 
           <Modal
