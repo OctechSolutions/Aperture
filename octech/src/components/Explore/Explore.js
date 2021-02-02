@@ -105,7 +105,6 @@ export default function Explore() {
                 list.push(...result.docs.map(doc => doc.data()));
             })
             setUsers(list);
-            console.log(list);
         })
 
         db.collection("posts")
@@ -167,7 +166,7 @@ export default function Explore() {
                             }}
                             id="search"
                             freeSolo
-                            options={users.map((option) => option.name)}
+                            options={users.map((option) => {console.log(option.name);return option.name})}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
