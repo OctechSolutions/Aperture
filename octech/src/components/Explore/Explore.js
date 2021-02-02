@@ -64,6 +64,8 @@ const useStyles = makeStyles((theme) => ({
   card: {
     borderRadius: "40px",
     boxShadow: "3px 3px 5px 6px rgb(233, 233, 233)",
+    width: "80%",
+    margin: "0 auto"
   },
 }));
 
@@ -329,7 +331,7 @@ export default function Explore() {
                         )
                       }
                     >
-                      <CardContent style={{ borderRadius: "20" }}>
+                      <CardContent style={{ borderRadius: "20",width: "80vw" }}>
                         <center>
                           <Typography variant="h5" component="h2">
                             {data.name}

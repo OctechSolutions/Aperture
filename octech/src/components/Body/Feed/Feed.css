@@ -55,7 +55,7 @@
 }
 
 .previewImage{
-  max-width: 50vw;
+  max-width: 80vw;
   max-height: 50vh;
   overflow: auto;
   margin-left: auto;
@@ -96,17 +96,6 @@
   .feed_input > form > input {
     border: none;
     width: 50vw;
-  }
-
- 
-  .photoEditor {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .row {
-    flex-direction: column;
-    margin-left: 10px;
   }
 }
 
