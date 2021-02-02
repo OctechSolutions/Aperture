@@ -35,6 +35,7 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -808,7 +809,7 @@ function Feed({ match }, props) {
                             {!loading &&
                               <div>
                                 <br /><br />
-                                <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick} centered>
+                                <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon/>} onClick={handleMenuClick} centered>
                                   {editOptions[selectedOptionIndex].name}
                                 </Button>
                                 <Menu
