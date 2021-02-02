@@ -3,6 +3,8 @@ import { withGoogleMap, GoogleMap, withScriptjs, Marker } from "react-google-map
 import Autocomplete from 'react-google-autocomplete';
 import { GoogleMapsAPI } from './client-config';
 import Button from 'react-bootstrap/Button';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import { geocodeByAddress, getLatLng } from 'react-google-places-autocomplete';
 
 
 
@@ -21,7 +23,9 @@ function Map({
             newLng = event.latLng.lng();
         console.log(event)
         console.log(newLat, newLng);
+        setValue(null);
         sendData([newLat, newLng]);
+        
     };
 
 
@@ -35,25 +39,30 @@ function Map({
         sendData([latValue, lngValue]);
     };
 
+    const searchPlace = (a) => {
+        if (a) {
+            geocodeByAddress(a.label)
+                .then(results => getLatLng(results[0]))
+                .then(({ lat, lng }) =>
+                    sendData([lat, lng])
+                );
+        }
+
+    }
+
+    const [value, setValue] = React.useState(null);
+
+
     const AsyncMap = withScriptjs(
         withGoogleMap(
             () => (
                 <>
 
-
                     <GoogleMap
                         defaultZoom={zoom}
                         defaultCenter={{ lat: center.lat, lng: center.lng }}
                     >{/* For Auto complete Search Box */}
-                        {draggable && <Autocomplete
-                            style={{
-                                width: '100%',
-                                height: '40px',
-                            }}
-                            onPlaceSelected={onPlaceSelected}
-                            types={['(regions)']}
-                        />
-                        }
+
                         {/*Marker*/}
                         <Marker
                             name={'Initial Mark'}
@@ -63,12 +72,7 @@ function Map({
                             animation={2}
                         />
                         <Marker />
-                        {draggable && 
-                        <div>
-                        <Button onClick={() => { setCoordinatesSelected(true); setShowEditMap(false) }} >Done</Button>
-                        <Button onClick={() => { setCoordinatesSelected(false); setShowEditMap(false) }} >Cancel</Button>
-                        </div>
-                        }
+
                     </GoogleMap>
 
                 </>
@@ -79,6 +83,34 @@ function Map({
     if (center.lat !== undefined) {
         map = <div>
 
+            {/* {draggable && <Autocomplete
+                        style={{
+                            width: '100%',
+                            height: '40px',
+                        }}
+                        onPlaceSelected={onPlaceSelected}
+                        types={['(regions)']}
+                    /> */}
+
+
+
+
+            {/* } */}
+
+            {draggable &&
+                <div>
+                    <br />
+                <GooglePlacesAutocomplete
+                    // apiKey='AIzaSyC1EfNasAc6J8vIFP3Lephiv4sKQwFmvFQ'
+                    selectProps={{
+                        value,
+                        onChange: setValue,
+                    }}
+                />
+                {value && searchPlace(value)}
+                </div>
+            }
+
             <AsyncMap
                 googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${GoogleMapsAPI}&libraries=places`}
                 loadingElement={
@@ -88,10 +120,21 @@ function Map({
                     <div style={{ height: height }} />
                 }
                 mapElement={
-                    <div style={{ height: `80%` }} />
+                    <div style={{ height: `90%` }} />
                 }
             />
 
+
+            {draggable &&
+                <>
+
+                    <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                        <br />
+                        <Button onClick={() => { setCoordinatesSelected(true); setShowEditMap(false) }} >Add Coordinates</Button>
+                        <Button onClick={() => { setCoordinatesSelected(false); setShowEditMap(false) }} >Cancel</Button>
+                    </div>
+                </>
+            }
             {/* {this.props.draggable && <button style={{width: "20%", marginTop: "3px"}}>Done</button>} */}
 
         </div>

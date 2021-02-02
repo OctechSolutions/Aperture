@@ -18,7 +18,7 @@ import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
 import Map from "../Map/Map";
-import Button from 'react-bootstrap/Button';
+import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useHistory } from "react-router-dom";
@@ -26,7 +26,16 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Fab from '@material-ui/core/Fab';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { makeStyles } from '@material-ui/core/styles';
-import { div } from "@tensorflow/tfjs-core";
+import IconButton from '@material-ui/core/IconButton';
+import SendIcon from '@material-ui/icons/Send';
+import InputBase from '@material-ui/core/InputBase';
+import LockIcon from '@material-ui/icons/Lock';
+import PublicIcon from '@material-ui/icons/Public';
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -51,7 +60,11 @@ const useStyles = makeStyles((theme) => ({
   },
   extendedIcon: {
     marginRight: theme.spacing(1),
-  }
+  },
+  input: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+  },
 }));
 
 const DEFAULT_EDIT_OPTIONS = [
@@ -124,6 +137,25 @@ function Feed({ match }, props) {
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
   const classes = useStyles();
+  const [cropper, setCropper] = useState("");
+  const [cropping, setCropping] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+  const getCropData = async () => {
+    if (typeof cropper !== "undefined") {
+      setInputImg(await cropper.getCroppedCanvas().toDataURL('image/jpeg', 0.5));
+      setCropping(false);
+    }
+  };
 
   //Timestamp of last post that was rendered . So to minimize queries from db
   const [timeStamp, setTimeStamp] = useState(0);
@@ -270,7 +302,7 @@ function Feed({ match }, props) {
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
     console.log(sliderImages);
 
-    if (input.replace(/\s/g, '').length) { // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
+    if (sliderImages.length) {
 
       const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
       if (coordinatesSelected) {
@@ -316,16 +348,22 @@ function Feed({ match }, props) {
         });
       });
 
-      setInputImg(""); // When the post is submitted the input image is set to an empty string removing the preview of the image and providing a fresh canvas for the next post
-      setEditOptions(DEFAULT_EDIT_OPTIONS); // This sets the slider values for editing the image to its default once the post is submitted which avoids applying old filters to the next image that is uploaded
-      setSliderImages([]);
-      setLargeImages([]);
-      setInput(""); // On posting the input value is set to an empty string
-      setCameraActive("");
-      setIsPrivatePost(false);
-      setShowPostComponent(false);
+      resetVals();
     }
   };
+
+  const resetVals = () => {
+    setInputImg(""); // When the post is submitted the input image is set to an empty string removing the preview of the image and providing a fresh canvas for the next post
+    setEditOptions(DEFAULT_EDIT_OPTIONS); // This sets the slider values for editing the image to its default once the post is submitted which avoids applying old filters to the next image that is uploaded
+    setSliderImages([]);
+    setLargeImages([]);
+    setInput(""); // On posting the input value is set to an empty string
+    setCameraActive("");
+    setIsPrivatePost(false);
+    setShowPostComponent(false);
+    setCropping("false");
+    setCameraActive("");
+  }
 
   const editingCancelled = async () => {
     setInputImg("");
@@ -333,80 +371,121 @@ function Feed({ match }, props) {
     setIsPrivatePost(false);
   }
 
+  // const editingDone = async () => {
+  //   setNohuman(false);
+
+  //   if (file) {
+
+  //     if (file.size / (1024 * 1024) > 0.9) {
+  //       if (file.type === 'image/gif') {
+  //         console.log("Large gif using firebase storage");
+  //         const storageRef = storage.ref();
+  //         const fileRef = storageRef.child(user.displayName + file.name);
+  //         fileRef.put(file).then(() => {
+  //           fileRef.getDownloadURL().then((doc) => {
+  //             console.log(doc);
+  //             setInputImgs(inputImgs.concat(doc))
+  //             setSliderImages(sliderImages.concat({
+  //               src: doc,
+  //               style: getImageStyle()
+  //             }));
+  //             console.log(sliderImages);
+  //             var reference = user.displayName + file.name;
+  //             console.log(file, "name  =  ", reference);
+  //             setInputImg("");
+  //             setEditOptions(DEFAULT_EDIT_OPTIONS);
+  //             setLargeImages(largeImages.concat(reference));
+  //           });
+  //         });
+
+  //       }
+  //       else {
+  //         const compress = new Compress();
+  //         compress.compress([file], {
+  //           size: 0.8, // the max size in MB, defaults to 2MB
+  //           quality: .70, // the quality of the image, max is 1,
+  //           maxWidth: 1920, // the max width of the output image, defaults to 1920px
+  //           maxHeight: 1920, // the max height of the output image, defaults to 1920px
+  //           resize: true, // defaults to true, set false if you do not want to resize the image width and height
+  //         }).then((data) => {
+  //           // returns an array of compressed images
+  //           console.log(data);
+  //           var compressedb64 = data[0].prefix + data[0].data;
+  //           setInputImgs(inputImgs.concat(compressedb64))
+  //           setSliderImages(sliderImages.concat({
+  //             src: compressedb64,
+  //             style: getImageStyle()
+  //           }))
+  //           console.log(sliderImages);
+  //           console.log(file);
+  //           setInputImg("");
+  //           setEditOptions(DEFAULT_EDIT_OPTIONS);
+  //         })
+  //       }
+  //     }
+  //     else {
+  //       setInputImgs(inputImgs.concat(inputImg))
+  //       setSliderImages(sliderImages.concat({
+  //         src: inputImg,
+  //         style: getImageStyle()
+  //       }))
+  //       console.log(sliderImages);
+  //       console.log(file);
+  //       setInputImg("");
+  //       setEditOptions(DEFAULT_EDIT_OPTIONS);
+  //     }
+  //   }
+  //   else {
+  //     setInputImgs(inputImgs.concat(inputImg))
+  //     setSliderImages(sliderImages.concat({
+  //       src: inputImg,
+  //       style: getImageStyle()
+  //     }))
+  //     console.log(sliderImages);
+  //     console.log(file);
+  //     setInputImg("");
+  //     setEditOptions(DEFAULT_EDIT_OPTIONS);
+  //   }
+  // }
+
   const editingDone = async () => {
     setNohuman(false);
 
-    if (file) {
+    if (inputImg) {
 
-      if (file.size / (1024 * 1024) > 0.9) {
-        if (file.type === 'image/gif') {
-          console.log("Large gif using firebase storage");
-          const storageRef = storage.ref();
-          const fileRef = storageRef.child(user.displayName + file.name);
-          fileRef.put(file).then(() => {
-            fileRef.getDownloadURL().then((doc) => {
-              console.log(doc);
-              setInputImgs(inputImgs.concat(doc))
-              setSliderImages(sliderImages.concat({
-                src: doc,
-                style: getImageStyle()
-              }));
-              console.log(sliderImages);
-              var reference = user.displayName + file.name;
-              console.log(file, "name  =  ", reference);
-              setInputImg("");
-              setEditOptions(DEFAULT_EDIT_OPTIONS);
-              setLargeImages(largeImages.concat(reference));
-            });
-          });
-
-        }
-        else {
-          const compress = new Compress();
-          compress.compress([file], {
-            size: 0.8, // the max size in MB, defaults to 2MB
-            quality: .70, // the quality of the image, max is 1,
-            maxWidth: 1920, // the max width of the output image, defaults to 1920px
-            maxHeight: 1920, // the max height of the output image, defaults to 1920px
-            resize: true, // defaults to true, set false if you do not want to resize the image width and height
-          }).then((data) => {
-            // returns an array of compressed images
-            console.log(data);
-            var compressedb64 = data[0].prefix + data[0].data;
-            setInputImgs(inputImgs.concat(compressedb64))
-            setSliderImages(sliderImages.concat({
-              src: compressedb64,
-              style: getImageStyle()
-            }))
-            console.log(sliderImages);
-            console.log(file);
-            setInputImg("");
-            setEditOptions(DEFAULT_EDIT_OPTIONS);
-          })
-        }
-      }
-      else {
-        setInputImgs(inputImgs.concat(inputImg))
-        setSliderImages(sliderImages.concat({
-          src: inputImg,
-          style: getImageStyle()
-        }))
-        console.log(sliderImages);
-        console.log(file);
-        setInputImg("");
-        setEditOptions(DEFAULT_EDIT_OPTIONS);
-      }
-    }
-    else {
+      // if (file) {
+      //   const compress = new Compress();
+      //   compress.compress([file], {
+      //     size: 0.7, // the max size in MB, defaults to 2MB
+      //     quality: .65, // the quality of the image, max is 1,
+      //     maxWidth: 1920, // the max width of the output image, defaults to 1920px
+      //     maxHeight: 1920, // the max height of the output image, defaults to 1920px
+      //     resize: true, // defaults to true, set false if you do not want to resize the image width and height
+      //   }).then((data) => {
+      //     // returns an array of compressed images
+      //     console.log(data);
+      //     var compressedb64 = data[0].prefix + data[0].data;
+      //     setInputImgs(inputImgs.concat(compressedb64))
+      //     setSliderImages(sliderImages.concat({
+      //       src: compressedb64,
+      //       style: getImageStyle()
+      //     }))
+      //     console.log(sliderImages);
+      //     console.log(file);
+      //     setInputImg("");
+      //     setEditOptions(DEFAULT_EDIT_OPTIONS);
+      //   })
+      // }
+      // else {
       setInputImgs(inputImgs.concat(inputImg))
       setSliderImages(sliderImages.concat({
         src: inputImg,
         style: getImageStyle()
       }))
-      console.log(sliderImages);
-      console.log(file);
       setInputImg("");
       setEditOptions(DEFAULT_EDIT_OPTIONS);
+
+      // }
     }
   }
 
@@ -426,60 +505,69 @@ function Feed({ match }, props) {
     setLng(val[1]);
   }
 
-  const handleChange = async (e) => { // When a file is uploaded this function is called
-    setCameraActive("");
+  const handleChange = (e) => { // When a file is uploaded this function is called
+    
     e.preventDefault();
-    var reader = new FileReader();
     console.log(e.target.files[0]);
     setEditOptions(DEFAULT_EDIT_OPTIONS);
 
-    if (e.target.files[0] !== undefined) {
-      reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
+    {
+      // reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
       setFile(e.target.files[0]);
-      cocoSsd.load();
-    }
-    reader.onloadend = function () { // Since this is asyncronous on completion of the loading the image is set with the base64 string
-      console.log("RESULT", reader.result);
-      setInputImg(reader.result);
-      // alert("Image Uploaded Sucessfully!")
-      setLoading(true);
+      // cocoSsd.load();
+      const compress = new Compress();
+      compress.compress([e.target.files[0]], {
+        size: 0.7, // the max size in MB, defaults to 2MB
+        quality: .65, // the quality of the image, max is 1,
+        maxWidth: 1920, // the max width of the output image, defaults to 1920px
+        maxHeight: 1920, // the max height of the output image, defaults to 1920px
+        resize: true, // defaults to true, set false if you do not want to resize the image width and height
+      }).then((data) => {
+        // returns an array of compressed images
+        console.log(data);
+        var compressedb64 = data[0].prefix + data[0].data;
+         setInputImg(compressedb64);
 
-      cocoSsd.load().then((model) => {
+        setLoading(true);
 
-        // detect objects in the image.
+        cocoSsd.load().then((model) => {
 
-        const img = document.getElementById("img");
-        model.detect(img).then((predictions) => {
+          // detect objects in the image.
 
-          console.log("Predictions: ", predictions);
-          if (predictions.length) {
-            predictions.forEach((prediction) => {
-              if (prediction.class === "person") {
-                setInputImg("");
-                console.log("HUMAN DETECTED!!!")
-                setShow(true);
-              }
-              else {
-                setNohuman(true);
-              }
-            })
-          }
-          else {
-            setNohuman(true);
-          }
-          setLoading(false);
-        })
+          const img = document.getElementById("img");
+          model.detect(img).then((predictions) => {
+
+            console.log("Predictions: ", predictions);
+            if (predictions.length) {
+              predictions.forEach((prediction) => {
+                if (prediction.class === "person") {
+                  setInputImg("");
+                  console.log("HUMAN DETECTED!!!")
+                  setShow(true);
+                }
+                else {
+                  setNohuman(true);
+                }
+              })
+            }
+            else {
+              setNohuman(true);
+            }
+            setLoading(false);
+            setCropping(true);
+          })
+        });
       });
-    };
+      setCameraActive("");
+    }
   };
 
   async function handleTakePhoto(dataUri) { // This function is called when the photo using the camera is taken
-    console.log(dataUri);
-    setInputImg(await dataUri); // The inputImg is set with the result that is returned from the camera
-    // alert("Image Uploaded Sucessfully!");
+    // console.log(dataUri);
+    setInputImg(dataUri)
     setCameraActive("");
     setLoading(true);
-
+    await inputImg;
     cocoSsd.load().then((model) => {
 
       // detect objects in the image.
@@ -504,6 +592,7 @@ function Feed({ match }, props) {
           setNohuman(true);
         }
         setLoading(false);
+        setCropping(true);
       })
     });
   }
@@ -544,7 +633,6 @@ function Feed({ match }, props) {
 
   return (
     <>
-
       <div className="feed">
 
         {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
@@ -575,13 +663,14 @@ function Feed({ match }, props) {
             }
           </center>
           :
-          <>
-          </>}
+          <center>
+          <h1>Home</h1>
+        </center>}
         {((match.params.id === user.displayName) || (match.path === "/")) &&
 
           <Modal
             show={showPostComponent}
-            onHide={() => { setShowPostComponent(false) }}
+            onHide={() => { setShowPostComponent(false); resetVals(); }}
             keyboard={false}
             size="xl"
             aria-labelledby="contained-modal-title-vcenter"
@@ -590,48 +679,82 @@ function Feed({ match }, props) {
             <Modal.Header closeButton onClick={() => { setShowPostComponent(false) }}>
               {/* Sign Up Heading */}
               <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>
-                 {(match.path === "/") ? <>{`Posting as ${user.displayName}`}</>:<>{`Posting in ${match.params.channel}`}</>}
+                {(match.path === "/") ? <>{`Posting as ${user.displayName}`}</> : <>{`Posting in ${match.params.channel}`}</>}
               </h4>
             </Modal.Header>
             <Modal.Body>
               <div className="feed_inputContainer">
                 <div className="feed_input">
-                  <Avatar src={user?.photoUrl}></Avatar> {/*Avatar using materialui*/}
-                  <form onSubmit={sendPost}>
-                    <input
+                  <IconButton
+                    aria-label="more"
+                  >
+                    <Avatar src={user.photoUrl}></Avatar>
+                  </IconButton>
+                  <form onSubmit={(e) => { e.preventDefault() }}>
+                    {/* <input
                       className="feed_inputbox"
                       placeholder="Caption..."
                       value={input}
                       onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
                       type="text"
                       required
+                    /> */}
+                    <InputBase
+                      className={classes.input}
+                      placeholder="Optional Caption..."
+                      inputProps={{ 'aria-label': 'caption' }}
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
                     />
-                    <div className="imagePreview">
-                      <div className="buttons">
-                        {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
-                          <button className="btn">
-                            <ImageIcon />
-                          </button>
-                          <input type="file" name="myfile" onChange={handleChange} />
-                        </div>}
-                        {!inputImg && !showEditMap && <button className="btn" onClick={openCamera}>
-                          <PhotoCameraIcon />
-                        </button>}
-                        {!inputImg && !showEditMap && <button className="btn" onClick={(e) => { e.preventDefault(); setShowEditMap(true) }}>
-                          <EditLocationIcon />
-                        </button>}
-
-                        {!inputImg && !showEditMap && <button onClick={sendPost} type="submit">
-                          Post
-                </button>}
-                      </div>
-                    </div>
 
                   </form>
-
-
+                  <IconButton
+                    aria-label="more"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={() => setIsPrivatePost(!isPrivatePost)}
+                  >
+                    {isPrivatePost ? <LockIcon /> : <PublicIcon />}
+                  </IconButton>
                 </div>
+                <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
+                  {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
+                    <input type="file" name="myfile" id="myFile" accept="image/*" onChange={handleChange} style={{ opacity: "0" }} />
+                    <label htmlFor="myFile">
+                      <IconButton
+                        aria-label="upload image"
+                        component="span"
+                      >
+                        <ImageIcon fontSize="large" />
+                      </IconButton>
+                    </label>
 
+                  </div>}
+                  {!inputImg && !showEditMap &&
+                    <label>
+                      <IconButton
+                        aria-label="open camera"
+                        component="span"
+                        onClick={openCamera}
+                      >
+                        <PhotoCameraIcon fontSize="large" />
+                      </IconButton>
+                    </label>
+                  }
+                  {!inputImg && !showEditMap && sliderImages.length > 0 &&
+
+                    <label>
+                      <IconButton
+                        aria-label="open map"
+                        component="span"
+                        onClick={(e) => { e.preventDefault(); setShowEditMap(true) }}
+                      >
+                        <EditLocationIcon fontSize="large" />
+                        {coordinatesSelected && <div style={{ color: "green" }}>✓</div>}
+                      </IconButton>
+                    </label>
+                  }
+                </div>
 
 
                 {show &&
@@ -639,7 +762,7 @@ function Feed({ match }, props) {
                     <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
                     <p>
                       The image uploaded had a Human detected in it!
-            </p>
+                    </p>
                   </Alert>
                 }
                 <Modal
@@ -654,39 +777,70 @@ function Feed({ match }, props) {
 
                     {inputImg && (
                       <>
+                        {!loading && cropping &&
+                          <div>
+                            <Cropper
+                              style={{ height: 400, width: "100%" }}
+                              initialAspectRatio={1}
+                              src={inputImg}
+                              viewMode={1}
+                              guides={true}
+                              minCropBoxHeight={10}
+                              minCropBoxWidth={10}
+                              background={false}
+                              responsive={true}
+                              autoCropArea={1}
+                              checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                              onInitialized={(instance) => {
+                                setCropper(instance);
+                              }}
+                            />
+                            <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                              <Button color="primary" onClick={getCropData}>Crop Image</Button>
+                              <Button onClick={() => { setCropping(false) }}>Continue without cropping</Button>
+                            </div>
+                          </div>}
                         <br />
                         {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
-                        <div className="photoEditor">
-                          {/* Div in which to view the photo. */}
-                          <img src={inputImg}
-                            className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
+                        {inputImg &&
+                          <div className="photoEditor">
+                            {/* Div in which to view the photo. */}
+                            <img src={inputImg}
+                              className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
+                            {!loading &&
+                              <div>
+                                <br /><br />
+                                <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon/>} onClick={handleMenuClick} centered>
+                                  {editOptions[selectedOptionIndex].name}
+                                </Button>
+                                <Menu
+                                  id="simple-menu"
+                                  anchorEl={anchorEl}
+                                  keepMounted
+                                  open={Boolean(anchorEl)}
+                                  onClose={handleClose}
+                                >
+                                  {editOptions.map((option, index) => {
+                                    return (
+                                      <MenuItem
+                                        key={index}
+                                        onClick={() => { setSelectedOptionIndex(index); setAnchorEl(null) }}
+                                      >{option.name}</MenuItem>
+                                    )
+                                  })}
+                                </Menu><br></br>
+                                <Slider
+                                  min={selectedOption.range.min}
+                                  max={selectedOption.range.max}
+                                  value={selectedOption.value}
+                                  handleChange={handleSliderChange} />
+                              </div>}
 
-                          {/* {console.log(getImageStyle())} */}
-                          <br></br>
-                          {/* Div with 6 options like brightness, contrast, etc. */}
-                          <div className="row">
-                            {
-                              editOptions.map((option, index) => {
-                                return (
-                                  <EditOption
-                                    key={index}
-                                    name={option.name}
-                                    active={index === selectedOptionIndex ? true : false}
-                                    handleClick={() => setSelectedOptionIndex(index)}
-                                  />
-                                )
-                              })
-                            }
+
                           </div>
-                          <br></br>
-                        </div>
+                        }
                         {/* Slider to adjust edit values. */}
-                        <Slider
-                          min={selectedOption.range.min}
-                          max={selectedOption.range.max}
-                          value={selectedOption.value}
-                          handleChange={handleSliderChange}
-                        />
+
 
                       </>
                     )}
@@ -696,12 +850,12 @@ function Feed({ match }, props) {
                         </Spinner>
                         <span>{'  '}Scanning Image...</span>
                       </div>}
-                    {(!loading) &&
-                      <div className="buttons">
-                        <button onClick={editingDone}>Done</button>
-                        <button onClick={editingCancelled}>Cancel</button>
-                        <button onClick={() => setIsPrivatePost(!isPrivatePost)}>Make Post {isPrivatePost ? "Public" : "Private"} </button>
-                      </div>}
+                    {(!loading) && !cropping &&
+                      <div className="buttons" style={{ justifyContent: "space-evenly" }}>
+                        <Button variant="contained" onClick={editingDone}>Add Image</Button>
+                        <Button variant="contained" onClick={editingCancelled}>Cancel</Button>
+                      </div>
+                    }
 
                   </Modal.Body>
                 </Modal>{showEditMap &&
@@ -719,7 +873,20 @@ function Feed({ match }, props) {
                   </>
                 }
                 {sliderImages && !showEditMap && <ImageGallery sliderImages={sliderImages} />}
+                {sliderImages.length > 0 && !showEditMap &&
 
+                  <center style={{ marginTop: "15px" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      endIcon={<SendIcon />}
+                      onClick={sendPost}
+                    >
+                      <b>Post</b>
+                    </Button>
+                  </center>
+                }
               </div>
             </Modal.Body>
           </Modal>

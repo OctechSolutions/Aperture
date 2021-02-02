@@ -6,9 +6,9 @@
 }
 .feed_inputContainer {
   background-color: white;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   padding: 10px;
-  margin-top: 10px;
+  /* margin-top: 10px; */
   margin-bottom: auto;
 }
 
@@ -40,7 +40,7 @@
   flex-direction: column;
 }
 
-.feed_input > form > input {
+/* .feed_input > form > input {
   border: none;
   flex: 1;
   margin-left: 10px;
@@ -48,14 +48,14 @@
   font-weight: 600;
   font-size: 15px;
   width:50vw; 
-}
+} */
 
 .buttons {
   display: flex;
 }
 
 .previewImage{
-  max-width: 50vw;
+  max-width: 80vw;
   max-height: 50vh;
   overflow: auto;
   margin-left: auto;
@@ -71,6 +71,14 @@
   align-items: center;
 }
 
+ .buttons {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+    transform: scale(0.9, 0.9);
+    justify-content: center;
+  }
+  
 @media (max-width: 1075px) {
   .feed_input > form > input {
     border: none;
@@ -88,23 +96,6 @@
   .feed_input > form > input {
     border: none;
     width: 50vw;
-  }
-
-  .buttons {
-    display: flex;
-    width: 100%;
-    margin-top: 10px;
-    transform: scale(0.9, 0.9);
-    justify-content: center;
-  }
-  .photoEditor {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .row {
-    flex-direction: column;
-    margin-left: 10px;
   }
 }
 
