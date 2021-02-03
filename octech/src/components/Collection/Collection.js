@@ -108,6 +108,7 @@ function Collection({ match, user }) {
         });
 
         setOpen(false)
+        setSliderImages([])
     }
 
 
