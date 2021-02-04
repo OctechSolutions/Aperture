@@ -46,15 +46,15 @@ const Chat = (props) => {
         await db.collection("chatRooms").doc(props.id).collection("messages").doc(message.id).delete()
     }
     return (
-        <div className="chat" style={{width: "100%"}}>
+        <div className="chat" style={{width: "100%", height:"70vh",overflow: "scroll"}}>
             <p style={{ textAlign: "left", padding: "1px 10px" }}> Chatting with {[...props.participants.map(p => p.name)].join(" ")} <span style={{ float: "right" }}><IconButton edge="end" aria-label="clear" onClick={props.clear}><ClearIcon /></IconButton></span></p>
             <Divider />
-            <Grid container className="chatBox" direction="column-reverse" justify="space-between">
+            <Grid container className="chatBox" direction="column-reverse" justify="space-between" style={{listStyle: "none", padding: "5px"}}>
                 <span ref={helper}></span>
                 {
                     messages && messages.map(message => (
                         <Grid container xs={12}  alignItems={(message.sender === props.user.name) ? "flex-end" : "flex-start"} direction="column" >
-                        <Grid item key={message.id} >
+                        <Grid item key={message.id} style={{margin: "5px 0"}} >
                             <ListItem alignItems="center" style={{borderRadius:"20px",backgroundColor:(message.sender === props.user.name) ? "white" : "lightgrey"}}>
                                 <ListItemAvatar >
                                     <Avatar src={(message.sender === props.user.name) ? props.user.photoUrl : props.participants[0].photoUrl} alt={(message.sender === props.user.name) ? props.user.name : props.participants[0].name} />
@@ -79,7 +79,7 @@ const Chat = (props) => {
             </Grid>
 
             <Grid container className="messageBox" >
-                <div style={{ position: "absolute", bottom: "8vh", display: "flex", width: "100%", flexDirection: "row" }}>
+                <div style={{ position: "fixed", bottom: "8vh", display: "flex", width: "100%", flexDirection: "row" }}>
                     {/* <form className="messageForm" noValidate autoComplete="off" onSubmit={sendMessage} style={{ width: "100%" }}>
                         <Grid item xs={12}>
                             <Input placeholder="Enter Your Message" value={message} onChange={(e) => setMessage(e.target.value)} inputProps={{ required: true, fullwidth: true }}
