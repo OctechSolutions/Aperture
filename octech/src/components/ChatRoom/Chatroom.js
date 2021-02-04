@@ -116,7 +116,6 @@ const Chatroom = (match) => {
                                 if(chat){
                                     setChatWindow(<Chat user = {{name:userData.data.name,photoUrl:userData.data.photoUrl}} participants={chat.participants} id = {chat.id} clear={()=>{setChatWindow("")}}/>)
                                 }else{
-                                    console.log("HAAn")
                                     creatChat({name:userData.data.name,photoUrl:userData.data.photoUrl},selectedUser).then(id => {
                                         setChatWindow(<Chat user = {{name:userData.data.name,photoUrl:userData.data.photoUrl}} participants={[selectedUser]} id={id} clear={()=>{setChatWindow("")}}/>)
                                     })
