@@ -4,6 +4,34 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userSlice";
 import { Link } from 'react-router-dom';
 import firebase from "firebase";
+import Fab from '@material-ui/core/Fab';
+import EditIcon from '@material-ui/icons/Edit';
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from 'react-bootstrap/Modal';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        backgroundColor: theme.palette.background.paper,
+        width: 500,
+        position: 'relative',
+        minHeight: 200,
+    },
+    fab: {
+        margin: 0,
+        top: 'auto',
+        right: 20,
+        bottom: 70,
+        left: 'auto',
+        position: 'fixed',
+    },
+    extendedIcon: {
+        marginRight: theme.spacing(1),
+    },
+    input: {
+        marginLeft: theme.spacing(2),
+        flex: 1,
+    },
+}));
 
 function Channels({ profileName }) {
 
@@ -16,6 +44,7 @@ function Channels({ profileName }) {
     const [channels, setChannels] = useState([]);
     const [clearToSubmit, setClearToSubmit] = useState(false);
     const [channelDoesExist, setChannelDoesExist] = useState(false);
+    const classes = useStyles();
 
 
     useEffect(() => {
@@ -54,12 +83,13 @@ function Channels({ profileName }) {
                 creator: user.displayName,
                 name: channelName,
                 description: channelDesc,
-                theme: channelTheme
+                theme: channelTheme,
+                followers: []
             }).then(() => {
                 // window.location.reload();
             });
         db.collection("users").doc(user.displayName).update({
-            followingChannels : firebase.firestore.FieldValue.arrayUnion({name:channelName,creator:user.displayName})
+            followingChannels: firebase.firestore.FieldValue.arrayUnion({ name: channelName, creator: user.displayName })
         });
     }
 
@@ -99,7 +129,7 @@ function Channels({ profileName }) {
             })
         })
         db.collection("users").doc(user.displayName).update({
-            followingChannels : firebase.firestore.FieldValue.arrayRemove({name:channelName,creator:user.displayName})
+            followingChannels: firebase.firestore.FieldValue.arrayRemove({ name: channelName, creator: user.displayName })
         });
     }
 
@@ -155,8 +185,13 @@ function Channels({ profileName }) {
                         </div>
                         <button type="submit" className="btn btn-primary" disabled={!clearToSubmit} onClick={createChannel}>Create!</button>
                     </form>
+                    {/* <Fab variant="extended" className={classes.fab} color='primary' onClick={() => { }}>
+                        <EditIcon className={classes.extendedIcon} />
+                        <b>New Channel</b>
+                    </Fab> */}
                 </div>}
             </div>
+
         </div>
     )
 }

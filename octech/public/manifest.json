@@ -1,0 +1,14 @@
+{
+    "name": "Aperture",
+    "short_name": "Aperture",
+    "background_color": "#282c34",
+    "theme_color": "#282c34",
+    "description": "A pwa",
+    "icons": [{
+      "src": "a.png",
+      "sizes": "150x150",
+      "type": "image/png"
+    }],
+    "start_url": "/",
+    "display": "standalone"
+  }

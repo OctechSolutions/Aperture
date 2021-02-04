@@ -266,9 +266,11 @@ function Portfolio({ match, user }) {
 
             {portfolioExists &&
                 <>
-                    <p>{portfolio.description}</p>
+                
+                    <p><Avatar src={portfolio.headshot} /> Name - {portfolio.firstName + " " + portfolio.lastname}</p>
+                    <p>About me - {portfolio.description}</p>
                     <p>{portfolio.quote} - {match.params.id}</p>
-                    <Avatar src={portfolio.headshot} />
+                    
                 </>
             }
             {
