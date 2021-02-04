@@ -25,6 +25,7 @@
     "moment": "^2.29.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
+    "react-chat-elements": "^10.13.0",
     "react-cropper": "^2.1.4",
     "react-dom": "^17.0.1",
     "react-firebase-hooks": "^2.2.0",

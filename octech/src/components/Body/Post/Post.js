@@ -140,7 +140,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       // console.log(snapshot);
       setCollections(doc.data().collections);
       if (timestamp) {
-        { console.log(moment(timestamp.toDate()).fromNow()) }
+        { moment(timestamp.toDate()).fromNow() }
       }
     })
   }, []);

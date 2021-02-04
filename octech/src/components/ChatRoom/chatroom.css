@@ -6,3 +6,6 @@
 .chatroom{
     width: 100%;
 }
+.chatWindow{
+  border-width: 1px solid black;
+}
