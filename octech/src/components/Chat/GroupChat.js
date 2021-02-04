@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import "./GroupChat.css";
 import { useParams, Redirect } from "react-router-dom";
 import db from './firebase';
-import { Message } from '@material-ui/icons';
-import message from "./Message";
+//import { Message } from '@material-ui/icons';
+import Message from "./Message";
 import GroupChatInput from "./GroupChatInput";
 
 function GroupChat() {
@@ -20,19 +20,18 @@ function GroupChat() {
             .onSnapshot(snapshot => (setGroupChatDetails(snapshot.data())
             ))
         }
+
         db.collection("groupChats").doc(groupChatId)
         .collection("messages")
         .orderBy("timestamp", "asc")
         .onSnapshot(
-            setGroupChatMessages(
-              snapshot => snapshot.docs.map(doc => doc.data())
-            )
+              snapshot => setGroupChatMessages(snapshot.docs.map(doc => doc.data()))
         )
 
     }, [groupChatId]);
 
     // console.log(groupChatDetails);
-    // console.log(groupChatMessages);
+    console.log("MESSAGES >>>", groupChatMessages);
 
 
 
@@ -50,23 +49,23 @@ function GroupChat() {
 
                 <div className="chat_headerRight">
                 <p>
-                    alright
+                    Chat Box
                 </p>
                 </div>    
             
 
             <div className="groupChat_messages">
-            {groupChatMessages.map(({message, timestamp, user, userImage}) =>
+            {groupChatMessages ? groupChatMessages.map(({message, timestamp, user, userImage}) =>
                 (   <Message
                     message={message}
                     timestamp={timestamp}
                     user={user}
                     userImage={userImage}
                     />
-                ))}
+                )) : ''}
             </div>
         </div>
-            <GroupChatInput groupChatName={groupChatDetails?.name} groupChatId
+            <GroupChatInput groupChatName={groupChatDetails?.name} groupChatId={groupChatId} />
         </div>
     );
 };
