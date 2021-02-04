@@ -218,7 +218,7 @@ const Chatroom = (match) => {
 
     return (
         (
-            <div className="chatroom" style={{ height: "90vh" }}>
+            <div className="chatroom" style={{ height: "85vh" }}>
 
 
                 {/* Flexbox from material Ui
