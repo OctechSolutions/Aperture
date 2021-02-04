@@ -22,6 +22,11 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
+import { Avatar } from "@material-ui/core";
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -80,7 +85,7 @@ export default function Explore() {
   const [tabValue, setTabValue] = useState(0);
   const [posts, setPosts] = useState([]);
   const [channels, setChannels] = useState([]);
-  const [key, setKey] = useState("posts");
+  const [key, setKey] = useState("");
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -90,7 +95,36 @@ export default function Explore() {
     setTabValue(index);
   };
 
-  useEffect(() => {
+  const getPosts = (k)=>{
+    if(k==="posts"){
+      db.collection("posts")
+      .where("isPrivate","==",false)
+      .orderBy("totalStars", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+      .get().then((snapshot) =>
+        setPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            key: doc.id,
+            data: doc.data(),
+          }))
+        )
+      );} 
+      else if (k === "channels"){
+        db.collection("channels")
+              .orderBy("followers", "desc")
+              .get().then((snapshot) =>
+              setChannels(
+                snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  key: doc.id,
+                  data: doc.data(),
+                }))
+              )
+            );}  
+      setKey(k)  
+      return k
+  }
+  useEffect(() =>{
     let list = [];
     db.collection("users")
       .doc(user.displayName)
@@ -115,34 +149,9 @@ export default function Explore() {
           .then((result) => {
             list.push(...result.docs.map((doc) => doc.data()));
           });
-        setUsers(list);
-        console.log(list);
-      });
-
-    db.collection("posts")
-      .orderBy("totalStars", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
-      .onSnapshot((snapshot) =>
-        setPosts(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            key: doc.id,
-            data: doc.data(),
-          }))
-        )
-      );
-
-    db.collection("channels")
-      .orderBy("followers", "desc")
-      .onSnapshot((snapshot) =>
-        setChannels(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            key: doc.id,
-            data: doc.data(),
-          }))
-        )
-      );
-  }, []);
+        });
+        setUsers(list)
+  },[user.displayName])
 
   return (
     <>
@@ -165,30 +174,17 @@ export default function Explore() {
             <Autocomplete
               autoComplete={true}
               autoHighlight={true}
-              value={value}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }}
-              inputValue={inputValue}
-              onInputChange={(event, newInputValue) => {
-                setInputValue(newInputValue);
-                const selectedUser = users.filter(function (item) {
-                  return item.name === newInputValue;
-                });
-                if (
-                  users.filter(function (item) {
-                    return item.name === newInputValue;
-                  })[0]
-                ) {
+              onChange={(event, newInputValue) => {
+                if (newInputValue) {
                   {
-                    if (selectedUser[0].creator === undefined)
-                      history.push(`/user/${selectedUser[0].name}`);
+                    if (newInputValue.creator === undefined)
+                      history.push(`/user/${newInputValue.name}`);
                     else
                       history.push(
                         `/user/${
-                          selectedUser[0].creator +
+                          newInputValue.creator +
                           "/channel/" +
-                          selectedUser[0].name
+                          newInputValue.name
                         }`
                       );
                   }
@@ -196,21 +192,44 @@ export default function Explore() {
               }}
               id="search"
               freeSolo
-              options={users.map((option) => option.name)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Search"
-                  margin="normal"
-                  variant="outlined"
-                  style={{
-                    position: "sticky",
-                    zIndex: 100,
-                    top: 200,
-                    backgroundColor: "white",
-                    marginBottom: "20px"
-                  }}
-                />
+              options={users || []}
+              getOptionLabel ={option => option.name}
+              renderOption={(option) => {
+                if(!option.creator){
+                  return(
+                    <ListItem >
+                      <ListItemIcon>
+                          <Avatar alt={option.name} src={option.photoUrl}/>
+                      </ListItemIcon>
+                      <ListItemText primary={option.name} primaryTypographyProps={{noWrap:true}} />
+                   </ListItem>
+                )}
+                else {
+                  return(
+                    <ListItem >
+                      <ListItemIcon>
+                          <PhotoLibraryIcon/>
+                      </ListItemIcon>
+                      <ListItemText primary={option.name} primaryTypographyProps={{noWrap:true}} />
+                   </ListItem>
+                  ) 
+                }
+            }
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Search"
+                margin="normal"
+                variant="outlined"
+                style={{
+                  position: "sticky",
+                  zIndex: 100,
+                  top: 200,
+                  backgroundColor: "white",
+                  marginBottom: "20px"
+                }}
+              />
               )}
             />
           </div>
@@ -233,8 +252,8 @@ export default function Explore() {
                 > */}
         <Tabs
           id="controlled-tab-example"
-          activeKey={key}
-          onSelect={(k) => setKey(k)}
+          activeKey={key ? key : getPosts("posts")}
+          onSelect={(k) => getPosts(k)}
           variant="pills"
           style={{
             position: "sticky",
@@ -280,7 +299,7 @@ export default function Explore() {
                     },
                   }) => (
                     <>
-                      {!isPrivate && (
+                      {(
                         <Post
                           key={id}
                           id={id}

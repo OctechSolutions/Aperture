@@ -1,0 +1,6 @@
+.messageBox{
+    padding: '15px'
+}
+.container{
+    flex-direction: column-reverse;
+}
