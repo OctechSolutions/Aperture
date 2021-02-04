@@ -11,7 +11,7 @@ import ImageIcon from "@material-ui/icons/Image";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import Camera, { FACING_MODES } from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
-import { Slider, EditOption } from '../ImageManipulation';
+import {  EditOption } from '../ImageManipulation';
 import ImageGallery from "./ImageGallery";
 import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
@@ -34,6 +34,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import Menu from '@material-ui/core/Menu';
+import Slider from '@material-ui/core/Slider';
 import MenuItem from '@material-ui/core/MenuItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 require('@tensorflow/tfjs-backend-cpu');
@@ -130,6 +131,7 @@ function Feed({ match }, props) {
   const [isPrivatePost, setIsPrivatePost] = useState(false);
   const [showFollowers, setShowFollowers] = useState(false);
   const [showPostComponent, setShowPostComponent] = useState(false);
+  const [value, setValue] = useState(0);
 
 
   const [channelInfo, setChannelInfo] = useState("")
@@ -169,7 +171,7 @@ function Feed({ match }, props) {
       setTimeStamp(newPosts[0].data.timestamp)
   }
 
-  function handleSliderChange(event) {
+  function handleSliderChange(value) {
     setEditOptions(prevEditOptions => {
       return (
         (prevEditOptions.map((option, index) => {
@@ -177,7 +179,7 @@ function Feed({ match }, props) {
           if (index !== selectedOptionIndex) {
             return option
           }
-          return { ...option, value: event.target.value }
+          return { ...option, value: value }
         }))
       )
     })
@@ -506,7 +508,7 @@ function Feed({ match }, props) {
   }
 
   const handleChange = (e) => { // When a file is uploaded this function is called
-    
+
     e.preventDefault();
     console.log(e.target.files[0]);
     setEditOptions(DEFAULT_EDIT_OPTIONS);
@@ -526,7 +528,7 @@ function Feed({ match }, props) {
         // returns an array of compressed images
         console.log(data);
         var compressedb64 = data[0].prefix + data[0].data;
-         setInputImg(compressedb64);
+        setInputImg(compressedb64);
 
         setLoading(true);
 
@@ -664,8 +666,8 @@ function Feed({ match }, props) {
           </center>
           :
           <center>
-          <h1>Home</h1>
-        </center>}
+            <h1>Home</h1>
+          </center>}
         {((match.params.id === user.displayName) || (match.path === "/")) &&
 
           <Modal
@@ -810,7 +812,7 @@ function Feed({ match }, props) {
                             {!loading &&
                               <div>
                                 <br /><br />
-                                <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon/>} onClick={handleMenuClick} centered>
+                                <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon />} onClick={handleMenuClick} centered>
                                   {editOptions[selectedOptionIndex].name}
                                 </Button>
                                 <Menu
@@ -833,7 +835,8 @@ function Feed({ match }, props) {
                                   min={selectedOption.range.min}
                                   max={selectedOption.range.max}
                                   value={selectedOption.value}
-                                  handleChange={handleSliderChange} />
+                                  onChange={(event,result)=>{handleSliderChange(result)}}
+                                />
                               </div>}
 
 

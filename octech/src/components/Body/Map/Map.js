@@ -61,6 +61,7 @@ function Map({
                     <GoogleMap
                         defaultZoom={zoom}
                         defaultCenter={{ lat: center.lat, lng: center.lng }}
+                        onClick = {onMarkerDragEnd}
                     >{/* For Auto complete Search Box */}
 
                         {/*Marker*/}
