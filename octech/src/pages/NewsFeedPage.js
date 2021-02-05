@@ -23,10 +23,14 @@ import chatRoom from '../components/ChatRoom/Chatroom'
 const useStyles = makeStyles({
     root: {
         width: "100vw",
-        position: "sticky",
+        height: "60px",
+        position: "fixed",
         bottom: 0,
-        display: "flex",
-        borderTop: "0.1px solid lightgray"
+        // display: "flex",
+        borderTop: "0.1px solid lightgray",
+        zIndex: 99,
+        borderTopLeftRadius: "30px",
+        borderTopRightRadius: "30px"
     },
 });
 

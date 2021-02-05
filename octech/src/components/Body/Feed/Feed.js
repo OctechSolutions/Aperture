@@ -54,13 +54,14 @@ const useStyles = makeStyles((theme) => ({
   fab: {
     margin: 0,
     top: 'auto',
-    right: 20,
-    bottom: 70,
+    right: 'auto',
+    bottom: 25,
     left: 'auto',
     position: 'fixed',
+    zIndex: 100
   },
   extendedIcon: {
-    marginRight: theme.spacing(1),
+    // marginRight: theme.spacing(1),
   },
   input: {
     marginLeft: theme.spacing(2),
@@ -957,9 +958,9 @@ function Feed({ match }, props) {
           )}
         </FlipMove>
       </div>
-      <Fab variant="extended" className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
+      <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
         <AddCircleOutlineIcon className={classes.extendedIcon} />
-        <b>New Post</b>
+        {/* <b>New Post</b> */}
       </Fab>
     </>
   );

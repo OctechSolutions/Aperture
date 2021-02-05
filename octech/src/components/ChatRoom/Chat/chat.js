@@ -47,7 +47,7 @@ const Chat = (props) => {
     }
     return (
         <>
-            <div style={{ width: "100%", position: "sticky", top:"85px"}}>
+            <div style={{ width: "100%", position: "sticky", top: "85px" }}>
                 <p style={{ textAlign: "left", padding: "1px 10px" }}> Chatting with {[...props.participants.map(p => p.name)].join(" ")} <span style={{ float: "right" }}><IconButton edge="end" aria-label="clear" onClick={props.clear}><ClearIcon /></IconButton></span></p>
                 <Divider />
             </div>
@@ -83,7 +83,7 @@ const Chat = (props) => {
                 </Grid>
 
                 <Grid container className="messageBox" >
-                    <div style={{ position: "fixed", bottom: "8vh", display: "flex", width: "100%", flexDirection: "row" }}>
+                    <div>
                         {/* <form className="messageForm" noValidate autoComplete="off" onSubmit={sendMessage} style={{ width: "100%" }}>
                         <Grid item xs={12}>
                             <Input placeholder="Enter Your Message" value={message} onChange={(e) => setMessage(e.target.value)} inputProps={{ required: true, fullwidth: true }}
@@ -106,39 +106,42 @@ const Chat = (props) => {
                         {/* <Grid xs={1} align="right">
                             <Fab color="primary" aria-label="add" onClick={sendMessage}><SendIcon/></Fab>
                         </Grid> */}
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            name="chatBox"
-                            label="Message..."
-                            id="chatBox"
-                            value={message}
-                            onKeyPress={(ev) => {
-                                if (ev.key === 'Enter') {
-                                    // Do code here
-                                    sendMessage();
-                                }
-                            }}
-                            InputProps=
-                            {{
-                                endAdornment:
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="comment send"
-                                            onClick={sendMessage}
-                                            onMouseDown={() => { }}
-                                            edge="end"
-                                        >
-                                            <SendIcon />
-                                        </IconButton>
-                                    </InputAdornment>
 
-                            }}
-                            onChange={(e) => setMessage(e.target.value)}
-                            style={{ width: "80%", margin: "0 auto" }}
-                        />
                     </div>
                 </Grid>
+            </div>
+            <div style={{ backgroundColor: "whitesmoke" }} >
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    name="chatBox"
+                    label="Message..."
+                    id="chatBox"
+                    value={message}
+                    onKeyPress={(ev) => {
+                        if (ev.key === 'Enter') {
+                            // Do code here
+                            sendMessage();
+                        }
+                    }}
+                    InputProps=
+                    {{
+                        endAdornment:
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="comment send"
+                                    onClick={sendMessage}
+                                    onMouseDown={() => { }}
+                                    edge="end"
+                                >
+                                    <SendIcon />
+                                </IconButton>
+                            </InputAdornment>
+
+                    }}
+                    onChange={(e) => setMessage(e.target.value)}
+                    style={{ position: "fixed", width: "80%",bottom: "70px", marginLeft: "9%", backgroundColor: "whitesmoke"}}
+                />
             </div>
         </>
     )
