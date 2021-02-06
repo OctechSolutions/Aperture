@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
 import Modal from 'react-bootstrap/Modal';
 import Divider from '@material-ui/core/Divider';
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
@@ -10,7 +8,6 @@ import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { db } from '../../firebase';
 import firebase from "firebase";
-import { SettingsInputSvideoRounded } from '@material-ui/icons';
 
 
 const Compress = require('compress.js');
@@ -116,11 +113,11 @@ function Collection({ match, user }) {
         <div>
             {
                 (match.params.id === user.displayName) &&
-                <div style={{ padding: "20px" }}>
+                <center style={{marginTop: "20vh", marginBottom: "25vh"}}>
                     <p>Ready to Create the Perfect Collection?</p>
                     <Button variant="contained"
                         color="primary" onClick={() => { setOpen(true) }}><b>Build a Collection</b></Button>
-                </div>
+                </center>
             }
             <Modal
                 show={open}

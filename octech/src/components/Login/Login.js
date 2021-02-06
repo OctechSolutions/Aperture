@@ -142,8 +142,6 @@ export default function Login() {
                     </InputAdornment>
 
                 }}
-
-                labelWidth={60}
                 // autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
 

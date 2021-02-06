@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { db, storage } from "../../../firebase";
+import { db } from "../../../firebase";
 import Grid from '@material-ui/core/Grid';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Fab from '@material-ui/core/Fab';
 import SendIcon from '@material-ui/icons/Send';
-import Input from '@material-ui/core/Input';
 import firebase from "firebase";
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import moment from 'moment';

@@ -3,6 +3,7 @@
   max-width: 80vw;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 80px;
 }
 .feed_inputContainer {
   background-color: white;
@@ -127,4 +128,9 @@
 .carousel-control-prev ,
 .carousel-indicators{
     filter: invert(100%);
+}
+
+
+html,body {
+  background-color: whitesmoke;
 }

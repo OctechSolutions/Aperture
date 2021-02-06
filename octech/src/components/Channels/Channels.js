@@ -4,34 +4,6 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userSlice";
 import { Link } from 'react-router-dom';
 import firebase from "firebase";
-import Fab from '@material-ui/core/Fab';
-import EditIcon from '@material-ui/icons/Edit';
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from 'react-bootstrap/Modal';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        backgroundColor: theme.palette.background.paper,
-        width: 500,
-        position: 'relative',
-        minHeight: 200,
-    },
-    fab: {
-        margin: 0,
-        top: 'auto',
-        right: 20,
-        bottom: 70,
-        left: 'auto',
-        position: 'fixed',
-    },
-    extendedIcon: {
-        marginRight: theme.spacing(1),
-    },
-    input: {
-        marginLeft: theme.spacing(2),
-        flex: 1,
-    },
-}));
 
 function Channels({ profileName }) {
 
@@ -44,7 +16,6 @@ function Channels({ profileName }) {
     const [channels, setChannels] = useState([]);
     const [clearToSubmit, setClearToSubmit] = useState(false);
     const [channelDoesExist, setChannelDoesExist] = useState(false);
-    const classes = useStyles();
 
 
     useEffect(() => {
@@ -135,12 +106,6 @@ function Channels({ profileName }) {
 
     return (
         <div className="container pb-5" id="channels">
-            <div className="row" id="title">
-                <div className="col text-center">
-                    <p className="display-3">Channels</p>
-                    <hr />
-                </div>
-            </div>
             <div className="row py-5" id="channelList">
                 <div className="col">
                     {(hasNoChannels) ?

@@ -1,6 +1,5 @@
 import React from 'react';
 import { withGoogleMap, GoogleMap, withScriptjs, Marker } from "react-google-maps";
-import Autocomplete from 'react-google-autocomplete';
 import { GoogleMapsAPI } from './client-config';
 import Button from 'react-bootstrap/Button';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
@@ -26,17 +25,6 @@ function Map({
         setValue(null);
         sendData([newLat, newLng]);
         
-    };
-
-
-    const onPlaceSelected = (place) => {
-        console.log('plc', place);
-        const
-            latValue = place.geometry.location.lat(),
-            lngValue = place.geometry.location.lng();
-        console.log(latValue, lngValue)
-        // Set these values in the state.
-        sendData([latValue, lngValue]);
     };
 
     const searchPlace = (a) => {

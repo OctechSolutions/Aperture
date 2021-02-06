@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Feed.css";
 import { Avatar } from "@material-ui/core";
 import Post from "../Post/Post";
-import { db, storage } from "../../../firebase";
+import { db } from "../../../firebase";
 import firebase from "firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../features/userSlice";
@@ -11,7 +11,6 @@ import ImageIcon from "@material-ui/icons/Image";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import Camera, { FACING_MODES } from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
-import {  EditOption } from '../ImageManipulation';
 import ImageGallery from "./ImageGallery";
 import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
@@ -112,7 +111,7 @@ function Feed({ match }, props) {
 
   const [input, setInput] = useState("");
   const [profileInfo, setProfileInfo] = useState("");
-  const [file, setFile] = useState(null)
+  const [, setFile] = useState(null)
   const [inputImg, setInputImg] = useState("");
   const [inputImgs, setInputImgs] = useState([]);
   const [posts, setPosts] = useState([]);
@@ -132,7 +131,6 @@ function Feed({ match }, props) {
   const [isPrivatePost, setIsPrivatePost] = useState(false);
   const [showFollowers, setShowFollowers] = useState(false);
   const [showPostComponent, setShowPostComponent] = useState(false);
-  const [value, setValue] = useState(0);
 
 
   const [channelInfo, setChannelInfo] = useState("")
@@ -159,18 +157,6 @@ function Feed({ match }, props) {
       setCropping(false);
     }
   };
-
-  //Timestamp of last post that was rendered . So to minimize queries from db
-  const [timeStamp, setTimeStamp] = useState(0);
-  const addPosts = post => {
-    if (posts.length > 0 && post.length > 0 && post[post.length - 1].id === posts[0].id)
-      post.splice(-1, 1)
-    let newPosts = posts.concat(post);
-    newPosts.sort((a, b) => a.data.timestamp < b.data.timestamp)
-    setPosts(newPosts);
-    if (newPosts.length > 0)
-      setTimeStamp(newPosts[0].data.timestamp)
-  }
 
   function handleSliderChange(value) {
     setEditOptions(prevEditOptions => {
@@ -229,7 +215,6 @@ function Feed({ match }, props) {
   // }
   // fixDB()
 
-
   useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
     db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
       .onSnapshot(doc => {
@@ -239,40 +224,21 @@ function Feed({ match }, props) {
             let list = [doc.data().name, ...(doc.data().friends.map(user => user.name)), ...(doc.data().followingChannels.map(channel => channel.name))];
             while (list.length > 0) {
               let subList = list.splice(0, 10);
-              if (timeStamp) {
-                db.collection("posts")
-                  .where("name", "in", subList)
-                  .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
-                  .endAt(timeStamp)
-                  .onSnapshot((snapshot) =>
-                    addPosts(
-                      snapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        key: doc.id,
-                        data: doc.data(),
-                      }))
-                    )
-                  );
-              }
-              else {
-                db.collection("posts")
-                  .where("name", "in", subList)
-                  .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
-                  .onSnapshot((snapshot) =>
-                    addPosts(
-                      snapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        key: doc.id,
-                        data: doc.data(),
-                      }))
-                    )
-                  );
-              }
+              db.collection("posts")
+                .where("name", "in", subList)
+                .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+                .onSnapshot((snapshot) => {
+                  setPosts(Array.from(new Set(posts.concat(snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    key: doc.id,
+                    data: doc.data(),
+                  }))))).filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i).sort((a, b) => a.data.timestamp < b.data.timestamp))
+                })
             }
           }
           else {
             db.collection("channels").where("name", "==", match.params.channel)
-              .onSnapshot(snapshot => {
+              .get().then(snapshot => {
                 snapshot.forEach(channel => {
                   setChannelInfo({
                     id: channel.id,
@@ -299,6 +265,7 @@ function Feed({ match }, props) {
           console.log("No such document!");
         }
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [user.displayName, match.params]);
 
   const sendPost = async (e) => { // When the new post is submitted this function is called
@@ -836,7 +803,7 @@ function Feed({ match }, props) {
                                   min={selectedOption.range.min}
                                   max={selectedOption.range.max}
                                   value={selectedOption.value}
-                                  onChange={(event,result)=>{handleSliderChange(result)}}
+                                  onChange={(event, result) => { handleSliderChange(result) }}
                                 />
                               </div>}
 
@@ -898,7 +865,7 @@ function Feed({ match }, props) {
         }
 
         <Modal
-          show={cameraActive}
+          show={Boolean(cameraActive)}
           onHide={() => { setCameraActive("") }}
           keyboard={false}
           size="xl"
@@ -931,7 +898,6 @@ function Feed({ match }, props) {
               id,
               data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp },
             }) => (
-
               <Post
                 key={id}
                 id={id}
@@ -952,8 +918,6 @@ function Feed({ match }, props) {
                 timestamp={timestamp}
               >
               </Post>
-
-
             )
           )}
         </FlipMove>

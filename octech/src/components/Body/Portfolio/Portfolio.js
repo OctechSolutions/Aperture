@@ -132,7 +132,7 @@ function Portfolio({ match, user }) {
         <>
             {
                 (match.params.id === user.displayName) && (!portfolioExists) &&
-                <center style={{ margin: "26vh 0", padding: "20px" }}>
+                <center style={{ margin: "18vh 0", padding: "20px" }}>
                     <p>Looks like you're still on the hunt for the perfect portfolio!</p>
                     <Button variant="contained"
                         color="primary" onClick={() => { setOpen(true) }}><b>I'm Ready! Lets Make One Now!</b></Button>
