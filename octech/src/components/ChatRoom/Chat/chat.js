@@ -108,7 +108,7 @@ const Chat = (props) => {
                     </div>
                 </Grid>
             </div>
-            <div style={{ backgroundColor: "whitesmoke" }} >
+            <div style={{ backgroundColor: "whitesmoke", bottom: "75px" }} >
                 <TextField
                     variant="outlined"
                     margin="normal"
@@ -138,7 +138,7 @@ const Chat = (props) => {
 
                     }}
                     onChange={(e) => setMessage(e.target.value)}
-                    style={{ position: "fixed", width: "80%",bottom: "70px", marginLeft: "9%", backgroundColor: "whitesmoke"}}
+                    style={{ position: "fixed", width: "80%",bottom: "70px", marginLeft: "9%", backgroundColor: "whitesmoke", marginTop: "20px"}}
                 />
             </div>
         </>
