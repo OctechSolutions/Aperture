@@ -127,6 +127,7 @@ const Chatroom = (match) => {
                 [classes.fullList]: anchor === 'top' || anchor === 'bottom',
             })}
             role="presentation"
+            style={{margin:"20px"}}
         // onClick={toggleDrawer(anchor, false)}
         // onKeyDown={toggleDrawer(anchor, false)}
         >
@@ -135,7 +136,7 @@ const Chatroom = (match) => {
                     <Typography className="heading" wrap="nowrap" variant="h6" > Chat with your friends</Typography>
                 </Grid>
             </Grid>
-            <Grid item className="chatListItem" style={{ borderRight: '1px solid grey' }}>
+            <Grid item className="chatListItem">
                 <Autocomplete
                     autoComplete={true}
                     autoSelect={true}
