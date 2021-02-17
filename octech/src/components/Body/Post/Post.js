@@ -34,6 +34,7 @@ import moment from 'moment';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import CountUp from 'react-countup';
 
 
 function Alert(props) {
@@ -454,7 +455,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                     onChange={updateStars}
                     icon={<GradeIcon fontSize="inherit" />}
                   />
-                  <h4>{totalStars}</h4>
+                  <CountUp end={totalStars} />
                 </IconButton>
                 :
                 <IconButton
