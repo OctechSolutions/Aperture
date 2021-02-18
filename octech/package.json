@@ -20,6 +20,7 @@
     "autosuggest-highlight": "^3.1.1",
     "bootstrap": "^4.5.3",
     "compress.js": "^1.1.2",
+    "express": "^4.17.1",
     "firebase": "^8.2.5",
     "material-ui-search-bar": "^1.0.0",
     "moment": "^2.29.1",
