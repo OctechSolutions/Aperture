@@ -3,6 +3,9 @@
   "short_name": "Aperture",
   "background_color": "#282c34",
   "theme_color": "#282c34",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
       "src": "icon-72x72.png",
@@ -45,6 +48,5 @@
         "type": "image/png"
     }
   ],
-  "start_url": ".",
   "display": "standalone"
 }
