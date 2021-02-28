@@ -1,24 +1,26 @@
 import React from 'react'
-import { Route } from 'react-router-dom';
-import Feed from '../components/Body/Feed/Feed';
-import Header from '../components/Header/Header';
-import Profile from '../components/userProfile/Profile';
-import Collection from '../components/Collection/Collection';
+import { Route } from 'react-router-dom'
+import Feed from '../components/Body/Feed/Feed'
+import Header from '../components/Header/Header'
+import Profile from '../components/userProfile/Profile'
+import Collection from '../components/Collection/Collection'
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
-import Alert from 'react-bootstrap/Alert';
-import Modal from 'react-bootstrap/Modal';
-import { makeStyles } from '@material-ui/core/styles';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUser } from "../features/userSlice";
-import HomeIcon from '@material-ui/icons/Home';
-import PersonIcon from '@material-ui/icons/Person';
-import SearchIcon from '@material-ui/icons/Search';
-import Explore from '../components/Explore/Explore';
-import ChatIcon from '@material-ui/icons/Chat';
+import Alert from 'react-bootstrap/Alert'
+import Modal from 'react-bootstrap/Modal'
+import { makeStyles } from '@material-ui/core/styles'
+import BottomNavigation from '@material-ui/core/BottomNavigation'
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
+import { useHistory } from "react-router-dom"
+import { useSelector } from "react-redux"
+import { selectUser } from "../features/userSlice"
+import HomeIcon from '@material-ui/icons/Home'
+import PersonIcon from '@material-ui/icons/Person'
+import SearchIcon from '@material-ui/icons/Search'
+import WhatshotIcon from '@material-ui/icons/Whatshot'
+import Explore from '../components/Explore/Explore'
+import ChatIcon from '@material-ui/icons/Chat'
 import chatRoom from '../components/ChatRoom/Chatroom'
+import ChallengesPage from './ChallengesPage'
 
 const useStyles = makeStyles({
     root: {
@@ -32,19 +34,19 @@ const useStyles = makeStyles({
         borderTopLeftRadius: "30px",
         borderTopRightRadius: "30px"
     },
-});
+})
 
 export default function NewsfeedPage(props) {
-    const history = useHistory();
-    const classes = useStyles();
-    const user = useSelector(selectUser); // Select current user from slice
-    const [value, setValue] = React.useState("");
+    const history = useHistory()
+    const classes = useStyles()
+    const user = useSelector(selectUser) // Select current user from slice
+    const [value, setValue] = React.useState("")
 
     const handleChange = (event, newValue) => {
-        console.log(newValue);
-        setValue(newValue);
-        history.push(`/${newValue}`);
-    };
+        console.log(newValue)
+        setValue(newValue)
+        history.push(`/${newValue}`)
+    }
     return (
         <>
             {
@@ -59,11 +61,13 @@ export default function NewsfeedPage(props) {
                             <Route path="/search" exact component={Explore} />
                             <Route path="/chatRoom" exact component={chatRoom} />
                             <Route path="/user/:id/channel/:channel" exact component={Feed} />
+                            <Route path="/challenges/:id" exact component={ChallengesPage} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
                                 <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
                                 <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} />
+                                <BottomNavigationAction label="Challenges" value={'challenges/' + user.displayName} icon={<WhatshotIcon />} />
                             </BottomNavigation>
                         </div>
                     ) :
