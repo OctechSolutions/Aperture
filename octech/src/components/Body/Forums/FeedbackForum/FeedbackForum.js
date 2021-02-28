@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./FeedbackForum.css";
+// import "./FeedbackForum.css";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { useSelector } from "react-redux";
@@ -21,7 +21,6 @@ import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import { Avatar } from "@material-ui/core";
 import ImageIcon from "@material-ui/icons/Image";
-import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import FlipMove from "react-flip-move";
 import Post from "../../Post/Post";
 import moment from "moment";
@@ -449,6 +448,7 @@ function FeedbackForum(
                 marginBottom: "5rem"
               }}
             >
+              {console.log(description)}
               <div style={{ display: "flex" }}>
                 <Avatar src={photoUrl || ""}></Avatar>
                 <h3>{" " + name}</h3>

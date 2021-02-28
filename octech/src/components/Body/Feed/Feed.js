@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     top: 'auto',
     right: 'auto',
-    bottom: 25,
+    bottom: 45,
     left: 'auto',
     position: 'fixed',
     zIndex: 100
