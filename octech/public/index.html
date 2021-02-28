@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link rel="preconnect" href="https://fonts.gstatic.com"> <!-- Font from Google fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet"> <!-- Font from Google fonts -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
     <title>Aperture</title>
   </head>
@@ -12,4 +13,15 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
+  <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', ()=> {
+            navigator
+            .serviceWorker
+            .register('sw.js')
+            .then(()=>console.log("Ready."))
+            .catch(()=>console.log("Err..."));
+        });
+    }
+</script>
 </html>

@@ -6,22 +6,23 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userSlice";
 import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
-import SwipeableViews from "react-swipeable-views";
-import AppBar from "@material-ui/core/AppBar";
 // import Tabs from '@material-ui/core/Tabs';
 // import Tab from '@material-ui/core/Tab';
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import FlipMove from "react-flip-move";
 import Post from "../Body/Post/Post";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
+import { Avatar } from "@material-ui/core";
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,12 +50,6 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    "aria-controls": `full-width-tabpanel-${index}`,
-  };
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,26 +65,45 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Explore() {
-  const [value, setValue] = useState("");
-  const [inputValue, setInputValue] = useState("");
   const [users, setUsers] = useState([]);
   const user = useSelector(selectUser);
   const history = useHistory();
   const classes = useStyles();
-  const theme = useTheme();
-  const [tabValue, setTabValue] = useState(0);
   const [posts, setPosts] = useState([]);
   const [channels, setChannels] = useState([]);
-  const [key, setKey] = useState("posts");
+  const [key, setKey] = useState("");
 
-  const handleChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
-
-  const handleChangeIndex = (index) => {
-    setTabValue(index);
-  };
-
+  const getPosts = (k) => {
+    if (k === "posts") {
+      db.collection("posts")
+        .where("isPrivate", "==", false)
+        .orderBy("totalStars", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+        .get().then((snapshot) =>
+          setPosts(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              key: doc.id,
+              data: doc.data(),
+            }))
+          )
+        );
+    }
+    else if (k === "channels") {
+      db.collection("channels")
+        .orderBy("followers", "desc")
+        .get().then((snapshot) =>
+          setChannels(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              key: doc.id,
+              data: doc.data(),
+            }))
+          )
+        );
+    }
+    setKey(k)
+    return k
+  }
   useEffect(() => {
     let list = [];
     db.collection("users")
@@ -98,51 +112,26 @@ export default function Explore() {
       .then((viewingUser) => {
         viewingUser.data().blockedBy.length > 0
           ? db
-              .collection("users")
-              .where("name", "not-in", viewingUser.data().blockedBy)
-              .get()
-              .then((result) => {
-                list.push(...result.docs.map((doc) => doc.data()));
-              })
+            .collection("users")
+            .where("name", "not-in", viewingUser.data().blockedBy)
+            .get()
+            .then((result) => {
+              list.push(...result.docs.map((doc) => doc.data()));
+            })
           : db
-              .collection("users")
-              .get()
-              .then((result) => {
-                list.push(...result.docs.map((doc) => doc.data()));
-              });
+            .collection("users")
+            .get()
+            .then((result) => {
+              list.push(...result.docs.map((doc) => doc.data()));
+            });
         db.collection("channels")
           .get()
           .then((result) => {
             list.push(...result.docs.map((doc) => doc.data()));
           });
-        setUsers(list);
-        console.log(list);
       });
-
-    db.collection("posts")
-      .orderBy("totalStars", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
-      .onSnapshot((snapshot) =>
-        setPosts(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            key: doc.id,
-            data: doc.data(),
-          }))
-        )
-      );
-
-    db.collection("channels")
-      .orderBy("followers", "desc")
-      .onSnapshot((snapshot) =>
-        setChannels(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            key: doc.id,
-            data: doc.data(),
-          }))
-        )
-      );
-  }, []);
+    setUsers(list)
+  }, [user.displayName])
 
   return (
     <>
@@ -165,38 +154,48 @@ export default function Explore() {
             <Autocomplete
               autoComplete={true}
               autoHighlight={true}
-              value={value}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }}
-              inputValue={inputValue}
-              onInputChange={(event, newInputValue) => {
-                setInputValue(newInputValue);
-                const selectedUser = users.filter(function (item) {
-                  return item.name === newInputValue;
-                });
-                if (
-                  users.filter(function (item) {
-                    return item.name === newInputValue;
-                  })[0]
-                ) {
-                  {
-                    if (selectedUser[0].creator === undefined)
-                      history.push(`/user/${selectedUser[0].name}`);
-                    else
-                      history.push(
-                        `/user/${
-                          selectedUser[0].creator +
-                          "/channel/" +
-                          selectedUser[0].name
-                        }`
-                      );
-                  }
+              onChange={(event, newInputValue) => {
+                if (newInputValue) {
+
+                  if (newInputValue.creator === undefined)
+                    history.push(`/user/${newInputValue.name}`);
+                  else
+                    history.push(
+                      `/user/${newInputValue.creator +
+                      "/channel/" +
+                      newInputValue.name
+                      }`
+                    );
+
                 }
               }}
               id="search"
               freeSolo
-              options={users.map((option) => option.name)}
+              options={users || []}
+              getOptionLabel={option => option.name}
+              renderOption={(option) => {
+                if (!option.creator) {
+                  return (
+                    <ListItem >
+                      <ListItemIcon>
+                        <Avatar alt={option.name} src={option.photoUrl} />
+                      </ListItemIcon>
+                      <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                    </ListItem>
+                  )
+                }
+                else {
+                  return (
+                    <ListItem >
+                      <ListItemIcon>
+                        <PhotoLibraryIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                    </ListItem>
+                  )
+                }
+              }
+              }
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -233,8 +232,8 @@ export default function Explore() {
                 > */}
         <Tabs
           id="controlled-tab-example"
-          activeKey={key}
-          onSelect={(k) => setKey(k)}
+          activeKey={key ? key : getPosts("posts")}
+          onSelect={(k) => getPosts(k)}
           variant="pills"
           style={{
             position: "sticky",
@@ -252,6 +251,7 @@ export default function Explore() {
               color: "black",
               width: "100%",
               backgroundColor: "whitesmoke",
+              marginBottom: "50px",
             }}
           >
             <br />
@@ -280,7 +280,7 @@ export default function Explore() {
                     },
                   }) => (
                     <>
-                      {!isPrivate && (
+                      {(
                         <Post
                           key={id}
                           id={id}
@@ -315,6 +315,7 @@ export default function Explore() {
               color: "black",
               width: "100%",
               backgroundColor: "whitesmoke",
+              marginBottom: "50px",
             }}
           >
             <br />
@@ -333,7 +334,7 @@ export default function Explore() {
                         )
                       }
                     >
-                      <CardContent style={{ borderRadius: "20",width: "80vw" }}>
+                      <CardContent style={{ borderRadius: "20", width: "80vw" }}>
                         <center>
                           <Typography variant="h5" component="h2">
                             {data.name}

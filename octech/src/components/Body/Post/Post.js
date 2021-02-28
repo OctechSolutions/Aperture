@@ -13,7 +13,6 @@ import SendIcon from '@material-ui/icons/Send';
 import MapIcon from '@material-ui/icons/Map';
 import Map from '../Map/Map';
 import Rating from '@material-ui/lab/Rating';
-import Box from '@material-ui/core/Box';
 // import FavoriteIcon from '@material-ui/icons/Favorite';
 import GradeIcon from '@material-ui/icons/Grade';
 import { withStyles } from '@material-ui/core/styles';
@@ -25,7 +24,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -36,6 +34,7 @@ import moment from 'moment';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import CountUp from 'react-countup';
 
 
 function Alert(props) {
@@ -119,7 +118,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   const handleClose = () => setShow(false);
   useEffect(() => {
-    db.collection("postImages").where("ref", "==", id).onSnapshot((snapshot) => {
+    db.collection("postImages").where("ref", "==", id).get().then((snapshot) => {
       const tempImages = [];
       const tempRefs = [];
       snapshot.forEach((doc) => {
@@ -136,14 +135,15 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   }, [id]);
 
   useEffect(() => {
-    db.collection("users").doc(user.displayName).onSnapshot((doc) => {
+    db.collection("users").doc(user.displayName).get().then((doc) => {
       // console.log(snapshot);
       setCollections(doc.data().collections);
       if (timestamp) {
-        { console.log(moment(timestamp.toDate()).fromNow()) }
+        moment(timestamp.toDate()).fromNow();
       }
     })
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
 
   const postComment = () => {
     console.log(comment, id);
@@ -315,8 +315,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   }
 
   return (
-    <div ref={ref} className="post" >
-      <>
+    <div ref={ref} className="post" key={id}>
+      <div>
         { (channelBy?.length > 0) ? <div className="post_channel">
           <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
           <hr />
@@ -455,7 +455,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                     onChange={updateStars}
                     icon={<GradeIcon fontSize="inherit" />}
                   />
-                  <h4>{totalStars}</h4>
+                  <CountUp end={totalStars} />
                 </IconButton>
                 :
                 <IconButton
@@ -615,7 +615,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             {snackbarMessage}
           </Alert>
         </Snackbar>
-      </>
+      </div>
 
     </div>
   );

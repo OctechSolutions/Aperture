@@ -18,14 +18,19 @@ import PersonIcon from '@material-ui/icons/Person';
 import SearchIcon from '@material-ui/icons/Search';
 import Explore from '../components/Explore/Explore';
 import ChatIcon from '@material-ui/icons/Chat';
+import chatRoom from '../components/ChatRoom/Chatroom'
 
 const useStyles = makeStyles({
     root: {
         width: "100vw",
-        position: "sticky",
+        height: "60px",
+        position: "fixed",
         bottom: 0,
-        display: "flex",
-        borderTop: "0.1px solid lightgray"
+        // display: "flex",
+        borderTop: "0.1px solid lightgray",
+        zIndex: 99,
+        borderTopLeftRadius: "30px",
+        borderTopRightRadius: "30px"
     },
 });
 
@@ -52,11 +57,12 @@ export default function NewsfeedPage(props) {
                             <Route path="/user/:id" exact component={Profile} /> {/* Dynamically generated user pages, the user lands on /user/{username} when clicking on someone profile, the profile page of the user is rendered by the profile component */}
                             <Route path="/user/:id/:collection" exact component={Collection} />
                             <Route path="/search" exact component={Explore} />
+                            <Route path="/chatRoom" exact component={chatRoom} />
                             <Route path="/user/:id/channel/:channel" exact component={Feed} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
-                                <BottomNavigationAction label="Chat" value={'chat'} icon={<ChatIcon />} />
+                                <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
                                 <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} />
                             </BottomNavigation>
                         </div>

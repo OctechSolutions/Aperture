@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './Header.css';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -8,8 +8,6 @@ import { logout } from '../../features/userSlice';
 import logo from './aperture_logo.png';
 import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
-import { ReactSearchAutocomplete } from 'react-search-autocomplete'
-import { db } from "../../firebase";
 import { Avatar } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -31,7 +29,6 @@ function Header({ setValue }) {
   }
 
   const user = useSelector(selectUser);
-  const [viewingUserData, setViewingUserData] = useState([])
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -42,42 +39,6 @@ function Header({ setValue }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-
-  useEffect(() => {
-    db.collection("users").doc(user.displayName)
-      .onSnapshot((snapshot) =>
-        setViewingUserData(snapshot.data())
-      );
-  }, [user.displayName]);
-  
-  //User and channel List
-  const [users, setUsers] = useState([]);
-  //Fetch Users from the database
-  const openSearchHandler = () => {
-    let list = [];
-    ((viewingUserData.blockedBy.length > 0) ?
-      db.collection("users")
-        .where("name", "not-in", viewingUserData.blockedBy)
-        .get().then(result => {
-          list.push(...result.docs.map(doc => doc.data()));
-        }) :
-      db.collection("users")
-        .get().then(result => {
-          list.push(...result.docs.map(doc => doc.data()));
-        }))
-    db.collection("channels").get().then(result => {
-      list.push(...result.docs.map(doc => doc.data()));
-    })
-    setUsers(list);
-  }
-  //Open the selected users profile
-  const openUser = (selectedUser) => {
-    if (selectedUser.creator === undefined)
-      history.push(`/user/${selectedUser.name}`);
-    else
-      history.push(`/user/${selectedUser.creator + "/channel/" + selectedUser.name}`);
-  }
 
   return (
     <div className="header">

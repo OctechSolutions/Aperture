@@ -142,8 +142,6 @@ export default function Login() {
                     </InputAdornment>
 
                 }}
-
-                labelWidth={60}
                 // autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
 
@@ -153,7 +151,7 @@ export default function Login() {
               </div>
             </Form.Group>
             <Form.Group>
-              <Form.Label type="button" style={{ width: "100%",marginLeft: "auto", marginRight: "auto" }}>
+              <Form.Label style={{ width: "100%",marginLeft: "auto", marginRight: "auto" }}>
                 <Button
                   fullWidth
                   variant="contained"
@@ -163,7 +161,7 @@ export default function Login() {
               </Form.Label>
             </Form.Group><center> <Form.Label style={{ marginBottom: "15px" }}>OR</Form.Label> </center>
             <Form.Group>
-              <Form.Label type="button" style={{ width: "100%",marginLeft: "auto", marginRight: "auto" }}>
+              <Form.Label style={{ width: "100%",marginLeft: "auto", marginRight: "auto" }}>
                 <Button
                   fullWidth
                   variant="contained"
