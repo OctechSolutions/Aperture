@@ -1,9 +1,10 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
-import Feed from '../components/Body/Feed/Feed'
-import Header from '../components/Header/Header'
-import Profile from '../components/userProfile/Profile'
-import Collection from '../components/Collection/Collection'
+import { Route } from 'react-router-dom';
+import Feed from '../components/Body/Feed/Feed';
+import Header from '../components/Header/Header';
+import Profile from '../components/userProfile/Profile';
+import Collection from '../components/Collection/Collection';
+import FeedbackForum from "../components/Body/Forums/FeedbackForum/FeedbackForum";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import Alert from 'react-bootstrap/Alert'
 import Modal from 'react-bootstrap/Modal'
@@ -21,6 +22,7 @@ import Explore from '../components/Explore/Explore'
 import ChatIcon from '@material-ui/icons/Chat'
 import chatRoom from '../components/ChatRoom/Chatroom'
 import ChallengesPage from './ChallengesPage'
+import ForumIcon from "@material-ui/icons/Forum";
 
 const useStyles = makeStyles({
     root: {
@@ -62,12 +64,14 @@ export default function NewsfeedPage(props) {
                             <Route path="/chatRoom" exact component={chatRoom} />
                             <Route path="/user/:id/channel/:channel" exact component={Feed} />
                             <Route path="/challenges/:id" exact component={ChallengesPage} />
+                            <Route path="/feedback" exact component={FeedbackForum} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
                                 <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
                                 <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} />
                                 <BottomNavigationAction label="Challenges" value={'challenges/' + user.displayName} icon={<WhatshotIcon />} />
+                                <BottomNavigationAction label="Feedback" value="feedback" icon={<ForumIcon />} />
                             </BottomNavigation>
                         </div>
                     ) :
