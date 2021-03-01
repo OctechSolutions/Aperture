@@ -244,7 +244,7 @@ function Profile({ match }) {
                                     {posts.map(
                                         ({
                                             id,
-                                            data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp },
+                                            data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type },
                                         }) => 
                                             ( // Only the posts the current user has made are shown
                                                 <Post
@@ -266,6 +266,7 @@ function Profile({ match }) {
                                                     totalStar={totalStars}
                                                     isPrivate={isPrivate}
                                                     timestamp={timestamp}
+                                                    isForumPost = {Boolean(type)}
                                                 />
                                             )  
                                     )}

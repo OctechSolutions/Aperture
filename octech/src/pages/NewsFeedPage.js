@@ -4,7 +4,7 @@ import Feed from '../components/Body/Feed/Feed';
 import Header from '../components/Header/Header';
 import Profile from '../components/userProfile/Profile';
 import Collection from '../components/Collection/Collection';
-import FeedbackForum from "../components/Body/Forums/FeedbackForum/FeedbackForum";
+import Forums from "../components/Body/Forums/FeedbackForum/Forums";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import Alert from 'react-bootstrap/Alert';
 import Modal from 'react-bootstrap/Modal';
@@ -62,12 +62,12 @@ export default function NewsfeedPage(props) {
                             <Route path="/search" exact component={Explore} />
                             <Route path="/chatRoom" exact component={chatRoom} />
                             <Route path="/user/:id/channel/:channel" exact component={Feed} />
-                            <Route path="/feedback" exact component={FeedbackForum} />
+                            <Route path="/forums" component={Forums} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
                                 <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
-                                <BottomNavigationAction label="Feedback" value="feedback" icon={<ForumIcon />} />
+                                <BottomNavigationAction label="Forums" value="forums/feedbackForum" icon={<ForumIcon />} />
                                 <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} />
                                 <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} />
                             </BottomNavigation>

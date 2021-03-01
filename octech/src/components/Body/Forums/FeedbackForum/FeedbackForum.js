@@ -1,489 +1,502 @@
-import React, { useState, useEffect } from "react";
-// import "./FeedbackForum.css";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../../../features/userSlice";
+import React, { useEffect, useState } from "react";
+import { Avatar } from "@material-ui/core";
+import Post from "../../Post/Post";
 import { db } from "../../../../firebase";
 import firebase from "firebase";
-import Modal from "react-bootstrap/Modal";
-import Divider from "@material-ui/core/Divider";
-import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
-import { Link } from "react-router-dom";
-import CommentIcon from "@material-ui/icons/Comment";
-import IconButton from "@material-ui/core/IconButton";
-import SendIcon from "@material-ui/icons/Send";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Fab from "@material-ui/core/Fab";
-import { makeStyles } from "@material-ui/core/styles";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import Alert from "react-bootstrap/Alert";
-import Spinner from "react-bootstrap/Spinner";
-import { Avatar } from "@material-ui/core";
-import ImageIcon from "@material-ui/icons/Image";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../../features/userSlice";
 import FlipMove from "react-flip-move";
-import Post from "../../Post/Post";
-import moment from "moment";
-import FullscreenIcon from "@material-ui/icons/Fullscreen";
+import ImageIcon from "@material-ui/icons/Image";
+import "react-html5-camera-photo/build/css/index.css";
+import Modal from 'react-bootstrap/Modal';
+import Alert from 'react-bootstrap/Alert';
+import Spinner from 'react-bootstrap/Spinner';
+import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
+import FeedbackIcon from '@material-ui/icons/Feedback';
+import { makeStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import SendIcon from '@material-ui/icons/Send';
+import InputBase from '@material-ui/core/InputBase';
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+import Menu from '@material-ui/core/Menu';
+import Slider from '@material-ui/core/Slider';
+import MenuItem from '@material-ui/core/MenuItem';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ImageGallery from "../../Feed/ImageGallery";
+require('@tensorflow/tfjs-backend-cpu');
+require('@tensorflow/tfjs-backend-webgl');
 
-const Compress = require("compress.js");
+const Compress = require('compress.js');
 
-function FeedbackForum(
-  { feedbacks, id, photoUrl, timestamp, message, name },
-  ref
-) {
-  if (feedbacks === undefined) {
-    feedbacks = [];
+const useStyles = makeStyles((theme) => ({
+  fab: {
+    top: 'auto',
+    bottom: 45,
+    position: 'fixed',
+    zIndex: 100,
+  },
+  input: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+  },
+}));
+
+const DEFAULT_EDIT_OPTIONS = [
+  {
+    name: 'Brightness',
+    property: 'brightness',
+    value: 100,
+    range: { min: 0, max: 200 },
+    unit: '%'
+  },
+  {
+    name: 'Contrast',
+    property: 'contrast',
+    value: 100,
+    range: { min: 0, max: 200 },
+    unit: '%'
+  },
+  {
+    name: 'Saturation',
+    property: 'saturate',
+    value: 100,
+    range: { min: 0, max: 200 },
+    unit: '%'
+  },
+  {
+    name: 'Grayscale',
+    property: 'grayscale',
+    value: 0,
+    range: { min: 0, max: 100 },
+    unit: '%'
+  },
+  {
+    name: 'Hue',
+    property: 'hue-rotate',
+    value: 0,
+    range: { min: 0, max: 360 },
+    unit: 'deg'
+  }
+]
+function FeedbackForum({ match }, props) {
+  const user = useSelector(selectUser);
+  const [input, setInput] = useState("");
+  const [, setFile] = useState(null)
+  const [inputImg, setInputImg] = useState("");
+  const [inputImgs, setInputImgs] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
+  const selectedOption = editOptions[selectedOptionIndex];
+  const [sliderImages, setSliderImages] = useState([]);
+  const [largeImages, setLargeImages] = useState([]);
+  const [, setNohuman] = useState(false);
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showEditMap,] = useState(false);
+  const [isPrivatePost, setIsPrivatePost] = useState(false);
+  const [showPostComponent, setShowPostComponent] = useState(false);
+
+  const cocoSsd = require('@tensorflow-models/coco-ssd');
+
+  const classes = useStyles();
+  const [cropper, setCropper] = useState("");
+  const [cropping, setCropping] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+  const getCropData = async () => {
+    if (typeof cropper !== "undefined") {
+      setInputImg(await cropper.getCroppedCanvas().toDataURL('image/jpeg', 0.5));
+      setCropping(false);
+    }
+  };
+
+  function handleSliderChange(value) {
+    setEditOptions(prevEditOptions => {
+      return (
+        (prevEditOptions.map((option, index) => {
+
+          if (index !== selectedOptionIndex) {
+            return option
+          }
+          return { ...option, value: value }
+        }))
+      )
+    })
   }
 
-  const user = useSelector(selectUser);
-  const [feedback, setFeedback] = useState("");
-  const [sliderImages, setSliderImages] = useState([]);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [showPostComponent, setShowPostComponent] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [inputImg, setInputImg] = useState("");
-  const [finalImg, setFinalImg] = useState("");
-  const [show, setShow] = useState(false);
-  const [input, setInput] = useState("");
-  const [cameraActive, setCameraActive] = useState("");
-  const [file, setFile] = useState(null);
-  const [, setNohuman] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [timeStamp, setTimeStamp] = useState(0);
+  function getImageStyle() {
+    const filters = editOptions.map(option => {
+      return `${option.property}(${option.value}${option.unit})`
+    })
+    return { filter: filters.join(` `) }
+  }
 
-  const cocoSsd = require("@tensorflow-models/coco-ssd");
-
-  // For the styling of the floating button. (related to material ui)
-  const useStyles = makeStyles(theme => ({
-    root: {
-      backgroundColor: theme.palette.background.paper,
-      width: 500,
-      position: "relative",
-      minHeight: 200
-    },
-    fab: {
-      margin: 0,
-      top: "auto",
-      right: 20,
-      bottom: 150,
-      left: "auto",
-      position: "fixed"
-    },
-    extendedIcon: {
-      marginRight: theme.spacing(1)
-    }
-  }));
-
-  // Adds posts to a list of posts.
-  const addPosts = post => {
-    if (
-      posts.length > 0 &&
-      post.length > 0 &&
-      post[post.length - 1].id === posts[0].id
-    )
-      post.splice(-1, 1);
-    let newPosts = posts.concat(post);
-    newPosts.sort((a, b) => a.data.timestamp < b.data.timestamp);
-    setPosts(newPosts);
-    if (newPosts.length > 0) setTimeStamp(newPosts[0].data.timestamp);
-  };
-
-  const classes = useStyles(); // For the floating button. (related to material ui)
-
-  const handleImagesUpload = async e => {
-    // When a file is uploaded this function is called
-    e.preventDefault();
-    const compress = new Compress();
-    compress
-      .compress([...e.target.files], {
-        size: 0.8, // the max size in MB, defaults to 2MB
-        quality: 0.5, // the quality of the image, max is 1,
-        maxWidth: 1920, // the max width of the output image, defaults to 1920px
-        maxHeight: 1920, // the max height of the output image, defaults to 1920px
-        resize: true // defaults to true, set false if you do not want to resize the image width and height
+  useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
+    db.collection("posts")
+      .where("type", "==", "feedbackForum")
+      .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
+      .onSnapshot((snapshot) => {
+        setPosts(snapshot.docs.map((doc) => ({
+          id: doc.id,
+          key: doc.id,
+          data: doc.data(),
+        })))
       })
-      .then(data => {
-        // returns an array of compressed images
-        const temp = [];
-        data.forEach(a => {
-          var compressedb64 = a.prefix + a.data;
-          temp.push(compressedb64);
-        });
-        console.log(temp);
-        setSliderImages(sliderImages.concat(temp));
-      });
-  };
 
-  const sendPost = async e => {
-    // When the new post is submitted this function is called
+
+  }, []);
+
+  const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
-    if (input.replace(/\s/g, "").length) {
-      // This if condition checks if the caption is not empty, we can make it if(input && inputImage) later to check if the image as well is uploaded but for testing puroses just making a text post is easier
-      const ref = db.collection("feedbackForum").doc(); // A reference to the next entry to the database is created in advance
-      ref.set({
-        // This adds a new post to the database
+    console.log(sliderImages);
+
+    if (sliderImages.length) {
+
+      const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
+      ref.set({ // This adds a new post to the databse
         name: user.displayName,
         description: user.email,
         message: input,
         photoUrl: user.photoUrl || "",
-        largeGifs: [],
+        largeGifs: largeImages,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         channelBy: "",
-        hasCoordinates: true,
-        lat: 0,
-        lng: 0,
+        hasCoordinates: false,
         stars: {},
         totalStars: 0,
-        isPrivate: false,
-        url: finalImg
-      });
-      console.log(finalImg, "added to db");
-    }
-
-    setInputImg(""); // When the post is submitted the input image is set to an empty string removing the preview of the image and providing a fresh canvas for the next post
-    setInput(""); // On posting the input value is set to an empty string
-    setShowPostComponent(false);
-  };
-
-  const handleChange = async e => {
-    // When a file is uploaded this function is called.
-    e.preventDefault();
-    var reader = new FileReader();
-    console.log(e.target.files[0]);
-
-    // Load image.
-    if (e.target.files[0] !== undefined) {
-      reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
-      setFile(e.target.files[0]);
-      cocoSsd.load();
-    }
-    reader.onloadend = function() {
-      // Since this is asyncronous on completion of the loading the image is set with the base64 string
-      console.log("RESULT", reader.result);
-      setInputImg(reader.result);
-      setFinalImg(reader.result);
-      // alert("Image Uploaded Sucessfully!")
-      setLoading(true);
-      cocoSsd.load().then(model => {
-        // detect objects in the image.
-        const img = document.getElementById("img");
-        model.detect(img).then(predictions => {
-          console.log("Predictions: ", predictions);
-          if (predictions.length) {
-            predictions.forEach(prediction => {
-              if (prediction.class === "person") {
-                setInputImg("");
-                console.log("HUMAN DETECTED!!!");
-                setShow(true);
-              } else {
-                setNohuman(true);
-              }
-            });
-          } else {
-            setNohuman(true);
-          }
-          setLoading(false);
-          setInputImg("");
+        isPrivate: isPrivatePost,
+        type: "feedbackForum"
+      })
+      sliderImages.forEach((image) => {
+        console.log(image, "added to db");
+        db.collection('postImages').doc().set({
+          url: image.src,
+          styleModification: image.style,
+          ref: ref.id
         });
       });
-    };
+
+      resetVals();
+    }
   };
 
-  useEffect(() => {
-    db.collection("feedbackForum")
-      .where("name", "==", user.displayName)
-      .get()
-      .then(snapshot =>
-        setPosts(
-          snapshot.docs.map(doc => ({
-            id: doc.id,
-            key: doc.id,
-            data: doc.data()
-          }))
-        )
-      );
-  }, [posts]);
+  const resetVals = () => {
+    setInputImg(""); // When the post is submitted the input image is set to an empty string removing the preview of the image and providing a fresh canvas for the next post
+    setEditOptions(DEFAULT_EDIT_OPTIONS); // This sets the slider values for editing the image to its default once the post is submitted which avoids applying old filters to the next image that is uploaded
+    setSliderImages([]);
+    setLargeImages([]);
+    setInput(""); // On posting the input value is set to an empty string
+    setIsPrivatePost(false);
+    setShowPostComponent(false);
+    setCropping("false");
+  }
 
-  const feedbackModal = () => {
-    return (
-      <Modal
-        show={showFeedback}
-        keyboard={false}
-        onHide={() => {
-          setShowFeedback(false);
-        }}
-        size="l"
-        aria-labelledby="contained-modal-title-vcenter"
-        scrollable={true}
-        centered
-      >
-        <Modal.Header
-          closeButton
-          onClick={() => {
-            setShowFeedback(false);
-          }}
-        >
-          <h3>Feedback</h3>
-        </Modal.Header>
-        <Modal.Body>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            multiline
-            rowsMax={4}
-            fullWidth
-            value={feedback}
-            name="feedbackBox"
-            label="Feedback"
-            id="feedbackBox"
-            onKeyPress={ev => {
-              if (ev.key === "Enter") {
-                ev.preventDefault();
-                postFeedback();
-              }
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle confirm password visibility"
-                    onClick={postFeedback}
-                    onMouseDown={() => {}}
-                    edge="end"
-                  >
-                    <SendIcon />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            onChange={e => setFeedback(e.target.value)}
-          />
-          {feedbacks
-            .sort((a, b) => b.number - a.number)
-            .map(c => {
-              return (
-                <div>
-                  <Link
-                    style={{
-                      textDecoration: "none",
-                      fontSize: "20px",
-                      color: "black"
-                    }}
-                    to={`/user/${c.name}`}
-                  >
-                    <b>{c.name}</b>
-                  </Link>{" "}
-                  {c.feedback}
-                </div>
-              );
-            })}
-        </Modal.Body>
-      </Modal>
-    );
-  };
+  const editingCancelled = async () => {
+    setInputImg("");
+    setEditOptions(DEFAULT_EDIT_OPTIONS);
+    setIsPrivatePost(false);
+  }
 
-  const postFeedback = () => {
-    console.log(feedback, id);
-    if (feedback.replace(/\s/g, "").length) {
-      db.collection("feedbackForum")
-        .doc(id)
-        .update({
-          feedbacks: firebase.firestore.FieldValue.arrayUnion({
-            name: user.displayName,
-            feedback: feedback,
-            number: feedback.length
+  const editingDone = async () => {
+    setNohuman(false);
+
+    if (inputImg) {
+      setInputImgs(inputImgs.concat(inputImg))
+      setSliderImages(sliderImages.concat({
+        src: inputImg,
+        style: getImageStyle()
+      }))
+      setInputImg("");
+      setEditOptions(DEFAULT_EDIT_OPTIONS);
+    }
+  }
+
+  const handleChange = (e) => { // When a file is uploaded this function is called
+
+    e.preventDefault();
+    console.log(e.target.files[0]);
+    setEditOptions(DEFAULT_EDIT_OPTIONS);
+
+    {
+      // reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
+      setFile(e.target.files[0]);
+      // cocoSsd.load();
+      const compress = new Compress();
+      compress.compress([e.target.files[0]], {
+        size: 0.7, // the max size in MB, defaults to 2MB
+        quality: .65, // the quality of the image, max is 1,
+        maxWidth: 1920, // the max width of the output image, defaults to 1920px
+        maxHeight: 1920, // the max height of the output image, defaults to 1920px
+        resize: true, // defaults to true, set false if you do not want to resize the image width and height
+      }).then((data) => {
+        // returns an array of compressed images
+        console.log(data);
+        var compressedb64 = data[0].prefix + data[0].data;
+        setInputImg(compressedb64);
+
+        setLoading(true);
+
+        cocoSsd.load().then((model) => {
+
+          // detect objects in the image.
+
+          const img = document.getElementById("img");
+          model.detect(img).then((predictions) => {
+
+            console.log("Predictions: ", predictions);
+            if (predictions.length) {
+              predictions.forEach((prediction) => {
+                if (prediction.class === "person") {
+                  setInputImg("");
+                  console.log("HUMAN DETECTED!!!")
+                  setShow(true);
+                }
+                else {
+                  setNohuman(true);
+                }
+              })
+            }
+            else {
+              setNohuman(true);
+            }
+            setLoading(false);
+            setCropping(true);
           })
         });
-      setFeedback("");
+      });
     }
   };
 
   return (
     <>
-      {/* Floating Button */}
-      <Fab
-        variant="extended"
-        className={classes.fab}
-        color="primary"
-        onClick={() => {
-          setShowPostComponent(true);
-        }}
-      >
-        <AddCircleOutlineIcon className={classes.extendedIcon} />
-        <b>New Post</b>
-      </Fab>
+      <br />
+      <div className="feed">
 
-      {/* POPUP Add Post. */}
-      <Modal
-        show={showPostComponent}
-        onHide={() => {
-          setShowPostComponent(false);
-        }}
-        keyboard={false}
-        size="xl"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header
-          closeButton
-          onClick={() => {
-            setShowPostComponent(false);
-          }}
+        <center>
+          <h1>Feedback Forum</h1>
+        </center>
+
+        <Modal
+          show={showPostComponent}
+          onHide={() => { setShowPostComponent(false); resetVals(); }}
+          keyboard={false}
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
         >
-          <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>
-            Let's get some Feedback!
-          </h4>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="feed_inputContainer">
-            {/* Profile Pic, Caption and Image Preview */}
-            <div className="feed_input">
-              <Avatar src={user?.photoUrl}></Avatar>{" "}
-              {/*Avatar using materialui*/}
-              <form onSubmit={sendPost}>
-                <input
-                  className="feed_inputbox"
-                  placeholder="Any particular aspect you'd like feedback on?"
-                  value={input}
-                  onChange={e => setInput(e.target.value)} // when the input is changed the input state variable is updated
-                  type="text"
-                  required
-                />
-                <div className="imagePreview">
-                  <div className="buttons">
-                    {!inputImg && (
-                      <div className="upload-btn-wrapper">
-                        <button className="btn">
-                          <ImageIcon />
-                        </button>
-                        <input
-                          type="file"
-                          name="myfile"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    )}
-
-                    {!inputImg && (
-                      <button onClick={sendPost} type="submit">
-                        Post
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <img
-                  src={finalImg}
-                  className="previewImage"
-                  id="img"
-                  alt="Preview"
-                ></img>
-              </form>
-            </div>
-
-            {/* Human Detection */}
-            {show && (
-              <Alert
-                variant="danger"
-                onClose={() => setShow(false)}
-                dismissible
-              >
-                <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
-                <p>The image uploaded had a Human detected in it!</p>
-              </Alert>
-            )}
-
-            {/* Scanning Image Spinner */}
-            <Modal
-              show={inputImg}
-              onHide={() => {
-                setInputImg("");
-              }}
-              keyboard={false}
-              size="xl"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
-              <Modal.Body>
-                {loading && (
-                  <div>
-                    <Spinner animation="border" role="status"></Spinner>
-                    <span>{"  "}Scanning Image...</span>
-                  </div>
-                )}
-              </Modal.Body>
-            </Modal>
-          </div>
-        </Modal.Body>
-      </Modal>
-      {/* To Display the Posts */}
-      <FlipMove>
-        {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-        {posts.map(
-          // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
-          ({
-            id,
-            data: {
-              name,
-              description,
-              message,
-              photoUrl,
-              largeGifs,
-              feedbacks,
-              channelBy,
-              hasCoordinates,
-              lat,
-              lng,
-              stars,
-              totalStars,
-              isPrivate,
-              timestamp,
-              url
-            }
-          }) => (
-            <div
-              className="feedbackPost"
-              style={{
-                width: "50vw",
-                marginBottom: "5rem"
-              }}
-            >
-              {console.log(description)}
-              <div style={{ display: "flex" }}>
-                <Avatar src={photoUrl || ""}></Avatar>
-                <h3>{" " + name}</h3>
-              </div>
-              <br />
-              <img
-                style={{
-                  width: "100%",
-                  borderRadius: "25px"
-                }}
-                src={url}
-              ></img>
-              <div>
+          <Modal.Header closeButton onClick={() => { setShowPostComponent(false) }}>
+            {/* Sign Up Heading */}
+            <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>
+              {<>{`Let's get some Feedback!`}</>}
+            </h4>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="feed_inputContainer">
+              <div className="feed_input">
                 <IconButton
-                  aria-label="comments"
-                  aria-controls="long-menu"
-                  aria-haspopup="true"
-                  onClick={() => {
-                    setShowFeedback(true);
-                  }}
+                  aria-label="more"
                 >
-                  <CommentIcon />
+                  <Avatar src={user.photoUrl}></Avatar>
                 </IconButton>
-                <IconButton
-                  aria-label="comments"
-                  aria-controls="long-menu"
-                  aria-haspopup="true"
-                  onClick={() => setShow(true)}
-                ></IconButton>
+                <form onSubmit={(e) => { e.preventDefault() }}>
+                  <InputBase
+                    className={classes.input}
+                    placeholder="What would you like feedback on?"
+                    inputProps={{ 'aria-label': 'caption' }}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
+                  />
+
+                </form>
               </div>
-              {feedbackModal()}
+              <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
+                {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
+                  <input type="file" name="myfile" id="myFile" accept="image/*" onChange={handleChange} style={{ opacity: "0" }} />
+                  <label htmlFor="myFile">
+                    <IconButton
+                      aria-label="upload image"
+                      component="span"
+                    >
+                      <ImageIcon fontSize="large" />
+                    </IconButton>
+                  </label>
+
+                </div>}
+              </div>
+
+
+              {show &&
+                <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+                  <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
+                  <p>
+                    The image uploaded had a Human detected in it!
+                    </p>
+                </Alert>
+              }
+              <Modal
+                show={inputImg}
+                onHide={() => { setInputImg("") }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+              >
+                <Modal.Body>
+
+                  {inputImg && (
+                    <>
+                      {!loading && cropping &&
+                        <div>
+                          <Cropper
+                            style={{ height: 400, width: "100%" }}
+                            initialAspectRatio={1}
+                            src={inputImg}
+                            viewMode={1}
+                            guides={true}
+                            minCropBoxHeight={10}
+                            minCropBoxWidth={10}
+                            background={false}
+                            responsive={true}
+                            autoCropArea={1}
+                            checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                            onInitialized={(instance) => {
+                              setCropper(instance);
+                            }}
+                          />
+                          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                            <Button color="primary" onClick={getCropData}>Crop Image</Button>
+                            <Button onClick={() => { setCropping(false) }}>Continue without cropping</Button>
+                          </div>
+                        </div>}
+                      <br />
+                      {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
+                      {inputImg &&
+                        <div className="photoEditor">
+                          {/* Div in which to view the photo. */}
+                          <img src={inputImg}
+                            className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
+                          {!loading &&
+                            <div>
+                              <br /><br />
+                              <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon />} onClick={handleMenuClick} centered>
+                                {editOptions[selectedOptionIndex].name}
+                              </Button>
+                              <Menu
+                                id="simple-menu"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                              >
+                                {editOptions.map((option, index) => {
+                                  return (
+                                    <MenuItem
+                                      key={index}
+                                      onClick={() => { setSelectedOptionIndex(index); setAnchorEl(null) }}
+                                    >{option.name}</MenuItem>
+                                  )
+                                })}
+                              </Menu><br></br>
+                              <Slider
+                                min={selectedOption.range.min}
+                                max={selectedOption.range.max}
+                                value={selectedOption.value}
+                                onChange={(event, result) => { handleSliderChange(result) }}
+                              />
+                            </div>}
+
+
+                        </div>
+                      }
+                    </>
+                  )}
+                  {loading &&
+                    <div>
+                      <Spinner animation="border" role="status">
+                      </Spinner>
+                      <span>{'  '}Scanning Image...</span>
+                    </div>}
+                  {(!loading) && !cropping &&
+                    <div className="buttons" style={{ justifyContent: "space-evenly" }}>
+                      <Button variant="contained" onClick={editingDone}>Add Image</Button>
+                      <Button variant="contained" onClick={editingCancelled}>Cancel</Button>
+                    </div>
+                  }
+
+                </Modal.Body>
+              </Modal>{showEditMap &&
+                <>
+                </>
+              }
+              {sliderImages && !showEditMap && <ImageGallery sliderImages={sliderImages} />}
+              {sliderImages.length > 0 &&
+
+                <center style={{ marginTop: "15px" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    endIcon={<SendIcon />}
+                    onClick={sendPost}
+                  >
+                    <b>Post</b>
+                  </Button>
+                </center>
+              }
             </div>
-          )
-        )}
-      </FlipMove>
+          </Modal.Body>
+        </Modal>
+
+        <FlipMove>
+          {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
+          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+            ({
+              id,
+              data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type },
+            }) => (
+              <Post
+                key={id}
+                id={id}
+                name={name}
+                description={description}
+                message={message}
+                photoUrl={photoUrl}
+                largeGifs={largeGifs}
+                comments={comments}
+                hasCoordinates={hasCoordinates}
+                lat={lat}
+                lng={lng}
+                channelBy={channelBy}
+                viewingUser={user}
+                star={stars}
+                totalStar={totalStars}
+                isPrivate={isPrivate}
+                timestamp={timestamp}
+                type={type}
+                isForumPost={Boolean(type)}
+              >
+              </Post>
+            )
+          )}
+        </FlipMove>
+      </div>
+      <center style={{ marginLeft: "-55px" }}>
+        <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
+          <FeedbackIcon className={classes.extendedIcon} />
+        </Fab>
+      </center>
     </>
   );
 }
