@@ -10,7 +10,7 @@ function Forums({ match, setValue }) {
 
     useEffect(() => {
         setValue('forums/feedbackForum')
-      }, []);
+      }, [setValue]);
 
     return (
         

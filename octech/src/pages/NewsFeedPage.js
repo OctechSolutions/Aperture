@@ -16,12 +16,12 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../features/userSlice";
 import HomeIcon from '@material-ui/icons/Home';
 import PersonIcon from '@material-ui/icons/Person';
-import SearchIcon from '@material-ui/icons/Search';
+// import SearchIcon from '@material-ui/icons/Search';
 import Explore from '../components/Explore/Explore';
 import ChatIcon from '@material-ui/icons/Chat';
 import chatRoom from '../components/ChatRoom/Chatroom'
 import ForumIcon from "@material-ui/icons/Forum";
-import NotificationsIcon from '@material-ui/icons/Notifications';
+// import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const useStyles = makeStyles({
     root: {
@@ -65,10 +65,10 @@ export default function NewsfeedPage(props) {
                             <Route path="/forums" render={props => <Forums setValue = {setValue} />} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
-                                <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
+                                {/* <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} /> */}
                                 <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
                                 <BottomNavigationAction label="Forums" value="forums/feedbackForum" icon={<ForumIcon />} />
-                                <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} />
+                                {/* <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} /> */}
                                 <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} />
                             </BottomNavigation>
                         </div>
