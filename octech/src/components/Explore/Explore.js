@@ -277,6 +277,7 @@ export default function Explore() {
                       totalStars,
                       isPrivate,
                       timestamp,
+                      type
                     },
                   }) => (
                     <>
@@ -299,6 +300,7 @@ export default function Explore() {
                           totalStar={totalStars}
                           isPrivate={isPrivate}
                           timestamp={timestamp}
+                          isForumPost = {Boolean(type)}
                         />
                       )}
                     </>
