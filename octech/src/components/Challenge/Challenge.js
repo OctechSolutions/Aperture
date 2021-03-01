@@ -29,10 +29,12 @@ export default function Challenge({name, description, hints, creator, creatorPho
     const history = useHistory() // Related to react router.
     const open = Boolean(anchorEl) // Related to 3 Dots Menu.
 
+    // To close the 3 dots menu.
     const handleMenuClose = () => {
         setAnchorEl(null);
     }
 
+    // To open the 3 dots menu.
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
     }
@@ -138,6 +140,8 @@ export default function Challenge({name, description, hints, creator, creatorPho
                     View Challenge Entries
                 </Button>
             </div>
+            
+            {/* To print on console & test if values recieved. */}
             {
                 console.log("name = ", name),
                 console.log("description = ", description),

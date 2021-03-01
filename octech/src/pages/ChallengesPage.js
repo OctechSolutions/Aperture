@@ -12,18 +12,21 @@ export default function ChallengesPage({ match }) {
     const userName = user.displayName // Name of current users.
 
     const [challenges, setChallenges] = useState([])
+    const [loadChallenges, setLoadChallenges] = useState(true)
 
     useEffect(() => {
         // Load challenges (once).
-        if (challenges.length === 0){
-            db.collection('challenges').get()
+        if(loadChallenges) { // If challenges are to be loaded, then load them.
+            db.collection('challenges').get() // Get challenges from db.
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
-                    let data = doc.data()
-                    // console.log("data = ", data)
+                    let data = doc.data() // data = a single challenge object.
 
-                    if(!data.isPrivate || data.creator === userName){
-                        setChallenges(prevArr => { 
+                    // Display only if ...
+                    if(!data.isPrivate || // The challenge is not private.
+                        data.creator === userName || // The user is the creator of the challenge.
+                        Object.keys(data.invitees).includes(userName)){ // The user was invited to this challenge.
+                        setChallenges(prevArr => { // Create a Challenge object and add to the list of challenges. 
                             return prevArr.concat([
                                 <Challenge
                                     name={data.name}
@@ -41,15 +44,14 @@ export default function ChallengesPage({ match }) {
                     }
                 })
             })
+            setLoadChallenges(false)
         }
-        // challenges.map((obj) => {console.log("obj = " + obj)})
-        // console.log("challenges = " + challenges)
-    }, [challenges])
+    }, [loadChallenges])
 
     return (
         <div className="challengesPage">
             <h1>Looking for a Challenge?</h1> {/* Page heading. */}
-            { challenges }
+            { challenges } {/* Render all challenge objects in the challenges list. */}
         </div>
     )
 }
