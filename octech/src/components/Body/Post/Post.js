@@ -36,6 +36,7 @@ import { makeStyles } from "@material-ui/core";
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import CountUp from 'react-countup';
 import ForumIcon from '@material-ui/icons/Forum';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 
 
 function Alert(props) {
@@ -324,7 +325,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         </div>
           : ''}
         {(isForumPost) ? <div className="post_forum">
-          <p className="h4">Posted in <b><Link to={`/forums/${type}`}>{(type === "feedbackForum")?<>Feedback Forum</>:<>Gaming Forum</>}</Link></b></p>
+          <p className="h4">Posted in <b><Link to={`/forums/${type}`}>{(type === "feedbackForum") ? <>Feedback Forum</> : <>Gaming Forum</>}</Link></b></p>
           <hr />
         </div>
           : ''}
@@ -345,7 +346,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   {channelBy ? channelBy : name}</Link>
                 <>
                   {
-                    !isForumPost ?
+                    (!isForumPost && (channelBy?.length === 0)) ?
                       <IconButton
                         aria-label="more"
                         aria-controls="long-menu"
@@ -358,17 +359,25 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                         {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
                       </IconButton>
                       :
-                      <IconButton
-                        aria-label="more"
-                        aria-controls="long-menu"
-                        aria-haspopup="true"
-                        onClick={() => {
-                          if (name === user.displayName)
-                            db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
-                        }}
-                      >
-                        <ForumIcon />
-                      </IconButton>
+                      <>
+                        {
+                          (channelBy?.length > 0) ?
+                            <IconButton
+                              aria-label="more"
+                              aria-controls="long-menu"
+                              aria-haspopup="true"
+                            >
+                              <PhotoLibraryIcon />
+                            </IconButton>
+                            :
+                            <IconButton
+                              aria-label="more"
+                              aria-controls="long-menu"
+                              aria-haspopup="true"
+                            >
+                              <ForumIcon />
+                            </IconButton>}
+                      </>
                   }
                   {hasCoordinates &&
                     <IconButton
@@ -542,7 +551,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
                     {channelBy ? channelBy : name}</Link><>
                     {
-                      !isForumPost ?
+                      (!isForumPost && (channelBy?.length === 0)) ?
                         <IconButton
                           aria-label="more"
                           aria-controls="long-menu"
@@ -555,17 +564,25 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                           {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
                         </IconButton>
                         :
-                        <IconButton
-                          aria-label="more"
-                          aria-controls="long-menu"
-                          aria-haspopup="true"
-                          onClick={() => {
-                            if (name === user.displayName)
-                              db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
-                          }}
-                        >
-                          <ForumIcon />
-                        </IconButton>
+                        <>
+                          {
+                            (channelBy?.length > 0) ?
+                              <IconButton
+                                aria-label="more"
+                                aria-controls="long-menu"
+                                aria-haspopup="true"
+                              >
+                                <PhotoLibraryIcon />
+                              </IconButton>
+                              :
+                              <IconButton
+                                aria-label="more"
+                                aria-controls="long-menu"
+                                aria-haspopup="true"
+                              >
+                                <ForumIcon />
+                              </IconButton>}
+                        </>
                     }
                     {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
                       a few seconds ago
