@@ -464,7 +464,7 @@ function FeedbackForum({ match }, props) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp },
+              data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type },
             }) => (
               <Post
                 key={id}
@@ -484,7 +484,8 @@ function FeedbackForum({ match }, props) {
                 totalStar={totalStars}
                 isPrivate={isPrivate}
                 timestamp={timestamp}
-                isForumPost={true}
+                type={type}
+                isForumPost={Boolean(type)}
               >
               </Post>
             )

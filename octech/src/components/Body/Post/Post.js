@@ -51,7 +51,7 @@ const useStyles = makeStyles({
 });
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, isForumPost }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost }, ref) => {
 
   if (comments === undefined) {
     comments = [];
@@ -324,7 +324,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         </div>
           : ''}
         {(isForumPost) ? <div className="post_forum">
-          <p className="h4">Posted in <b><Link to={`/forums`}>Forums</Link></b></p>
+          <p className="h4">Posted in <b><Link to={`/forums/${type}`}>{(type === "feedbackForum")?<>Feedback Forum</>:<>Gaming Forum</>}</Link></b></p>
           <hr />
         </div>
           : ''}

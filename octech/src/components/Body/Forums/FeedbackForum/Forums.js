@@ -6,7 +6,7 @@ import GamingForum from './GamingFoum'
 
 function Forums({ match }) {
     
-    const [key, setKey] = useState('feedbackForum');
+    const [key, setKey] = useState(window.location.pathname.slice(8));
 
     return (
         

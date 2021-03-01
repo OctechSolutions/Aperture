@@ -916,6 +916,7 @@ function Feed({ match }, props) {
                 totalStar={totalStars}
                 isPrivate={isPrivate}
                 timestamp={timestamp}
+                type={type}
                 isForumPost = {Boolean(type)}
               >
               </Post>
