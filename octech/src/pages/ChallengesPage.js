@@ -22,21 +22,23 @@ export default function ChallengesPage({ match }) {
                     let data = doc.data()
                     // console.log("data = ", data)
 
-                    setChallenges(prevArr => { 
-                        return prevArr.concat([
-                            <Challenge
-                                name={data.name}
-                                description={data.description}
-                                hints={data.hints} 
-                                creator={data.creator}
-                                creatorPhotoUrl={data.creatorPhotoUrl}
-                                isPrivate={data.isPrivate}
-                                code={data.code} 
-                                isAdmin={data.creator === userName} 
-                                entries={data.entries}
-                            > </Challenge>
-                        ])
-                    })
+                    if(!data.isPrivate || data.creator === userName){
+                        setChallenges(prevArr => { 
+                            return prevArr.concat([
+                                <Challenge
+                                    name={data.name}
+                                    description={data.description}
+                                    hints={data.hints} 
+                                    creator={data.creator}
+                                    creatorPhotoUrl={data.creatorPhotoUrl}
+                                    isPrivate={data.isPrivate}
+                                    code={data.code} 
+                                    isAdmin={data.creator === userName} 
+                                    entries={data.entries}
+                                > </Challenge>
+                            ])
+                        })
+                    }
                 })
             })
         }
