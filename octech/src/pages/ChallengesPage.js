@@ -62,6 +62,7 @@ export default function ChallengesPage({ match }) {
                                     code={data.code} 
                                     isAdmin={data.creator === userName} 
                                     entries={data.entries}
+                                    setLoadChallenges={setLoadChallenges}
                                 > </Challenge>
                             ])
                         })

@@ -22,7 +22,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import LockIcon from '@material-ui/icons/Lock'
 import PublicIcon from '@material-ui/icons/Public'
 
-export default function Challenge({name, description, hints, creator, creatorPhotoUrl, isPrivate, code, isAdmin, entries}) {
+export default function Challenge({name, description, hints, creator, creatorPhotoUrl, isPrivate, code, isAdmin, entries, setLoadChallenges}) {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const [isPublic, setIsPublic] = useState(!isPrivate)
@@ -30,14 +30,20 @@ export default function Challenge({name, description, hints, creator, creatorPho
     const history = useHistory() // Related to react router.
     const open = Boolean(anchorEl) // Related to 3 Dots Menu.
 
-    // To close the 3 dots menu.
+    // Function to close the 3 dots menu.
     const handleMenuClose = () => {
         setAnchorEl(null);
     }
 
-    // To open the 3 dots menu.
+    // Function to open the 3 dots menu.
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
+    }
+
+    // Function to delete a challenge.
+    const deleteChallenge = () => {
+        db.collection("challenges").doc(code).delete()
+        setLoadChallenges(true)
     }
 
     return (
@@ -112,7 +118,7 @@ export default function Challenge({name, description, hints, creator, creatorPho
                             onClose={handleMenuClose}
                         >
                             {/* Delete challenge. */}
-                            <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete challenge."); handleMenuClose() }}>
+                            <MenuItem key={"delete"} selected={false} onClick={() => { deleteChallenge(); handleMenuClose() }}>
                                 <ListItemIcon> <DeleteIcon /> </ListItemIcon>
                                 Delete
                             </MenuItem>
