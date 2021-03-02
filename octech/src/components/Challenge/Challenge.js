@@ -25,6 +25,7 @@ import PublicIcon from '@material-ui/icons/Public'
 export default function Challenge({name, description, hints, creator, creatorPhotoUrl, isPrivate, code, isAdmin, entries}) {
 
     const [anchorEl, setAnchorEl] = useState(null)
+    const [isPublic, setIsPublic] = useState(!isPrivate)
 
     const history = useHistory() // Related to react router.
     const open = Boolean(anchorEl) // Related to 3 Dots Menu.
@@ -40,7 +41,7 @@ export default function Challenge({name, description, hints, creator, creatorPho
     }
 
     return (
-        <div className="challenge">
+        <div className="challenge" >
             {/* CHALLENGE HEADER = CREATOR, PUBLIC/PRIVATE, DELETE, EDIT, SEND INVITES. */}
             <div className="challenge_header"> 
 
@@ -78,9 +79,14 @@ export default function Challenge({name, description, hints, creator, creatorPho
                             aria-label="more"
                             aria-controls="long-menu"
                             aria-haspopup="true"
-                            onClick={() => { console.log("Delete Challenge.") }} 
+                            onClick={() => { 
+                                if(isAdmin){
+                                    db.collection("challenges").doc(code).update({isPrivate: isPublic})
+                                    setIsPublic(!isPublic)
+                                }
+                            }} 
                         >{/* Toggle public or private if this user is admin.*/}
-                            {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />} 
+                            {!isPublic ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />} 
                         </IconButton>
                     </div>
                 </div>
@@ -142,7 +148,7 @@ export default function Challenge({name, description, hints, creator, creatorPho
             </div>
             
             {/* To print on console & test if values recieved. */}
-            {
+            {/*
                 console.log("name = ", name),
                 console.log("description = ", description),
                 console.log("hints = ", hints),
@@ -152,7 +158,7 @@ export default function Challenge({name, description, hints, creator, creatorPho
                 console.log("code = ", code),
                 console.log("isAdmin = ", isAdmin),
                 console.log("entries = ", entries)
-            }
+            */}
         </div>
     )
 }
