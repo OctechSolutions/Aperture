@@ -73,7 +73,6 @@ export default function NewsfeedPage(props) {
                                 {/* <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} /> */}
                                 <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} />
                                 <BottomNavigationAction label="Challenges" value={'challenges/' + user.displayName} icon={<WhatshotIcon />} />
-                                <BottomNavigationAction label="Feedback" value="feedback" icon={<ForumIcon />} />
                             </BottomNavigation>
                         </div>
                     ) :
