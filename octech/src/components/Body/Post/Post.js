@@ -35,6 +35,8 @@ import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import CountUp from 'react-countup';
+import ForumIcon from '@material-ui/icons/Forum';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 
 
 function Alert(props) {
@@ -50,7 +52,7 @@ const useStyles = makeStyles({
 });
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost }, ref) => {
 
   if (comments === undefined) {
     comments = [];
@@ -143,7 +145,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
 
   const postComment = () => {
     console.log(comment, id);
@@ -161,7 +163,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   }
 
   const addToCollection = (event) => {
-    setAddToChannelAnchorEl(event.currentTarget); 
+    setAddToChannelAnchorEl(event.currentTarget);
   }
 
   const addImagesToCollection = (a) => {
@@ -244,7 +246,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         centered
       >
         <Modal.Header closeButton onClick={() => { setShowComments(false) }}>
-          <h3>Comments</h3>
+          {isForumPost ? <h3>Feedback</h3> : <h3>Comments</h3>}
         </Modal.Header>
         <Modal.Body>
           <TextField
@@ -255,7 +257,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             fullWidth
             value={comment}
             name="commentBox"
-            label="Comment"
+            label={isForumPost ? "Feedback" : "Comment"}
             id="commentBox"
             onKeyPress={(ev) => {
               if (ev.key === 'Enter') {
@@ -317,8 +319,13 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   return (
     <div ref={ref} className="post" key={id}>
       <div>
-        { (channelBy?.length > 0) ? <div className="post_channel">
+        {(channelBy?.length > 0) ? <div className="post_channel">
           <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
+          <hr />
+        </div>
+          : ''}
+        {(isForumPost) ? <div className="post_forum">
+          <p className="h4">Posted in <b><Link to={`/forums/${type}`}>{(type === "feedbackForum") ? <>Feedback Forum</> : <>Gaming Forum</>}</Link></b></p>
           <hr />
         </div>
           : ''}
@@ -336,18 +343,42 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               <div>
                 <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
 
-                  {channelBy ? channelBy : name}</Link><>
-                  <IconButton
-                    aria-label="more"
-                    aria-controls="long-menu"
-                    aria-haspopup="true"
-                    onClick={() => {
-                      if (name === user.displayName)
-                        db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
-                    }}
-                  >
-                    {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
-                  </IconButton>
+                  {channelBy ? channelBy : name}</Link>
+                <>
+                  {
+                    (!isForumPost && (channelBy?.length === 0)) ?
+                      <IconButton
+                        aria-label="more"
+                        aria-controls="long-menu"
+                        aria-haspopup="true"
+                        onClick={() => {
+                          if (name === user.displayName)
+                            db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
+                        }}
+                      >
+                        {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
+                      </IconButton>
+                      :
+                      <>
+                        {
+                          (channelBy?.length > 0) ?
+                            <IconButton
+                              aria-label="more"
+                              aria-controls="long-menu"
+                              aria-haspopup="true"
+                            >
+                              <PhotoLibraryIcon />
+                            </IconButton>
+                            :
+                            <IconButton
+                              aria-label="more"
+                              aria-controls="long-menu"
+                              aria-haspopup="true"
+                            >
+                              <ForumIcon />
+                            </IconButton>}
+                      </>
+                  }
                   {hasCoordinates &&
                     <IconButton
                       aria-label="map"
@@ -396,7 +427,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   </ListItemIcon>
               Delete
             </MenuItem>
-                {(images.length > 0) &&
+                {(images.length > 0) && !isForumPost &&
                   <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
                     <ListItemIcon>
                       <AddToPhotosIcon />
@@ -404,7 +435,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   Add To Portfolio
                 </MenuItem>
                 }
-                {(images.length > 0) && (collections.length > 0) &&
+                {(images.length > 0) && (collections.length > 0) && !isForumPost &&
                   <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
                     <ListItemIcon>
                       <AddPhotoAlternateIcon />
@@ -437,38 +468,42 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         <div >
 
           <div className="rate" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-            <>
+            {
+              !isForumPost ?
+                <>
 
-              {showStars ?
-                <IconButton
-                  aria-label="stars"
-                  aria-controls="long-menu"
-                  aria-haspopup="true"
-                  className={classes.root}
-                  disableRipple={true}
-                  disableFocusRipple={true}
-                >
+                  {showStars ?
+                    <IconButton
+                      aria-label="stars"
+                      aria-controls="long-menu"
+                      aria-haspopup="true"
+                      className={classes.root}
+                      disableRipple={true}
+                      disableFocusRipple={true}
+                    >
 
-                  <StyledRating
-                    max={3}
-                    value={stars}
-                    onChange={updateStars}
-                    icon={<GradeIcon fontSize="inherit" />}
-                  />
-                  <CountUp end={totalStars} />
-                </IconButton>
-                :
-                <IconButton
-                  aria-label="rating"
-                  aria-controls="long-menu"
-                  aria-haspopup="true"
-                  className={classes.root}
-                  disableRipple={true}
-                  disableFocusRipple={true}
-                >
-                  Rating : {totalStars}
-                </IconButton>}
-            </>
+                      <StyledRating
+                        max={3}
+                        value={stars}
+                        onChange={updateStars}
+                        icon={<GradeIcon fontSize="inherit" />}
+                      />
+                      <CountUp end={totalStars} />
+                    </IconButton>
+                    :
+                    <IconButton
+                      aria-label="rating"
+                      aria-controls="long-menu"
+                      aria-haspopup="true"
+                      className={classes.root}
+                      disableRipple={true}
+                      disableFocusRipple={true}
+                    >
+                      Rating : {totalStars}
+                    </IconButton>}
+                </>
+                : <div></div>
+            }
             <div>
               <IconButton
                 aria-label="comments"
@@ -515,17 +550,40 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
 
                     {channelBy ? channelBy : name}</Link><>
-                    <IconButton
-                      aria-label="more"
-                      aria-controls="long-menu"
-                      aria-haspopup="true"
-                      onClick={() => {
-                        if (name === user.displayName)
-                          db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
-                      }}
-                    >
-                      {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
-                    </IconButton>
+                    {
+                      (!isForumPost && (channelBy?.length === 0)) ?
+                        <IconButton
+                          aria-label="more"
+                          aria-controls="long-menu"
+                          aria-haspopup="true"
+                          onClick={() => {
+                            if (name === user.displayName)
+                              db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
+                          }}
+                        >
+                          {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
+                        </IconButton>
+                        :
+                        <>
+                          {
+                            (channelBy?.length > 0) ?
+                              <IconButton
+                                aria-label="more"
+                                aria-controls="long-menu"
+                                aria-haspopup="true"
+                              >
+                                <PhotoLibraryIcon />
+                              </IconButton>
+                              :
+                              <IconButton
+                                aria-label="more"
+                                aria-controls="long-menu"
+                                aria-haspopup="true"
+                              >
+                                <ForumIcon />
+                              </IconButton>}
+                        </>
+                    }
                     {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
                       a few seconds ago
                       </div>}
@@ -546,7 +604,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             </div>
             {slideshow}
             <br />
-            <h3>Comments</h3>
+            {isForumPost ? <h3>Feedback</h3> : <h3>Comments</h3>}
             <TextField
               variant="outlined"
               margin="normal"
@@ -554,7 +612,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               rowsMax={4}
               // fullWidth
               name="commentBox"
-              label="Comment"
+              label={isForumPost ? "Feedback" : "Comment"}
               id="commentBox"
               value={comment}
               onKeyPress={(ev) => {

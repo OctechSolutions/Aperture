@@ -4,7 +4,7 @@ import Feed from '../components/Body/Feed/Feed';
 import Header from '../components/Header/Header';
 import Profile from '../components/userProfile/Profile';
 import Collection from '../components/Collection/Collection';
-import FeedbackForum from "../components/Body/Forums/FeedbackForum/FeedbackForum";
+import Forums from "../components/Body/Forums/FeedbackForum/Forums";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import Alert from 'react-bootstrap/Alert'
 import Modal from 'react-bootstrap/Modal'
@@ -16,13 +16,13 @@ import { useSelector } from "react-redux"
 import { selectUser } from "../features/userSlice"
 import HomeIcon from '@material-ui/icons/Home'
 import PersonIcon from '@material-ui/icons/Person'
-import SearchIcon from '@material-ui/icons/Search'
 import WhatshotIcon from '@material-ui/icons/Whatshot'
 import Explore from '../components/Explore/Explore'
 import ChatIcon from '@material-ui/icons/Chat'
 import chatRoom from '../components/ChatRoom/Chatroom'
 import ChallengesPage from './ChallengesPage'
 import ForumIcon from "@material-ui/icons/Forum";
+// import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const useStyles = makeStyles({
     root: {
@@ -64,11 +64,13 @@ export default function NewsfeedPage(props) {
                             <Route path="/chatRoom" exact component={chatRoom} />
                             <Route path="/user/:id/channel/:channel" exact component={Feed} />
                             <Route path="/challenges/:id" exact component={ChallengesPage} />
-                            <Route path="/feedback" exact component={FeedbackForum} />
+                            <Route path="/forums" render={props => <Forums setValue = {setValue} />} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
-                                <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
+                                {/* <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} /> */}
                                 <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
+                                <BottomNavigationAction label="Forums" value="forums/feedbackForum" icon={<ForumIcon />} />
+                                {/* <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} /> */}
                                 <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} />
                                 <BottomNavigationAction label="Challenges" value={'challenges/' + user.displayName} icon={<WhatshotIcon />} />
                                 <BottomNavigationAction label="Feedback" value="feedback" icon={<ForumIcon />} />

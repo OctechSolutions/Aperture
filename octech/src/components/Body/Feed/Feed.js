@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     top: 'auto',
     right: 'auto',
-    bottom: 25,
+    bottom: 45,
     left: 'auto',
     position: 'fixed',
     zIndex: 100
@@ -896,7 +896,7 @@ function Feed({ match }, props) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp },
+              data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type },
             }) => (
               <Post
                 key={id}
@@ -916,6 +916,8 @@ function Feed({ match }, props) {
                 totalStar={totalStars}
                 isPrivate={isPrivate}
                 timestamp={timestamp}
+                type={type}
+                isForumPost = {Boolean(type)}
               >
               </Post>
             )

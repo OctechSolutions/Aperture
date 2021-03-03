@@ -16,6 +16,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Tooltip from '@material-ui/core/Tooltip';
+import SearchIcon from '@material-ui/icons/Search';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 
 function Header({ setValue }) {
   const dispatch = useDispatch();
@@ -68,14 +70,32 @@ function Header({ setValue }) {
       {/* <Button onClick={logoutOfApp}>Logout</Button> */}
       {/* <Link style={{ textDecoration: 'none', color: "black" }} onClick={() => { setValue(`user/${user?.displayName}`) }} to={`/user/${user?.displayName}`}> */}
       {/* This link takes the user to their profile */}
-      <IconButton
-        aria-label="avatar"
-        onClick={handleMenu}
-      >
-        <Tooltip title={user.displayName} aria-label="name">
-          <Avatar src={user?.photoUrl} />
-        </Tooltip>
-      </IconButton>
+      <div>
+        <IconButton
+          aria-label="search"
+          onClick={() => {history.push("/search");setValue("search")}}
+        >
+          <Tooltip title={"Search"} aria-label="search">
+            <SearchIcon />
+          </Tooltip>
+        </IconButton>
+        <IconButton
+          aria-label="notifications"
+          onClick={() => {history.push("/notifications");setValue("notifications")}}
+        >
+          <Tooltip title={"Notifications"} aria-label="notifications">
+            <NotificationsIcon />
+          </Tooltip>
+        </IconButton>
+        <IconButton
+          aria-label="avatar"
+          onClick={handleMenu}
+        >
+          <Tooltip title={user.displayName} aria-label="name">
+            <Avatar src={user?.photoUrl} />
+          </Tooltip>
+        </IconButton>
+      </div>
       <Menu
         id="menu-appbar"
         anchorEl={anchorEl}
