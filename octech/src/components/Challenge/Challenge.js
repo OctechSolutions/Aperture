@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import './Challenge.css'
 
@@ -12,23 +12,33 @@ import { Avatar } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
+import {CopyToClipboard} from 'react-copy-to-clipboard'
 import { makeStyles } from '@material-ui/core/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
+import Snackbar from '@material-ui/core/Snackbar';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import CallMadeIcon from '@material-ui/icons/CallMade'
 import EditIcon from '@material-ui/icons/Edit'
 import LockIcon from '@material-ui/icons/Lock'
 import PublicIcon from '@material-ui/icons/Public'
+import FileCopyIcon from '@material-ui/icons/FileCopy'
 
 export default function Challenge({name, description, hints, creator, creatorPhotoUrl, isPrivate, code, isAdmin, entries, setLoadChallenges}) {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const [isPublic, setIsPublic] = useState(!isPrivate)
+    const [showCopiedMessage, setShowCopiedMessage] = React.useState({ // Related to copied message popup.
+        openCopiedMessage: false,
+        vertical: 'top',
+        horizontal: 'center',
+    })
 
     const history = useHistory() // Related to react router.
     const open = Boolean(anchorEl) // Related to 3 Dots Menu.
+    const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds)) // For sleep functionality. Reference = https://flaviocopes.com/javascript-sleep/
+    const { vertical, horizontal, openCopiedMessage } = showCopiedMessage // Related to copied message popup.
 
     // Function to close the 3 dots menu.
     const handleMenuClose = () => {
@@ -44,6 +54,13 @@ export default function Challenge({name, description, hints, creator, creatorPho
     const deleteChallenge = () => {
         db.collection("challenges").doc(code).delete()
         setLoadChallenges(true)
+    }
+
+    // Function that displays the copied to clipboard message.
+    const displayCodeToClipboardDialog = () => {
+        setShowCopiedMessage({ vertical: 'bottom', horizontal: 'center', openCopiedMessage: true })
+        sleep(3000).then(() => setShowCopiedMessage({ vertical: 'bottom', horizontal: 'center', openCopiedMessage: false }))
+        console.log(code + " copied to clipboard!")
     }
 
     return (
@@ -141,13 +158,26 @@ export default function Challenge({name, description, hints, creator, creatorPho
         
             {/* CHALLENGE DESRIPTION + HINTS + CHALLENGE CODE + VIEW ENTRIES. */}
             <div className="challenge_body">
-                <br /><p><b>Description</b><br />{ description }</p>
+                <p><b>Description</b><br />{ description }</p>
 
-                <br /><p><b>Hints</b><br />{ hints.toString().replaceAll(",", ", ") }</p>
+                <p><b>Hints</b><br />{ hints.toString().replaceAll(",", ", ") }</p>
                 
-                <br /><p><b>Challenge Code</b><br />{ code }</p>
+                <p>
+                    <b>Challenge Code</b><br />{ code }
 
-                <br />
+                    <CopyToClipboard text={code} onCopy={displayCodeToClipboardDialog}>
+                        <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
+                    </CopyToClipboard>
+
+                    <Snackbar // To display the copied to clipboard message.
+                        anchorOrigin={{ vertical, horizontal }}
+                        open={openCopiedMessage}
+                        onClose={() => setShowCopiedMessage({ ...showCopiedMessage, openCopiedMessage: false })}
+                        message={"Copied " + code + " to Clipboard!"}
+                        key={vertical + horizontal}
+                    />
+                </p>
+
                 <Button color="primary" onClick={() => {console.log("View challenge entries.")}}>
                     View Challenge Entries
                 </Button>
