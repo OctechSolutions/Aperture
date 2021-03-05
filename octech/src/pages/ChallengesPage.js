@@ -16,8 +16,10 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 
 export default function ChallengesPage({ match }) {
     const user = useSelector(selectUser) // Related to routing.
@@ -34,6 +36,8 @@ export default function ChallengesPage({ match }) {
     const [challengeHint2, setChallengeHint2] = useState("")
     const [challengeHint3, setChallengeHint3] = useState("")
     const [challengeIsPrivate, setChallengeIsPrivate] = useState(true)
+    const [challengeStartDate, setChallengeStartDate] = useState(new Date())
+    const [challengeEndDate, setChallengeEndDate] = useState(new Date())
 
     // Function that loads all challenges
     const loadChallengeObjects = () => {
@@ -50,8 +54,9 @@ export default function ChallengesPage({ match }) {
                     if(!data.isPrivate || // The challenge is not private.
                         data.creator === userName || // The user is the creator of the challenge.
                         Object.keys(data.invitees).includes(userName)){ // The user was invited to this challenge.
-                        setChallenges(prevArr => { // Create a Challenge object and add to the list of challenges. 
-                            return prevArr.concat([
+                        setChallenges((prevArr) => // Create a Challenge object and add to the list of challenges. 
+                            [
+                                ...prevArr, 
                                 <Challenge
                                     name={data.name}
                                     description={data.description}
@@ -61,11 +66,13 @@ export default function ChallengesPage({ match }) {
                                     isPrivate={data.isPrivate}
                                     code={data.code} 
                                     isAdmin={data.creator === userName} 
-                                    entries={data.entries}
+                                    leader={data.leader}
+                                    startDate={data.startDate}
+                                    endDate={data.endDate}
                                     setLoadChallenges={setLoadChallenges}
                                 > </Challenge>
-                            ])
-                        })
+                            ]
+                        )
                     }
                 })
             })
@@ -87,36 +94,44 @@ export default function ChallengesPage({ match }) {
     const handleFormSubmit = () => {
         console.log("Form Submitted!")
 
-        if(!alphaNumeric.test(challengeName) || !alphaNumeric.test(challengeDescription)) {
+        if(challengeStartDate > challengeEndDate) {
+            alert("Please select valid start and end dates.")
+        }
+
+        else if(!alphaNumeric.test(challengeName) || !alphaNumeric.test(challengeDescription)) {
             alert("Please enter valid data in required fields, Challenge Title and Challenge Description.")
         }
 
         else {
-            let newChallenge = {
-                code: "",
-                creator: user.displayName,
-                creatorPhotoUrl: user.photoUrl,
-                description: challengeDescription,
-                entries: [],
-                hints: [challengeHint1, challengeHint2,challengeHint3],
-                invitees: {},
-                isPrivate: challengeIsPrivate,
-                name: challengeName,
-            }
-    
-            db.collection("challenges").add(newChallenge)
-            .then((docRef) => {
-                db.collection("challenges").doc(docRef.id)
-                .update({code: docRef.id})
-                .then(() => {
-                    console.log("Document written with ID: ", docRef.id)
-                    handleFormClose()
-                    setLoadChallenges(true)
-                })
+            db.collection("challenges").doc(challengeName).get()
+            .then((challengeDoc) => {
+                if(challengeDoc.exists) {
+                    alert("A challenge with this name already exists!")
+                }
+                else{
+                    let newChallenge = {
+                        creator: user.displayName,
+                        creatorPhotoUrl: user.photoUrl,
+                        description: challengeDescription,
+                        hints: [challengeHint1, challengeHint2,challengeHint3],
+                        invitees: {},
+                        isPrivate: challengeIsPrivate,
+                        name: challengeName,
+                        leader: "",
+                        startDate: challengeStartDate.toDateString(),
+                        endDate: challengeEndDate.toDateString()
+                    }
+            
+                    db.collection("challenges").doc(challengeName).set(newChallenge)
+                    .then(() => {
+                        handleFormClose()
+                        setLoadChallenges(true)
+                    })
+                    .catch((error) => {
+                        console.error("Error adding document: ", error);
+                    });
+                }
             })
-            .catch((error) => {
-                console.error("Error adding document: ", error);
-            });
         }
     }
 
@@ -232,6 +247,15 @@ export default function ChallengesPage({ match }) {
                             onChange={(event) => {setChallengeHint3(event.target.value)}}
                         />
                     </div>
+
+                    <br />
+                    {/* Challenge Begin and End Date */}
+                    <div className="dates" style={{display: "flex", justifyContent: "space-between"}}>
+                        <p>Pick Start & End Date</p>
+                        <DatePicker selected={challengeStartDate} onChange={date => setChallengeStartDate(date)} />
+                        <DatePicker selected={challengeEndDate} onChange={date => setChallengeEndDate(date)} />
+                    </div>
+
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleFormClose} color="primary"> Cancel </Button>

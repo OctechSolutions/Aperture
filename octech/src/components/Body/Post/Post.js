@@ -324,28 +324,28 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   }
 
   // Related to CHALLENGES --------------------------------------------------------------------------------------
-  const [challengeCodeForm, setChallengeCodeForm] = useState(false) 
-  const [challengeCode, setChallengeCode] = useState("")            
+  const [challengeNameForm, setChallengeNameForm] = useState(false) 
+  const [challengeName, setChallengeName] = useState("")            
   const [challengeChips, setChallengeChips] = useState([])  
-  const [challengeCodeTextField, setChallengeCodeTextField] = useState(null) // TextField where the CHALLENGE code is to be entered.
+  const [challengeCodeTextField, setChallengeNameTextField] = useState(null) // TextField where the CHALLENGE code is to be entered.
 
   // Function that opens the input form to enter a CHALLENGE code.
-  const handleChallengeCodeFormOpen = () => {
-      setChallengeCodeForm(true);
+  const handleChallengeNameFormOpen = () => {
+      setChallengeNameForm(true);
   }
 
   // Function that closes the input form to enter a CHALLENGE code.
-  const handleChallengeCodeFormClose = () => {
-    setChallengeCodeForm(false);
+  const handleChallengeNameFormClose = () => {
+    setChallengeNameForm(false);
   }
 
   // Function that pulls a post out of a challenge.
-  const removeChallenge = (challengeCode) => {
+  const removeChallenge = (challengeName) => {
     if (user.displayName === name) { // If the user is the admin user, then allow to withdraw from challenge.
       // Remove this challenge from the challenges list of this post.
-      db.collection("posts").doc(id).update({challenges: firebase.firestore.FieldValue.arrayRemove(challengeCode)})
+      db.collection("posts").doc(id).update({challenges: firebase.firestore.FieldValue.arrayRemove(challengeName)})
       .then(() => {
-        console.log("Challenge removed = " + challengeCode)
+        console.log("Challenge removed = " + challengeName)
         updateChallengeChips() // Display updated chllenges.
       })
     }
@@ -362,13 +362,13 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         if(!challengeDoc.data()) { // If entered code is invalid then let user know.
           challengeCodeTextField.value = "Please Enter Valid Challenge Code."
         } else { // If entered code is valid then ...
-          setChallengeCode(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
+          setChallengeName(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
           db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
-          .update({challenges : firebase.firestore.FieldValue.arrayUnion(challengeCode)})
+          .update({challenges : firebase.firestore.FieldValue.arrayUnion(challengeName)})
           .then(() => { 
-              console.log("Added Challenge = " + challengeCode)
+              console.log("Added Challenge = " + challengeName)
               updateChallengeChips() // Update the challenge chips that are displayed on the post.
-              handleChallengeCodeFormClose() 
+              handleChallengeNameFormClose() 
           })
         }
       })
@@ -384,14 +384,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     .then((postDoc) => {
       let challengeArr = postDoc.data().challenges
       if(challengeArr) { // If this post has challenges then ...
-        challengeArr.forEach((challengeCode) => {
-          db.collection("challenges").doc(challengeCode).get() // Get the challenge name asociated with the challenge codes.
-          .then((challengeDoc) => { 
-            if(challengeDoc.data()){ // If challenge exists then set challenge chips and names.
-              let challengeName = challengeDoc.data().name
-              setChallengeChips((prev) => [...prev, <Chip label={challengeName} onDelete={() => removeChallenge(challengeCode)}/>])
-            }
-          })
+        challengeArr.forEach((challengeName) => { 
+          setChallengeChips((prev) => [...prev, <Chip label={challengeName} onDelete={() => removeChallenge(challengeName)}/>]) 
         })
       }
     })
@@ -594,12 +588,12 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             { 
               (user.displayName === name) && // If this is the admin user then allow to enter a challenge code.
               <>
-                <Button color="primary" onClick={handleChallengeCodeFormOpen}>Enter Challenge Code</Button>
+                <Button color="primary" onClick={handleChallengeNameFormOpen}>Enter Challenge</Button>
                 {/* Form to input Challenge Code. */}
-                <Dialog open={challengeCodeForm} onClose={handleChallengeCodeFormClose} aria-labelledby="form-dialog-title">
-                  <DialogTitle id="form-dialog-title">Enter Challenge Code</DialogTitle>
+                <Dialog open={challengeNameForm} onClose={handleChallengeNameFormClose} aria-labelledby="form-dialog-title">
+                  <DialogTitle id="form-dialog-title">Enter Challenge Title</DialogTitle>
                   <DialogContentText style={{padding: "3%"}}>
-                    To enter this post in a challenge, please enter challenge code.
+                    To participate in a challenge, please enter a challenge title.
                   </DialogContentText>
                   <DialogContent>
                     {/* Challenge Code */}
@@ -607,18 +601,18 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                         autoFocus
                         margin="dense"
                         id="name"
-                        label="Challenge Code"
+                        label="Challenge Title"
                         type="text"
                         fullWidth
                         required
                         onChange={(event) => {
-                          setChallengeCodeTextField(event.target);
-                          setChallengeCode(event.target.value);
+                          setChallengeNameTextField(event.target);
+                          setChallengeName(event.target.value);
                         }}
                     />
                   </DialogContent>
                   <DialogActions>
-                      <Button onClick={handleChallengeCodeFormClose} color="primary"> Cancel </Button>
+                      <Button onClick={handleChallengeNameFormClose} color="primary"> Cancel </Button>
                       <Button onClick={handleChallengeCodeFormSubmit} color="primary"> Add </Button>
                   </DialogActions>
                 </Dialog>

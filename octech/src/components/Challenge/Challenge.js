@@ -25,7 +25,7 @@ import LockIcon from '@material-ui/icons/Lock'
 import PublicIcon from '@material-ui/icons/Public'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
 
-export default function Challenge({name, description, hints, creator, creatorPhotoUrl, isPrivate, code, isAdmin, entries, setLoadChallenges}) {
+export default function Challenge({name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges}) {
 
     const [anchorEl, setAnchorEl] = useState(null)
     const [isPublic, setIsPublic] = useState(!isPrivate)
@@ -52,7 +52,7 @@ export default function Challenge({name, description, hints, creator, creatorPho
 
     // Function to delete a challenge.
     const deleteChallenge = () => {
-        db.collection("challenges").doc(code).delete()
+        db.collection("challenges").doc(name).delete()
         setLoadChallenges(true)
     }
 
@@ -60,7 +60,7 @@ export default function Challenge({name, description, hints, creator, creatorPho
     const displayCodeToClipboardDialog = () => {
         setShowCopiedMessage({ vertical: 'bottom', horizontal: 'center', openCopiedMessage: true })
         sleep(3000).then(() => setShowCopiedMessage({ vertical: 'bottom', horizontal: 'center', openCopiedMessage: false }))
-        console.log(code + " copied to clipboard!")
+        console.log(name + " copied to clipboard!")
     }
 
     return (
@@ -86,6 +86,20 @@ export default function Challenge({name, description, hints, creator, creatorPho
 
                         {name} {/* Challenge's name. */}
 
+                        {/* Copy to Clipboard button */}
+                        <CopyToClipboard text={name} onCopy={displayCodeToClipboardDialog}>
+                            <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
+                        </CopyToClipboard>
+
+                        {/* Copied to clipboard message */}
+                        <Snackbar
+                            anchorOrigin={{ vertical, horizontal }}
+                            open={openCopiedMessage}
+                            onClose={() => setShowCopiedMessage({ ...showCopiedMessage, openCopiedMessage: false })}
+                            message={"Copied \"" + name + "\" to Clipboard!"}
+                            key={vertical + horizontal}
+                        />
+
                         {/* Creator's name. */}
                         <Link style={{ 
                             textDecoration: 'none', 
@@ -104,7 +118,7 @@ export default function Challenge({name, description, hints, creator, creatorPho
                             aria-haspopup="true"
                             onClick={() => { 
                                 if(isAdmin){
-                                    db.collection("challenges").doc(code).update({isPrivate: isPublic})
+                                    db.collection("challenges").doc(name).update({isPrivate: isPublic})
                                     setIsPublic(!isPublic)
                                 }
                             }} 
@@ -163,19 +177,7 @@ export default function Challenge({name, description, hints, creator, creatorPho
                 <p><b>Hints</b><br />{ hints.toString().replaceAll(",", ", ") }</p>
                 
                 <p>
-                    <b>Challenge Code</b><br />{ code }
-
-                    <CopyToClipboard text={code} onCopy={displayCodeToClipboardDialog}>
-                        <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
-                    </CopyToClipboard>
-
-                    <Snackbar // To display the copied to clipboard message.
-                        anchorOrigin={{ vertical, horizontal }}
-                        open={openCopiedMessage}
-                        onClose={() => setShowCopiedMessage({ ...showCopiedMessage, openCopiedMessage: false })}
-                        message={"Copied " + code + " to Clipboard!"}
-                        key={vertical + horizontal}
-                    />
+                    <b>Duration: </b>{ startDate } to { endDate }
                 </p>
 
                 <Button color="primary" onClick={() => {console.log("View challenge entries.")}}>
@@ -183,18 +185,15 @@ export default function Challenge({name, description, hints, creator, creatorPho
                 </Button>
             </div>
             
-            {/* To print on console & test if values recieved. */}
-            {/*
-                console.log("name = ", name),
-                console.log("description = ", description),
-                console.log("hints = ", hints),
-                console.log("creator = ", creator),
-                console.log("creatorPhotoUrl = ", creatorPhotoUrl),
-                console.log("isPrivate = ", isPrivate),
-                console.log("code = ", code),
-                console.log("isAdmin = ", isAdmin),
-                console.log("entries = ", entries)
-            */}
+            {/* CHALLENGE LEADER / WINNER */}
+            <div className="winner">
+                { 
+                    leader !== "" ? // Display a leader / winner if one exists.
+                    (new Date() < new Date(endDate))? <p>Leader: </p>: <p>Winner: </p>
+                    :<></>
+                }
+                {leader}
+            </div>
         </div>
     )
 }
