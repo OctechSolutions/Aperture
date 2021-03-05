@@ -126,7 +126,11 @@ export default function ChallengesPage({ match }) {
         setChallengeIsPrivate((prev) => !prev)
     }
 
-    useEffect(() => { loadChallengeObjects() }, [loadChallenges])
+    useEffect(() => { 
+        let isMounted = true // To ensure the component doesnt get loaded before the component is mounted.
+        if(isMounted) { loadChallengeObjects() }
+        return () => { isMounted = false }
+    }, [loadChallenges])
 
     return (
         <div className="challengesPage" style={{paddingBottom: "80px"}}>
