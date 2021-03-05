@@ -360,7 +360,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       db.collection("challenges").doc(challengeCodeTextField.value).get()
       .then((challengeDoc) => {
         if(!challengeDoc.data()) { // If entered code is invalid then let user know.
-          challengeCodeTextField.value = "Please Enter Valid Challenge Code."
+          challengeCodeTextField.value = "Please Enter Valid Challenge Title."
         } else { // If entered code is valid then ...
           setChallengeName(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
           db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.

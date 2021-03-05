@@ -52,8 +52,20 @@ export default function Challenge({name, description, hints, creator, creatorPho
 
     // Function to delete a challenge.
     const deleteChallenge = () => {
-        db.collection("challenges").doc(name).delete()
-        setLoadChallenges(true)
+        db.collection("challenges").doc(name).delete().then(() => setLoadChallenges(true))
+        
+        // Delete this challenge from list of challenges of all participating posts.
+        db.collection("posts").get().then((snapShot) => { 
+            snapShot.forEach((postDoc) => {
+                let challenges = postDoc.data().challenges
+                if(challenges){
+                    if(challenges.includes(name)) {
+                        db.collection("posts").doc(postDoc.id).update({challenges: firebase.firestore.FieldValue.arrayRemove(name)})
+                        .then(() => console.log("Challenge deleted = " + name))
+                    }
+                }
+            })
+        })
     }
 
     // Function that displays the copied to clipboard message.
