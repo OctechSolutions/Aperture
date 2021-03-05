@@ -150,16 +150,17 @@ export default function ChallengesPage({ match }) {
     return (
         <div className="challengesPage" style={{paddingBottom: "80px"}}>
             {/* Header containing Heading and Add button. */}
-            <div 
-                className="challengePageHeader"
+            <div className="heading_add"
                 style={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    margin: "5% 10% 0% 10%"
+                    flexDirection: "column",
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: 'center'
                 }}
             >
-                <h1>Looking for a Challenge?</h1> {/* Page heading. */}
-                <Fab color="primary" aria-label="add" onClick={handleFormOpen}> <AddIcon /> </Fab> {/* Floating Action Button */}
+                <p style={{fontSize: "3.5vh", alignItems:'center'}}>Looking for a Challenge?</p> {/* Page heading. */}
+                <Fab color="primary"  aria-label="add"  onClick={handleFormOpen}> <AddIcon /> </Fab> {/* Floating Action Button */}
             </div>
             
             { challenges } {/* Render all challenge objects in the challenges list. */}
@@ -173,7 +174,7 @@ export default function ChallengesPage({ match }) {
                     </DialogContentText>
 
                     {/* Challenge Name Input & Public/Private */}
-                    <div className="name_public" style={{display:'flex'}}>
+                    <div className="name_public" style={{}}>
                         {/* Challenge Name */}
                         <TextField
                             autoFocus
@@ -250,10 +251,14 @@ export default function ChallengesPage({ match }) {
 
                     <br />
                     {/* Challenge Begin and End Date */}
-                    <div className="dates" style={{display: "flex", justifyContent: "space-between"}}>
-                        <p>Pick Start & End Date</p>
-                        <DatePicker selected={challengeStartDate} onChange={date => setChallengeStartDate(date)} />
-                        <DatePicker selected={challengeEndDate} onChange={date => setChallengeEndDate(date)} />
+                    <div className="dates" style={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: 'center',
+                    }}>
+                        <p>Start Date:<br /><DatePicker selected={challengeStartDate} onChange={date => setChallengeStartDate(date)} /></p>
+                        <p>End Date:<br /><DatePicker selected={challengeEndDate} onChange={date => setChallengeEndDate(date)} /></p>   
                     </div>
 
                 </DialogContent>
