@@ -44,6 +44,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Chip from '@material-ui/core/Chip';
+import AddAlarmRoundedIcon from '@material-ui/icons/AddAlarmRounded';
 
 
 function Alert(props) {
@@ -483,8 +484,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
           </div>
           <>
-          </>
-          {
+          </> 
+          { // 3 DOTS MENU.
             ((user.displayName === channelBy) || (user.displayName === name)) &&
             <>
               <IconButton
@@ -523,6 +524,15 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                     Add To Collections
                   </MenuItem>
                 }
+                
+                {/* To enter a challenge. */}
+                <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
+                  <ListItemIcon>
+                    <AddAlarmRoundedIcon />
+                  </ListItemIcon>
+                  Enter Challenge
+                </MenuItem>
+                
               </Menu>
               <Menu
                 anchorEl={addToChannelAnchorEl}
@@ -584,40 +594,33 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                 : <div></div>
             }
 
-            {/* To enter a challenge. */}
-            { 
-              (user.displayName === name) && // If this is the admin user then allow to enter a challenge code.
-              <>
-                <Button color="primary" onClick={handleChallengeNameFormOpen}>Enter Challenge</Button>
-                {/* Form to input Challenge Code. */}
-                <Dialog open={challengeNameForm} onClose={handleChallengeNameFormClose} aria-labelledby="form-dialog-title">
-                  <DialogTitle id="form-dialog-title">Enter Challenge Title</DialogTitle>
-                  <DialogContentText style={{padding: "3%"}}>
-                    To participate in a challenge, please enter a challenge title.
-                  </DialogContentText>
-                  <DialogContent>
-                    {/* Challenge Code */}
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Challenge Title"
-                        type="text"
-                        fullWidth
-                        required
-                        onChange={(event) => {
-                          setChallengeNameTextField(event.target);
-                          setChallengeName(event.target.value);
-                        }}
-                    />
-                  </DialogContent>
-                  <DialogActions>
-                      <Button onClick={handleChallengeNameFormClose} color="primary"> Cancel </Button>
-                      <Button onClick={handleChallengeCodeFormSubmit} color="primary"> Add </Button>
-                  </DialogActions>
-                </Dialog>
-              </>
-            }
+            {/* Form to input Challenge Code. */}
+            <Dialog open={challengeNameForm} onClose={handleChallengeNameFormClose} aria-labelledby="form-dialog-title">
+              <DialogTitle id="form-dialog-title">Enter Challenge Title</DialogTitle>
+              <DialogContentText style={{padding: "3%"}}>
+                To participate in a challenge, please enter a challenge title.
+              </DialogContentText>
+              <DialogContent>
+                {/* Challenge Code */}
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Challenge Title"
+                    type="text"
+                    fullWidth
+                    required
+                    onChange={(event) => {
+                      setChallengeNameTextField(event.target);
+                      setChallengeName(event.target.value);
+                    }}
+                />
+              </DialogContent>
+              <DialogActions>
+                  <Button onClick={handleChallengeNameFormClose} color="primary"> Cancel </Button>
+                  <Button onClick={handleChallengeCodeFormSubmit} color="primary"> Add </Button>
+              </DialogActions>
+            </Dialog>
 
             <div>
               <IconButton
