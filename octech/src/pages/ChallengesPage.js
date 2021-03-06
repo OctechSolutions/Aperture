@@ -21,7 +21,7 @@ import Switch from '@material-ui/core/Switch'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
-export default function ChallengesPage({ match }) {
+export default function ChallengesPage() {
     const user = useSelector(selectUser) // Related to routing.
     const userName = user.displayName // Name of current users.
     const alphaNumeric = /^[a-z0-9?!,.:;"' ]+$/i // Regular expression for input sanity check.
@@ -58,6 +58,7 @@ export default function ChallengesPage({ match }) {
                             [
                                 ...prevArr, 
                                 <Challenge
+                                    user={user}
                                     name={data.name}
                                     description={data.description}
                                     hints={data.hints} 
