@@ -192,11 +192,11 @@ const Chatroom = (match) => {
                                                     let chat = chatList ? chatList.find(chat => ((chat.participantNames.length === selectedUsers.length) & (selectedUsers.every(user => chat.participantNames.includes(user.name))))) : false//Already Started a chat with the friend
                         
                                                     if (chat) {
-                                                        setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} />)
+                                                        setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} friends={userData.data.friends} />)
                                                     } else {
                                                         if(selectedUsers.length>0){
                                                             creatChat({ name: userData.data.name, photoUrl: userData.data.photoUrl }, selectedUsers).then(id => {
-                                                                setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={selectedUsers} id={id} clear={() => { setChatWindow("") ;setState({ left: true }) }} />)
+                                                                setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={selectedUsers} id={id} clear={() => { setChatWindow("") ;setState({ left: true }) }} friends={userData.data.friends}/>)
                                                             })}
                                                     }
                                                     setState({
@@ -221,7 +221,7 @@ const Chatroom = (match) => {
                         <span ref={helper}></span>
                         {chatList.map(chat => (
                             <ListItem button key={chat.id} onClick={() => {
-                                setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} />); setState({
+                                setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} friends={userData.data.friends}/>); setState({
                                     left: false
                                 });
                             }}>
