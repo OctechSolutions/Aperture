@@ -27,6 +27,7 @@ import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { Link } from "react-router-dom";
 import Tooltip from '@material-ui/core/Tooltip';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 const Chat = (props) => {
     const history = useHistory();
@@ -83,7 +84,7 @@ const Chat = (props) => {
     return (
         <>
             <div style={{ width: "100%", position: "sticky", top: "85px", display: "flex", justifyContent: "space-between" }}>
-                <div style={{ marginLeft: "2px", fontSize: "20px" }}> {(userNames.length > 1) ?
+                <div style={{ marginLeft: "2px", fontSize: "20px" }}> {(users.length > 1) ?
                     <AvatarGroup max={10}>
                         {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
                     </AvatarGroup>
@@ -103,7 +104,7 @@ const Chat = (props) => {
                 }
                 </div>
                 <span style={{ display: "flex" }}>
-                    {userNames.length > 1 ? <IconButton edge="end" aria-label="add" onClick={() => { setShowUsers(true) }}><GroupIcon /></IconButton> : ""}
+                    {users.length > 1 ? <IconButton edge="end" aria-label="add" onClick={() => { setShowUsers(true) }}><GroupIcon /></IconButton> : ""}
                     <IconButton aria-label="add" onClick={() => { setAdd(true) }}>
                         <AddIcon />
                     </IconButton>
