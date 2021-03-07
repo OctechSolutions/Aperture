@@ -1,5 +1,5 @@
 import { Avatar } from '@material-ui/core';
-import React, { forwardRef, useState, useEffect, useRef } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
 import './Post.css';
 import { db, storage } from "../../../firebase";
 import { useSelector } from "react-redux";
@@ -421,6 +421,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   }
 
   // Update Challenge Chips when component mounted.
+  // eslint-disable-next-line
   useEffect(() => { updateChallengeChips() }, []);
 
   // ------------------------------------------------------------------------------------------------------------

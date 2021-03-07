@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from "react-redux" // Related to routing.
 import { selectUser } from "../features/userSlice" // Related to routing.
 
-import firebase from "firebase"
-import { db, storage } from "../firebase"
+// import firebase from "firebase"
+import { db } from "../firebase"
 import Challenge from '../components/Challenge/Challenge'
 
 import Fab from '@material-ui/core/Fab'
@@ -146,6 +146,7 @@ export default function ChallengesPage() {
         let isMounted = true // To ensure the component doesnt get loaded before the component is mounted.
         if(isMounted) { loadChallengeObjects() }
         return () => { isMounted = false }
+        // eslint-disable-next-line
     }, [loadChallenges])
 
     return (

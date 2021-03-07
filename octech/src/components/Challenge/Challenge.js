@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 import { Link } from "react-router-dom"
 import { useHistory } from "react-router-dom"
@@ -8,26 +8,26 @@ import './Challenge.css'
 import Post from "../Body/Post/Post"
 
 import firebase from "firebase"
-import { db, storage } from "../../firebase"
+import { db } from "../../firebase"
 
 import { Avatar } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItem from '@material-ui/core/ListItem'
-import List from '@material-ui/core/List'
-import Divider from '@material-ui/core/Divider'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Slide from '@material-ui/core/Slide'
-import Typography from '@material-ui/core/Typography'
+// import ListItemText from '@material-ui/core/ListItemText'
+// import ListItem from '@material-ui/core/ListItem'
+// import List from '@material-ui/core/List'
+// import Divider from '@material-ui/core/Divider'
+// import AppBar from '@material-ui/core/AppBar'
+// import Toolbar from '@material-ui/core/Toolbar'
+// import Slide from '@material-ui/core/Slide'
+// import Typography from '@material-ui/core/Typography'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
+// import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { makeStyles } from '@material-ui/core/styles'
+// import { makeStyles } from '@material-ui/core/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 import Snackbar from '@material-ui/core/Snackbar'
@@ -38,7 +38,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import LockIcon from '@material-ui/icons/Lock'
 import PublicIcon from '@material-ui/icons/Public'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
-import CloseIcon from '@material-ui/icons/Close'
+// import CloseIcon from '@material-ui/icons/Close'
 
 export default function Challenge({user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges}) {
 
@@ -58,19 +58,19 @@ export default function Challenge({user, name, description, hints, creator, crea
     const open = Boolean(anchorEl) // Related to 3 Dots Menu.
     const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds)) // For sleep functionality. Reference = https://flaviocopes.com/javascript-sleep/
     const { vertical, horizontal, openCopiedMessage } = showCopiedMessage // Related to copied message popup.
-    const useStyles = makeStyles((theme) => ({ // For entries overlay.
-        appBar: {
-            position: 'relative',
-        },
-        title: {
-            marginLeft: theme.spacing(2),
-            flex: 1,
-        },
-    }))
-    const Transition = React.forwardRef(function Transition(props, ref) { // For entries overlay.
-        return <Slide direction="up" ref={ref} {...props} />;
-    });
-    const classes = useStyles() // For entries overlay.
+    // const useStyles = makeStyles((theme) => ({ // For entries overlay.
+    //     appBar: {
+    //         position: 'relative',
+    //     },
+    //     title: {
+    //         marginLeft: theme.spacing(2),
+    //         flex: 1,
+    //     },
+    // }))
+    // const Transition = React.forwardRef(function Transition(props, ref) { // For entries overlay.
+    //     return <Slide direction="up" ref={ref} {...props} />;
+    // });
+    // const classes = useStyles() // For entries overlay.
 
     // Function to close the 3 dots menu.
     const handleMenuClose = () => {
@@ -163,6 +163,7 @@ export default function Challenge({user, name, description, hints, creator, crea
 
     useEffect(() => {
         if(loadEntries) { loadChallengeEntries(); setLoadEntries(false)}
+        // eslint-disable-next-line
     }, [loadEntries])
 
     return (
@@ -302,7 +303,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                 <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle>
                 <DialogContent>
                     {
-                        entries.length == 0 ?
+                        entries.length === 0 ?
                         <h3 style={{display:'flex', justifyContent:"center", padding:"10% 5%", color:"grey"}}>No posts yet!</h3> :
                         entries
                     }

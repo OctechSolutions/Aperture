@@ -15,7 +15,7 @@ import { useHistory } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { selectUser } from "../features/userSlice"
 import HomeIcon from '@material-ui/icons/Home'
-import PersonIcon from '@material-ui/icons/Person'
+// import PersonIcon from '@material-ui/icons/Person'
 import WhatshotIcon from '@material-ui/icons/Whatshot'
 import Explore from '../components/Explore/Explore'
 import ChatIcon from '@material-ui/icons/Chat'
@@ -71,7 +71,7 @@ export default function NewsfeedPage(props) {
                                 <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
                                 <BottomNavigationAction label="Forums" value="forums/feedbackForum" icon={<ForumIcon />} />
                                 {/* <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} /> */}
-                                <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} />
+                                {/* <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} /> */}
                                 <BottomNavigationAction label="Challenges" value={'challenges/' + user.displayName} icon={<WhatshotIcon />} />
                             </BottomNavigation>
                         </div>

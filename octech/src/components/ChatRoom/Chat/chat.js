@@ -69,7 +69,7 @@ const Chat = (props) => {
 
     }
     const removeUser = async (user) => {
-        setUsers(users.filter(u => user.name != u.name))
+        setUsers(users.filter(u => user.name !== u.name))
         setShowUsers(false)
         await db.collection("chatRooms").doc(props.id).update({
             participants: firebase.firestore.FieldValue.arrayRemove(user)
