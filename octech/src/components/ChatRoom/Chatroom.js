@@ -119,7 +119,7 @@ const Chatroom = (match) => {
                 collectionRef.doc(doc.id).delete()
             });
         })
-        await docRef.delete().then( () =>{
+        await docRef.delete().then(() => {
             setChatWindow("")
         }
         )
@@ -131,7 +131,7 @@ const Chatroom = (match) => {
                 [classes.fullList]: anchor === 'top' || anchor === 'bottom',
             })}
             role="presentation"
-            style={{margin:"20px"}}
+            style={{ margin: "20px" }}
         // onClick={toggleDrawer(anchor, false)}
         // onKeyDown={toggleDrawer(anchor, false)}
         >
@@ -141,80 +141,107 @@ const Chatroom = (match) => {
                 </Grid>
             </Grid>
             <Grid item className="chatListItem">
-                <Autocomplete
-                    multiple
-                    autoComplete={true}
-                    autoSelect={true}
-                    clearOnEscape={true}
-                    fullWidth={true}
-                    autoHighlight={true}
-                    onChange={(event, selectedUser) => {
-                        selectedUsers = selectedUser
-                    }}
-                    id="search"
-                    options={userData ? userData.data.friends : []}
-                    getOptionLabel={option => option.name}
-                    renderOption={(option) => {
-                        return (
-                            <ListItem >
-                                <ListItemIcon>
-                                    <Avatar alt={option.name} src={option.photoUrl} />
-                                </ListItemIcon>
-                                <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
-                            </ListItem>
-                        )
-                    }
-                    }
-                    disableClearable
-                    forcePopupIcon={false}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Search"
-                            margin="normal"
-                            variant="outlined"
-                            style={{
-                                position: "sticky",
-                                zIndex: 100,
-                                top: 200,
-                                backgroundColor: "white",
-                                marginBottom: "20px"
-                            }}
-                            InputProps=
-                            {{
-                                ...params.InputProps,
-                                endAdornment:
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="start chat"
-                                            onClick={(event,value)=>{
-                                                if (selectedUsers.length>0) {
-                                                    let chat = chatList ? chatList.find(chat => ((chat.participantNames.length === selectedUsers.length) & (selectedUsers.every(user => chat.participantNames.includes(user.name))))) : false//Already Started a chat with the friend
-                        
-                                                    if (chat) {
-                                                        setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} friends={userData.data.friends} />)
-                                                    } else {
-                                                        if(selectedUsers.length>0){
-                                                            creatChat({ name: userData.data.name, photoUrl: userData.data.photoUrl }, selectedUsers).then(id => {
-                                                                setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={selectedUsers} id={id} clear={() => { setChatWindow("") ;setState({ left: true }) }} friends={userData.data.friends}/>)
-                                                            })}
-                                                    }
-                                                    setState({
-                                                        left: false
-                                                    });
-                                                }
-                                            }}
-                                            onMouseDown={() => { }}
-                                            edge="end"
-                                        >
-                                            <ChatIcon />
-                                        </IconButton>
-                                    </InputAdornment>
+                <div style={{display: "flex"}}>
+                    <Autocomplete
+                        multiple
+                        autoComplete={true}
+                        autoSelect={true}
+                        clearOnEscape={true}
+                        fullWidth={true}
+                        autoHighlight={true}
+                        onChange={(event, selectedUser) => {
+                            selectedUsers = selectedUser
+                        }}
+                        id="search"
+                        options={userData ? userData.data.friends : []}
+                        getOptionLabel={option => option.name}
+                        renderOption={(option) => {
+                            return (
+                                <ListItem >
+                                    <ListItemIcon>
+                                        <Avatar alt={option.name} src={option.photoUrl} />
+                                    </ListItemIcon>
+                                    <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                </ListItem>
+                            )
+                        }
+                        }
+                        disableClearable
+                        forcePopupIcon={false}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Search"
+                                margin="normal"
+                                variant="outlined"
+                                style={{
+                                    position: "sticky",
+                                    zIndex: 100,
+                                    top: 200,
+                                    backgroundColor: "white",
+                                    marginBottom: "20px"
+                                }}
+                            // InputProps=
+                            // {{
+                            //     ...params.InputProps,
+                            //     endAdornment:
+                            //         <InputAdornment position="end">
+                            //             <IconButton
+                            //                 aria-label="start chat"
+                            //                 onClick={(event,value)=>{
+                            //                     if (selectedUsers.length>0) {
+                            //                         let chat = chatList ? chatList.find(chat => ((chat.participantNames.length === selectedUsers.length) & (selectedUsers.every(user => chat.participantNames.includes(user.name))))) : false//Already Started a chat with the friend
 
-                            }}
-                        />
-                    )}
-                />
+                            //                         if (chat) {
+                            //                             setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} friends={userData.data.friends} />)
+                            //                         } else {
+                            //                             if(selectedUsers.length>0){
+                            //                                 creatChat({ name: userData.data.name, photoUrl: userData.data.photoUrl }, selectedUsers).then(id => {
+                            //                                     setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={selectedUsers} id={id} clear={() => { setChatWindow("") ;setState({ left: true }) }} friends={userData.data.friends}/>)
+                            //                                 })}
+                            //                         }
+                            //                         setState({
+                            //                             left: false
+                            //                         });
+                            //                     }
+                            //                 }}
+                            //                 onMouseDown={() => { }}
+                            //                 edge="end"
+                            //             >
+                            //                 <ChatIcon />
+                            //             </IconButton>
+                            //         </InputAdornment>
+
+                            // }}
+                            />
+                        )}
+                    />
+                    <IconButton
+                        aria-label="start chat"
+                        onClick={(event, value) => {
+                            if (selectedUsers.length > 0) {
+                                let chat = chatList ? chatList.find(chat => ((chat.participantNames.length === selectedUsers.length) & (selectedUsers.every(user => chat.participantNames.includes(user.name))))) : false//Already Started a chat with the friend
+
+                                if (chat) {
+                                    setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow(""); setState({ left: true }) }} friends={userData.data.friends} />)
+                                } else {
+                                    if (selectedUsers.length > 0) {
+                                        creatChat({ name: userData.data.name, photoUrl: userData.data.photoUrl }, selectedUsers).then(id => {
+                                            setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={selectedUsers} id={id} clear={() => { setChatWindow(""); setState({ left: true }) }} friends={userData.data.friends} />)
+                                        })
+                                    }
+                                }
+                                setState({
+                                    left: false
+                                });
+                            }
+                        }}
+                        onMouseDown={() => { }}
+                        edge="end"
+                    >
+                        <ChatIcon />
+                    </IconButton>
+                </div>
                 <Divider />
                 {(chatList === undefined) ? (<p style={{ textAlign: "center" }}>Search Friends and chat with them</p>) :
                     (<List>
@@ -227,7 +254,7 @@ const Chatroom = (match) => {
                             }}>
                                 <ListItemIcon>
                                     <AvatarGroup max={3}>
-                                        {chat.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> :"" )}
+                                        {chat.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
                                     </AvatarGroup>
                                 </ListItemIcon>
                                 <ListItemText primary={chat.participantNames.join(", ")} primaryTypographyProps={{ noWrap: true }} ></ListItemText>

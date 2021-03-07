@@ -28,7 +28,7 @@ import AvatarGroup from '@material-ui/lab/AvatarGroup';
 const Chat = (props) => {
     const history = useHistory();
     let selectedUsers = []
-    const [userNames,setUserNames] = useState(props.participants.map(user => user.name))
+    const [userNames, setUserNames] = useState(props.participants.map(user => user.name))
     const [message, setMessage] = useState("")
     const [add, setAdd] = useState(false)
     const [showUsers, setShowUsers] = useState(false)
@@ -54,7 +54,7 @@ const Chat = (props) => {
     const delteMessage = async (message) => {
         await db.collection("chatRooms").doc(props.id).collection("messages").doc(message.id).delete()
     }
-    const addUsers = async(users)=>{
+    const addUsers = async (users) => {
         setUserNames(userNames.concat(users.map(user => user.name)))
         setAdd(false)
         await db.collection("chatRooms").doc(props.id).update({
@@ -65,11 +65,11 @@ const Chat = (props) => {
         });
 
     }
-    
+
     return (
         <>
-            <div style={{ width: "100%", position: "sticky", top: "85px" }}>
-                <p style={{ textAlign: "left", padding: "1px 10px" }}> {(userNames.length>1) ?
+            <div style={{ width: "100%", position: "sticky", top: "85px", display: "flex", justifyContent : "space-between" }}>
+                <p style= {{marginLeft: "2px", fontSize: "20px"}}> {(userNames.length>1) ?
                 <AvatarGroup max={10}>
                     {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> :"" )}
                 </AvatarGroup>
@@ -82,9 +82,18 @@ const Chat = (props) => {
                 <ListItemText primary={props.participants.map(user =>user.name)} primaryTypographyProps={{ noWrap: true }} ></ListItemText>
                 </>
                 }
-                <span style={{ float: "right" }}>{userNames.length>1 ? <IconButton edge="end" aria-label="add" onClick={()=>{setShowUsers(true)}}><GroupIcon /></IconButton> : ""} <IconButton edge="end" aria-label="add" onClick={()=>{setAdd(true)}}><AddIcon /></IconButton><IconButton edge="end" aria-label="clear" onClick={props.clear}><ClearIcon /></IconButton></span></p>
-                <Divider />
+                <span style ={{display: "flex"}}>
+                        {userNames.length>1 ? <IconButton edge="end" aria-label="add" onClick={()=>{setShowUsers(true)}}><GroupIcon /></IconButton> : ""}
+                        <IconButton aria-label="add" onClick={() => { setAdd(true) }}>
+                            <AddIcon />
+                        </IconButton>
+                        <IconButton aria-label="clear" onClick={props.clear}>
+                            <ClearIcon />
+                        </IconButton>
+                </span>
+                </p>
             </div>
+            <Divider />
             <Modal
               show={showUsers}
               onHide={() => { setShowUsers(false) }}
@@ -121,74 +130,74 @@ const Chat = (props) => {
               aria-labelledby="contained-modal-title-vcenter"
               centered
             >
-              <Modal.Body>
-                {
-                    <Autocomplete
-                        multiple
-                        autoComplete={true}
-                        autoSelect={true}
-                        clearOnEscape={true}
-                        fullWidth={true}
-                        autoHighlight={true}
-                        onChange={(event, selectedUser) => {
-                            selectedUsers = selectedUser
-                        }}
-                        id="search"
-                        options={props.friends ? props.friends.filter(user => !userNames.includes(user.name)) : []}
-                        getOptionLabel={option => option.name}
-                        renderOption={(option) => {
-                            return (
-                                <ListItem >
-                                    <ListItemIcon>
-                                        <Avatar alt={option.name} src={option.photoUrl} />
-                                    </ListItemIcon>
-                                    <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
-                                </ListItem>
-                            )
-                        }
-                        }
-                        disableClearable
-                        forcePopupIcon={false}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Search"
-                                margin="normal"
-                                variant="outlined"
-                                style={{
-                                    position: "sticky",
-                                    zIndex: 100,
-                                    top: 200,
-                                    backgroundColor: "white",
-                                    marginBottom: "20px"
-                                }}
-                                InputProps=
-                                {{
-                                    ...params.InputProps,
-                                    endAdornment:
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="start chat"
-                                                onClick={()=>{
-                                                    if(selectedUsers.length>0){
-                                                        addUsers(selectedUsers);
-                                                    }
-                                                }}
-                                                onMouseDown={() => { }}
-                                                edge="end"
-                                            >
-                                                <AddIcon />
-                                            </IconButton>
-                                        </InputAdornment>
+                <Modal.Body>
+                    {
+                        <Autocomplete
+                            multiple
+                            autoComplete={true}
+                            autoSelect={true}
+                            clearOnEscape={true}
+                            fullWidth={true}
+                            autoHighlight={true}
+                            onChange={(event, selectedUser) => {
+                                selectedUsers = selectedUser
+                            }}
+                            id="search"
+                            options={props.friends ? props.friends.filter(user => !userNames.includes(user.name)) : []}
+                            getOptionLabel={option => option.name}
+                            renderOption={(option) => {
+                                return (
+                                    <ListItem >
+                                        <ListItemIcon>
+                                            <Avatar alt={option.name} src={option.photoUrl} />
+                                        </ListItemIcon>
+                                        <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                    </ListItem>
+                                )
+                            }
+                            }
+                            disableClearable
+                            forcePopupIcon={false}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Search"
+                                    margin="normal"
+                                    variant="outlined"
+                                    style={{
+                                        position: "sticky",
+                                        zIndex: 100,
+                                        top: 200,
+                                        backgroundColor: "white",
+                                        marginBottom: "20px"
+                                    }}
+                                    InputProps=
+                                    {{
+                                        ...params.InputProps,
+                                        endAdornment:
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="start chat"
+                                                    onClick={() => {
+                                                        if (selectedUsers.length > 0) {
+                                                            addUsers(selectedUsers);
+                                                        }
+                                                    }}
+                                                    onMouseDown={() => { }}
+                                                    edge="end"
+                                                >
+                                                    <AddIcon />
+                                                </IconButton>
+                                            </InputAdornment>
 
-                                }}
-                            />
-                        )}
-                    />
-                }
-              </Modal.Body>
+                                    }}
+                                />
+                            )}
+                        />
+                    }
+                </Modal.Body>
             </Modal>
-            <div className="chat" style={{ width: "100%", height:"70%", overflow: "scroll" }}>
+            <div className="chat" style={{ width: "100%", height: "70%", overflow: "scroll" }}>
 
                 <Grid container className="chatBox" direction="column-reverse" justify="space-between" style={{ listStyle: "none", padding: "5px" }}>
                     <span ref={helper}></span>
@@ -207,7 +216,7 @@ const Chat = (props) => {
                                                 <IconButton edge="end" aria-label="delete">
                                                     <DeleteIcon />
                                                 </IconButton>
-                                            </ListItemSecondaryAction>} 
+                                            </ListItemSecondaryAction>}
                                     </ListItem>
                                     {/* <Divider /> */}
                                 </Grid>
@@ -248,7 +257,7 @@ const Chat = (props) => {
 
                 }}
                 onChange={(e) => setMessage(e.target.value)}
-                style={{ position: "fixed", width: "80%", bottom: "60px", marginLeft: "9%", backgroundColor: "whitesmoke"}}
+                style={{ position: "fixed", width: "80%", bottom: "60px", marginLeft: "9%", backgroundColor: "whitesmoke" }}
             />
         </>
     )
