@@ -24,13 +24,14 @@ import GroupIcon from '@material-ui/icons/Group';
 import List from '@material-ui/core/List';
 import { useHistory } from "react-router-dom";
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
+import RemoveIcon from '@material-ui/icons/Remove';
 import { Link } from "react-router-dom";
 import Tooltip from '@material-ui/core/Tooltip';
 
 const Chat = (props) => {
     const history = useHistory();
     let selectedUsers = []
-    const [userNames, setUserNames] = useState(props.participants.map(user => user.name))
+    const [users, setUsers] = useState(props.participants)
     const [message, setMessage] = useState("")
     const [add, setAdd] = useState(false)
     const [showUsers, setShowUsers] = useState(false)
@@ -56,14 +57,25 @@ const Chat = (props) => {
     const delteMessage = async (message) => {
         await db.collection("chatRooms").doc(props.id).collection("messages").doc(message.id).delete()
     }
-    const addUsers = async (users) => {
-        setUserNames(userNames.concat(users.map(user => user.name)))
+    const addUsers = async (userS) => {
+        setUsers(users.concat(userS))
         setAdd(false)
         await db.collection("chatRooms").doc(props.id).update({
-            participants: firebase.firestore.FieldValue.arrayUnion(...users)
+            participants: firebase.firestore.FieldValue.arrayUnion(...userS)
         });
         await db.collection("chatRooms").doc(props.id).update({
-            participantNames: firebase.firestore.FieldValue.arrayUnion(...users.map(user => user.name))
+            participantNames: firebase.firestore.FieldValue.arrayUnion(...userS.map(user => user.name))
+        });
+
+    }
+    const removeUser = async (user) => {
+        setUsers(users.filter(u => user.name != u.name))
+        setShowUsers(false)
+        await db.collection("chatRooms").doc(props.id).update({
+            participants: firebase.firestore.FieldValue.arrayRemove(user)
+        });
+        await db.collection("chatRooms").doc(props.id).update({
+            participantNames: firebase.firestore.FieldValue.arrayRemove(user.name)
         });
 
     }
@@ -112,18 +124,23 @@ const Chat = (props) => {
                 <Modal.Body>
                     {
                         <List component="users" aria-label="chat participants">
-                            {props.participants.map(option => (
-                                <ListItem button onClick={() => {
-                                    history.push(`/user/${option.name}`)
-                                }}>
+                           { users.map(option => (
+                               <ListItem button onClick={()=>{
+                                history.push(`/user/${option.name}`)
+                               }}>
                                     <ListItemIcon>
                                         <Avatar alt={option.name} src={option.photoUrl} />
                                     </ListItemIcon>
-                                    <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                    <ListItemText primary={option.name} secondary={props.creator === option.name ? "Creator" : "Member"} primaryTypographyProps={{ noWrap: true }} />
+                                    {(props.creator === props.user.name) &&
+                                        <ListItemSecondaryAction onClick={() => removeUser(option)}>
+                                            <IconButton edge="end" aria-label="remove">
+                                                <RemoveIcon />
+                                            </IconButton>
+                                    </ListItemSecondaryAction>}
                                 </ListItem>
                             ))
-                            }
-                            {console.log(props.participants)}
+                        }
                         </List>
                     }
                 </Modal.Body>
@@ -150,7 +167,7 @@ const Chat = (props) => {
                                 selectedUsers = selectedUser
                             }}
                             id="search"
-                            options={props.friends ? props.friends.filter(user => !userNames.includes(user.name)) : []}
+                            options={props.friends ? props.friends.filter(user => !users.map(u=>u.name).includes(user.name)) : []}
                             getOptionLabel={option => option.name}
                             renderOption={(option) => {
                                 return (
