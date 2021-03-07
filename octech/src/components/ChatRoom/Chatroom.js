@@ -247,8 +247,8 @@ const Chatroom = (match) => {
                     (<List>
                         <span ref={helper}></span>
                         {chatList.map(chat => (
-                            <ListItem button key={chat.id} onClick={() => {
-                                setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow(""); setState({ left: true }) }} friends={userData.data.friends} />); setState({
+                            <ListItem button key={chat.id} onClick={async () => {await setChatWindow("");
+                                setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} friends={userData.data.friends}/>); setState({
                                     left: false
                                 });
                             }}>

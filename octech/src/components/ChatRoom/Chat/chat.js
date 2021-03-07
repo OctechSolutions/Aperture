@@ -20,12 +20,18 @@ import AddIcon from '@material-ui/icons/Add';
 import Modal from 'react-bootstrap/Modal';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import GroupIcon from '@material-ui/icons/Group';
+import List from '@material-ui/core/List';
+import { useHistory } from "react-router-dom";
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 
 const Chat = (props) => {
+    const history = useHistory();
     let selectedUsers = []
     const [userNames, setUserNames] = useState(props.participants.map(user => user.name))
     const [message, setMessage] = useState("")
     const [add, setAdd] = useState(false)
+    const [showUsers, setShowUsers] = useState(false)
     let query = db.collection("chatRooms").doc(props.id).collection("messages").orderBy("sentAt", "desc").limit(10)
     const [messages] = useCollectionData(query, { idField: 'id' })
 
@@ -63,8 +69,21 @@ const Chat = (props) => {
     return (
         <>
             <div style={{ width: "100%", position: "sticky", top: "85px", display: "flex", justifyContent : "space-between" }}>
-                <p style= {{marginLeft: "2px", fontSize: "20px"}}> Chatting with {userNames.join(", ")}</p>
+                <p style= {{marginLeft: "2px", fontSize: "20px"}}> {(userNames.length>1) ?
+                <AvatarGroup max={10}>
+                    {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> :"" )}
+                </AvatarGroup>
+                :<>
+                <ListItemIcon>
+                    <AvatarGroup max={3}>
+                        {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> :"" )}
+                    </AvatarGroup>
+                </ListItemIcon>
+                <ListItemText primary={props.participants.map(user =>user.name)} primaryTypographyProps={{ noWrap: true }} ></ListItemText>
+                </>
+                }
                 <span style ={{display: "flex"}}>
+                        {userNames.length>1 ? <IconButton edge="end" aria-label="add" onClick={()=>{setShowUsers(true)}}><GroupIcon /></IconButton> : ""}
                         <IconButton aria-label="add" onClick={() => { setAdd(true) }}>
                             <AddIcon />
                         </IconButton>
@@ -72,15 +91,44 @@ const Chat = (props) => {
                             <ClearIcon />
                         </IconButton>
                 </span>
+                </p>
             </div>
             <Divider />
             <Modal
-                show={add}
-                onHide={() => { setAdd(false) }}
-                keyboard={false}
-                size="xl"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
+              show={showUsers}
+              onHide={() => { setShowUsers(false) }}
+              keyboard={false}
+              size="xl"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+            >
+                <Modal.Body>
+                    {
+                        <List component="users" aria-label="chat participants">
+                           { props.participants.map(option => (
+                               <ListItem button onClick={()=>{
+                                history.push(`/user/${option.name}`)
+                               }}>
+                                    <ListItemIcon>
+                                        <Avatar alt={option.name} src={option.photoUrl} />
+                                    </ListItemIcon>
+                                    <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                </ListItem>
+                            ))
+                        }
+                        {console.log(props.participants)}
+                        </List>
+                    }
+                </Modal.Body>
+
+            </Modal>
+            <Modal
+              show={add}
+              onHide={() => { setAdd(false) }}
+              keyboard={false}
+              size="xl"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
             >
                 <Modal.Body>
                     {
