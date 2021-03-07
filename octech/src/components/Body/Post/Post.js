@@ -150,13 +150,25 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const postComment = () => {
     console.log(comment, id);
     if (comment.replace(/\s/g, '').length) {
-      db.collection("posts").doc(id).update({
-        comments: firebase.firestore.FieldValue.arrayUnion({
-          name: user.displayName,
-          comment: comment,
-          number: comments.length
-        }) // The post is removed from the users array of posts
-      })
+      if (isForumPost) {
+        db.collection("forumPosts").doc(id).update({
+          comments: firebase.firestore.FieldValue.arrayUnion({
+            name: user.displayName,
+            comment: comment,
+            number: comments.length
+          })
+        })
+      }
+      else {
+        db.collection("posts").doc(id).update({
+          comments: firebase.firestore.FieldValue.arrayUnion({
+            name: user.displayName,
+            comment: comment,
+            number: comments.length
+          })
+        })
+      }
+
       setComment("");
     }
 
@@ -210,16 +222,31 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
 
 
-    db.collection("posts") // The post is removed from the posts database
-      .doc(id)
-      .delete()
-      .then(function () {
-        console.log("deleted post successfully!");
-        console.log(id);
-      })
-      .catch(function (error) {
-        console.log(`Error post info delete ${error}`);
-      });
+    if (isForumPost) {
+      db.collection("forumPosts") // The post is removed from the posts database
+        .doc(id)
+        .delete()
+        .then(function () {
+          console.log("deleted post successfully!");
+          console.log(id);
+        })
+        .catch(function (error) {
+          console.log(`Error post info delete ${error}`);
+        });
+    }
+    else {
+      db.collection("posts") // The post is removed from the posts database
+        .doc(id)
+        .delete()
+        .then(function () {
+          console.log("deleted post successfully!");
+          console.log(id);
+        })
+        .catch(function (error) {
+          console.log(`Error post info delete ${error}`);
+        });
+    }
+
 
   };
 
