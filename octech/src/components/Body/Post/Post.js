@@ -406,14 +406,16 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const updateChallengeChips = () => {
     setChallengeChips([]) // Clear existing challengeChips array.
 
-    // Fetch challenge codes of this post.
+    // Fetch challenge titles of this post.
     db.collection("posts").doc(id).get()
     .then((postDoc) => {
-      let challengeArr = postDoc.data().challenges
-      if(challengeArr) { // If this post has challenges then ...
-        challengeArr.forEach((challengeName) => { 
-          setChallengeChips((prev) => [...prev, <Chip label={challengeName} onDelete={() => removeChallenge(challengeName)}/>]) 
-        })
+      if(postDoc.data()){
+        let challengeArr = postDoc.data().challenges
+        if(challengeArr) { // If this post has challenges then ...
+          challengeArr.forEach((challengeName) => { 
+            setChallengeChips((prev) => [...prev, <Chip label={challengeName} onDelete={() => removeChallenge(challengeName)}/>]) 
+          })
+        }
       }
     })
   }
