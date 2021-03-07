@@ -22,6 +22,9 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChatIcon from '@material-ui/icons/Chat';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 
 const useStyles = makeStyles({
     list: {
@@ -31,8 +34,8 @@ const useStyles = makeStyles({
         width: 'auto',
     },
 });
-
 const Chatroom = (match) => {
+    let selectedUsers = []
     const classes = useStyles();
     const user = useSelector(selectUser);
     const [chatList, setChatList] = useState([]);
@@ -97,8 +100,8 @@ const Chatroom = (match) => {
     const creatChat = async (user, participants) => {
         let id = ""
         await db.collection("chatRooms").add({
-            participantNames: [user.name, participants.name],
-            participants: [user, participants],
+            participantNames: [user.name, ...participants.map(user => user.name)],
+            participants: [user, ...participants],
             chatStartedAt: firebase.firestore.FieldValue.serverTimestamp(),
         }).then(function (docRef) {
             id = docRef.id
@@ -109,7 +112,6 @@ const Chatroom = (match) => {
     }
 
     const deleteChat = async (chat) => {
-        console.log(chat)
         const docRef = db.collection("chatRooms").doc(chat.id)
         const collectionRef = docRef.collection("messages")
         await collectionRef.get().then(docs => {
@@ -117,8 +119,10 @@ const Chatroom = (match) => {
                 collectionRef.doc(doc.id).delete()
             });
         })
-        await docRef.delete()
-        setChatWindow("");
+        await docRef.delete().then( () =>{
+            setChatWindow("")
+        }
+        )
     }
 
     const list = (anchor) => (
@@ -138,28 +142,14 @@ const Chatroom = (match) => {
             </Grid>
             <Grid item className="chatListItem">
                 <Autocomplete
+                    multiple
                     autoComplete={true}
                     autoSelect={true}
                     clearOnEscape={true}
                     fullWidth={true}
                     autoHighlight={true}
                     onChange={(event, selectedUser) => {
-
-                        if (selectedUser) {
-                            let chat = chatList ? chatList.find(chat => chat.participantNames.includes(selectedUser.name)) : false//Already Started a chat with the friend
-
-                            if (chat) {
-                                setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} />)
-                            } else {
-                                console.log("HAAn")
-                                creatChat({ name: userData.data.name, photoUrl: userData.data.photoUrl }, selectedUser).then(id => {
-                                    setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={[selectedUser]} id={id} clear={() => { setChatWindow("") ;setState({ left: true }) }} />)
-                                })
-                            }
-                            setState({
-                                left: false
-                            });
-                        }
+                        selectedUsers = selectedUser
                     }}
                     id="search"
                     options={userData ? userData.data.friends : []}
@@ -175,6 +165,8 @@ const Chatroom = (match) => {
                         )
                     }
                     }
+                    disableClearable
+                    forcePopupIcon={false}
                     renderInput={(params) => (
                         <TextField
                             {...params}
@@ -187,6 +179,38 @@ const Chatroom = (match) => {
                                 top: 200,
                                 backgroundColor: "white",
                                 marginBottom: "20px"
+                            }}
+                            InputProps=
+                            {{
+                                ...params.InputProps,
+                                endAdornment:
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="start chat"
+                                            onClick={(event,value)=>{
+                                                if (selectedUsers.length>0) {
+                                                    let chat = chatList ? chatList.find(chat => ((chat.participantNames.length === selectedUsers.length) & (selectedUsers.every(user => chat.participantNames.includes(user.name))))) : false//Already Started a chat with the friend
+                        
+                                                    if (chat) {
+                                                        setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} />)
+                                                    } else {
+                                                        if(selectedUsers.length>0){
+                                                            creatChat({ name: userData.data.name, photoUrl: userData.data.photoUrl }, selectedUsers).then(id => {
+                                                                setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={selectedUsers} id={id} clear={() => { setChatWindow("") ;setState({ left: true }) }} />)
+                                                            })}
+                                                    }
+                                                    setState({
+                                                        left: false
+                                                    });
+                                                }
+                                            }}
+                                            onMouseDown={() => { }}
+                                            edge="end"
+                                        >
+                                            <ChatIcon />
+                                        </IconButton>
+                                    </InputAdornment>
+
                             }}
                         />
                     )}
@@ -202,7 +226,9 @@ const Chatroom = (match) => {
                                 });
                             }}>
                                 <ListItemIcon>
-                                    <Avatar alt={chat.participants[0].name} src={chat.participants[0].photoUrl} />
+                                    <AvatarGroup max={3}>
+                                        {chat.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> :"" )}
+                                    </AvatarGroup>
                                 </ListItemIcon>
                                 <ListItemText primary={chat.participantNames.join(", ")} primaryTypographyProps={{ noWrap: true }} ></ListItemText>
                                 <ListItemSecondaryAction onClick={() => { deleteChat(chat) }}>
