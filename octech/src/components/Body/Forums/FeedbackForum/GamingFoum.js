@@ -144,7 +144,7 @@ function GamingForum({ match }, props) {
     }
 
     useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
-        db.collection("posts")
+        db.collection("forumPosts")
             .where("type", "==", "gamingForum")
             .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
             .onSnapshot((snapshot) => {
@@ -164,7 +164,7 @@ function GamingForum({ match }, props) {
 
         if (sliderImages.length) {
 
-            const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
+            const ref = db.collection('forumPosts').doc() // A reference to the next entry to the database is created in advance
             ref.set({ // This adds a new post to the databse
                 name: user.displayName,
                 description: user.email,

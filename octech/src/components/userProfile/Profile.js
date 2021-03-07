@@ -175,7 +175,7 @@ function Profile({ match }) {
     ))
 
     return (
-        <div className="profile" style={{ color: "black", width: "100%" }}>
+        <div className="profile" style={{ color: "black", width: "100%", backgroundColor: "whitesmoke"}}>
             {(profileInfo.blocked && (profileInfo.blocked.includes(user.displayName))) ? <p>{profileInfo.name} has blocked you</p>
                 :
                 ((profileInfo.blockedBy && (profileInfo.blockedBy.includes(user.displayName))) ? <p>You have blocked this user! {<Button onClick={unBlock} variant="success">Unblock : {profileInfo.name}</Button>}</p>
