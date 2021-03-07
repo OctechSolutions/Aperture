@@ -11,7 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import IconButton from '@material-ui/core/IconButton';
-// import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import ClearIcon from '@material-ui/icons/Clear';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -83,7 +83,7 @@ const Chat = (props) => {
     return (
         <>
             <div style={{ width: "100%", position: "sticky", top: "85px", display: "flex", justifyContent: "space-between" }}>
-                <div style={{ marginLeft: "2px", fontSize: "20px" }}> {(userNames.length > 1) ?
+                <div style={{ marginLeft: "2px", fontSize: "20px" }}> {(users.length > 1) ?
                     <AvatarGroup max={10}>
                         {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
                     </AvatarGroup>
@@ -103,7 +103,7 @@ const Chat = (props) => {
                 }
                 </div>
                 <span style={{ display: "flex" }}>
-                    {userNames.length > 1 ? <IconButton edge="end" aria-label="add" onClick={() => { setShowUsers(true) }}><GroupIcon /></IconButton> : ""}
+                    {users.length > 1 ? <IconButton edge="end" aria-label="add" onClick={() => { setShowUsers(true) }}><GroupIcon /></IconButton> : ""}
                     <IconButton aria-label="add" onClick={() => { setAdd(true) }}>
                         <AddIcon />
                     </IconButton>
