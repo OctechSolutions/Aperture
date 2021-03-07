@@ -23,7 +23,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChatIcon from '@material-ui/icons/Chat';
-import InputAdornment from '@material-ui/core/InputAdornment';
+// import InputAdornment from '@material-ui/core/InputAdornment';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
 
 const useStyles = makeStyles({

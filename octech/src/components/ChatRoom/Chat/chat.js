@@ -11,7 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import IconButton from '@material-ui/core/IconButton';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+// import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import ClearIcon from '@material-ui/icons/Clear';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -25,6 +25,8 @@ import List from '@material-ui/core/List';
 import { useHistory } from "react-router-dom";
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import RemoveIcon from '@material-ui/icons/Remove';
+import { Link } from "react-router-dom";
+import Tooltip from '@material-ui/core/Tooltip';
 
 const Chat = (props) => {
     const history = useHistory();
@@ -80,39 +82,44 @@ const Chat = (props) => {
 
     return (
         <>
-            <div style={{ width: "100%", position: "sticky", top: "85px", display: "flex", justifyContent : "space-between" }}>
-                <p style= {{marginLeft: "2px", fontSize: "20px"}}> {(users.length>1) ?
-                <AvatarGroup max={10}>
-                    {users.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> :"" )}
-                </AvatarGroup>
-                :<>
-                <ListItemIcon>
-                    <AvatarGroup max={3}>
-                        {users.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> :"" )}
+            <div style={{ width: "100%", position: "sticky", top: "85px", display: "flex", justifyContent: "space-between" }}>
+                <div style={{ marginLeft: "2px", fontSize: "20px" }}> {(userNames.length > 1) ?
+                    <AvatarGroup max={10}>
+                        {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
                     </AvatarGroup>
-                </ListItemIcon>
-                <ListItemText primary={users.map(user =>user.name)} primaryTypographyProps={{ noWrap: true }} ></ListItemText>
-                </>
+                    : <>
+                        {/* <ListItemIcon> */}
+                        <IconButton disableRipple={true} disableFocusRipple={true} disableTouchRipple={true} style={{ backgroundColor: "transparent" }}>
+                            <AvatarGroup max={3} style={{marginRight: "5px"}}>
+                                {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
+                            </AvatarGroup>
+                            <div>{props.participants.map(user => user.name)}</div>
+                            {/* <ListItemText primary={props.participants.map(user => user.name)} primaryTypographyProps={{ noWrap: true }}></ListItemText> */}
+                        </IconButton>
+
+                        {/* </ListItemIcon> */}
+
+                    </>
                 }
-                <span style ={{display: "flex"}}>
-                        {users.length>1 ? <IconButton edge="end" aria-label="add" onClick={()=>{setShowUsers(true)}}><GroupIcon /></IconButton> : ""}
-                        <IconButton aria-label="add" onClick={() => { setAdd(true) }}>
-                            <AddIcon />
-                        </IconButton>
-                        <IconButton aria-label="clear" onClick={props.clear}>
-                            <ClearIcon />
-                        </IconButton>
+                </div>
+                <span style={{ display: "flex" }}>
+                    {userNames.length > 1 ? <IconButton edge="end" aria-label="add" onClick={() => { setShowUsers(true) }}><GroupIcon /></IconButton> : ""}
+                    <IconButton aria-label="add" onClick={() => { setAdd(true) }}>
+                        <AddIcon />
+                    </IconButton>
+                    <IconButton aria-label="clear" onClick={props.clear}>
+                        <ClearIcon />
+                    </IconButton>
                 </span>
-                </p>
             </div>
             <Divider />
             <Modal
-              show={showUsers}
-              onHide={() => { setShowUsers(false) }}
-              keyboard={false}
-              size="xl"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
+                show={showUsers}
+                onHide={() => { setShowUsers(false) }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
             >
                 <Modal.Body>
                     {
@@ -140,12 +147,12 @@ const Chat = (props) => {
 
             </Modal>
             <Modal
-              show={add}
-              onHide={() => { setAdd(false) }}
-              keyboard={false}
-              size="xl"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
+                show={add}
+                onHide={() => { setAdd(false) }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
             >
                 <Modal.Body>
                     {
@@ -223,17 +230,30 @@ const Chat = (props) => {
                             <Grid container xs={12} alignItems={(message.sender.name === props.user.name) ? "flex-end" : "flex-start"} direction="column" >
                                 <Grid item key={message.id} style={{ margin: "5px 0" }} >
                                     <ListItem alignItems="center" style={{ borderRadius: "20px", backgroundColor: (message.sender.name === props.user.name) ? "white" : "lightgrey" }}>
-                                        <ListItemAvatar >
-                                            <Avatar src={message.sender.photoUrl} alt={message.sender.name} />
-                                            <ListItemText secondary={(message.sender.name === props.user.name) ? "You" : message.sender.name} />
-                                        </ListItemAvatar>
-                                        <ListItemText primary={message.text} secondary={(message.sentAt) ? moment(message.sentAt.toMillis()).fromNow().toString() : ""} />
-                                        {(message.sender.name === props.user.name) &&
-                                            <ListItemSecondaryAction onClick={() => delteMessage(message)}>
-                                                <IconButton edge="end" aria-label="delete">
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </ListItemSecondaryAction>}
+                                        <div>
+                                            <div style={{ display: "flex", fontSize: "15px", color: "#303030" }}>{(message.sender.name === props.user.name) ? "You" : message.sender.name}</div>
+                                            <div div style={{ display: "flex" }}>
+                                                <Divider />
+                                                <ListItemAvatar >
+                                                    <Tooltip title={message.sender.name} placement="top">
+                                                        <Link to={`/user/${message.sender.name}`}>
+                                                            <Avatar src={message.sender.photoUrl} alt={message.sender.name} />
+                                                        </Link>
+                                                    </Tooltip>
+                                                    {/* <ListItemText secondary={(message.sender.name === props.user.name) ? "You" : message.sender.name} /> */}
+                                                </ListItemAvatar>
+                                                <div div style={{ display: "flex" }}>
+                                                    <ListItemText primary={message.text} secondary={(message.sentAt) ? moment(message.sentAt.toMillis()).fromNow().toString() : ""} />
+
+                                                    {(message.sender.name === props.user.name) &&
+                                                        <div onClick={() => delteMessage(message)}>
+                                                            <IconButton edge="end" aria-label="delete">
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </div>}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </ListItem>
                                     {/* <Divider /> */}
                                 </Grid>
