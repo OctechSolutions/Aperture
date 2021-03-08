@@ -151,7 +151,6 @@ function Feed({ match }, props) {
     setAnchorEl(null);
   };
 
-
   const getCropData = async () => {
     if (typeof cropper !== "undefined") {
       setInputImg(await cropper.getCroppedCanvas().toDataURL('image/jpeg', 0.5));

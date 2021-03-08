@@ -3,6 +3,10 @@ import {CopyToClipboard} from 'react-copy-to-clipboard'
 import { Link } from "react-router-dom"
 import { useHistory } from "react-router-dom"
 
+import Modal from 'react-bootstrap/Modal'
+import Alert from 'react-bootstrap/Alert'
+import Spinner from 'react-bootstrap/Spinner'
+
 import './Challenge.css'
 
 import Post from "../Body/Post/Post"
@@ -27,7 +31,12 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import InputBase from '@material-ui/core/InputBase'
+import Cropper from "react-cropper"
+import Slider from '@material-ui/core/Slider'
+import ImageGallery from "../Body/Feed/ImageGallery"
 import { makeStyles } from '@material-ui/core/styles'
+
 import DeleteIcon from '@material-ui/icons/Delete'
 import IconButton from '@material-ui/core/IconButton'
 import Snackbar from '@material-ui/core/Snackbar'
@@ -39,10 +48,16 @@ import LockIcon from '@material-ui/icons/Lock'
 import PublicIcon from '@material-ui/icons/Public'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
 import CloseIcon from '@material-ui/icons/Close'
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
+import VisibilityIcon from '@material-ui/icons/Visibility'
+import ImageIcon from "@material-ui/icons/Image"
+import PhotoCameraIcon from "@material-ui/icons/PhotoCamera"
+import SendIcon from '@material-ui/icons/Send'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 export default function Challenge({user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges}) {
 
-    const [anchorEl, setAnchorEl] = useState(null)
+    const [anchorEl3Dots, setAnchorEl3Dots] = useState(null)
     const [isPublic, setIsPublic] = useState(!isPrivate)
     const [showCopiedMessage, setShowCopiedMessage] = React.useState({ // Related to copied message popup.
         openCopiedMessage: false,
@@ -53,33 +68,53 @@ export default function Challenge({user, name, description, hints, creator, crea
     const [loadEntries, setLoadEntries] = useState(true)
     const [openOverlay, setOpenOverlay] = useState(false) // For entries overlay.
     
-
+    const useStyles = makeStyles(
+        (theme) => ({
+            appBar: { // For entries overlay.
+                position: 'relative',
+            },
+            title: {
+                marginLeft: theme.spacing(2),
+                flex: 1,
+            },
+            root: { // For add post.
+                backgroundColor: theme.palette.background.paper,
+                width: 500,
+                position: 'relative',
+                minHeight: 200,
+            },
+            fab: {
+                margin: 0,
+                top: 'auto',
+                right: 'auto',
+                bottom: 45,
+                left: 'auto',
+                position: 'fixed',
+                zIndex: 100
+            },
+            input: {
+                marginLeft: theme.spacing(2),
+                flex: 1,
+            },
+        })
+    )
+    const classes = useStyles()
     const history = useHistory() // Related to react router.
-    const open = Boolean(anchorEl) // Related to 3 Dots Menu.
+    const open = Boolean(anchorEl3Dots) // Related to 3 Dots Menu.
     const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds)) // For sleep functionality. Reference = https://flaviocopes.com/javascript-sleep/
     const { vertical, horizontal, openCopiedMessage } = showCopiedMessage // Related to copied message popup.
-    const useStyles = makeStyles((theme) => ({ // For entries overlay.
-        appBar: {
-            position: 'relative',
-        },
-        title: {
-            marginLeft: theme.spacing(2),
-            flex: 1,
-        },
-    }))
     const Transition = React.forwardRef(function Transition(props, ref) { // For entries overlay.
         return <Slide direction="up" ref={ref} {...props} />;
-    });
-    const classes = useStyles() // For entries overlay.
+    })
 
     // Function to close the 3 dots menu.
     const handleMenuClose = () => {
-        setAnchorEl(null);
+        setAnchorEl3Dots(null);
     }
 
     // Function to open the 3 dots menu.
     const handleMenuClick = (event) => {
-        setAnchorEl(event.currentTarget);
+        setAnchorEl3Dots(event.currentTarget);
     }
 
     // Function to open the full screen participating posts overlay.
@@ -160,6 +195,274 @@ export default function Challenge({user, name, description, hints, creator, crea
             })
         })
     }
+
+    // For NEW POST ----------------------------------------------------
+    const DEFAULT_EDIT_OPTIONS = [
+        {
+          name: 'Brightness',
+          property: 'brightness',
+          value: 100,
+          range: { min: 0, max: 200 },
+          unit: '%'
+        },
+        {
+          name: 'Contrast',
+          property: 'contrast',
+          value: 100,
+          range: { min: 0, max: 200 },
+          unit: '%'
+        },
+        {
+          name: 'Saturation',
+          property: 'saturate',
+          value: 100,
+          range: { min: 0, max: 200 },
+          unit: '%'
+        },
+        {
+          name: 'Grayscale',
+          property: 'grayscale',
+          value: 0,
+          range: { min: 0, max: 100 },
+          unit: '%'
+        },
+        {
+          name: 'Hue',
+          property: 'hue-rotate',
+          value: 0,
+          range: { min: 0, max: 360 },
+          unit: 'deg'
+        }
+    ]
+
+    const [caption, setCaption] = useState("");
+    const [profileInfo, setProfileInfo] = useState("");
+    const [, setFile] = useState(null)
+    const [inputImg, setInputImg] = useState("");
+    const [selectedInputImg, setSelectedInputImg] = useState({});
+    const [inputImgs, setInputImgs] = useState([]);
+    const [posts, setPosts] = useState([]);
+    const [cameraActive, setCameraActive] = useState("");
+    const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS);
+    const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
+    const selectedOption = editOptions[selectedOptionIndex];
+    const [sliderImages, setSliderImages] = useState([]);
+    const [largeImages, setLargeImages] = useState([]);
+    const [, setNohuman] = useState(false);
+    const [show, setShow] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [showEditMap, setShowEditMap] = useState(false);
+    const [lat, setLat] = useState(25.1972);
+    const [lng, setLng] = useState(55.2744);
+    const [coordinatesSelected, setCoordinatesSelected] = useState(false);
+    const [isPrivatePost, setIsPrivatePost] = useState(false);
+    const [showFollowers, setShowFollowers] = useState(false);
+    const [showPostComponent, setShowPostComponent] = useState(false);
+
+    const [channelInfo, setChannelInfo] = useState("")
+
+    const cocoSsd = require('@tensorflow-models/coco-ssd');
+
+    const [cropper, setCropper] = useState("");
+    const [cropping, setCropping] = useState(false);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const Compress = require('compress.js');
+
+    // Function resets all state variables to blank.
+    const resetVals = () => {
+        setInputImg("") // When the post is submitted the input image is set to an empty string removing the preview of the image and providing a fresh canvas for the next post.
+        setEditOptions(DEFAULT_EDIT_OPTIONS) // This sets the slider values for editing the image to its default once the post is submitted which avoids applying old filters to the next image that is uploaded.
+        setCaption("") // On posting the input value is set to an empty string.
+        setCameraActive("")
+        setShowPostComponent(false)
+        setCropping("false")
+        setCameraActive("")
+        setSelectedInputImg("")
+    }
+    
+    // Function that handles case when user cancels editing.
+    const editingCancelled = async () => {
+        setInputImg("");
+        setEditOptions(DEFAULT_EDIT_OPTIONS);
+        setIsPrivatePost(false);
+    }
+
+    // Function that handles events once an image has been input.
+    const handleImageInputChange = (e) => { // When a file is uploaded this function is called
+
+        e.preventDefault()
+        // console.log(e.target.files[0])
+        setEditOptions(DEFAULT_EDIT_OPTIONS)
+
+        setFile(e.target.files[0])
+        
+        const compress = new Compress()
+        compress.compress([e.target.files[0]], {
+            size: 0.7, // the max size in MB, defaults to 2MB
+            quality: .65, // the quality of the image, max is 1,
+            maxWidth: 1920, // the max width of the output image, defaults to 1920px
+            maxHeight: 1920, // the max height of the output image, defaults to 1920px
+            resize: true, // defaults to true, set false if you do not want to resize the image width and height
+        }).then((data) => {
+
+        // returns an array of compressed images
+        console.log("compressed data = " + data[0].prefix + data[0].data)
+        var compressedb64 = data[0].prefix + data[0].data
+        setInputImg(compressedb64)
+
+        // Human Detection.
+        setLoading(true)
+        cocoSsd.load().then((model) => {
+            // detect objects in the image.
+            const img = document.getElementById("img")
+            model.detect(img).then(
+                (predictions) => {
+                    console.log("Predictions: ", predictions)
+                    if (predictions.length) {
+                        predictions.forEach((prediction) => {
+                            if (prediction.class === "person") {
+                                setInputImg("")
+                                console.log("HUMAN DETECTED!!!")
+                                setShow(true)
+                            }
+                            else {
+                                setNohuman(true)
+                            }
+                        })
+                    }
+                    else {
+                        setNohuman(true)
+                    }
+                    setLoading(false)
+                    setCropping(true)
+                }
+            )
+            })
+        })
+
+        setCameraActive("") // Camera is not active.
+    }
+
+    // Function that opens a camera.
+    const openCamera = (e) => { // On clicking the camera button this function is called
+        e.preventDefault();
+        setCameraActive("active"); // The camera state is set to active which renders the camera component 
+    }
+
+    // Function that deals with changes when the image edit slider is changed.
+    const handleSliderChange = (value) => {
+        setEditOptions(prevEditOptions => {
+        return (
+            (prevEditOptions.map((option, index) => {
+
+            if (index !== selectedOptionIndex) {
+                return option
+            }
+            return { ...option, value: value }
+            }))
+        )
+        })
+    }
+
+    // Gets the css style of image being edited.
+    const getImageStyle = () => {
+        const filters = editOptions.map(option => {
+            return `${option.property}(${option.value}${option.unit})`
+        })
+        return { filter: filters.join(` `) }
+    }
+
+    // Function that handles values of the crop.
+    const getCropData = async () => {
+        if (typeof cropper !== "undefined") {
+            setInputImg(await cropper.getCroppedCanvas().toDataURL('image/jpeg', 0.5))
+            setCropping(false)
+        }
+    }
+
+    // Function that is called once the user is done editting.
+    const editingDone = async () => {
+        setNohuman(false)
+        if (inputImg) {
+            // setInputImgs(inputImgs.concat(inputImg))
+            setSelectedInputImg({
+                src: inputImg,
+                style: getImageStyle()
+            })
+            // setSliderImages(sliderImages.concat({
+            //     src: inputImg,
+            //     style: getImageStyle()
+            // }))
+            setInputImg("")
+            setEditOptions(DEFAULT_EDIT_OPTIONS)
+        }
+    }
+
+    // Function that is called when a new post is submitted.
+    const sendPost = async (e) => { 
+        e.preventDefault() // This is to prevent the default behaviour of submitting a form.
+        
+        console.log("selectedInputImg = " + selectedInputImg)
+        
+        if (selectedInputImg !== {}) {
+            const ref = db.collection('challengePosts').doc() // A reference to the next entry to the database is created in advance.
+            ref.set({ // This adds a new post to the database.
+                caption: caption,
+                imageSrc: selectedInputImg.src,
+                style: selectedInputImg.style,
+                creator: creator,
+                creatorPhotoUrl: creatorPhotoUrl || "",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                challengePoints: 0,
+                challenge: name,
+                ref:ref.id
+            })
+
+            resetVals()
+        }
+
+        // if (sliderImages.length) {
+        //     const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
+        //     ref.set({ // This adds a new post to the database
+        //         name: user.displayName,
+        //         description: user.email,
+        //         message: caption,
+        //         photoUrl: user.photoUrl || "",
+        //         largeGifs: largeImages,
+        //         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        //         channelBy: isAdmin ? user.displayName : "",
+        //         hasCoordinates: false,
+        //         stars: {},
+        //         totalStars: 0,
+        //         isPrivate: isPrivatePost,
+        //         challenges:[]
+        //     })
+
+        //     sliderImages.forEach((image) => {
+        //         console.log(image, "added to db");
+        //         db.collection('postImages').doc().set({
+        //             url: image.src,
+        //             styleModification: image.style,
+        //             ref: ref.id
+        //         })
+        //     })
+        
+        //     resetVals()
+        // }
+    }
+
+    // Opens the edit options drop down list.
+    const handleEditOptionsMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    }
+    
+    // Closes the edit options drop down list.
+    const handleEditOptionsClose = () => {
+        setAnchorEl(null);
+    }
+
+    // -----------------------------------------------------------------
 
     useEffect(() => {
         if(loadEntries) { loadChallengeEntries(); setLoadEntries(false)}
@@ -245,7 +548,7 @@ export default function Challenge({user, name, description, hints, creator, crea
 
                         {/* 3 Dots menu content. */}
                         <Menu
-                            anchorEl={anchorEl}
+                            anchorEl={anchorEl3Dots}
                             keepMounted
                             open={open}
                             onClose={handleMenuClose}
@@ -275,16 +578,18 @@ export default function Challenge({user, name, description, hints, creator, crea
             {/* CHALLENGE DESRIPTION + HINTS + CHALLENGE CODE + VIEW ENTRIES. */}
             <div className="challenge_body">
                 <p><b>Description</b><br />{ description }</p>
+                <p><b>Hints</b><br />{ hints.toString().replaceAll(",", ", ") }</p>             
+                <p><b>Duration: </b>{ startDate } to { endDate }</p>
 
-                <p><b>Hints</b><br />{ hints.toString().replaceAll(",", ", ") }</p>
-                
-                <p>
-                    <b>Duration: </b>{ startDate } to { endDate }
-                </p>
-
-                <Button color="primary" onClick={ handleOverlayClickOpen }>
-                    View Challenge Entries
-                </Button>
+                {/* Add new post to challenge and view entries button. */}
+                <div className="buttons" style={{display:"flex", justifyContent:"space-evenly"}}>
+                    <IconButton aria-label="addPostToChallenge" color="primary" onClick={() => { setShowPostComponent(true) }}>
+                        <AddCircleOutlineIcon fontSize="large" />
+                    </IconButton>
+                    <IconButton aria-label="viewEntries" color="primary" onClick={ handleOverlayClickOpen }>
+                        <VisibilityIcon fontSize="large"/>
+                    </IconButton>
+                </div>
             </div>
             
             {/* CHALLENGE LEADER / WINNER */}
@@ -311,6 +616,190 @@ export default function Challenge({user, name, description, hints, creator, crea
                     <Button onClick={handleOverlayClose} color="primary"> Done </Button>
                 </DialogActions>
             </Dialog>
+        
+            {/* POP UP MODAL TO ADD A NEW CHALLENGE POST */}
+            <Modal
+                show={showPostComponent}
+                onHide={() => { setShowPostComponent(false); resetVals(); }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton onClick={() => { setShowPostComponent(false) }}>
+                    <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}> Posting as {user.displayName} </h4>
+                </Modal.Header>
+                
+                <Modal.Body>
+                    <div className="feed_inputContainer">
+                        <div className="feed_input">
+                            <IconButton aria-label="more"> <Avatar src={user.photoUrl}></Avatar> </IconButton> {/* User's Avatar. */}
+                            <form onSubmit={(e) => { e.preventDefault() }}> {/* Form containing input options. */}
+                                <InputBase
+                                    required={true}
+                                    className={classes.caption}
+                                    placeholder="Caption"
+                                    inputProps={{ 'aria-label': 'caption' }}
+                                    value={caption}
+                                    onChange={(e) => setCaption(e.target.value)} // When the input is changed the caption state variable is updated.
+                                />
+                            </form>
+                        </div>
+
+                        <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
+                            {   // To upload an image file.
+                                !inputImg && 
+                                <div className="upload-btn-wrapper"> 
+                                    {/* Add image file input. */}
+                                    <input type="file" name="myfile" id="myFile" accept="image" onChange={handleImageInputChange} style={{ opacity: "0" }} />
+                                    <label htmlFor="myFile">
+                                        <IconButton aria-label="upload image" component="span"> <ImageIcon fontSize="large" /> </IconButton>
+                                    </label>
+                                </div>
+                            }
+
+                            {   // To upload image using camera.
+                                !inputImg && 
+                                <label> 
+                                    <IconButton
+                                        aria-label="open camera"
+                                        component="span"
+                                        onClick={openCamera}
+                                    >
+                                        <PhotoCameraIcon fontSize="large" />
+                                    </IconButton>
+                                </label>
+                            }
+                        </div>
+
+                        {   // Human Detected Error.
+                            show &&
+                            <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+                                <Alert.Heading> Oh snap! Human Detected! </Alert.Heading>
+                                <p> The image uploaded had a Human detected in it! </p>
+                            </Alert>
+                        }
+
+                        {/* Modal to display input image. */}
+                        <Modal
+                            show={inputImg}
+                            onHide={() => { setInputImg(""); }}
+                            keyboard={false}
+                            size="xl"
+                            aria-labelledby="contained-modal-title-vcenter"
+                            centered
+                        >
+                            <Modal.Body>
+                                {
+                                    inputImg && 
+                                    <>
+                                        {
+                                            !loading && cropping &&
+                                            <div> {/* Cropper. */}
+                                                <Cropper
+                                                    style={{ height: 400, width: "100%" }}
+                                                    initialAspectRatio={1}
+                                                    src={inputImg}
+                                                    viewMode={1}
+                                                    guides={true}
+                                                    minCropBoxHeight={10}
+                                                    minCropBoxWidth={10}
+                                                    background={false}
+                                                    responsive={true}
+                                                    autoCropArea={1}
+                                                    checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                                                    onInitialized={(instance) => { setCropper(instance); }}
+                                                />
+                                                <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                                                    <Button color="primary" onClick={getCropData}>Crop Image</Button>
+                                                    <Button onClick={() => { setCropping(false) }}>Continue without cropping</Button>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <br />
+                                    
+                                        {
+                                            inputImg &&
+                                            <div className="photoEditor"> {/* Div in which to view the photo. */}
+                                                <img src={inputImg} className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
+                                                {
+                                                    !loading &&
+                                                    <div>
+                                                        <br /><br />
+                                                        {/* Image edit options. */}
+                                                        <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon />} onClick={handleEditOptionsMenuClick} centered>
+                                                            {editOptions[selectedOptionIndex].name}
+                                                        </Button>
+                                                        <Menu
+                                                            id="simple-menu"
+                                                            anchorEl={anchorEl}
+                                                            keepMounted
+                                                            open={Boolean(anchorEl)}
+                                                            onClose={handleEditOptionsClose}
+                                                        >
+                                                            {
+                                                                editOptions.map((option, index) => {
+                                                                    return (
+                                                                        <MenuItem key={index} onClick={() => { setSelectedOptionIndex(index); setAnchorEl(null) }}>
+                                                                            {option.name}
+                                                                        </MenuItem>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </Menu><br></br>
+
+                                                        {/* Slider to adjust edit values. */}
+                                                        <Slider 
+                                                            min={selectedOption.range.min}
+                                                            max={selectedOption.range.max}
+                                                            value={selectedOption.value}
+                                                            onChange={(event, result) => { handleSliderChange(result) }}
+                                                        />
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </>
+                                }
+
+                                {
+                                    loading && 
+                                    <div> {/* Loading image spinner. */}
+                                        <Spinner animation="border" role="status"></Spinner>
+                                        <span>{'  '}Scanning Image...</span>
+                                    </div>
+                                }
+
+                                {   
+                                    !loading && !cropping && 
+                                    <div className="buttons" style={{ justifyContent: "space-evenly" }}> {/* Editing Done / Cancel button. */}
+                                        <Button variant="contained" onClick={editingDone}>Add Image</Button>
+                                        <Button variant="contained" onClick={editingCancelled}>Cancel</Button>
+                                    </div>
+                                }
+
+                            </Modal.Body>
+                        </Modal>
+
+                        { selectedInputImg && <ImageGallery sliderImages={[selectedInputImg]} /> }
+                        {
+                            selectedInputImg &&
+                            <center style={{ marginTop: "15px" }}> {/* Post button. */}
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.button}
+                                    endIcon={<SendIcon />}
+                                    onClick={sendPost}
+                                >
+                                    <b>Post</b>
+                                </Button>
+                            </center>
+                        }
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     )
 }
