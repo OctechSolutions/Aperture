@@ -927,7 +927,7 @@ function Feed({ match }, props) {
           )}
         </FlipMove>
       </div>
-      {(match.params.channel) && (match.params.id === user.displayName) &&
+      {(((match.params.channel) && (match.params.id === user.displayName)) || (match.path === "/")) &&
         <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
           <AddCircleOutlineIcon className={classes.extendedIcon} />
           {/* <b>New Post</b> */}
