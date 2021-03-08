@@ -36,7 +36,7 @@ function Profile({ match }) {
             .onSnapshot(doc => {
                 if (doc.exists) {
                     setProfileInfo(doc.data()); // profileInfo is set with the data recieved from the db
-                    if (doc.data().friends.some(u => u.name === user.displayName)||(match.params.id===user.displayName)) {
+                    if (doc.data().friends.some(u => u.name === user.displayName) || (match.params.id === user.displayName)) {
                         db.collection("posts") // Posts are fetched from the db
                             .where("name", "==", match.params.id)
                             .orderBy("timestamp", "desc")
@@ -52,7 +52,7 @@ function Profile({ match }) {
                     else {
                         db.collection("posts") // Posts are fetched from the db
                             .where("name", "==", match.params.id)
-                            .where("isPrivate","==",false)
+                            .where("isPrivate", "==", false)
                             .orderBy("timestamp", "desc")
                             .onSnapshot((snapshot) =>
                                 setPosts(
@@ -88,6 +88,20 @@ function Profile({ match }) {
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
             friends: firebase.firestore.FieldValue.arrayUnion({ name: profileInfo.name, photoUrl: profileInfo.photoUrl })
         });
+
+        db.collection("users").doc(profileInfo.name).update({
+            notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "friendRequestAccepted",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl
+            })
+        })
+        db.collection("users").doc(user.displayName).get().then((doc) => {
+            db.collection("users").doc(user.displayName).update({
+                notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequestSent"))
+            })   
+        });
     }
     const cancelfriendRequest = (e) => {
         db.collection("users").doc(profileInfo.name).update({
@@ -95,6 +109,11 @@ function Profile({ match }) {
         });
         db.collection("users").doc(user.displayName).update({
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
+        });
+        db.collection("users").doc(profileInfo.name).get().then((doc) => {
+            db.collection("users").doc(profileInfo.name).update({
+                notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequestSent"))
+            })   
         });
     }
     const rejectfriendRequest = (e) => {
@@ -104,6 +123,19 @@ function Profile({ match }) {
         db.collection("users").doc(user.displayName).update({
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
+        db.collection("users").doc(profileInfo.name).update({
+            notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "friendRequestRejected",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl
+            })
+        })
+        db.collection("users").doc(user.displayName).get().then((doc) => {
+            db.collection("users").doc(user.displayName).update({
+                notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequestSent"))
+            })   
+        });
     }
     const sendfriendRequest = (e) => {
         db.collection("users").doc(profileInfo.name).update({
@@ -112,6 +144,14 @@ function Profile({ match }) {
         db.collection("users").doc(user.displayName).update({
             friendRequestSent: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
         });
+        db.collection("users").doc(profileInfo.name).update({
+            notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "friendRequestSent",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl
+            })
+        })
     }
 
     const unfriend = (e) => {
@@ -121,6 +161,14 @@ function Profile({ match }) {
         db.collection("users").doc(user.displayName).update({
             friends: firebase.firestore.FieldValue.arrayRemove({ name: profileInfo.name, photoUrl: profileInfo.photoUrl })
         });
+        db.collection("users").doc(profileInfo.name).update({
+            notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "friendRequestRemoved",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl
+            })
+        })
     }
     const unBlock = (e) => {
         db.collection("users").doc(profileInfo.name).update({
@@ -143,6 +191,12 @@ function Profile({ match }) {
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
+        db.collection("users").doc(profileInfo.name).get().then((doc) => {
+            db.collection("users").doc(profileInfo.name).update({
+                notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequest"))
+            })   
+        });
+        
     }
 
     const setUserList = (l) =>
@@ -175,7 +229,7 @@ function Profile({ match }) {
     ))
 
     return (
-        <div className="profile" style={{ color: "black", width: "100%", backgroundColor: "whitesmoke"}}>
+        <div className="profile" style={{ color: "black", width: "100%", backgroundColor: "whitesmoke" }}>
             {(profileInfo.blocked && (profileInfo.blocked.includes(user.displayName))) ? <p>{profileInfo.name} has blocked you</p>
                 :
                 ((profileInfo.blockedBy && (profileInfo.blockedBy.includes(user.displayName))) ? <p>You have blocked this user! {<Button onClick={unBlock} variant="success">Unblock : {profileInfo.name}</Button>}</p>
@@ -240,40 +294,40 @@ function Profile({ match }) {
                             fill
                         >
                             <Tab eventKey="posts" title="Posts" style={{ color: "black", width: "100%" }}>
-                                {<FlipMove style={{marginBottom : "70px"}}>
+                                {<FlipMove style={{ marginBottom: "70px" }}>
                                     {posts.map(
                                         ({
                                             id,
                                             data: { name, description, message, photoUrl, photoBase, styleModification, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type },
-                                        }) => 
-                                            ( // Only the posts the current user has made are shown
-                                                <Post
-                                                    key={id}
-                                                    id={id}
-                                                    name={name}
-                                                    description={description}
-                                                    message={message}
-                                                    photoUrl={photoUrl}
-                                                    photoBase={photoBase}
-                                                    styleModification={styleModification}
-                                                    comments={comments}
-                                                    channelBy={channelBy}
-                                                    hasCoordinates={hasCoordinates}
-                                                    lat={lat}
-                                                    lng={lng}
-                                                    viewingUser={user}
-                                                    star={stars}
-                                                    totalStar={totalStars}
-                                                    isPrivate={isPrivate}
-                                                    timestamp={timestamp}
-                                                    isForumPost = {Boolean(type)}
-                                                />
-                                            )  
+                                        }) =>
+                                        ( // Only the posts the current user has made are shown
+                                            <Post
+                                                key={id}
+                                                id={id}
+                                                name={name}
+                                                description={description}
+                                                message={message}
+                                                photoUrl={photoUrl}
+                                                photoBase={photoBase}
+                                                styleModification={styleModification}
+                                                comments={comments}
+                                                channelBy={channelBy}
+                                                hasCoordinates={hasCoordinates}
+                                                lat={lat}
+                                                lng={lng}
+                                                viewingUser={user}
+                                                star={stars}
+                                                totalStar={totalStars}
+                                                isPrivate={isPrivate}
+                                                timestamp={timestamp}
+                                                isForumPost={Boolean(type)}
+                                            />
+                                        )
                                     )}
                                 </FlipMove>
                                 }
                             </Tab>
-                            <Tab eventKey="collections" title="Collections" style={{ color: "black", width: "100%",minHeight: "100%" }}>
+                            <Tab eventKey="collections" title="Collections" style={{ color: "black", width: "100%", minHeight: "100%" }}>
                                 <Collection match={match} user={user} />
                             </Tab>
                             <Tab eventKey="channels" title="Channels" style={{ color: "black", width: "100%" }}>

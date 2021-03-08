@@ -18,8 +18,9 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Tooltip from '@material-ui/core/Tooltip';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import Badge from '@material-ui/core/Badge';
 
-function Header({ setValue }) {
+function Header({ setValue, hasNotifications }) {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -84,7 +85,9 @@ function Header({ setValue }) {
           onClick={() => { history.push("/notifications"); setValue("notifications") }}
         >
           <Tooltip title={"Notifications"} aria-label="notifications">
-            <NotificationsIcon />
+            <Badge color="secondary" badgeContent={hasNotifications} max={10}>
+              <NotificationsIcon />
+            </Badge>
           </Tooltip>
         </IconButton>
         <IconButton
