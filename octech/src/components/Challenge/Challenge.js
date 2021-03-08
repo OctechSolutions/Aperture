@@ -646,6 +646,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                             </form>
                         </div>
 
+                        {/* Image Upload */}
                         <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
                             {   // To upload an image file.
                                 !inputImg && 
@@ -719,7 +720,7 @@ export default function Challenge({user, name, description, hints, creator, crea
 
                                         <br />
                                     
-                                        {
+                                        {   // View image for editing.
                                             inputImg &&
                                             <div className="photoEditor"> {/* Div in which to view the photo. */}
                                                 <img src={inputImg} className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
