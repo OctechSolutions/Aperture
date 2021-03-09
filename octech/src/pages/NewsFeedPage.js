@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Route } from 'react-router-dom';
 import Feed from '../components/Body/Feed/Feed';
 import Header from '../components/Header/Header';
+import Notifications from '../components/Notifications/Notifications';
 import Profile from '../components/userProfile/Profile';
 import Collection from '../components/Collection/Collection';
 import Forums from "../components/Body/Forums/FeedbackForum/Forums";
@@ -30,6 +31,9 @@ import CloseIcon from '@material-ui/icons/Close';
 import LaunchIcon from '@material-ui/icons/Launch';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
+import CommentIcon from '@material-ui/icons/Comment';
+import { green } from '@material-ui/core/colors';
+import moment from 'moment';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const useStyles = makeStyles({
@@ -44,6 +48,10 @@ const useStyles = makeStyles({
         borderTopLeftRadius: "30px",
         borderTopRightRadius: "30px"
     },
+    green: {
+        color: '#fff',
+        backgroundColor: green[500],
+    },
 })
 
 export default function NewsfeedPage(props) {
@@ -52,8 +60,10 @@ export default function NewsfeedPage(props) {
     const user = useSelector(selectUser) // Select current user from slice
     const [value, setValue] = useState("")
     const [hasNotifications, setHasNotifications] = useState(0)
+    const [notifications, setNotifications] = useState([])
     const [lastNotification, setLastNotification] = useState("")
-    const [icon, setIcon] = useState("")
+    const [icon, setIcon] = useState(<></>)
+    const [time, setTime] = useState("")
 
     const handleChange = (event, newValue) => {
         console.log(newValue)
@@ -61,44 +71,70 @@ export default function NewsfeedPage(props) {
         history.push(`/${newValue}`)
     }
 
-    const [open, setOpen] = React.useState(Boolean(hasNotifications));
+    const [openNotification, setOpenNotification] = React.useState(false);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
 
-        setOpen(false);
+        setOpenNotification(false);
     };
 
     useEffect(() => {
-        db.collection("users").doc(user.displayName).onSnapshot(doc => {
-            setHasNotifications(doc.data().notifications.length)
-            setOpen(Boolean(doc.data().notifications.length))
-            if (Boolean(doc.data().notifications.length) && window.location.pathname !== "/notifications") {
-                const notificationInfo = doc.data().notifications[doc.data().notifications.length - 1]
-                if (notificationInfo.type === "friendRequestSent") {
-                    setLastNotification(notificationInfo.sender + " sent you a friend request.")
-                    setIcon(notificationInfo.icon)
+        db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).onSnapshot(doc => {
+            if (doc.exists) {
+
+                setHasNotifications(doc.data().notifications.length)
+                setNotifications(doc.data().notifications)
+                if (hasNotifications !== doc.data().notifications.length) {
+
+                    setOpenNotification(Boolean(doc.data().notifications.length))
+                    if (Boolean(doc.data().notifications.length) && window.location.pathname !== "/notifications") {
+                        const notificationInfo = doc.data().notifications[doc.data().notifications.length - 1]
+                        setTime(moment(notificationInfo.sentAt.toDate()).fromNow())
+                        if (notificationInfo.type === "friendRequestSent") {
+                            setLastNotification(<><b>{notificationInfo.sender}</b> sent you a friend request.</>)
+                            setIcon(<Avatar src={notificationInfo.icon} />)
+                        }
+                        else if (notificationInfo.type === "friendRequestAccepted") {
+                            setLastNotification(<><b>{notificationInfo.sender}</b> accepted your friend request.</>)
+                            setIcon(<Avatar src={notificationInfo.icon} />)
+                        }
+                        else if (notificationInfo.type === "friendRequestRejected") {
+                            setLastNotification(<><b>{notificationInfo.sender}</b> rejected your friend request.</>)
+                            setIcon(<Avatar src={notificationInfo.icon} />)
+                        }
+                        else if (notificationInfo.type === "friendRequestRemoved") {
+                            setLastNotification(<><b>{notificationInfo.sender}</b> unfriended you.</>)
+                            setIcon(<Avatar src={notificationInfo.icon} />)
+                        }
+                        else if (notificationInfo.type === "comment") {
+                            setLastNotification(<><b>{notificationInfo.sender}</b> commented <b>{notificationInfo.comment}</b> on your post titled <b>{notificationInfo.postTitle}</b></>)
+                            setIcon(<Avatar className={classes.green}><CommentIcon fontSize="small" /></Avatar>)
+                        }
+                        else if (notificationInfo.type === "rating") {
+                            var stars = "";
+                            for (var i = 0; i < notificationInfo.stars; i++) {
+                                stars += "★"
+                            }
+                            setLastNotification(<><b>{notificationInfo.sender}</b> gave <b style={{ color: "gold" }}>{stars}</b> to your post titled <b>{notificationInfo.postTitle}</b></>)
+                            setIcon(<Avatar src={notificationInfo.icon} />)
+                        }
+                    }
+                    else {
+                        setOpenNotification(false)
+                    }
                 }
-                else if (notificationInfo.type === "friendRequestAccepted") {
-                    setLastNotification(notificationInfo.sender + " accepted your friend request.")
-                    setIcon(notificationInfo.icon)
-                }
-                else if (notificationInfo.type === "friendRequestRejected") {
-                    setLastNotification(notificationInfo.sender + " rejected your friend request.")
-                    setIcon(notificationInfo.icon)
-                }
-                else if (notificationInfo.type === "friendRequestRemoved") {
-                    setLastNotification(notificationInfo.sender + " unfriended you.")
-                    setIcon(notificationInfo.icon)
-                }
+                // else {
+                //     setOpenNotification(false)
+                // }
             }
             else {
-                setOpen(false)
+                setOpenNotification(false)
             }
         })
-    }, [user.displayName])
+    }, [user.displayName, classes.green, hasNotifications])
 
     return (
         <>
@@ -116,6 +152,7 @@ export default function NewsfeedPage(props) {
                             <Route path="/user/:id/channel/:channel" exact component={Feed} />
                             <Route path="/challenges/:id" exact component={ChallengesPage} />
                             <Route path="/forums" render={props => <Forums setValue={setValue} />} />
+                            <Route path="/notifications" exact render={props => <Notifications notifications={notifications} />} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 {/* <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} /> */}
@@ -152,33 +189,31 @@ export default function NewsfeedPage(props) {
                     vertical: 'top',
                     horizontal: 'right',
                 }}
-                open={open}
+                open={openNotification}
                 autoHideDuration={10000}
                 onClose={handleClose}
                 children={
                     <>
                         <Card>
                             <CardHeader
-                                avatar={
-                                    <Avatar src={icon} />
-                                }
+                                avatar={icon}
                                 action={
                                     <>
-                                        <IconButton  aria-label="close" color="inherit" onClick={() => { handleClose(); history.push("/notifications") }}>
+                                        <IconButton aria-label="close" color="inherit" onClick={() => { handleClose(); history.push("/notifications") }}>
                                             <LaunchIcon />
                                         </IconButton>
-                                        <IconButton  aria-label="close" color="inherit" onClick={handleClose}>
+                                        <IconButton aria-label="close" color="inherit" onClick={handleClose}>
                                             <CloseIcon />
                                         </IconButton>
                                     </>
                                 }
                                 title={lastNotification}
-                                // subheader="September 14, 2016"
+                                subheader={time}
                             />
                         </Card>
                     </>
                 }
-                style={{ top: "75px", width: "450px", marginLeft: "auto" }}
+                style={{ top: "75px", marginLeft: "auto" }}
             />
         </>
     )

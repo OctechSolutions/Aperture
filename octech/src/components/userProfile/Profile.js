@@ -89,18 +89,18 @@ function Profile({ match }) {
             friends: firebase.firestore.FieldValue.arrayUnion({ name: profileInfo.name, photoUrl: profileInfo.photoUrl })
         });
 
-        db.collection("users").doc(profileInfo.name).update({
+        db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).set({
             notifications: firebase.firestore.FieldValue.arrayUnion({
                 type: "friendRequestAccepted",
                 sentAt: firebase.firestore.Timestamp.now(),
                 sender: user.displayName,
                 icon: user.photoUrl
             })
-        })
-        db.collection("users").doc(user.displayName).get().then((doc) => {
-            db.collection("users").doc(user.displayName).update({
+        }, {merge: true})
+        db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).get().then((doc) => {
+            db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
                 notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequestSent"))
-            })   
+            }, {merge: true})   
         });
     }
     const cancelfriendRequest = (e) => {
@@ -110,10 +110,10 @@ function Profile({ match }) {
         db.collection("users").doc(user.displayName).update({
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
-        db.collection("users").doc(profileInfo.name).get().then((doc) => {
-            db.collection("users").doc(profileInfo.name).update({
-                notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequestSent"))
-            })   
+        db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).get().then((doc) => {
+            db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).set({
+                notifications: doc.data().notifications.filter(a => (a.sender === user.displayName) && (a.type === "friendRequestSent")?false:true)
+            }, {merge: true})   
         });
     }
     const rejectfriendRequest = (e) => {
@@ -123,7 +123,7 @@ function Profile({ match }) {
         db.collection("users").doc(user.displayName).update({
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
-        db.collection("users").doc(profileInfo.name).update({
+        db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).update({
             notifications: firebase.firestore.FieldValue.arrayUnion({
                 type: "friendRequestRejected",
                 sentAt: firebase.firestore.Timestamp.now(),
@@ -131,10 +131,10 @@ function Profile({ match }) {
                 icon: user.photoUrl
             })
         })
-        db.collection("users").doc(user.displayName).get().then((doc) => {
-            db.collection("users").doc(user.displayName).update({
+        db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).get().then((doc) => {
+            db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
                 notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequestSent"))
-            })   
+            }, {merge: true})   
         });
     }
     const sendfriendRequest = (e) => {
@@ -144,14 +144,14 @@ function Profile({ match }) {
         db.collection("users").doc(user.displayName).update({
             friendRequestSent: firebase.firestore.FieldValue.arrayUnion(profileInfo.name)
         });
-        db.collection("users").doc(profileInfo.name).update({
+        db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).set({
             notifications: firebase.firestore.FieldValue.arrayUnion({
                 type: "friendRequestSent",
                 sentAt: firebase.firestore.Timestamp.now(),
                 sender: user.displayName,
                 icon: user.photoUrl
             })
-        })
+        }, {merge: true})
     }
 
     const unfriend = (e) => {
@@ -161,14 +161,14 @@ function Profile({ match }) {
         db.collection("users").doc(user.displayName).update({
             friends: firebase.firestore.FieldValue.arrayRemove({ name: profileInfo.name, photoUrl: profileInfo.photoUrl })
         });
-        db.collection("users").doc(profileInfo.name).update({
+        db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).set({
             notifications: firebase.firestore.FieldValue.arrayUnion({
                 type: "friendRequestRemoved",
                 sentAt: firebase.firestore.Timestamp.now(),
                 sender: user.displayName,
                 icon: user.photoUrl
             })
-        })
+        }, {merge: true})
     }
     const unBlock = (e) => {
         db.collection("users").doc(profileInfo.name).update({
@@ -191,10 +191,10 @@ function Profile({ match }) {
             friendRequestSent: firebase.firestore.FieldValue.arrayRemove(profileInfo.name),
             friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(profileInfo.name)
         });
-        db.collection("users").doc(profileInfo.name).get().then((doc) => {
-            db.collection("users").doc(profileInfo.name).update({
+        db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).get().then((doc) => {
+            db.collection("users").doc(profileInfo.name).set({
                 notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequest"))
-            })   
+            }, {merge: true})   
         });
         
     }

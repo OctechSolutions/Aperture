@@ -1,0 +1,316 @@
+import React, { useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardActions from '@material-ui/core/CardActions';
+import { useHistory } from "react-router-dom"
+import CommentIcon from '@material-ui/icons/Comment';
+import { green } from '@material-ui/core/colors';
+import moment from 'moment';
+import { db } from "../../firebase";
+import { useSelector } from "react-redux"
+import { selectUser } from "../../features/userSlice"
+import FlipMove from "react-flip-move";
+import firebase from "firebase";
+import ClearAllIcon from '@material-ui/icons/ClearAll';
+import Fab from '@material-ui/core/Fab';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import CheckIcon from '@material-ui/icons/Check';
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        width: '100%',
+        maxWidth: '80%'
+    },
+    green: {
+        color: '#fff',
+        backgroundColor: green[500],
+    },
+    fab: {
+        top: 'auto',
+        bottom: 65,
+        right: 20,
+        position: 'fixed',
+        zIndex: 999,
+    },
+}));
+
+export default function Notifications({ match, notifications }) {
+    const classes = useStyles();
+    const history = useHistory()
+    const user = useSelector(selectUser)
+    const [open, setOpen] = useState(false);
+    const [message, setMessage] = useState("");
+
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    };
+
+    if (notifications === undefined) {
+        notifications = []
+    }
+
+    var displayFunction = (notificationInfo) => {
+        // const time = moment(notificationInfo.sentAt.toDate()).fromNow()
+        if (notificationInfo.type === "friendRequestSent") {
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar src={notificationInfo.icon} />}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => { history.push(`/user/${notificationInfo.sender}`) }}><><b>{notificationInfo.sender}</b> sent you a friend request.</></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+
+
+                <CardActions>
+                    <Fab variant="extended" style={{ boxShadow: "none" }} onClick={() => {
+                        setMessage(`Added ${notificationInfo.sender} as a friend`)
+                        setOpen(true);
+                        db.collection("users").doc(notificationInfo.sender).update({
+                            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName),
+                            friends: firebase.firestore.FieldValue.arrayUnion({ name: user.displayName, photoUrl: user.photoUrl })
+                        });
+
+                        db.collection("users").doc(user.displayName).update({
+                            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(notificationInfo.sender),
+                            friends: firebase.firestore.FieldValue.arrayUnion({ name: notificationInfo.sender, photoUrl: notificationInfo.icon })
+                        });
+
+                        db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+
+                        db.collection("users").doc(notificationInfo.sender).collection("notifications").doc(notificationInfo.sender).set({
+                            notifications: firebase.firestore.FieldValue.arrayUnion({
+                                type: "friendRequestAccepted",
+                                sentAt: firebase.firestore.Timestamp.now(),
+                                sender: user.displayName,
+                                icon: user.photoUrl
+                            })
+                        }, { merge: true })
+                    }}>
+
+                        <CheckIcon style={{ marginRight: "10px" }} />
+                        <b>Accept</b>
+                    </Fab>
+                    <Fab variant="extended" style={{ boxShadow: "none" }} onClick={() => {
+                        db.collection("users").doc(notificationInfo.sender).update({
+                            friendRequestSent: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+                        });
+                        db.collection("users").doc(user.displayName).update({
+                            friendRequestReceived: firebase.firestore.FieldValue.arrayRemove(notificationInfo.sender)
+                        });
+                        db.collection("users").doc(notificationInfo.sender).collection("notifications").doc(notificationInfo.sender).update({
+                            notifications: firebase.firestore.FieldValue.arrayUnion({
+                                type: "friendRequestRejected",
+                                sentAt: firebase.firestore.Timestamp.now(),
+                                sender: user.displayName,
+                                icon: user.photoUrl
+                            })
+                        })
+                        db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}>
+
+                        <CloseIcon style={{ marginRight: "10px" }} />
+                        <b>Reject</b>
+                    </Fab>
+                </CardActions>
+            </Card>
+        }
+        else if (notificationInfo.type === "friendRequestAccepted") {
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar src={notificationInfo.icon} />}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => { history.push(`/user/${notificationInfo.sender}`) }}><><b>{notificationInfo.sender}</b> accepted your friend request.</></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
+        else if (notificationInfo.type === "friendRequestRejected") {
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar src={notificationInfo.icon} />}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => { history.push(`/user/${notificationInfo.sender}`) }}><><b>{notificationInfo.sender}</b> rejected your friend request.</></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
+        else if (notificationInfo.type === "friendRequestRemoved") {
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar src={notificationInfo.icon} />}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => { history.push(`/user/${notificationInfo.sender}`) }}><><b>{notificationInfo.sender}</b> unfriended you.</></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
+        else if (notificationInfo.type === "comment") {
+            // setLastNotification(<><b>{notificationInfo.sender}</b> commented <b>{notificationInfo.comment}</b> on your post titled <b>{notificationInfo.postTitle}</b></>)
+            // setIcon(<Avatar className={classes.green}><CommentIcon fontSize="small" /></Avatar>)
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar className={classes.green}><CommentIcon fontSize="small" /></Avatar>}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => { history.push(`/post/${notificationInfo.postId}`) }}><><b>{notificationInfo.sender}</b> commented <b>{notificationInfo.comment}</b> on your post titled <b>{notificationInfo.postTitle}</b></></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
+        else if (notificationInfo.type === "rating") {
+            var stars = "";
+            for (var i = 0; i < notificationInfo.stars; i++) {
+
+                stars += "★"
+            }
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar src={notificationInfo.icon} />}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => { history.push(`/post/${notificationInfo.postId}`) }}><><b>{notificationInfo.sender}</b> gave <b style={{ color: "gold" }}>{stars}</b> to your post titled <b>{notificationInfo.postTitle}</b>!</></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
+
+    }
+
+    function objToDate(obj) {
+        let result = new Date(0);
+        result.setSeconds(obj.seconds);
+        result.setMilliseconds(obj.nanoseconds / 1000000);
+        return result;
+    }
+
+
+
+    return (
+        <List className={classes.root}>
+
+            {<FlipMove style={{ marginBottom: "70px" }}
+                staggerDurationBy="50"
+                duration={500}
+            // enterAnimation={this.state.enterLeaveAnimation}
+            // leaveAnimation={this.state.enterLeaveAnimation}
+            >
+                {
+                    notifications.length ?
+                        <>
+                            {notifications.sort((a, b) => {
+                                let bd = objToDate(b.sentAt);
+                                let ad = objToDate(a.sentAt);
+                                return bd - ad
+                            }).map(displayFunction)}
+                            <Fab className={classes.fab} variant="extended" color="primary" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: []
+                                }, { merge: true })
+                            }}>
+                                <b>Clear All</b>
+                                <ClearAllIcon className={classes.extendedIcon} />
+                            </Fab>
+                        </>
+                        :
+                        <center><h1>No New Notifications!</h1></center>
+                }
+            </FlipMove>
+            }
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    {message}
+                </Alert>
+            </Snackbar>
+        </List>
+    )
+}
