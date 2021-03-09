@@ -11,7 +11,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import IconButton from '@material-ui/core/IconButton';
-// import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import ClearIcon from '@material-ui/icons/Clear';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -70,7 +70,7 @@ const Chat = (props) => {
 
     }
     const removeUser = async (user) => {
-        setUsers(users.filter(u => user.name != u.name))
+        setUsers(users.filter(u => user.name !== u.name))
         setShowUsers(false)
         await db.collection("chatRooms").doc(props.id).update({
             participants: firebase.firestore.FieldValue.arrayRemove(user)

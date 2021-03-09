@@ -37,7 +37,14 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import CountUp from 'react-countup';
 import ForumIcon from '@material-ui/icons/Forum';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
-
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Chip from '@material-ui/core/Chip'
+import AddAlarmRoundedIcon from '@material-ui/icons/AddAlarmRounded'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -52,7 +59,7 @@ const useStyles = makeStyles({
 });
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, challenges, isChallengeView }, ref) => {
 
   if (comments === undefined) {
     comments = [];
@@ -343,6 +350,82 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   }
 
+  // Related to CHALLENGES --------------------------------------------------------------------------------------
+  const [challengeNameForm, setChallengeNameForm] = useState(false) 
+  const [challengeName, setChallengeName] = useState("")            
+  const [challengeChips, setChallengeChips] = useState([])  
+  const [challengeCodeTextField, setChallengeNameTextField] = useState(null) // TextField where the CHALLENGE code is to be entered.
+
+  // Function that opens the input form to enter a CHALLENGE code.
+  const handleChallengeNameFormOpen = () => {
+      setChallengeNameForm(true);
+  }
+
+  // Function that closes the input form to enter a CHALLENGE code.
+  const handleChallengeNameFormClose = () => {
+    setChallengeNameForm(false);
+  }
+
+  // Function that pulls a post out of a challenge.
+  const removeChallenge = (challengeName) => {
+    if (user.displayName === name) { // If the user is the admin user, then allow to withdraw from challenge.
+      // Remove this challenge from the challenges list of this post.
+      db.collection("posts").doc(id).update({challenges: firebase.firestore.FieldValue.arrayRemove(challengeName)})
+      .then(() => {
+        console.log("Challenge removed = " + challengeName)
+        updateChallengeChips() // Display updated chllenges.
+      })
+    }
+  }
+
+  // Function that allows a post to participate in a CHALLENGE.
+  const handleChallengeCodeFormSubmit = () => {
+
+    if(challengeCodeTextField) { // Proceed only if the challenge code text field is not null.
+
+      // Check if the code entered is an existing challenge.
+      db.collection("challenges").doc(challengeCodeTextField.value).get()
+      .then((challengeDoc) => {
+        if(!challengeDoc.data()) { // If entered code is invalid then let user know.
+          challengeCodeTextField.value = "Please Enter Valid Challenge Title."
+        } else { // If entered code is valid then ...
+          setChallengeName(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
+          db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
+          .update({challenges : firebase.firestore.FieldValue.arrayUnion(challengeName)})
+          .then(() => { 
+              console.log("Added Challenge = " + challengeName)
+              updateChallengeChips() // Update the challenge chips that are displayed on the post.
+              handleChallengeNameFormClose() 
+          })
+        }
+      })
+    }
+  }
+
+  // Function that populates the challengeChips and challengeNames array the 1st time.
+  const updateChallengeChips = () => {
+    setChallengeChips([]) // Clear existing challengeChips array.
+
+    // Fetch challenge titles of this post.
+    db.collection("posts").doc(id).get()
+    .then((postDoc) => {
+      if(postDoc.data()){
+        let challengeArr = postDoc.data().challenges
+        if(challengeArr) { // If this post has challenges then ...
+          challengeArr.forEach((challengeName) => { 
+            setChallengeChips((prev) => [...prev, <Chip label={challengeName} onDelete={() => removeChallenge(challengeName)}/>]) 
+          })
+        }
+      }
+    })
+  }
+
+  // Update Challenge Chips when component mounted.
+  // eslint-disable-next-line
+  useEffect(() => { updateChallengeChips() }, []);
+
+  // ------------------------------------------------------------------------------------------------------------
+
   return (
     <div ref={ref} className="post" key={id}>
       <div>
@@ -430,8 +513,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
           </div>
           <>
-          </>
-          {
+          </> 
+          { // 3 DOTS MENU.
             ((user.displayName === channelBy) || (user.displayName === name)) &&
             <>
               <IconButton
@@ -452,24 +535,33 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   <ListItemIcon>
                     <DeleteIcon />
                   </ListItemIcon>
-              Delete
-            </MenuItem>
+                  Delete
+                </MenuItem>
                 {(images.length > 0) && !isForumPost &&
                   <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
                     <ListItemIcon>
                       <AddToPhotosIcon />
                     </ListItemIcon>
-                  Add To Portfolio
-                </MenuItem>
+                    Add To Portfolio
+                  </MenuItem>
                 }
                 {(images.length > 0) && (collections.length > 0) && !isForumPost &&
                   <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
                     <ListItemIcon>
                       <AddPhotoAlternateIcon />
                     </ListItemIcon>
-                  Add To Collections
-                </MenuItem>
+                    Add To Collections
+                  </MenuItem>
                 }
+                
+                {/* To enter a challenge. */}
+                <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
+                  <ListItemIcon>
+                    <AddAlarmRoundedIcon />
+                  </ListItemIcon>
+                  Enter Challenge
+                </MenuItem>
+                
               </Menu>
               <Menu
                 anchorEl={addToChannelAnchorEl}
@@ -498,7 +590,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             {
               !isForumPost ?
                 <>
-
                   {showStars ?
                     <IconButton
                       aria-label="stars"
@@ -531,6 +622,35 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                 </>
                 : <div></div>
             }
+
+            {/* Form to input Challenge Code. */}
+            <Dialog open={challengeNameForm} onClose={handleChallengeNameFormClose} aria-labelledby="form-dialog-title">
+              <DialogTitle id="form-dialog-title">Enter Challenge Title</DialogTitle>
+              <DialogContentText style={{padding: "3%"}}>
+                To participate in a challenge, please enter a challenge title.
+              </DialogContentText>
+              <DialogContent>
+                {/* Challenge Code */}
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Challenge Title"
+                    type="text"
+                    fullWidth
+                    required
+                    onChange={(event) => {
+                      setChallengeNameTextField(event.target);
+                      setChallengeName(event.target.value);
+                    }}
+                />
+              </DialogContent>
+              <DialogActions>
+                  <Button onClick={handleChallengeNameFormClose} color="primary"> Cancel </Button>
+                  <Button onClick={handleChallengeCodeFormSubmit} color="primary"> Add </Button>
+              </DialogActions>
+            </Dialog>
+
             <div>
               <IconButton
                 aria-label="comments"
@@ -700,6 +820,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             {snackbarMessage}
           </Alert>
         </Snackbar>
+
+        { challengeChips } {/* Display all challenges that this post is participating in. */}
+        
       </div>
 
     </div>

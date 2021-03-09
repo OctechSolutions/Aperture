@@ -105,6 +105,7 @@ const DEFAULT_EDIT_OPTIONS = [
     unit: 'deg'
   }
 ]
+
 function Feed({ match }, props) {
   const user = useSelector(selectUser);
   const history = useHistory();
@@ -289,7 +290,8 @@ function Feed({ match }, props) {
           lng: lng,
           stars: {},
           totalStars: 0,
-          isPrivate: isPrivatePost
+          isPrivate: isPrivatePost,
+          challenges:[]
         })
       }
       else {
@@ -304,7 +306,8 @@ function Feed({ match }, props) {
           hasCoordinates: false,
           stars: {},
           totalStars: 0,
-          isPrivate: isPrivatePost
+          isPrivate: isPrivatePost,
+          challenges:[]
         })
       }
 
@@ -726,7 +729,6 @@ function Feed({ match }, props) {
                   }
                 </div>
 
-
                 {show &&
                   <Alert variant="danger" onClose={() => setShow(false)} dismissible>
                     <Alert.Heading>Oh snap! Human Detected!</Alert.Heading>
@@ -896,7 +898,7 @@ function Feed({ match }, props) {
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
-              data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type },
+              data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type, challenges },
             }) => (
               <Post
                 key={id}
@@ -918,6 +920,7 @@ function Feed({ match }, props) {
                 timestamp={timestamp}
                 type={type}
                 isForumPost = {Boolean(type)}
+                challenges={challenges}
               >
               </Post>
             )
