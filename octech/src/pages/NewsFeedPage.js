@@ -90,7 +90,7 @@ export default function NewsfeedPage(props) {
                 if (hasNotifications !== doc.data().notifications.length) {
 
                     setOpenNotification(Boolean(doc.data().notifications.length))
-                    if (Boolean(doc.data().notifications.length) && window.location.pathname !== "/notifications") {
+                    if (Boolean(doc.data().notifications.length) && window.location.pathname !== "/notifications" && window.location.pathname !== "/chatRoom") {
                         const notificationInfo = doc.data().notifications[doc.data().notifications.length - 1]
                         setTime(moment(notificationInfo.sentAt.toDate()).fromNow())
                         if (notificationInfo.type === "friendRequestSent") {
@@ -129,6 +129,13 @@ export default function NewsfeedPage(props) {
                             setLastNotification(<><b>{notificationInfo.sender}</b> sent a new message in a group chat</>)
                             setIcon(<Avatar src={notificationInfo.icon} />)
                         }
+                    }
+                    else if(window.location.pathname !== "/notifications") {
+                        db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).get().then((doc) => {
+                            db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                notifications: doc.data().notifications.filter(a => (a.type === "chat") || (a.type === "groupChat")?false:true)
+                            }, {merge: true})   
+                        });
                     }
                     else {
                         setOpenNotification(false)
