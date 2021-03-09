@@ -84,7 +84,11 @@ export default function Notifications({ match, notifications }) {
                             </IconButton>
                         </>
                     }
-                    title={<div onClick={() => { history.push(`/user/${notificationInfo.sender}`) }}><><b>{notificationInfo.sender}</b> sent you a friend request.</></div>}
+                    title={<div onClick={() => {
+                        history.push(`/user/${notificationInfo.sender}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><><b>{notificationInfo.sender}</b> sent you a friend request.</></div>}
                     subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
                 />
 
@@ -163,7 +167,11 @@ export default function Notifications({ match, notifications }) {
                             </IconButton>
                         </>
                     }
-                    title={<div onClick={() => { history.push(`/user/${notificationInfo.sender}`) }}><><b>{notificationInfo.sender}</b> accepted your friend request.</></div>}
+                    title={<div onClick={() => {
+                        history.push(`/user/${notificationInfo.sender}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><><b>{notificationInfo.sender}</b> accepted your friend request.</></div>}
                     subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
                 />
             </Card>
@@ -185,7 +193,11 @@ export default function Notifications({ match, notifications }) {
                             </IconButton>
                         </>
                     }
-                    title={<div onClick={() => { history.push(`/user/${notificationInfo.sender}`) }}><><b>{notificationInfo.sender}</b> rejected your friend request.</></div>}
+                    title={<div onClick={() => {
+                        history.push(`/user/${notificationInfo.sender}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><><b>{notificationInfo.sender}</b> rejected your friend request.</></div>}
                     subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
                 />
             </Card>
@@ -207,7 +219,11 @@ export default function Notifications({ match, notifications }) {
                             </IconButton>
                         </>
                     }
-                    title={<div onClick={() => { history.push(`/user/${notificationInfo.sender}`) }}><><b>{notificationInfo.sender}</b> unfriended you.</></div>}
+                    title={<div onClick={() => {
+                        history.push(`/user/${notificationInfo.sender}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><><b>{notificationInfo.sender}</b> unfriended you.</></div>}
                     subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
                 />
             </Card>
@@ -231,7 +247,11 @@ export default function Notifications({ match, notifications }) {
                             </IconButton>
                         </>
                     }
-                    title={<div onClick={() => { history.push(`/post/${notificationInfo.postId}`) }}><><b>{notificationInfo.sender}</b> commented <b>{notificationInfo.comment}</b> on your post titled <b>{notificationInfo.postTitle}</b></></div>}
+                    title={<div onClick={() => {
+                        history.push(`/post/${notificationInfo.postId}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><><b>{notificationInfo.sender}</b> commented <b>{notificationInfo.comment}</b> on your post titled <b>{notificationInfo.postTitle}</b></></div>}
                     subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
                 />
             </Card>
@@ -258,7 +278,63 @@ export default function Notifications({ match, notifications }) {
                             </IconButton>
                         </>
                     }
-                    title={<div onClick={() => { history.push(`/post/${notificationInfo.postId}`) }}><><b>{notificationInfo.sender}</b> gave <b style={{ color: "gold" }}>{stars}</b> to your post titled <b>{notificationInfo.postTitle}</b>!</></div>}
+                    title={<div onClick={() => {
+                        history.push(`/post/${notificationInfo.postId}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><><b>{notificationInfo.sender}</b> gave <b style={{ color: "gold" }}>{stars}</b> to your post titled <b>{notificationInfo.postTitle}</b>!</></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
+        else if (notificationInfo.type === "chat") {
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar src={notificationInfo.icon} />}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => {
+                        history.push(`/chatRoom`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><><b>{notificationInfo.sender}</b>  sent a new message</></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
+        else if (notificationInfo.type === "groupChat") {
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar src={notificationInfo.icon} />}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => {
+                        history.push(`/chatRoom`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><><b>{notificationInfo.sender}</b> sent a new message in a group chat</></div>}
                     subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
                 />
             </Card>
@@ -287,6 +363,7 @@ export default function Notifications({ match, notifications }) {
                 {
                     notifications.length ?
                         <>
+                            <center><h1>Notifications</h1></center>
                             {notifications.sort((a, b) => {
                                 let bd = objToDate(b.sentAt);
                                 let ad = objToDate(a.sentAt);

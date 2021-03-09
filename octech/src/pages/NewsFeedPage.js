@@ -121,6 +121,14 @@ export default function NewsfeedPage(props) {
                             setLastNotification(<><b>{notificationInfo.sender}</b> gave <b style={{ color: "gold" }}>{stars}</b> to your post titled <b>{notificationInfo.postTitle}</b></>)
                             setIcon(<Avatar src={notificationInfo.icon} />)
                         }
+                        else if (notificationInfo.type === "chat") {
+                            setLastNotification(<><b>{notificationInfo.sender}</b> sent a new message</>)
+                            setIcon(<Avatar src={notificationInfo.icon} />)
+                        }
+                        else if (notificationInfo.type === "groupChat") {
+                            setLastNotification(<><b>{notificationInfo.sender}</b> sent a new message in a group chat</>)
+                            setIcon(<Avatar src={notificationInfo.icon} />)
+                        }
                     }
                     else {
                         setOpenNotification(false)
