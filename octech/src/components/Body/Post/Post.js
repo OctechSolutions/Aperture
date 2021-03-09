@@ -79,6 +79,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarType, setSnackbarType] = useState("");
   const [collections, setCollections] = useState([]);
+  const [commentList, setCommentList] = useState(comments);
   const open = Boolean(anchorEl);
   const classes = useStyles();
 
@@ -105,13 +106,50 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [stars, setStars] = useState((star[viewingUser.uid] === undefined) ? 0 : star[viewingUser.uid]);
   const history = useHistory();
   //TO update the stars after the user has given the stars
-  const updateStars = (e) => {
+  const updateStars = async (e) => {
     let givenStars = parseInt(e.target.value);
     if (givenStars === stars)
       givenStars = 0;
     let newTotalStars = totalStars + (givenStars - stars);
     const post = db.collection("posts").doc(id);
     star[viewingUser.uid] = givenStars;
+    console.log(viewingUser, givenStars, id)
+    // await db.collection("users").doc(name).collection("notifications").doc(name).get().then((doc) => {
+    //   db.collection("users").doc(name).collection("notifications").doc(name).set({
+    //     notifications: doc.data().notifications.filter(a => (a.sender === viewingUser.displayName) && (a.type === "rating") && (a.postId === id) ? false : true)
+    //   }, { merge: true })
+    // }).then(() => {
+    //   if (givenStars > 0) {
+    //     db.collection("users").doc(name).collection("notifications").doc(name).set({
+    //       notifications: firebase.firestore.FieldValue.arrayUnion({
+    //         type: "rating",
+    //         sentAt: firebase.firestore.Timestamp.now(),
+    //         sender: viewingUser.displayName,
+    //         icon: viewingUser.photoUrl,
+    //         stars: givenStars,
+    //         postTitle: message,
+    //         postId: id
+    //       })
+    //     }, { merge: true })
+    //   }
+    // })
+
+    if (givenStars > 0) {
+      db.collection("users").doc(name).collection("notifications").doc(name).set({
+        notifications: firebase.firestore.FieldValue.arrayUnion({
+          type: "rating",
+          sentAt: firebase.firestore.Timestamp.now(),
+          sender: viewingUser.displayName,
+          icon: viewingUser.photoUrl,
+          stars: givenStars,
+          postTitle: message,
+          postId: id
+        })
+      }, { merge: true })
+    }
+    
+    
+
     post.update({ totalStars: newTotalStars, stars: star });
 
     const user = db.collection("users").doc((channelBy !== "") ? channelBy : name);
@@ -175,7 +213,22 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           })
         })
       }
-
+      if (name !== user.displayName) {
+        db.collection("users").doc(name).collection("notifications").doc(name).set({
+          notifications: firebase.firestore.FieldValue.arrayUnion({
+            type: "comment",
+            sentAt: firebase.firestore.Timestamp.now(),
+            sender: user.displayName,
+            icon: user.photoUrl,
+            comment: comment,
+            postTitle: message,
+            postId: id
+          })
+        }, { merge: true })
+      }
+      db.collection("posts").doc(id).onSnapshot((doc) => {
+        setCommentList(doc.data().comments);
+      })
       setComment("");
     }
 
@@ -320,7 +373,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           />
           <br />
           {
-            comments.sort((a, b) => b.number - a.number).map((c) => {
+            commentList.sort((a, b) => b.number - a.number).map((c) => {
               return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
             })
 
@@ -351,14 +404,14 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   }
 
   // Related to CHALLENGES --------------------------------------------------------------------------------------
-  const [challengeNameForm, setChallengeNameForm] = useState(false) 
-  const [challengeName, setChallengeName] = useState("")            
-  const [challengeChips, setChallengeChips] = useState([])  
+  const [challengeNameForm, setChallengeNameForm] = useState(false)
+  const [challengeName, setChallengeName] = useState("")
+  const [challengeChips, setChallengeChips] = useState([])
   const [challengeCodeTextField, setChallengeNameTextField] = useState(null) // TextField where the CHALLENGE code is to be entered.
 
   // Function that opens the input form to enter a CHALLENGE code.
   const handleChallengeNameFormOpen = () => {
-      setChallengeNameForm(true);
+    setChallengeNameForm(true);
   }
 
   // Function that closes the input form to enter a CHALLENGE code.
@@ -370,35 +423,35 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const removeChallenge = (challengeName) => {
     if (user.displayName === name) { // If the user is the admin user, then allow to withdraw from challenge.
       // Remove this challenge from the challenges list of this post.
-      db.collection("posts").doc(id).update({challenges: firebase.firestore.FieldValue.arrayRemove(challengeName)})
-      .then(() => {
-        console.log("Challenge removed = " + challengeName)
-        updateChallengeChips() // Display updated chllenges.
-      })
+      db.collection("posts").doc(id).update({ challenges: firebase.firestore.FieldValue.arrayRemove(challengeName) })
+        .then(() => {
+          console.log("Challenge removed = " + challengeName)
+          updateChallengeChips() // Display updated chllenges.
+        })
     }
   }
 
   // Function that allows a post to participate in a CHALLENGE.
   const handleChallengeCodeFormSubmit = () => {
 
-    if(challengeCodeTextField) { // Proceed only if the challenge code text field is not null.
+    if (challengeCodeTextField) { // Proceed only if the challenge code text field is not null.
 
       // Check if the code entered is an existing challenge.
       db.collection("challenges").doc(challengeCodeTextField.value).get()
-      .then((challengeDoc) => {
-        if(!challengeDoc.data()) { // If entered code is invalid then let user know.
-          challengeCodeTextField.value = "Please Enter Valid Challenge Title."
-        } else { // If entered code is valid then ...
-          setChallengeName(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
-          db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
-          .update({challenges : firebase.firestore.FieldValue.arrayUnion(challengeName)})
-          .then(() => { 
-              console.log("Added Challenge = " + challengeName)
-              updateChallengeChips() // Update the challenge chips that are displayed on the post.
-              handleChallengeNameFormClose() 
-          })
-        }
-      })
+        .then((challengeDoc) => {
+          if (!challengeDoc.data()) { // If entered code is invalid then let user know.
+            challengeCodeTextField.value = "Please Enter Valid Challenge Title."
+          } else { // If entered code is valid then ...
+            setChallengeName(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
+            db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
+              .update({ challenges: firebase.firestore.FieldValue.arrayUnion(challengeName) })
+              .then(() => {
+                console.log("Added Challenge = " + challengeName)
+                updateChallengeChips() // Update the challenge chips that are displayed on the post.
+                handleChallengeNameFormClose()
+              })
+          }
+        })
     }
   }
 
@@ -408,16 +461,16 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
     // Fetch challenge titles of this post.
     db.collection("posts").doc(id).get()
-    .then((postDoc) => {
-      if(postDoc.data()){
-        let challengeArr = postDoc.data().challenges
-        if(challengeArr) { // If this post has challenges then ...
-          challengeArr.forEach((challengeName) => { 
-            setChallengeChips((prev) => [...prev, <Chip label={challengeName} onDelete={() => removeChallenge(challengeName)}/>]) 
-          })
+      .then((postDoc) => {
+        if (postDoc.data()) {
+          let challengeArr = postDoc.data().challenges
+          if (challengeArr) { // If this post has challenges then ...
+            challengeArr.forEach((challengeName) => {
+              setChallengeChips((prev) => [...prev, <Chip label={challengeName} onDelete={() => removeChallenge(challengeName)} />])
+            })
+          }
         }
-      }
-    })
+      })
   }
 
   // Update Challenge Chips when component mounted.
@@ -513,7 +566,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
           </div>
           <>
-          </> 
+          </>
           { // 3 DOTS MENU.
             ((user.displayName === channelBy) || (user.displayName === name)) &&
             <>
@@ -553,7 +606,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                     Add To Collections
                   </MenuItem>
                 }
-                
+
                 {/* To enter a challenge. */}
                 <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
                   <ListItemIcon>
@@ -561,7 +614,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   </ListItemIcon>
                   Enter Challenge
                 </MenuItem>
-                
+
               </Menu>
               <Menu
                 anchorEl={addToChannelAnchorEl}
@@ -626,28 +679,28 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             {/* Form to input Challenge Code. */}
             <Dialog open={challengeNameForm} onClose={handleChallengeNameFormClose} aria-labelledby="form-dialog-title">
               <DialogTitle id="form-dialog-title">Enter Challenge Title</DialogTitle>
-              <DialogContentText style={{padding: "3%"}}>
+              <DialogContentText style={{ padding: "3%" }}>
                 To participate in a challenge, please enter a challenge title.
               </DialogContentText>
               <DialogContent>
                 {/* Challenge Code */}
                 <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Challenge Title"
-                    type="text"
-                    fullWidth
-                    required
-                    onChange={(event) => {
-                      setChallengeNameTextField(event.target);
-                      setChallengeName(event.target.value);
-                    }}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Challenge Title"
+                  type="text"
+                  fullWidth
+                  required
+                  onChange={(event) => {
+                    setChallengeNameTextField(event.target);
+                    setChallengeName(event.target.value);
+                  }}
                 />
               </DialogContent>
               <DialogActions>
-                  <Button onClick={handleChallengeNameFormClose} color="primary"> Cancel </Button>
-                  <Button onClick={handleChallengeCodeFormSubmit} color="primary"> Add </Button>
+                <Button onClick={handleChallengeNameFormClose} color="primary"> Cancel </Button>
+                <Button onClick={handleChallengeCodeFormSubmit} color="primary"> Add </Button>
               </DialogActions>
             </Dialog>
 
@@ -789,7 +842,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             />
             <br />
             {
-              comments.sort((a, b) => b.number - a.number).map((c) => {
+              commentList.sort((a, b) => b.number - a.number).map((c) => {
                 return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
               })
 
@@ -821,8 +874,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </Alert>
         </Snackbar>
 
-        { challengeChips } {/* Display all challenges that this post is participating in. */}
-        
+        {challengeChips} {/* Display all challenges that this post is participating in. */}
+
       </div>
 
     </div>

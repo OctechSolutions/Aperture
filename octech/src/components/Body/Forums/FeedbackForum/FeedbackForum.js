@@ -322,7 +322,7 @@ function FeedbackForum({ match }, props) {
                 </form>
               </div>
               <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
-                {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
+                {!inputImg && !showEditMap && sliderImages.length < 1 && <div className="upload-btn-wrapper">
                   <input type="file" name="myfile" id="myFile" accept="image/*" onChange={handleChange} style={{ opacity: "0" }} />
                   <label htmlFor="myFile">
                     <IconButton
