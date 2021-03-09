@@ -49,15 +49,18 @@ export default function ChallengesPage() {
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
                     let data = doc.data() // data = a single challenge object.
-
+                    console.log("challenge doc data = " + data.name)
                     // Display only if ...
-                    if(!data.isPrivate || // The challenge is not private.
+                    if( 
+                        !data.isPrivate || // The challenge is not private.
                         data.creator === userName || // The user is the creator of the challenge.
-                        Object.keys(data.invitees).includes(userName)){ // The user was invited to this challenge.
+                        Object.keys(data.invitees).includes(userName) // The user was invited to this challenge.
+                    ){ 
                         setChallenges((prevArr) => // Create a Challenge object and add to the list of challenges. 
                             [
                                 ...prevArr, 
                                 <Challenge
+                                    key={doc.id}
                                     user={user}
                                     name={data.name}
                                     description={data.description}
@@ -120,7 +123,8 @@ export default function ChallengesPage() {
                         name: challengeName,
                         leader: "",
                         startDate: challengeStartDate.toDateString(),
-                        endDate: challengeEndDate.toDateString()
+                        endDate: challengeEndDate.toDateString(),
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }
             
                     db.collection("challenges").doc(challengeName).set(newChallenge)

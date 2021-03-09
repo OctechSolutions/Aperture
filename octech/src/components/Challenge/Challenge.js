@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from 'react'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 import { Link } from "react-router-dom"
 import { useHistory } from "react-router-dom"
-
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
 import Spinner from 'react-bootstrap/Spinner'
+import Camera, { FACING_MODES } from "react-html5-camera-photo"
 
 import './Challenge.css'
 
 import Post from "../Body/Post/Post"
+import ChallengePost from "./ChallengePost"
 
 import firebase from "firebase"
 import { db, storage } from "../../firebase"
@@ -35,11 +36,12 @@ import InputBase from '@material-ui/core/InputBase'
 import Cropper from "react-cropper"
 import Slider from '@material-ui/core/Slider'
 import ImageGallery from "../Body/Feed/ImageGallery"
+import MuiAlert from '@material-ui/lab/Alert'
+import Snackbar from '@material-ui/core/Snackbar'
+import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
 
 import DeleteIcon from '@material-ui/icons/Delete'
-import IconButton from '@material-ui/core/IconButton'
-import Snackbar from '@material-ui/core/Snackbar'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import CallMadeIcon from '@material-ui/icons/CallMade'
@@ -157,38 +159,28 @@ export default function Challenge({user, name, description, hints, creator, crea
     const loadChallengeEntries = () => {
         setEntries([])
         // Add all posts that have this challenge in its challenges list to entries array.
-        db.collection("posts").get()
+        db.collection("challengePosts").get()
         .then((postDocArr) => {
             postDocArr.forEach((postDoc) => {
-                let postChallenges = postDoc.data().challenges
-                if(postChallenges) {
-                    if(postChallenges.includes(name)){
-                        // console.log(postDoc.data())
+                let postChallenge = postDoc.data().challenge
+                if(postChallenge) {
+                    if(postChallenge == name){
+                        //console.log("postDoc.data() = " + postDoc.data().ref)
                         setEntries((prev) => [
                             ...prev,
-                            <Post
-                                key={postDoc.id}
-                                id={postDoc.id}
-                                name={postDoc.data().name}
-                                description={postDoc.data().description}
-                                message={postDoc.data().message}
-                                photoUrl={postDoc.data().photoUrl}
-                                largeGifs={postDoc.data().largeGifs}
-                                comments={postDoc.data().comments}
-                                hasCoordinates={postDoc.data().hasCoordinates}
-                                lat={postDoc.data().lat}
-                                lng={postDoc.data().lng}
-                                channelBy={postDoc.data().channelBy}
-                                viewingUser={user}
-                                star={postDoc.data().stars}
-                                totalStar={postDoc.data().totalStars}
-                                isPrivate={postDoc.data().isPrivate}
+                            <ChallengePost
+                                key={postDoc.data().ref}
+                                user={user}
+                                caption={postDoc.data().caption}
+                                challengePoints={postDoc.data().challengePoints}
+                                creator={postDoc.data().creator}
+                                creatorPhotoUrl={postDoc.data().creatorPhotoUrl}
+                                imageSrc={postDoc.data().imageSrc}
+                                style={postDoc.data().style}
                                 timestamp={postDoc.data().timestamp}
-                                type={postDoc.data().type}
-                                isForumPost = {Boolean(postDoc.data().type)}
-                                challenges={postChallenges}
-                            >
-                            </Post>
+                                id={postDoc.data().ref}
+                                loadChallengeEntries={loadChallengeEntries}
+                            ></ChallengePost>
                         ])
                     }
                 }
@@ -235,39 +227,44 @@ export default function Challenge({user, name, description, hints, creator, crea
         }
     ]
 
-    const [caption, setCaption] = useState("");
-    const [profileInfo, setProfileInfo] = useState("");
+    const [caption, setCaption] = useState("")
     const [, setFile] = useState(null)
-    const [inputImg, setInputImg] = useState("");
-    const [selectedInputImg, setSelectedInputImg] = useState({});
-    const [inputImgs, setInputImgs] = useState([]);
-    const [posts, setPosts] = useState([]);
-    const [cameraActive, setCameraActive] = useState("");
-    const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS);
-    const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
-    const selectedOption = editOptions[selectedOptionIndex];
-    const [sliderImages, setSliderImages] = useState([]);
-    const [largeImages, setLargeImages] = useState([]);
-    const [, setNohuman] = useState(false);
-    const [show, setShow] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [showEditMap, setShowEditMap] = useState(false);
-    const [lat, setLat] = useState(25.1972);
-    const [lng, setLng] = useState(55.2744);
-    const [coordinatesSelected, setCoordinatesSelected] = useState(false);
-    const [isPrivatePost, setIsPrivatePost] = useState(false);
-    const [showFollowers, setShowFollowers] = useState(false);
-    const [showPostComponent, setShowPostComponent] = useState(false);
+    const [inputImg, setInputImg] = useState("")
+    const [selectedInputImg, setSelectedInputImg] = useState({})
+    const [cameraActive, setCameraActive] = useState("")
+    const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS)
+    const [selectedOptionIndex, setSelectedOptionIndex] = useState(0)
+    const selectedOption = editOptions[selectedOptionIndex]
+    const [, setNohuman] = useState(false)
+    const [show, setShow] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [isPrivatePost, setIsPrivatePost] = useState(false)
+    const [showPostComponent, setShowPostComponent] = useState(false)
 
-    const [channelInfo, setChannelInfo] = useState("")
+    const cocoSsd = require('@tensorflow-models/coco-ssd')
 
-    const cocoSsd = require('@tensorflow-models/coco-ssd');
+    const [cropper, setCropper] = useState("")
+    const [cropping, setCropping] = useState(false)
+    const [anchorEl, setAnchorEl] = useState(null)
+    const [openSnackbar, setOpenSnackbar] = useState(false)
 
-    const [cropper, setCropper] = useState("");
-    const [cropping, setCropping] = useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const Compress = require('compress.js')
 
-    const Compress = require('compress.js');
+    // Function to open the post added snackbar.
+    const handleSnackbarOpen = () => {
+        setOpenSnackbar(true)
+    }
+
+    // Function to close the post added snackbar.
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') { return }
+        setOpenSnackbar(false)
+    }
+
+    // Function related to the snackbar.
+    function Alert(props) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
 
     // Function resets all state variables to blank.
     const resetVals = () => {
@@ -346,9 +343,52 @@ export default function Challenge({user, name, description, hints, creator, crea
 
     // Function that opens a camera.
     const openCamera = (e) => { // On clicking the camera button this function is called
-        e.preventDefault();
-        setCameraActive("active"); // The camera state is set to active which renders the camera component 
+        e.preventDefault()
+        setCameraActive("active") // The camera state is set to active which renders the camera component 
     }
+
+    // Function that closes the camera.
+    const closeCamera = (e) => { 
+        setCameraActive("") // Setting this to an empty state stops the rendering of the camera component.
+    }
+
+    // Handle taking photo with camera.
+    async function handleTakePhoto(dataUri) { 
+        // console.log(dataUri);
+        setInputImg(dataUri)
+        setCameraActive("");
+        setLoading(true);
+        await inputImg;
+        cocoSsd.load().then((model) => {
+    
+            // detect objects in the image.
+        
+            const img = document.getElementById("img")
+            model.detect(img).then((predictions) => {
+        
+                console.log("Predictions: ", predictions)
+                if (predictions.length) {
+                predictions.forEach((prediction) => {
+                    if (prediction.class === "person") {
+                    setInputImg("")
+                    console.log("HUMAN DETECTED!!!")
+                    setShow(true)
+                    }
+                    else {
+                    setNohuman(true)
+                    }
+                })
+                }
+                else {
+                setNohuman(true)
+                }
+                setLoading(false)
+                setCropping(true)
+            })
+        })
+    }
+
+
 
     // Function that deals with changes when the image edit slider is changed.
     const handleSliderChange = (value) => {
@@ -390,10 +430,6 @@ export default function Challenge({user, name, description, hints, creator, crea
                 src: inputImg,
                 style: getImageStyle()
             })
-            // setSliderImages(sliderImages.concat({
-            //     src: inputImg,
-            //     style: getImageStyle()
-            // }))
             setInputImg("")
             setEditOptions(DEFAULT_EDIT_OPTIONS)
         }
@@ -417,39 +453,12 @@ export default function Challenge({user, name, description, hints, creator, crea
                 challengePoints: 0,
                 challenge: name,
                 ref:ref.id
+            }).then(() => {
+                setLoadEntries(true)
+                handleSnackbarOpen()
+                resetVals()
             })
-
-            resetVals()
         }
-
-        // if (sliderImages.length) {
-        //     const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
-        //     ref.set({ // This adds a new post to the database
-        //         name: user.displayName,
-        //         description: user.email,
-        //         message: caption,
-        //         photoUrl: user.photoUrl || "",
-        //         largeGifs: largeImages,
-        //         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        //         channelBy: isAdmin ? user.displayName : "",
-        //         hasCoordinates: false,
-        //         stars: {},
-        //         totalStars: 0,
-        //         isPrivate: isPrivatePost,
-        //         challenges:[]
-        //     })
-
-        //     sliderImages.forEach((image) => {
-        //         console.log(image, "added to db");
-        //         db.collection('postImages').doc().set({
-        //             url: image.src,
-        //             styleModification: image.style,
-        //             ref: ref.id
-        //         })
-        //     })
-        
-        //     resetVals()
-        // }
     }
 
     // Opens the edit options drop down list.
@@ -465,7 +474,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     // -----------------------------------------------------------------
 
     useEffect(() => {
-        if(loadEntries) { loadChallengeEntries(); setLoadEntries(false)}
+        if(loadEntries) { loadChallengeEntries(); setLoadEntries(false); resetVals() }
     }, [loadEntries])
 
     return (
@@ -671,6 +680,32 @@ export default function Challenge({user, name, description, hints, creator, crea
                                     </IconButton>
                                 </label>
                             }
+
+                            <Modal
+                                show={Boolean(cameraActive)}
+                                onHide={() => { setCameraActive("") }}
+                                keyboard={false}
+                                size="xl"
+                                aria-labelledby="contained-modal-title-vcenter"
+                                centered
+                            >
+                                <Modal.Body>
+                                    {
+                                        cameraActive &&
+                                        <div className="camera">
+                                            <br></br>
+                                            <Camera // Camera API
+                                                isImageMirror={false}
+                                                onTakePhoto={(dataUri) => { handleTakePhoto(dataUri) }}
+                                                idealFacingMode={FACING_MODES.ENVIRONMENT}
+                                                imageCompression={0.97}
+                                            />
+                                            <button onClick={closeCamera}>Close Camera</button>
+                                        </div>
+                                    }
+                                </Modal.Body>
+                            </Modal>
+
                         </div>
 
                         {   // Human Detected Error.
@@ -801,6 +836,13 @@ export default function Challenge({user, name, description, hints, creator, crea
                     </div>
                 </Modal.Body>
             </Modal>
+            
+            {/* Post added success message alert! */}
+            <Snackbar open={openSnackbar} autoHideDuration={5000} onClose={handleSnackbarClose}>
+                <Alert onClose={handleSnackbarClose} severity="success">
+                    Post added to challenge "{name}" :) !
+                </Alert>
+            </Snackbar>
         </div>
     )
 }
