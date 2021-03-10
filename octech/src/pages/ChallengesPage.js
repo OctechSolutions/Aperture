@@ -114,6 +114,7 @@ export default function ChallengesPage() {
                 }
                 else{
                     let newChallenge = {
+                        key: challengeDoc.id,
                         creator: user.displayName,
                         creatorPhotoUrl: user.photoUrl,
                         description: challengeDescription,

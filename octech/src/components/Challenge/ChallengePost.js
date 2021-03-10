@@ -63,24 +63,7 @@ export default function ChallengePost({user, caption, challengePoints, creator, 
 
     // Like unlike post.
     const likeUnlike = () => {
-      if(!liked) { // If this user has not yet liked the post, then like it.
-        setLiked(true)
-        setPostChallengePoints((prev) => prev+1)
-        db.collection("challengePosts").doc(id).get()
-        .then((challengePostDoc) => {
-          let curChallengePoints = challengePostDoc.data().challengePoints
-          db.collection("challengePosts").doc(id).update({challengePoints: (curChallengePoints+1)})
-        })
-      } 
-      else { // If this user has already liked the post, then unlike it.
-        setLiked(false)
-        setPostChallengePoints((prev) => prev-1)
-        db.collection("challengePosts").doc(id).get()
-        .then((challengePostDoc) => {
-          let curChallengePoints = challengePostDoc.data().challengePoints
-          db.collection("challengePosts").doc(id).update({challengePoints: (curChallengePoints-1)})
-        })
-      } 
+      console.log("Like / Unlike!") 
     }
 
     return (

@@ -135,15 +135,10 @@ export default function Challenge({user, name, description, hints, creator, crea
         db.collection("challenges").doc(name).delete().then(() => setLoadChallenges(true))
         
         // Delete this challenge from list of challenges of all participating posts.
-        db.collection("posts").get().then((snapShot) => { 
+        db.collection("challengePosts").where("challenge", "==", name)
+        .get().then((snapShot) => { 
             snapShot.forEach((postDoc) => {
-                let challenges = postDoc.data().challenges
-                if(challenges){
-                    if(challenges.includes(name)) {
-                        db.collection("posts").doc(postDoc.id).update({challenges: firebase.firestore.FieldValue.arrayRemove(name)})
-                        .then(() => console.log("Challenge deleted = " + name))
-                    }
-                }
+                if(postDoc) { db.collection("challengePosts").doc(postDoc.id).delete() }
             })
         })
     }
@@ -388,8 +383,6 @@ export default function Challenge({user, name, description, hints, creator, crea
         })
     }
 
-
-
     // Function that deals with changes when the image edit slider is changed.
     const handleSliderChange = (value) => {
         setEditOptions(prevEditOptions => {
@@ -444,6 +437,7 @@ export default function Challenge({user, name, description, hints, creator, crea
         if (selectedInputImg !== {}) {
             const ref = db.collection('challengePosts').doc() // A reference to the next entry to the database is created in advance.
             ref.set({ // This adds a new post to the database.
+                key: ref.id,
                 caption: caption,
                 imageSrc: selectedInputImg.src,
                 style: selectedInputImg.style,
@@ -452,7 +446,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 challengePoints: 0,
                 challenge: name,
-                ref:ref.id
+                ref: ref.id
             }).then(() => {
                 setLoadEntries(true)
                 handleSnackbarOpen()
@@ -840,7 +834,7 @@ export default function Challenge({user, name, description, hints, creator, crea
             {/* Post added success message alert! */}
             <Snackbar open={openSnackbar} autoHideDuration={5000} onClose={handleSnackbarClose}>
                 <Alert onClose={handleSnackbarClose} severity="success">
-                    Post added to challenge "{name}" :) !
+                    Post added to challenge "{name}" :)
                 </Alert>
             </Snackbar>
         </div>
