@@ -87,7 +87,6 @@ function Channels({ profileName }) {
             .then(() => {
                 // window.location.reload();
             });
-        console.log(channel.data());
         db.collection("posts").where("name", "==", channel.data().name).get().then((a) => {
             a.forEach((b) => {
                 console.log(b.id)
