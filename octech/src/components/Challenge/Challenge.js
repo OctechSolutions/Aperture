@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
 import Spinner from 'react-bootstrap/Spinner'
 import Camera, { FACING_MODES } from "react-html5-camera-photo"
+import Countdown from 'react-countdown'
 
 import './Challenge.css'
 
@@ -69,6 +70,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     const [entries, setEntries] = useState([])
     const [loadEntries, setLoadEntries] = useState(true)
     const [openOverlay, setOpenOverlay] = useState(false) // For entries overlay.
+    const [challengeComplete, setChallengeComplete] = useState(false)
     
     const useStyles = makeStyles(
         (theme) => ({
@@ -106,8 +108,9 @@ export default function Challenge({user, name, description, hints, creator, crea
     const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds)) // For sleep functionality. Reference = https://flaviocopes.com/javascript-sleep/
     const { vertical, horizontal, openCopiedMessage } = showCopiedMessage // Related to copied message popup.
     const Transition = React.forwardRef(function Transition(props, ref) { // For entries overlay.
-        return <Slide direction="up" ref={ref} {...props} />;
+        return <Slide direction="up" ref={ref} {...props} />
     })
+    const endDateObj = new Date(endDate) // Date object from the endDate string passed.
 
     // Function to close the 3 dots menu.
     const handleMenuClose = () => {
@@ -153,6 +156,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     // Funtion that loads all the posts participating in this challenge.
     const loadChallengeEntries = () => {
         setEntries([])
+
         // Add all posts that have this challenge in its challenges list to entries array.
         db.collection("challengePosts").orderBy('timestamp', 'desc').get()
         .then((postDocArr) => {
@@ -181,6 +185,15 @@ export default function Challenge({user, name, description, hints, creator, crea
                 }
             })
         })
+    }
+
+    // To properly format the countdown clock.
+    const countdownRenderer = ({days, hours, minutes, seconds, completed}) => {
+        if(completed) { 
+            setChallengeComplete(true)
+            return "Challenge Ended!" 
+        }
+        else { return days + " days : " + hours + " hrs : " + minutes + " mins : " + seconds + " secs" }
     }
 
     // For NEW POST ----------------------------------------------------
@@ -242,6 +255,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     const [cropping, setCropping] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
     const [openSnackbar, setOpenSnackbar] = useState(false)
+    const [openCaptionError, setOpenCaptionError] = useState(false)
 
     const Compress = require('compress.js')
 
@@ -432,26 +446,29 @@ export default function Challenge({user, name, description, hints, creator, crea
     const sendPost = async (e) => { 
         e.preventDefault() // This is to prevent the default behaviour of submitting a form.
         
-        console.log("selectedInputImg = " + selectedInputImg)
-        
-        if (selectedInputImg !== {}) {
-            const ref = db.collection('challengePosts').doc() // A reference to the next entry to the database is created in advance.
-            ref.set({ // This adds a new post to the database.
-                key: ref.id,
-                caption: caption,
-                imageSrc: selectedInputImg.src,
-                style: selectedInputImg.style,
-                creator: creator,
-                creatorPhotoUrl: creatorPhotoUrl || "",
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                challengePoints: 0,
-                challenge: name,
-                ref: ref.id
-            }).then(() => {
-                setLoadEntries(true)
-                handleSnackbarOpen()
-                resetVals()
-            })
+        // If the post does not have a caption, then ask user to enter one.
+        if (caption===""){ setOpenCaptionError(true) }
+
+        else {
+            if (selectedInputImg !== {}) {
+                const ref = db.collection('challengePosts').doc() // A reference to the next entry to the database is created in advance.
+                ref.set({ // This adds a new post to the database.
+                    key: ref.id,
+                    caption: caption,
+                    imageSrc: selectedInputImg.src,
+                    style: selectedInputImg.style,
+                    creator: creator,
+                    creatorPhotoUrl: creatorPhotoUrl || "",
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    challengePoints: 0,
+                    challenge: name,
+                    ref: ref.id
+                }).then(() => {
+                    setLoadEntries(true)
+                    handleSnackbarOpen()
+                    resetVals()
+                })
+            }
         }
     }
 
@@ -581,14 +598,18 @@ export default function Challenge({user, name, description, hints, creator, crea
             {/* CHALLENGE DESRIPTION + HINTS + CHALLENGE CODE + VIEW ENTRIES. */}
             <div className="challenge_body">
                 <p><b>Description</b><br />{ description }</p>
-                <p><b>Hints</b><br />{ hints.toString().replaceAll(",", ", ") }</p>             
-                <p><b>Duration: </b>{ startDate } to { endDate }</p>
-
+                { (hints!=",,") && <p><b>Hints</b><br />{ hints.toString().replaceAll(",", ", ") }</p> }       
+                <p><b>Duration</b><br />{ startDate } - { endDate }</p>
+                <p><b>Countdown to Challenge End</b></p>
+                <Countdown date={Date.now() + (endDateObj - Date.now())} renderer={countdownRenderer} />
                 {/* Add new post to challenge and view entries button. */}
                 <div className="buttons" style={{display:"flex", justifyContent:"space-evenly"}}>
-                    <IconButton aria-label="addPostToChallenge" color="primary" onClick={() => { setShowPostComponent(true) }}>
-                        <AddCircleOutlineIcon fontSize="large" />
-                    </IconButton>
+                    {   // Display option to add to a challenge only if its not completed yet.
+                        !challengeComplete &&
+                        <IconButton aria-label="addPostToChallenge" color="primary" onClick={() => { setShowPostComponent(true) }}>
+                            <AddCircleOutlineIcon fontSize="large" />
+                        </IconButton>
+                    }
                     <IconButton aria-label="viewEntries" color="primary" onClick={ handleOverlayClickOpen }>
                         <VisibilityIcon fontSize="large"/>
                     </IconButton>
@@ -639,7 +660,6 @@ export default function Challenge({user, name, description, hints, creator, crea
                             <IconButton aria-label="more"> <Avatar src={user.photoUrl}></Avatar> </IconButton> {/* User's Avatar. */}
                             <form onSubmit={(e) => { e.preventDefault() }}> {/* Form containing input options. */}
                                 <InputBase
-                                    required={true}
                                     className={classes.caption}
                                     placeholder="Caption"
                                     inputProps={{ 'aria-label': 'caption' }}
@@ -836,6 +856,13 @@ export default function Challenge({user, name, description, hints, creator, crea
             <Snackbar open={openSnackbar} autoHideDuration={5000} onClose={handleSnackbarClose}>
                 <Alert onClose={handleSnackbarClose} severity="success">
                     Post added to challenge "{name}" :)
+                </Alert>
+            </Snackbar>
+        
+            {/* Post must have a caption error message! */}
+            <Snackbar open={openCaptionError} autoHideDuration={6000} onClose={() => setOpenCaptionError(false)}>
+                <Alert onClose={() => setOpenCaptionError(false)} severity="error">
+                    Post must have an awesome Caption!
                 </Alert>
             </Snackbar>
         </div>
