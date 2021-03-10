@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from "react-redux" // Related to routing.
 import { selectUser } from "../features/userSlice" // Related to routing.
 
-// import firebase from "firebase"
+import firebase from "firebase"
 import { db } from "../firebase"
 import Challenge from '../components/Challenge/Challenge'
 
@@ -45,19 +45,22 @@ export default function ChallengesPage() {
         if(loadChallenges) { // If challenges are to be loaded, then load them.
             setChallenges([]) // Set challenges to an empty array.
 
-            db.collection('challenges').get() // Get challenges from db.
+            db.collection('challenges').orderBy("timestamp", "desc").get() // Get challenges from db.
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
                     let data = doc.data() // data = a single challenge object.
-
+                    console.log("challenge doc data = " + data.name)
                     // Display only if ...
-                    if(!data.isPrivate || // The challenge is not private.
+                    if( 
+                        !data.isPrivate || // The challenge is not private.
                         data.creator === userName || // The user is the creator of the challenge.
-                        Object.keys(data.invitees).includes(userName)){ // The user was invited to this challenge.
+                        Object.keys(data.invitees).includes(userName) // The user was invited to this challenge.
+                    ){ 
                         setChallenges((prevArr) => // Create a Challenge object and add to the list of challenges. 
                             [
                                 ...prevArr, 
                                 <Challenge
+                                    key={doc.id}
                                     user={user}
                                     name={data.name}
                                     description={data.description}
@@ -111,6 +114,7 @@ export default function ChallengesPage() {
                 }
                 else{
                     let newChallenge = {
+                        key: challengeDoc.id,
                         creator: user.displayName,
                         creatorPhotoUrl: user.photoUrl,
                         description: challengeDescription,
@@ -120,7 +124,8 @@ export default function ChallengesPage() {
                         name: challengeName,
                         leader: "",
                         startDate: challengeStartDate.toDateString(),
-                        endDate: challengeEndDate.toDateString()
+                        endDate: challengeEndDate.toDateString(),
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }
             
                     db.collection("challenges").doc(challengeName).set(newChallenge)
