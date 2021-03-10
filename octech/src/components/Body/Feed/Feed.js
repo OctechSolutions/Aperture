@@ -290,7 +290,7 @@ function Feed({ match }, props) {
           stars: {},
           totalStars: 0,
           isPrivate: isPrivatePost,
-          challenges:[]
+          challenges: []
         })
       }
       else {
@@ -306,7 +306,7 @@ function Feed({ match }, props) {
           stars: {},
           totalStars: 0,
           isPrivate: isPrivatePost,
-          challenges:[]
+          challenges: []
         })
       }
 
@@ -918,7 +918,7 @@ function Feed({ match }, props) {
                 isPrivate={isPrivate}
                 timestamp={timestamp}
                 type={type}
-                isForumPost = {Boolean(type)}
+                isForumPost={Boolean(type)}
                 challenges={challenges}
               >
               </Post>
@@ -926,10 +926,12 @@ function Feed({ match }, props) {
           )}
         </FlipMove>
       </div>
-      <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
-        <AddCircleOutlineIcon className={classes.extendedIcon} />
-        {/* <b>New Post</b> */}
-      </Fab>
+      {(((match.params.channel) && (match.params.id === user.displayName)) || (match.path === "/")) &&
+        <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
+          <AddCircleOutlineIcon className={classes.extendedIcon} />
+          {/* <b>New Post</b> */}
+        </Fab>
+      }
     </>
   );
 }

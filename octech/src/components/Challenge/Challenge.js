@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 import { Link } from "react-router-dom"
 import { useHistory } from "react-router-dom"
@@ -13,7 +13,7 @@ import Post from "../Body/Post/Post"
 import ChallengePost from "./ChallengePost"
 
 import firebase from "firebase"
-import { db, storage } from "../../firebase"
+import { db } from "../../firebase"
 
 import { Avatar } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu'
@@ -610,7 +610,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                 <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle>
                 <DialogContent>
                     {
-                        entries.length == 0 ?
+                        entries.length === 0 ?
                         <h3 style={{display:'flex', justifyContent:"center", padding:"10% 5%", color:"grey"}}>No posts yet!</h3> :
                         entries
                     }
@@ -675,6 +675,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                                 </label>
                             }
 
+                            {/*Modal using which to take picture. */}
                             <Modal
                                 show={Boolean(cameraActive)}
                                 onHide={() => { setCameraActive("") }}

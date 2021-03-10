@@ -51,6 +51,36 @@ const Chat = (props) => {
             sentAt: firebase.firestore.FieldValue.serverTimestamp(),
             sender: props.user
         })
+        if(users.length >= 2) {
+            users.forEach(a => {
+                if(a.name != props.user.name) {
+                    db.collection("users").doc(a.name).collection("notifications").doc(a.name).update({
+                        notifications: firebase.firestore.FieldValue.arrayUnion({
+                            type: "groupChat",
+                            sentAt: firebase.firestore.Timestamp.now(),
+                            sender: props.user.name,
+                            icon: props.user.photoUrl
+                        })
+                    })
+                }
+            });
+        }
+        else {
+            users.forEach(a => {
+                if(a.name != props.user.name) {
+                    db.collection("users").doc(a.name).collection("notifications").doc(a.name).update({
+                        notifications: firebase.firestore.FieldValue.arrayUnion({
+                            type: "chat",
+                            sentAt: firebase.firestore.Timestamp.now(),
+                            sender: props.user.name,
+                            icon: props.user.photoUrl
+                        })
+                    })
+                }
+            });
+        }
+        
+        console.log(users.length)
 
     }
 
@@ -69,7 +99,7 @@ const Chat = (props) => {
 
     }
     const removeUser = async (user) => {
-        setUsers(users.filter(u => user.name != u.name))
+        setUsers(users.filter(u => user.name !== u.name))
         setShowUsers(false)
         await db.collection("chatRooms").doc(props.id).update({
             participants: firebase.firestore.FieldValue.arrayRemove(user)

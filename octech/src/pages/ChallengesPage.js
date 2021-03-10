@@ -4,7 +4,7 @@ import { useSelector } from "react-redux" // Related to routing.
 import { selectUser } from "../features/userSlice" // Related to routing.
 
 import firebase from "firebase"
-import { db, storage } from "../firebase"
+import { db } from "../firebase"
 import Challenge from '../components/Challenge/Challenge'
 
 import Fab from '@material-ui/core/Fab'
@@ -45,7 +45,7 @@ export default function ChallengesPage() {
         if(loadChallenges) { // If challenges are to be loaded, then load them.
             setChallenges([]) // Set challenges to an empty array.
 
-            db.collection('challenges').get() // Get challenges from db.
+            db.collection('challenges').orderBy("timestamp", "desc").get() // Get challenges from db.
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
                     let data = doc.data() // data = a single challenge object.
@@ -151,6 +151,7 @@ export default function ChallengesPage() {
         let isMounted = true // To ensure the component doesnt get loaded before the component is mounted.
         if(isMounted) { loadChallengeObjects() }
         return () => { isMounted = false }
+        // eslint-disable-next-line
     }, [loadChallenges])
 
     return (
