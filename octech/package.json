@@ -28,6 +28,7 @@
     "react-bootstrap": "^1.5.1",
     "react-chat-elements": "^10.13.0",
     "react-copy-to-clipboard": "^5.0.3",
+    "react-countdown": "^2.3.1",
     "react-countup": "^4.3.3",
     "react-cropper": "^2.1.4",
     "react-datepicker": "^3.6.0",
