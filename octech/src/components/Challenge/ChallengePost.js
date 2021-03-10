@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import firebase from "firebase"
 import { db } from "../../firebase"
 
+import moment from 'moment'
+
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -14,7 +16,7 @@ import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import { red } from '@material-ui/core/colors'
-import Badge from '@material-ui/core/Badge';
+import Badge from '@material-ui/core/Badge'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import DeleteIcon from '@material-ui/icons/Delete'
 
@@ -86,16 +88,24 @@ export default function ChallengePost({user, caption, challengePoints, creator, 
             <Card className={classes.root}>
                 <CardHeader // User avatar, username, post caption, delete button. 
                     avatar={
-                        <Avatar aria-label="recipe" className={classes.avatar} src={creatorPhotoUrl}></Avatar>
+                      <Avatar aria-label="recipe" className={classes.avatar} src={creatorPhotoUrl}></Avatar>
                     }
                     action={
-                        (user.displayName === creator) &&
-                        <IconButton aria-label="settings" onClick={deleteChallengePost}>
-                            <DeleteIcon />
-                        </IconButton>
+                      (user.displayName === creator) &&
+                      <IconButton aria-label="settings" onClick={deleteChallengePost}>
+                          <DeleteIcon />
+                      </IconButton>
                     }
                     title={caption}
-                    subheader={"By " + creator + " On " + timestamp.toDate().toDateString() }
+                    subheader={
+                      timestamp ? 
+                      <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
+                        <br/>By {" " + creator + ", "} {moment(timestamp.toDate()).fromNow()}
+                      </div> : 
+                      <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
+                        <br/>By {" " + creator + ", "} Few Seconds Ago
+                      </div>
+                    }
                 />
 
                 {/* Post image. */}

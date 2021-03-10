@@ -159,7 +159,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     const loadChallengeEntries = () => {
         setEntries([])
         // Add all posts that have this challenge in its challenges list to entries array.
-        db.collection("challengePosts").get()
+        db.collection("challengePosts").orderBy('timestamp', 'desc').get()
         .then((postDocArr) => {
             postDocArr.forEach((postDoc) => {
                 let postChallenge = postDoc.data().challenge
