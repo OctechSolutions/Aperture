@@ -406,7 +406,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   // Related to CHALLENGES --------------------------------------------------------------------------------------
   const [challengeNameForm, setChallengeNameForm] = useState(false)
   const [challengeName, setChallengeName] = useState("")
-  const [challengeChips, setChallengeChips] = useState([])
+  const [challengeChip, setChallengeChip] = useState(null)
   const [challengeCodeTextField, setChallengeNameTextField] = useState(null) // TextField where the CHALLENGE code is to be entered.
 
   // Function that opens the input form to enter a CHALLENGE code.
@@ -423,11 +423,17 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const removeChallenge = (challengeName) => {
     if (user.displayName === name) { // If the user is the admin user, then allow to withdraw from challenge.
       // Remove this challenge from the challenges list of this post.
-      db.collection("posts").doc(id).update({ challenges: firebase.firestore.FieldValue.arrayRemove(challengeName) })
-        .then(() => {
-          console.log("Challenge removed = " + challengeName)
-          updateChallengeChips() // Display updated chllenges.
-        })
+      db.collection("posts").doc(id).update({ challenge: firebase.firestore.FieldValue.delete() })
+      .then(() => {
+        console.log("Challenge removed = " + challengeName)
+        updateChallengeChip() // Display updated chllenges.
+      })
+      // Remove corresponding challenge post from the challengePosts collection.
+      db.collection("challengePosts").doc(id).delete()
+      .then(() => {
+        console.log("Challenge removed = " + challengeName)
+        updateChallengeChip() // Display updated chllenges.
+      })
     }
   }
 
@@ -442,32 +448,46 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           if (!challengeDoc.data()) { // If entered code is invalid then let user know.
             challengeCodeTextField.value = "Please Enter Valid Challenge Title."
           } else { // If entered code is valid then ...
-            setChallengeName(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
-            db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
-              .update({ challenges: firebase.firestore.FieldValue.arrayUnion(challengeName) })
-              .then(() => {
-                console.log("Added Challenge = " + challengeName)
-                updateChallengeChips() // Update the challenge chips that are displayed on the post.
-                handleChallengeNameFormClose()
+            if(challengeDoc.data().hasEnded) { alert("Sorry, this challenge has ended!") }
+            else {
+              setChallengeName(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
+              db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
+                .update({ challenge: challengeName })
+                .then(() => {
+                  console.log("Added Challenge = " + challengeName)
+                  updateChallengeChip() // Update the challenge chips that are displayed on the post.
+                  handleChallengeNameFormClose()
+                })
+              db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
+                key: id,
+                caption: message || "My Awesome Post",
+                imageSrc: images[0].src,
+                style: images[0].style,
+                creator: name,
+                creatorPhotoUrl: photoUrl || "",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                challengePoints: 0,
+                challenge: challengeName,
+                ref: id,
+                hasEnded: false
               })
+            }
           }
         })
     }
   }
 
-  // Function that populates the challengeChips and challengeNames array the 1st time.
-  const updateChallengeChips = () => {
-    setChallengeChips([]) // Clear existing challengeChips array.
-
+  // Function that populates the challengeChip and challengeNames array the 1st time.
+  const updateChallengeChip = () => {
+    setChallengeChip(null)
     // Fetch challenge titles of this post.
     db.collection("posts").doc(id).get()
       .then((postDoc) => {
         if (postDoc.data()) {
-          let challengeArr = postDoc.data().challenges
-          if (challengeArr) { // If this post has challenges then ...
-            challengeArr.forEach((challengeName) => {
-              setChallengeChips((prev) => [...prev, <Chip label={challengeName} onDelete={() => removeChallenge(challengeName)} />])
-            })
+          let postChallenge = postDoc.data().challenge
+          if (postChallenge) { // If this post has a challenge then ...
+              setChallengeChip(postChallenge)
+              setChallengeChip(<Chip label={postChallenge} onDelete={() => removeChallenge(challengeName)} />)
           }
         }
       })
@@ -475,7 +495,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   // Update Challenge Chips when component mounted.
   // eslint-disable-next-line
-  useEffect(() => { updateChallengeChips() }, []);
+  useEffect(() => { updateChallengeChip() }, []);
 
   // ------------------------------------------------------------------------------------------------------------
 
@@ -608,12 +628,15 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                 }
 
                 {/* To enter a challenge. */}
-                <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
-                  <ListItemIcon>
-                    <AddAlarmRoundedIcon />
-                  </ListItemIcon>
-                  Enter Challenge
-                </MenuItem>
+                {
+                  (images.length == 1) && !challengeChip &&
+                  <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
+                    <ListItemIcon>
+                      <AddAlarmRoundedIcon />
+                    </ListItemIcon>
+                    Enter Challenge
+                  </MenuItem>
+                }
 
               </Menu>
               <Menu
@@ -874,7 +897,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </Alert>
         </Snackbar>
 
-        {challengeChips} {/* Display all challenges that this post is participating in. */}
+        {challengeChip} {/* Display all challenges that this post is participating in. */}
 
       </div>
 

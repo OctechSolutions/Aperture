@@ -179,6 +179,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                                 timestamp={postDoc.data().timestamp}
                                 id={postDoc.data().ref}
                                 loadChallengeEntries={loadChallengeEntries}
+                                challengeName={name}
                             ></ChallengePost>
                         ])
                     }
@@ -191,6 +192,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     const countdownRenderer = ({days, hours, minutes, seconds, completed}) => {
         if(completed) { 
             setChallengeComplete(true)
+            db.collection("challenges").doc(name).update({hasEnded : true})
             return "Challenge Ended!" 
         }
         else { return days + " days : " + hours + " hrs : " + minutes + " mins : " + seconds + " secs" }
@@ -462,7 +464,8 @@ export default function Challenge({user, name, description, hints, creator, crea
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     challengePoints: 0,
                     challenge: name,
-                    ref: ref.id
+                    ref: ref.id,
+                    hasEnded: false
                 }).then(() => {
                     setLoadEntries(true)
                     handleSnackbarOpen()
