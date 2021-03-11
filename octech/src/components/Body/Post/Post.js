@@ -448,7 +448,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           if (!challengeDoc.data()) { // If entered code is invalid then let user know.
             challengeCodeTextField.value = "Please Enter Valid Challenge Title."
           } else { // If entered code is valid then ...
-            if(challengeDoc.data().hasEnded) { alert("Sorry, this challenge has ended!") }
+            if(challengeDoc.data().hasEnded) { 
+              challengeCodeTextField.value = "Sorry, this challenge has ended." 
+            }
             else {
               setChallengeName(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
               db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
@@ -816,7 +818,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                 </div>
 
                 {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
-
               </div>
 
             </div>
@@ -900,7 +901,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         {challengeChip} {/* Display all challenges that this post is participating in. */}
 
       </div>
-
     </div>
   );
 });
