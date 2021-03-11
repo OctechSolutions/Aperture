@@ -20,7 +20,7 @@ import Badge from '@material-ui/core/Badge'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import DeleteIcon from '@material-ui/icons/Delete'
 
-export default function ChallengePost({user, caption, challengePoints, creator, creatorPhotoUrl, imageSrc, style, timestamp, id, loadChallengeEntries}) {
+export default function ChallengePost({user, caption, challengePoints, creator, creatorPhotoUrl, imageSrc, style, timestamp, id, loadChallengeEntries, challengeName}) {
     
     // console.log("user = " + user)
     // console.log("caption = " + caption)
@@ -59,6 +59,8 @@ export default function ChallengePost({user, caption, challengePoints, creator, 
     // To delete the challenge post.
     const deleteChallengePost = () => {
       db.collection("challengePosts").doc(id).delete().then(() => loadChallengeEntries())
+      let profilePost = db.collection("posts").doc(id)
+      if(profilePost) { profilePost.update({challenge: firebase.firestore.FieldValue.delete()}) }
     }
 
     // Like unlike post.
