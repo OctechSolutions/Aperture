@@ -19,6 +19,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
+import EqualizerIcon from '@material-ui/icons/Equalizer';
 
 function Header({ setValue, hasNotifications }) {
   const dispatch = useDispatch();
@@ -78,6 +79,14 @@ function Header({ setValue, hasNotifications }) {
         >
           <Tooltip title={"Search"} aria-label="search">
             <SearchIcon />
+          </Tooltip>
+        </IconButton>
+        <IconButton
+          aria-label="leaderboards"
+          onClick={() => { history.push("/leaderboards/globalUsersLeaderBoard"); setValue("leaderboards") }}
+        >
+          <Tooltip title={"Leadearboards"} aria-label="leaderboards">
+            <EqualizerIcon />
           </Tooltip>
         </IconButton>
         <IconButton

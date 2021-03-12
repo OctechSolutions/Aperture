@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Tabs from "react-bootstrap/Tabs";
 import Tab from 'react-bootstrap/Tab';
-import GlobalUsersLeaderBoard from './GlobalUsersLeaderBoard';
-import GlobalPostsLeaderBoard from './GlobalPostsLeaderBoard';
-import ChallengesLeaderBoard from './ChallengesLeaderBoard';
+// import GlobalUsersLeaderBoard from './GlobalUsersLeaderBoard';
+// import GlobalPostsLeaderBoard from './GlobalPostsLeaderBoard';
+// import ChallengesLeaderBoard from './ChallengesLeaderBoard';
 // import TabContent from 'react-bootstrap/TabContent';
 
 function Forums({ match, setValue }) {
@@ -24,13 +24,13 @@ function Forums({ match, setValue }) {
                 variant={"pills"}
                 fill>
                 <Tab eventKey="globalUsersLeaderBoard" title="Users" style={{ color: "black", width: "100%" }}>
-                    <GlobalUsersLeaderBoard />
+                    {/* <GlobalUsersLeaderBoard /> */}
                 </Tab>
                 <Tab eventKey="globalPostsLeaderBoard" title="Posts" style={{ color: "black", width: "100%" }}>
-                    <GlobalPostsLeaderBoard />
+                    {/* <GlobalPostsLeaderBoard /> */}
                 </Tab>
                 <Tab eventKey="challengesLeaderBoard" title="Challenges" style={{ color: "black", width: "100%" }}>
-                    <ChallengesLeaderBoard />
+                    {/* <ChallengesLeaderBoard /> */}
                 </Tab>
             </Tabs>
         </div>

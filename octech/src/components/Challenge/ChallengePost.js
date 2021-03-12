@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 
 import firebase from "firebase"
 import { db } from "../../firebase"
@@ -9,12 +9,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
-import CardContent from '@material-ui/core/CardContent'
+// import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
-import Collapse from '@material-ui/core/Collapse'
+// import Collapse from '@material-ui/core/Collapse'
 import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
+// import Typography from '@material-ui/core/Typography'
 import { red } from '@material-ui/core/colors'
 import Badge from '@material-ui/core/Badge'
 import FavoriteIcon from '@material-ui/icons/Favorite'
@@ -31,8 +31,8 @@ export default function ChallengePost({user, caption, challengePoints, creator, 
     // console.log("style = " + style)
     // console.log("timestamp = " + timestamp.toDate().toDateString())
 
-    const [liked, setLiked] = useState(false)
-    const [postChallengePoints, setPostChallengePoints] = useState(challengePoints)
+    // const [liked, setLiked] = useState(false)
+    const [postChallengePoints, ] = useState(challengePoints)
 
     // To style the challenge post
     const useStyles = makeStyles((theme) => ({
@@ -49,6 +49,7 @@ export default function ChallengePost({user, caption, challengePoints, creator, 
         media: {
           paddingTop: '56.25%', // 16:9
           backgroundSize: "contain",
+          borderRadius: "20px",
         },
         avatar: {
           backgroundColor: red[500],
