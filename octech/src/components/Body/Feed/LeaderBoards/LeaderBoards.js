@@ -8,14 +8,14 @@ import ChallengesLeaderBoard from './ChallengesLeaderBoard';
 
 function Forums({ match, setValue }) {
 
-    const [key, setKey] = useState(window.location.pathname.slice(8));
+    const [key, setKey] = useState(window.location.pathname.slice(14));
 
     useEffect(() => {
         setValue('leaderBoards/globalUsersLeaderBoard')
     }, [setValue]);
 
     return (
-        <div className="container-fluid">
+        <div className="container-fluid" style= {{marginBottom: "60px"}}>
             <Tabs
                 id="controlled-tab-example"
                 activeKey={key}
