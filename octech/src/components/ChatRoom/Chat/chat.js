@@ -53,7 +53,7 @@ const Chat = (props) => {
         })
         if(users.length >= 2) {
             users.forEach(a => {
-                if(a.name != props.user.name) {
+                if(a.name !== props.user.name) {
                     db.collection("users").doc(a.name).collection("notifications").doc(a.name).update({
                         notifications: firebase.firestore.FieldValue.arrayUnion({
                             type: "groupChat",
@@ -67,7 +67,7 @@ const Chat = (props) => {
         }
         else {
             users.forEach(a => {
-                if(a.name != props.user.name) {
+                if(a.name !== props.user.name) {
                     db.collection("users").doc(a.name).collection("notifications").doc(a.name).update({
                         notifications: firebase.firestore.FieldValue.arrayUnion({
                             type: "chat",
