@@ -294,7 +294,7 @@ function Profile({ match }) {
                             fill
                         >
                             <Tab eventKey="posts" title="Posts" style={{ color: "black", width: "100%" }}>
-                                {<FlipMove style={{ marginBottom: "70px" }}>
+                                {<FlipMove style={{ marginBottom: "70px", paddingLeft: "3%", paddingRight: "3%" }}>
                                     {posts.map(
                                         ({
                                             id,
