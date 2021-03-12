@@ -244,9 +244,16 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           }, { merge: true })
         }
       }
-      db.collection("posts").doc(id).onSnapshot((doc) => {
-        setCommentList(doc.data().comments);
-      })
+      if (isForumPost) {
+        db.collection("forumPosts").doc(id).onSnapshot((doc) => {
+          setCommentList(doc.data().comments);
+        })
+      }
+      else {
+        db.collection("posts").doc(id).onSnapshot((doc) => {
+          setCommentList(doc.data().comments);
+        })
+      }
       setComment("");
     }
 

@@ -901,8 +901,8 @@ function Feed({ match }, props) {
           </Modal.Body>
         </Modal>
         <Backdrop className={classes.backdrop} open={open}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <FlipMove>
           {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
