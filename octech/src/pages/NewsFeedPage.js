@@ -24,7 +24,7 @@ import ChatIcon from '@material-ui/icons/Chat'
 import chatRoom from '../components/ChatRoom/Chatroom'
 import ChallengesPage from './ChallengesPage'
 import ForumIcon from "@material-ui/icons/Forum";
-import EqualizerIcon from '@material-ui/icons/Equalizer';
+// import EqualizerIcon from '@material-ui/icons/Equalizer';
 import { db } from "../firebase";
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -176,7 +176,7 @@ export default function NewsfeedPage(props) {
                                 {/* <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} /> */}
                                 <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
                                 <BottomNavigationAction label="Forums" value="forums/feedbackForum" icon={<ForumIcon />} />
-                                <BottomNavigationAction label="Leaderboards" value="leaderboards/globalUsersLeaderBoard" icon={<EqualizerIcon />} />
+                                {/* <BottomNavigationAction label="Leaderboards" value="leaderboards/globalUsersLeaderBoard" icon={<EqualizerIcon />} /> */}
                                 {/* <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} /> */}
                                 {/* <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} /> */}
                                 <BottomNavigationAction label="Challenges" value={'challenges/' + user.displayName} icon={<WhatshotIcon />} />
