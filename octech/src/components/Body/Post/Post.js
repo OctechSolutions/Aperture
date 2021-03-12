@@ -45,6 +45,7 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Chip from '@material-ui/core/Chip'
 import AddAlarmRoundedIcon from '@material-ui/icons/AddAlarmRounded'
+import Skeleton from '@material-ui/lab/Skeleton';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -80,6 +81,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [snackbarType, setSnackbarType] = useState("");
   const [collections, setCollections] = useState([]);
   const [commentList, setCommentList] = useState(comments);
+  const [loading, setLoading] = useState(true);
   const open = Boolean(anchorEl);
   const classes = useStyles();
 
@@ -176,6 +178,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         tempRefs.push(doc.id);
         // console.log(doc.data(), doc.id)
       });
+      setLoading(false)
       setImages(tempImages);
       setRefs(tempRefs);
     });
@@ -675,6 +678,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           <br />
           <p>{message}</p>
         </div>
+        {loading && <Skeleton variant="rect" width={"100%"} height={250} />}
         {slideshow}
         <br />
         <div >
