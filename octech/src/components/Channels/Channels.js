@@ -98,14 +98,8 @@ function Channels({ profileName }) {
                 b.ref.delete();
             })
         })
-        channel.data().followers.forEach((follower) => {
-            console.log(follower, channelName)
-            db.collection("users").doc(follower).update({
-                followingChannels: firebase.firestore.FieldValue.arrayRemove({ name: channel.data().name, creator: user.displayName })
-            });
-        })
         db.collection("users").doc(user.displayName).update({
-            followingChannels: firebase.firestore.FieldValue.arrayRemove({ name: channel.data().name, creator: user.displayName })
+            followingChannels: firebase.firestore.FieldValue.arrayRemove({ name: channelName, creator: user.displayName })
         });
     }
 
