@@ -280,7 +280,7 @@ export default function Explore() {
                       type
                     },
                   }) => (
-                    <>
+                    <div style = {{paddingLeft: "3%", paddingRight: "3%"}}>
                       {(
                         <Post
                           key={id}
@@ -304,7 +304,7 @@ export default function Explore() {
                           isForumPost = {Boolean(type)}
                         />
                       )}
-                    </>
+                    </div>
                   )
                 )}
               </FlipMove>
