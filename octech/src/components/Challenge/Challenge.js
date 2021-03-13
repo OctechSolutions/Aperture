@@ -85,7 +85,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
         db.collection("users").doc(user.displayName).get().then(doc => {
             if (doc.exists) {
-                setData(doc.data().data.friends.filter(a => !participants.map(u => u.name).concat(invitees).includes(a.name)))
+                setData(doc.data().friends.filter(a => !participants.map(u => u.name).concat(invitees).includes(a.name)))
             } else {
                 console.log("No such document!");
             }
