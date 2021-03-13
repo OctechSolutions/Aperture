@@ -28,39 +28,14 @@ import { withStyles } from '@material-ui/core/styles';
 
 export default function ChallengePost({ user, caption, star, totalStar, creator, creatorPhotoUrl, imageSrc, style, timestamp, id, loadChallengeEntries, challengeName }) {
 
-      post.update({ totalStars: newTotalStars, stars: star });
-
-      const uploader = db.collection("users").doc(creator);
-      db.runTransaction(transaction => (
-        transaction.get(uploader).then(doc => {
-          let profilePoints = doc.data().profilePoints;
-          let newProfilePoints = profilePoints + (givenStars - stars);
-          let notifications = doc.data().notifications;
-          let league = doc.data().league;
-          let leaguee = "";
-          
-          if(league !== "Champion" && league !== "Legendary"){
-            if(newProfilePoints<100)
-              leaguee = "No league profile points less than 100"
-            else if(newProfilePoints<500)
-              leaguee = "Silver"
-            else if(newProfilePoints<1000)
-              leaguee = "Gold"
-            else if(newProfilePoints<1200)
-              leaguee = "Diamond"
-            else 
-              leaguee = "Platinum"
-          } 
-            
-          if(league && (league===leaguee || leaguee===""))
-            transaction.update(uploader, { profilePoints: newProfilePoints });
-          else{
-            transaction.update(uploader, { profilePoints: newProfilePoints, league : leaguee, notifyLeague: true, leagueStatus: profilePoints > newProfilePoints ? "d" : "p"});
-          }
-        })));
-      setStars(givenStars);
-      setTotalStars(newTotalStars);
-    }
+  // console.log(user)
+  // console.log("caption = " + caption)
+  // console.log("challengePoints = " + challengePoints)
+  // console.log("creator = " + creator)
+  // console.log("creatorPhotoUrl = " + creatorPhotoUrl)
+  // console.log("imageSrc = " + imageSrc)
+  // console.log("style = " + style)
+  // console.log("timestamp = " + timestamp.toDate().toDateString())
 
   // const [liked, setLiked] = useState(false)
   // const [postChallengePoints, ] = useState(challengePoints)
@@ -106,18 +81,20 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
         let league = doc.data().league;
         let leaguee = "";
 
-        if (newProfilePoints < 100)
-          leaguee = "Bronze"
-        else if (newProfilePoints < 500)
-          leaguee = "Silver"
-        else if (newProfilePoints < 1000)
-          leaguee = "Gold"
-        else if (newProfilePoints < 1200)
-          leaguee = "Platinum"
-        else
-          leaguee = "Diamond"
-
-        if (league && (league === leaguee))
+        if(league !== "Champion" && league !== "Legendary"){
+          if(newProfilePoints<100)
+            leaguee = "No league profile points less than 100"
+          else if(newProfilePoints<500)
+            leaguee = "Silver"
+          else if(newProfilePoints<1000)
+            leaguee = "Gold"
+          else if(newProfilePoints<1200)
+            leaguee = "Diamond"
+          else 
+            leaguee = "Platinum"
+        }
+          
+        if(league && (league===leaguee || leaguee===""))
           transaction.update(uploader, { profilePoints: newProfilePoints });
         else {
           transaction.update(uploader, {
