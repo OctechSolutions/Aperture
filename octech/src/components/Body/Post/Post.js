@@ -574,7 +574,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
             </IconButton>
             <div className="postInfo">
-              <div>
+              <div style= {{marginLeft : "-12px"}}>
                 <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
 
                   {channelBy ? channelBy : name}</Link>
@@ -623,7 +623,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                       <MapIcon />
                     </IconButton>
                   }
-                  {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
+                  {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-12px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
                     a few seconds ago
                       </div>}
                 </>  {/* Link is a component from react router that redirects to a particular route on click */}
