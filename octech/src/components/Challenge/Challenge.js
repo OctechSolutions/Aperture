@@ -58,7 +58,7 @@ import PhotoCameraIcon from "@material-ui/icons/PhotoCamera"
 import SendIcon from '@material-ui/icons/Send'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
-export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges }) {
+export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges, openEditForm, timestamp }) {
 
     const [anchorEl3Dots, setAnchorEl3Dots] = useState(null)
     const [isPublic, setIsPublic] = useState(!isPrivate)
@@ -591,7 +591,20 @@ export default function Challenge({ user, name, description, hints, creator, cre
                             </MenuItem>
 
                             {/* Edit challenge. */}
-                            <MenuItem key={"edit"} selected={false} onClick={() => { console.log("Edit challenge."); handleMenuClose() }}>
+                            <MenuItem key={"edit"} selected={false} onClick={() => { 
+                                openEditForm({
+                                    name: name,
+                                    description: description,
+                                    hint1: hints.length >= 1 ? hints[0] : "",
+                                    hint2: hints.length >= 2 ? hints[1] : "",
+                                    hint3: hints.length >= 3 ? hints[2] : "",
+                                    isPrivate: isPrivate, 
+                                    startDate: new Date(startDate),
+                                    endDate: new Date(endDate),
+                                    timestamp: timestamp
+                                })
+                                handleMenuClose() 
+                            }}>
                                 <ListItemIcon> <EditIcon /> </ListItemIcon>
                                 Edit
                             </MenuItem>
