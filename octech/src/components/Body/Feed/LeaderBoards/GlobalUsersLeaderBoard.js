@@ -19,7 +19,7 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
               if(user.data().league !== "Champion")
                 db.collection("users").doc(user.data().name).update({league : "Champion", notifyLeague: true, leagueStatus: "p"})
               counter++;}
-              else if(counter>0 && counter < 100){
+              else if(counter>0 && counter < 10){//It should be 100 but for demo purpose keep it 10
                 if(user.data().league !== "Legendary")
                   db.collection("users").doc(user.data().name).update({league : "Legendary", notifyLeague: true, leagueStatus: user.data().league === "Champion" ? "d" : "p" })
                 counter++;
