@@ -57,11 +57,13 @@ import ImageIcon from "@material-ui/icons/Image"
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera"
 import SendIcon from '@material-ui/icons/Send'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
 import { ButtonBase } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import GroupIcon from '@material-ui/icons/Group';
 
 export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges, invitees, participants }) {
 
@@ -77,6 +79,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [openOverlay, setOpenOverlay] = useState(false) // For entries overlay.
     const [challengeComplete, setChallengeComplete] = useState(false)
     const [userData, setUserData] = useState({})
+    const [showParticipants, setShowParticipants] = useState(false)
 
     useEffect(() => {
         // helper.current.scrollIntoView({ behavior: 'smooth' });
@@ -541,8 +544,8 @@ export default function Challenge({ user, name, description, hints, creator, cre
     }, [loadEntries])
 
     function getOptions(data) {
-        if(participants.length)
-            return data.friends.filter(a => !participants.map(u=>u.name).concat(invitees).includes(a.name))
+        if (participants.length)
+            return data.friends.filter(a => !participants.map(u => u.name).concat(invitees).includes(a.name))
         else
             return data.friends.filter(a => !invitees.includes(a.name))
     }
@@ -566,7 +569,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                             aria-controls="long-menu"
                             aria-haspopup="true"
                             onClick={() => { history.push(`/user/${creator}`) }}
-                            style={{marginLeft: "-10px"}}
+                            style={{ marginLeft: "-10px" }}
                         > {/* Redirect to creator profile when clicking creator's user icon. */}
                             <Avatar src={creatorPhotoUrl}></Avatar>
                         </IconButton>
@@ -584,13 +587,13 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                             setIsPublic(!isPublic)
                                         }
                                     }}
-                                    style={{marginLeft: "-10px"}}
+                                    style={{ marginLeft: "-10px" }}
                                 >{/* Toggle public or private if this user is admin.*/}
                                     {!isPublic ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
                                 </IconButton>
                                 {/* Copy to Clipboard button */}
                                 <CopyToClipboard text={name} onCopy={displayCodeToClipboardDialog}>
-                                    <IconButton color="primary" aria-label="copy to clipboard" style={{marginLeft: "-10px"}}> <FileCopyIcon /> </IconButton>
+                                    <IconButton color="primary" aria-label="copy to clipboard" style={{ marginLeft: "-10px" }}> <FileCopyIcon /> </IconButton>
                                 </CopyToClipboard>
                             </div>
                             <div style={{ marginTop: "-15px" }}>
@@ -700,6 +703,44 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         }
                     </Modal.Body>
                 </Modal>
+                <Modal
+                    show={showParticipants}
+                    onHide={() => { setShowParticipants(false) }}
+                    keyboard={false}
+                    size="xl"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header closeButton onClick={() => { setShowParticipants(false) }}>
+                        <center><h3>Participants</h3></center>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {
+                            <List component="users" aria-label="chat participants">
+                                <ListItem button onClick={() => {
+                                        history.push(`/user/${user.displayName}`)
+                                    }}>
+                                        <ListItemIcon>
+                                            <Avatar alt={user.displayName} src={user.photoUrl} />
+                                        </ListItemIcon>
+                                        <ListItemText primary={user.displayName} secondary={"Creator"} primaryTypographyProps={{ noWrap: true }} />
+                                    </ListItem>
+                                {participants.length > 0 && participants.map(option => (
+                                    <ListItem button onClick={() => {
+                                        history.push(`/user/${option.name}`)
+                                    }}>
+                                        <ListItemIcon>
+                                            <Avatar alt={option.name} src={option.photoUrl} />
+                                        </ListItemIcon>
+                                        <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                    </ListItem>
+                                ))
+                                }
+                            </List>
+                        }
+                    </Modal.Body>
+
+                </Modal>
                 {/* 3 Dots Menu. */}
                 {isAdmin &&
                     <>
@@ -760,6 +801,12 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     <IconButton aria-label="viewEntries" color="primary" onClick={handleOverlayClickOpen}>
                         <VisibilityIcon fontSize="large" />
                     </IconButton>
+                    {
+                        isPrivate && participants.length > 0 &&
+                        <IconButton aria-label="viewParticipants" color="primary" onClick={() => setShowParticipants(true)}>
+                            <GroupIcon fontSize="large" />
+                        </IconButton>
+                    }
                 </div>
             </div>
 
