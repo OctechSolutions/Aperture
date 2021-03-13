@@ -25,6 +25,8 @@ import Slider from '@material-ui/core/Slider';
 import MenuItem from '@material-ui/core/MenuItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ImageGallery from "../../Feed/ImageGallery";
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -40,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
     input: {
         marginLeft: theme.spacing(2),
         flex: 1,
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
     },
 }));
 
@@ -98,6 +104,7 @@ function GamingForum({ match }, props) {
     const [showEditMap,] = useState(false);
     const [isPrivatePost, setIsPrivatePost] = useState(false);
     const [showPostComponent, setShowPostComponent] = useState(false);
+    const [open, setOpen] = useState(true);
 
     const cocoSsd = require('@tensorflow-models/coco-ssd');
 
@@ -144,7 +151,7 @@ function GamingForum({ match }, props) {
     }
 
     useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
-        db.collection("posts")
+        db.collection("forumPosts")
             .where("type", "==", "gamingForum")
             .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
             .onSnapshot((snapshot) => {
@@ -153,6 +160,7 @@ function GamingForum({ match }, props) {
                     key: doc.id,
                     data: doc.data(),
                 })))
+                setOpen(false)
             })
 
 
@@ -164,7 +172,7 @@ function GamingForum({ match }, props) {
 
         if (sliderImages.length) {
 
-            const ref = db.collection('posts').doc() // A reference to the next entry to the database is created in advance
+            const ref = db.collection('forumPosts').doc() // A reference to the next entry to the database is created in advance
             ref.set({ // This adds a new post to the databse
                 name: user.displayName,
                 description: user.email,
@@ -322,7 +330,7 @@ function GamingForum({ match }, props) {
                                 </form>
                             </div>
                             <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
-                                {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
+                                {!inputImg && !showEditMap && sliderImages.length < 1 && <div className="upload-btn-wrapper">
                                     <input type="file" name="myfile" id="myFile" accept="image/*" onChange={handleChange} style={{ opacity: "0" }} />
                                     <label htmlFor="myFile">
                                         <IconButton
@@ -458,7 +466,9 @@ function GamingForum({ match }, props) {
                         </div>
                     </Modal.Body>
                 </Modal>
-
+                <Backdrop className={classes.backdrop} open={open}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
                 <FlipMove>
                     {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
                     {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over

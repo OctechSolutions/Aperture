@@ -1,12 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Tabs from "react-bootstrap/Tabs";
 import Tab from 'react-bootstrap/Tab';
 import FeedbackForum from './FeedbackForum'
 import GamingForum from './GamingFoum'
 
-function Forums({ match }) {
+function Forums({ match, setValue }) {
     
     const [key, setKey] = useState(window.location.pathname.slice(8));
+
+    useEffect(() => {
+        setValue('forums/feedbackForum')
+      }, [setValue]);
 
     return (
         
