@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Notifications({ match, notifications }) {
     const classes = useStyles();
-    const history = useHistory()
+    const history = useHistory() 
     const user = useSelector(selectUser)
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState("");

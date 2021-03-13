@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-
 import { useSelector } from "react-redux" // Related to routing.
 import { selectUser } from "../features/userSlice" // Related to routing.
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 
-// import firebase from "firebase"
+import firebase from "firebase"
 import { db } from "../firebase"
 import Challenge from '../components/Challenge/Challenge'
 
@@ -18,8 +19,8 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
+import Snackbar from '@material-ui/core/Snackbar'
+import MuiAlert from '@material-ui/lab/Alert'
 
 export default function ChallengesPage() {
     const user = useSelector(selectUser) // Related to routing.
@@ -38,6 +39,13 @@ export default function ChallengesPage() {
     const [challengeIsPrivate, setChallengeIsPrivate] = useState(true)
     const [challengeStartDate, setChallengeStartDate] = useState(new Date())
     const [challengeEndDate, setChallengeEndDate] = useState(new Date())
+    const [snackbarErrorMessage, setSnackbarErrorMessage] = useState("")
+    const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false)
+
+    // Function for Snackbar.
+    function Alert(props) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
 
     // Function that loads all challenges
     const loadChallengeObjects = () => {
@@ -45,19 +53,22 @@ export default function ChallengesPage() {
         if(loadChallenges) { // If challenges are to be loaded, then load them.
             setChallenges([]) // Set challenges to an empty array.
 
-            db.collection('challenges').get() // Get challenges from db.
+            db.collection('challenges').orderBy("timestamp", "desc").get() // Get challenges from db.
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
                     let data = doc.data() // data = a single challenge object.
-
+                    console.log("challenge doc data = " + data.name)
                     // Display only if ...
-                    if(!data.isPrivate || // The challenge is not private.
+                    if( 
+                        !data.isPrivate || // The challenge is not private.
                         data.creator === userName || // The user is the creator of the challenge.
-                        Object.keys(data.invitees).includes(userName)){ // The user was invited to this challenge.
+                        Object.keys(data.invitees).includes(userName) // The user was invited to this challenge.
+                    ){ 
                         setChallenges((prevArr) => // Create a Challenge object and add to the list of challenges. 
                             [
                                 ...prevArr, 
                                 <Challenge
+                                    key={doc.id}
                                     user={user}
                                     name={data.name}
                                     description={data.description}
@@ -71,6 +82,7 @@ export default function ChallengesPage() {
                                     startDate={data.startDate}
                                     endDate={data.endDate}
                                     setLoadChallenges={setLoadChallenges}
+                                    timestamp={data.timestamp}
                                 > </Challenge>
                             ]
                         )
@@ -93,24 +105,31 @@ export default function ChallengesPage() {
 
     // Function that submits the form to add a new challenge.
     const handleFormSubmit = () => {
-        console.log("Form Submitted!")
-
         if(challengeStartDate > challengeEndDate) {
-            alert("Please select valid start and end dates.")
+            setSnackbarErrorMessage("Please select valid start and end dates.")
+            setOpenErrorSnackbar(true)
         }
 
-        else if(!alphaNumeric.test(challengeName) || !alphaNumeric.test(challengeDescription)) {
-            alert("Please enter valid data in required fields, Challenge Title and Challenge Description.")
+        else if(!alphaNumeric.test(challengeName)) {
+            setSnackbarErrorMessage("Please enter a valid Challenge Title.")
+            setOpenErrorSnackbar(true)
+        }
+
+        else if(!alphaNumeric.test(challengeDescription)){
+            setSnackbarErrorMessage("Please enter a valid Challenge Description.")
+            setOpenErrorSnackbar(true)
         }
 
         else {
             db.collection("challenges").doc(challengeName).get()
             .then((challengeDoc) => {
                 if(challengeDoc.exists) {
-                    alert("A challenge with this name already exists!")
+                    setSnackbarErrorMessage("A challenge with this name already exists!")
+                    setOpenErrorSnackbar(true)
                 }
                 else{
                     let newChallenge = {
+                        key: challengeDoc.id,
                         creator: user.displayName,
                         creatorPhotoUrl: user.photoUrl,
                         description: challengeDescription,
@@ -120,7 +139,8 @@ export default function ChallengesPage() {
                         name: challengeName,
                         leader: "",
                         startDate: challengeStartDate.toDateString(),
-                        endDate: challengeEndDate.toDateString()
+                        endDate: challengeEndDate.toDateString(),
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }
             
                     db.collection("challenges").doc(challengeName).set(newChallenge)
@@ -259,8 +279,8 @@ export default function ChallengesPage() {
                         flexDirection: "column",
                         alignItems: 'center',
                     }}>
-                        <p>Start Date:<br /><DatePicker selected={challengeStartDate} onChange={date => setChallengeStartDate(date)} /></p>
-                        <p>End Date:<br /><DatePicker selected={challengeEndDate} onChange={date => setChallengeEndDate(date)} /></p>   
+                        <div>Start Date:<br /><DatePicker selected={challengeStartDate} onChange={date => setChallengeStartDate(date)} /></div>
+                        <div>End Date:<br /><DatePicker selected={challengeEndDate} onChange={date => setChallengeEndDate(date)} /></div>   
                     </div>
 
                 </DialogContent>
@@ -269,6 +289,13 @@ export default function ChallengesPage() {
                     <Button onClick={handleFormSubmit} color="primary"> Submit </Button>
                 </DialogActions>
             </Dialog>
+        
+            {/* Error SnackBar */}
+            <Snackbar open={openErrorSnackbar} autoHideDuration={6000} onClose={() => setOpenErrorSnackbar(false)}>
+                <Alert onClose={() => setOpenErrorSnackbar(false)} severity="error">
+                    {snackbarErrorMessage}
+                </Alert>
+            </Snackbar>
         </div>
     )
 }

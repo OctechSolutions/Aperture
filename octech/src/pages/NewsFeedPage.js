@@ -6,6 +6,7 @@ import Notifications from '../components/Notifications/Notifications';
 import Profile from '../components/userProfile/Profile';
 import Collection from '../components/Collection/Collection';
 import Forums from "../components/Body/Forums/FeedbackForum/Forums";
+import LeaderBoards from "../components/Body/Feed/LeaderBoards/LeaderBoards";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import Alert from 'react-bootstrap/Alert'
 import Modal from 'react-bootstrap/Modal'
@@ -23,6 +24,7 @@ import ChatIcon from '@material-ui/icons/Chat'
 import chatRoom from '../components/ChatRoom/Chatroom'
 import ChallengesPage from './ChallengesPage'
 import ForumIcon from "@material-ui/icons/Forum";
+// import EqualizerIcon from '@material-ui/icons/Equalizer';
 import { db } from "../firebase";
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -82,74 +84,76 @@ export default function NewsfeedPage(props) {
     };
 
     useEffect(() => {
-        db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).onSnapshot(doc => {
-            if (doc.exists) {
-
-                setHasNotifications(doc.data().notifications.length)
-                setNotifications(doc.data().notifications)
-                if (hasNotifications !== doc.data().notifications.length) {
-
-                    setOpenNotification(Boolean(doc.data().notifications.length))
-                    if (Boolean(doc.data().notifications.length) && window.location.pathname !== "/notifications" && window.location.pathname !== "/chatRoom") {
-                        const notificationInfo = doc.data().notifications[doc.data().notifications.length - 1]
-                        setTime(moment(notificationInfo.sentAt.toDate()).fromNow())
-                        if (notificationInfo.type === "friendRequestSent") {
-                            setLastNotification(<><b>{notificationInfo.sender}</b> sent you a friend request.</>)
-                            setIcon(<Avatar src={notificationInfo.icon} />)
-                        }
-                        else if (notificationInfo.type === "friendRequestAccepted") {
-                            setLastNotification(<><b>{notificationInfo.sender}</b> accepted your friend request.</>)
-                            setIcon(<Avatar src={notificationInfo.icon} />)
-                        }
-                        else if (notificationInfo.type === "friendRequestRejected") {
-                            setLastNotification(<><b>{notificationInfo.sender}</b> rejected your friend request.</>)
-                            setIcon(<Avatar src={notificationInfo.icon} />)
-                        }
-                        else if (notificationInfo.type === "friendRequestRemoved") {
-                            setLastNotification(<><b>{notificationInfo.sender}</b> unfriended you.</>)
-                            setIcon(<Avatar src={notificationInfo.icon} />)
-                        }
-                        else if (notificationInfo.type === "comment") {
-                            setLastNotification(<><b>{notificationInfo.sender}</b> commented <b>{notificationInfo.comment}</b> on your post titled <b>{notificationInfo.postTitle}</b></>)
-                            setIcon(<Avatar className={classes.green}><CommentIcon fontSize="small" /></Avatar>)
-                        }
-                        else if (notificationInfo.type === "rating") {
-                            var stars = "";
-                            for (var i = 0; i < notificationInfo.stars; i++) {
-                                stars += "★"
+        if(props.isVerified) {
+            db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).onSnapshot(doc => {
+                if (doc.exists) {
+    
+                    setHasNotifications(doc.data().notifications.length)
+                    setNotifications(doc.data().notifications)
+                    if (hasNotifications !== doc.data().notifications.length) {
+    
+                        setOpenNotification(Boolean(doc.data().notifications.length))
+                        if (Boolean(doc.data().notifications.length) && window.location.pathname !== "/notifications" && window.location.pathname !== "/chatRoom") {
+                            const notificationInfo = doc.data().notifications[doc.data().notifications.length - 1]
+                            setTime(moment(notificationInfo.sentAt.toDate()).fromNow())
+                            if (notificationInfo.type === "friendRequestSent") {
+                                setLastNotification(<><b>{notificationInfo.sender}</b> sent you a friend request.</>)
+                                setIcon(<Avatar src={notificationInfo.icon} />)
                             }
-                            setLastNotification(<><b>{notificationInfo.sender}</b> gave <b style={{ color: "gold" }}>{stars}</b> to your post titled <b>{notificationInfo.postTitle}</b></>)
-                            setIcon(<Avatar src={notificationInfo.icon} />)
+                            else if (notificationInfo.type === "friendRequestAccepted") {
+                                setLastNotification(<><b>{notificationInfo.sender}</b> accepted your friend request.</>)
+                                setIcon(<Avatar src={notificationInfo.icon} />)
+                            }
+                            else if (notificationInfo.type === "friendRequestRejected") {
+                                setLastNotification(<><b>{notificationInfo.sender}</b> rejected your friend request.</>)
+                                setIcon(<Avatar src={notificationInfo.icon} />)
+                            }
+                            else if (notificationInfo.type === "friendRequestRemoved") {
+                                setLastNotification(<><b>{notificationInfo.sender}</b> unfriended you.</>)
+                                setIcon(<Avatar src={notificationInfo.icon} />)
+                            }
+                            else if (notificationInfo.type === "comment") {
+                                setLastNotification(<><b>{notificationInfo.sender}</b> commented <b>{notificationInfo.comment}</b> on your post titled <b>{notificationInfo.postTitle}</b></>)
+                                setIcon(<Avatar className={classes.green}><CommentIcon fontSize="small" /></Avatar>)
+                            }
+                            else if (notificationInfo.type === "rating") {
+                                var stars = "";
+                                for (var i = 0; i < notificationInfo.stars; i++) {
+                                    stars += "★"
+                                }
+                                setLastNotification(<><b>{notificationInfo.sender}</b> gave <b style={{ color: "gold" }}>{stars}</b> to your post titled <b>{notificationInfo.postTitle}</b></>)
+                                setIcon(<Avatar src={notificationInfo.icon} />)
+                            }
+                            else if (notificationInfo.type === "chat") {
+                                setLastNotification(<><b>{notificationInfo.sender}</b> sent a new message</>)
+                                setIcon(<Avatar src={notificationInfo.icon} />)
+                            }
+                            else if (notificationInfo.type === "groupChat") {
+                                setLastNotification(<><b>{notificationInfo.sender}</b> sent a new message in a group chat</>)
+                                setIcon(<Avatar src={notificationInfo.icon} />)
+                            }
                         }
-                        else if (notificationInfo.type === "chat") {
-                            setLastNotification(<><b>{notificationInfo.sender}</b> sent a new message</>)
-                            setIcon(<Avatar src={notificationInfo.icon} />)
+                        else if(window.location.pathname !== "/notifications") {
+                            db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).get().then((doc) => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: doc.data().notifications.filter(a => (a.type === "chat") || (a.type === "groupChat")?false:true)
+                                }, {merge: true})   
+                            });
                         }
-                        else if (notificationInfo.type === "groupChat") {
-                            setLastNotification(<><b>{notificationInfo.sender}</b> sent a new message in a group chat</>)
-                            setIcon(<Avatar src={notificationInfo.icon} />)
+                        else {
+                            setOpenNotification(false)
                         }
                     }
-                    else if(window.location.pathname !== "/notifications") {
-                        db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).get().then((doc) => {
-                            db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
-                                notifications: doc.data().notifications.filter(a => (a.type === "chat") || (a.type === "groupChat")?false:true)
-                            }, {merge: true})   
-                        });
-                    }
-                    else {
-                        setOpenNotification(false)
-                    }
+                    // else {
+                    //     setOpenNotification(false)
+                    // }
                 }
-                // else {
-                //     setOpenNotification(false)
-                // }
-            }
-            else {
-                setOpenNotification(false)
-            }
-        })
-    }, [user.displayName, classes.green, hasNotifications])
+                else {
+                    setOpenNotification(false)
+                }
+            })
+        }
+    }, [user.displayName, classes.green, hasNotifications, props.isVerified])
 
     return (
         <>
@@ -167,12 +171,14 @@ export default function NewsfeedPage(props) {
                             <Route path="/user/:id/channel/:channel" exact component={Feed} />
                             <Route path="/challenges/:id" exact component={ChallengesPage} />
                             <Route path="/forums" render={props => <Forums setValue={setValue} />} />
+                            <Route path="/leaderBoards" render={props => <LeaderBoards setValue={setValue} />} />
                             <Route path="/notifications" exact render={props => <Notifications notifications={notifications} />} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 {/* <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} /> */}
                                 <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
                                 <BottomNavigationAction label="Forums" value="forums/feedbackForum" icon={<ForumIcon />} />
+                                {/* <BottomNavigationAction label="Leaderboards" value="leaderboards/globalUsersLeaderBoard" icon={<EqualizerIcon />} /> */}
                                 {/* <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} /> */}
                                 {/* <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} /> */}
                                 <BottomNavigationAction label="Challenges" value={'challenges/' + user.displayName} icon={<WhatshotIcon />} />

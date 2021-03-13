@@ -104,7 +104,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [totalStars, setTotalStars] = useState(totalStar);
   //Stars given by the user on the post
   const [stars, setStars] = useState((star[viewingUser.uid] === undefined) ? 0 : star[viewingUser.uid]);
+
   const history = useHistory();
+  
   //TO update the stars after the user has given the stars
   const updateStars = async (e) => {
     let givenStars = parseInt(e.target.value);
@@ -147,8 +149,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         })
       }, { merge: true })
     }
-    
-    
 
     post.update({ totalStars: newTotalStars, stars: star });
 
@@ -157,11 +157,39 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       transaction.get(user).then(doc => {
         let profilePoints = doc.data().profilePoints;
         let newProfilePoints = profilePoints + (givenStars - stars);
-        transaction.update(user, { profilePoints: newProfilePoints });
+        let notifications = doc.data().notifications;
+        let league = doc.data().league;
+        let leaguee = "";
+        
+        if(newProfilePoints<100)
+          leaguee = "No league profile points less than 100"
+        else if(newProfilePoints<500)
+          leaguee = "Silver"
+        else if(newProfilePoints<1000)
+          leaguee = "Gold"
+        else if(newProfilePoints<1200)
+          leaguee = "Diamond"
+        else 
+          leaguee = "Platinum"
+          
+        if(league && league===leaguee)
+          transaction.update(user, { profilePoints: newProfilePoints });
+        else{
+          transaction.update(user, { profilePoints: newProfilePoints, league : leaguee, 
+            
+            //Sending Notification About league change
+            notifications: [...notifications, {
+              type: "leagueChange",
+              sentAt: firebase.firestore.Timestamp.now(),
+              league: leaguee,
+              message: profilePoints > newProfilePoints ? "Opps! You have been demoted" : "Yaayy! You have been promoted"
+            }]});
+        }
       })));
     setStars(givenStars);
     setTotalStars(newTotalStars);
   }
+
 
   const handleClose = () => setShow(false);
   useEffect(() => {

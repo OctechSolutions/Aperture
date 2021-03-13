@@ -36,6 +36,8 @@ import Menu from '@material-ui/core/Menu';
 import Slider from '@material-ui/core/Slider';
 import MenuItem from '@material-ui/core/MenuItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -65,6 +67,10 @@ const useStyles = makeStyles((theme) => ({
   input: {
     marginLeft: theme.spacing(2),
     flex: 1,
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
 }));
 
@@ -142,6 +148,7 @@ function Feed({ match }, props) {
   const [cropper, setCropper] = useState("");
   const [cropping, setCropping] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(true);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -150,7 +157,6 @@ function Feed({ match }, props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
 
   const getCropData = async () => {
     if (typeof cropper !== "undefined") {
@@ -234,6 +240,7 @@ function Feed({ match }, props) {
                     key: doc.id,
                     data: doc.data(),
                   }))))).filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i).sort((a, b) => a.data.timestamp < b.data.timestamp))
+                  setOpen(false);
                 })
             }
           }
@@ -252,7 +259,7 @@ function Feed({ match }, props) {
               .where("name", "==", match.params.channel)
               .where("channelBy", "==", match.params.id)
               .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
-              .onSnapshot((snapshot) =>
+              .onSnapshot((snapshot) => {
                 setPosts(
                   snapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -260,7 +267,8 @@ function Feed({ match }, props) {
                     data: doc.data(),
                   }))
                 )
-              );
+                setOpen(false)
+              })
           }
         } else {
           console.log("No such document!");
@@ -892,7 +900,9 @@ function Feed({ match }, props) {
             )}
           </Modal.Body>
         </Modal>
-
+        <Backdrop className={classes.backdrop} open={open}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <FlipMove>
           {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
