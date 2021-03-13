@@ -633,127 +633,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         />
                     </div>
                 </div>
-                <Modal
-                    show={add}
-                    onHide={() => { setAdd(false) }}
-                    keyboard={false}
-                    size="xl"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                >
-                    <Modal.Header closeButton onClick={() => { setShow(false) }}>
-                        <h5>
-                            {`Invite friends to ${name}`}
-                        </h5>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {
-                            <>
-                                <Autocomplete
-                                    multiple
-                                    autoComplete={true}
-                                    autoSelect={true}
-                                    clearOnEscape={true}
-                                    fullWidth={true}
-                                    autoHighlight={true}
-                                    onChange={(event, selectedUser) => {
-                                        selectedUsers = selectedUser
-                                    }}
-                                    id="search"
-                                    options={data}
-                                    getOptionLabel={option => option.name}
-                                    renderOption={(option) => {
-                                        return (
-                                            <ListItem >
-                                                <ListItemIcon>
-                                                    <Avatar alt={option.name} src={option.photoUrl} />
-                                                </ListItemIcon>
-                                                <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
-                                            </ListItem>
-                                        )
-                                    }
-                                    }
-                                    disableClearable
-                                    forcePopupIcon={false}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Search"
-                                            margin="normal"
-                                            variant="outlined"
-                                            style={{
-                                                position: "sticky",
-                                                zIndex: 100,
-                                                top: 200,
-                                                backgroundColor: "white",
-                                                marginBottom: "20px"
-                                            }}
-                                        />
-                                    )}
-                                />
-                                <center>
-                                    <ButtonBase onClick={() => {
-                                        if (selectedUsers.length > 0) {
-                                            console.log(selectedUsers);
-                                            sendInviteNotifications(selectedUsers);
-                                        }
-                                    }}>
-                                        &nbsp;Invite
-                                        <IconButton
-                                            aria-label="invite to challenge"
-                                            onClick={() => {
-                                                if (selectedUsers.length > 0) {
-                                                    console.log(selectedUsers);
-                                                }
-                                            }}
-                                            color="primary"
-                                        >
-                                            <CallMadeIcon />
-                                        </IconButton>
-                                    </ButtonBase>
-                                </center>
-                            </>
-                        }
-                    </Modal.Body>
-                </Modal>
-                <Modal
-                    show={showParticipants}
-                    onHide={() => { setShowParticipants(false) }}
-                    keyboard={false}
-                    size="xl"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                >
-                    <Modal.Header closeButton onClick={() => { setShowParticipants(false) }}>
-                        <center><h3>Participants</h3></center>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {
-                            <List component="users" aria-label="chat participants">
-                                <ListItem button onClick={() => {
-                                    history.push(`/user/${user.displayName}`)
-                                }}>
-                                    <ListItemIcon>
-                                        <Avatar alt={creator} src={creatorPhotoUrl} />
-                                    </ListItemIcon>
-                                    <ListItemText primary={creator} secondary={"Creator"} primaryTypographyProps={{ noWrap: true }} />
-                                </ListItem>
-                                {participants.length > 0 && participants.map(option => (
-                                    <ListItem button onClick={() => {
-                                        history.push(`/user/${option.name}`)
-                                    }}>
-                                        <ListItemIcon>
-                                            <Avatar alt={option.name} src={option.photoUrl} />
-                                        </ListItemIcon>
-                                        <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
-                                    </ListItem>
-                                ))
-                                }
-                            </List>
-                        }
-                    </Modal.Body>
-
-                </Modal>
                 {/* 3 Dots Menu. */}
                 {isAdmin &&
                     <>
@@ -1071,6 +950,131 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         }
                     </div>
                 </Modal.Body>
+            </Modal>
+
+            {/* POP UP MODAL TO INVITE FRIENDS. */}
+            <Modal
+                    show={add}
+                    onHide={() => { setAdd(false) }}
+                    keyboard={false}
+                    size="xl"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header closeButton onClick={() => { setAdd(false) }}>
+                        <h5>
+                            {`Invite friends to ${name}`}
+                        </h5>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {
+                            <>
+                                <Autocomplete
+                                    multiple
+                                    autoComplete={true}
+                                    autoSelect={true}
+                                    clearOnEscape={true}
+                                    fullWidth={true}
+                                    autoHighlight={true}
+                                    onChange={(event, selectedUser) => {
+                                        selectedUsers = selectedUser
+                                    }}
+                                    id="search"
+                                    options={data}
+                                    getOptionLabel={option => option.name}
+                                    renderOption={(option) => {
+                                        return (
+                                            <ListItem >
+                                                <ListItemIcon>
+                                                    <Avatar alt={option.name} src={option.photoUrl} />
+                                                </ListItemIcon>
+                                                <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                            </ListItem>
+                                        )
+                                    }
+                                    }
+                                    disableClearable
+                                    forcePopupIcon={false}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Search"
+                                            margin="normal"
+                                            variant="outlined"
+                                            style={{
+                                                position: "sticky",
+                                                zIndex: 100,
+                                                top: 200,
+                                                backgroundColor: "white",
+                                                marginBottom: "20px"
+                                            }}
+                                        />
+                                    )}
+                                />
+                                <center>
+                                    <ButtonBase onClick={() => {
+                                        if (selectedUsers.length > 0) {
+                                            console.log(selectedUsers);
+                                            sendInviteNotifications(selectedUsers);
+                                        }
+                                    }}>
+                                        &nbsp;Invite
+                                        <IconButton
+                                            aria-label="invite to challenge"
+                                            onClick={() => {
+                                                if (selectedUsers.length > 0) {
+                                                    console.log(selectedUsers);
+                                                }
+                                            }}
+                                            color="primary"
+                                        >
+                                            <CallMadeIcon />
+                                        </IconButton>
+                                    </ButtonBase>
+                                </center>
+                            </>
+                        }
+                    </Modal.Body>
+                </Modal>
+
+            {/* POP UP MODAL TO SHOW PARTICIPANTS. */}
+            <Modal
+                show={showParticipants}
+                onHide={() => { setShowParticipants(false) }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton onClick={() => { setShowParticipants(false) }}>
+                    <center><h3>Participants</h3></center>
+                </Modal.Header>
+                <Modal.Body>
+                    {
+                        <List component="users" aria-label="chat participants">
+                            <ListItem button onClick={() => {
+                                history.push(`/user/${user.displayName}`)
+                            }}>
+                                <ListItemIcon>
+                                    <Avatar alt={creator} src={creatorPhotoUrl} />
+                                </ListItemIcon>
+                                <ListItemText primary={creator} secondary={"Creator"} primaryTypographyProps={{ noWrap: true }} />
+                            </ListItem>
+                            {participants.length > 0 && participants.map(option => (
+                                <ListItem button onClick={() => {
+                                    history.push(`/user/${option.name}`)
+                                }}>
+                                    <ListItemIcon>
+                                        <Avatar alt={option.name} src={option.photoUrl} />
+                                    </ListItemIcon>
+                                    <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                </ListItem>
+                            ))
+                            }
+                        </List>
+                    }
+                </Modal.Body>
+
             </Modal>
 
             {/* Post added success message alert! */}
