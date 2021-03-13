@@ -680,7 +680,7 @@ function Feed({ match }, props) {
             </div>
           </>
           :
-          <div style={{ position: "sticky", top: "67px", zIndex: "100", backgroundColor: "whitesmoke", width: "104%",marginLeft: "-2%",overflow: "hidden"}}>
+          <div style={{ position: "sticky", top: "66px", zIndex: "100", backgroundColor: "whitesmoke", width: "108%",marginLeft: "-4%",overflow: "hidden"}}>
             <center>
               <h1>Home</h1>
             </center>

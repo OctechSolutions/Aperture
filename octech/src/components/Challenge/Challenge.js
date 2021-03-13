@@ -60,10 +60,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
-import AddIcon from '@material-ui/icons/Add';
+import { ButtonBase } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges }) {
+export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges, invitees, participants }) {
 
     const [anchorEl3Dots, setAnchorEl3Dots] = useState(null)
     const [isPublic, setIsPublic] = useState(!isPrivate)
@@ -283,8 +283,30 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [openSnackbar, setOpenSnackbar] = useState(false)
     const [openCaptionError, setOpenCaptionError] = useState(false)
     const [add, setAdd] = useState(false)
+    const [openInviteSent, setOpenInviteSent] = useState(false)
 
     const Compress = require('compress.js')
+
+    const sendInviteNotifications = (names) => {
+        let inviteeNames = []
+        names.forEach(a => {
+            console.log(`${creator} invited you to participate in ${name}`, a.name)
+            inviteeNames.push(a.name)
+            db.collection("users").doc(a.name).collection("notifications").doc(a.name).set({
+                notifications: firebase.firestore.FieldValue.arrayUnion({
+                    type: "challengeInivitation",
+                    sentAt: firebase.firestore.Timestamp.now(),
+                    sender: creator,
+                    challengeTitle: name
+                })
+            }, { merge: true })
+        });
+        db.collection("challenges").doc(name).set({
+            invitees: invitees.concat(inviteeNames)
+        }, { merge: true })
+        setAdd(false);
+        setOpenInviteSent(true);
+    }
 
     // Function to open the post added snackbar.
     const handleSnackbarOpen = () => {
@@ -518,6 +540,13 @@ export default function Challenge({ user, name, description, hints, creator, cre
         // eslint-disable-next-line
     }, [loadEntries])
 
+    function getOptions(data) {
+        if(participants.length)
+            return data.friends.filter(a => !participants.map(u=>u.name).concat(invitees).includes(a.name))
+        else
+            return data.friends.filter(a => !invitees.includes(a.name))
+    }
+
     return (
         <div className="challenge" >
             {/* CHALLENGE HEADER = CREATOR, PUBLIC/PRIVATE, DELETE, EDIT, SEND INVITES. */}
@@ -537,6 +566,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                             aria-controls="long-menu"
                             aria-haspopup="true"
                             onClick={() => { history.push(`/user/${creator}`) }}
+                            style={{marginLeft: "-10px"}}
                         > {/* Redirect to creator profile when clicking creator's user icon. */}
                             <Avatar src={creatorPhotoUrl}></Avatar>
                         </IconButton>
@@ -554,12 +584,13 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                             setIsPublic(!isPublic)
                                         }
                                     }}
+                                    style={{marginLeft: "-10px"}}
                                 >{/* Toggle public or private if this user is admin.*/}
                                     {!isPublic ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
                                 </IconButton>
                                 {/* Copy to Clipboard button */}
                                 <CopyToClipboard text={name} onCopy={displayCodeToClipboardDialog}>
-                                    <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
+                                    <IconButton color="primary" aria-label="copy to clipboard" style={{marginLeft: "-10px"}}> <FileCopyIcon /> </IconButton>
                                 </CopyToClipboard>
                             </div>
                             <div style={{ marginTop: "-15px" }}>
@@ -613,7 +644,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                         selectedUsers = selectedUser
                                     }}
                                     id="search"
-                                    options={userData.data ? userData.data.friends : []}
+                                    options={userData.data ? getOptions(userData.data) : []}
                                     getOptionLabel={option => option.name}
                                     renderOption={(option) => {
                                         return (
@@ -645,17 +676,25 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                     )}
                                 />
                                 <center>
-                                    <IconButton
-                                        aria-label="invite to challenge"
-                                        onClick={() => {
-                                            if (selectedUsers.length > 0) {
-                                                console.log(selectedUsers);
-                                            }
-                                        }}
-                                        onMouseDown={() => { }}
-                                    >
-                                        <AddIcon />
-                                    </IconButton>
+                                    <ButtonBase onClick={() => {
+                                        if (selectedUsers.length > 0) {
+                                            console.log(selectedUsers);
+                                            sendInviteNotifications(selectedUsers);
+                                        }
+                                    }}>
+                                        &nbsp;Invite
+                                        <IconButton
+                                            aria-label="invite to challenge"
+                                            onClick={() => {
+                                                if (selectedUsers.length > 0) {
+                                                    console.log(selectedUsers);
+                                                }
+                                            }}
+                                            color="primary"
+                                        >
+                                            <CallMadeIcon />
+                                        </IconButton>
+                                    </ButtonBase>
                                 </center>
                             </>
                         }
@@ -985,6 +1024,11 @@ export default function Challenge({ user, name, description, hints, creator, cre
             <Snackbar open={openCaptionError} autoHideDuration={6000} onClose={() => setOpenCaptionError(false)}>
                 <Alert onClose={() => setOpenCaptionError(false)} severity="error">
                     Post must have an awesome Caption!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={openInviteSent} autoHideDuration={6000} onClose={() => setOpenInviteSent(false)}>
+                <Alert onClose={() => setOpenInviteSent(false)} severity="success">
+                    Invitation sent!
                 </Alert>
             </Snackbar>
         </div>

@@ -34,7 +34,7 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CommentIcon from '@material-ui/icons/Comment';
-import { green, red } from '@material-ui/core/colors';
+import { blue, green, red } from '@material-ui/core/colors';
 import moment from 'moment';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
@@ -59,6 +59,10 @@ const useStyles = makeStyles({
     red: {
         color: '#fff',
         backgroundColor: red[500],
+    },
+    blue: {
+        color: '#fff',
+        backgroundColor: blue[500],
     },
 })
 
@@ -146,6 +150,15 @@ export default function NewsfeedPage(props) {
                                 setLastNotification(<>{notificationInfo.message}<b>{notificationInfo.league}</b></>)
                                 setIcon(<Avatar className={classes.red}><TrendingDownIcon fontSize="small" /></Avatar>)
                             }
+                            else if (notificationInfo.type === "challengeInivitation") {
+                                setLastNotification(<><b>{notificationInfo.sender}</b> invited you to a challenge titled <b>{notificationInfo.challengeTitle}</b></>)
+                                setIcon(<Avatar className={classes.blue}><WhatshotIcon fontSize="small" /></Avatar>)
+                            }
+                            else if (notificationInfo.type === "challengeAccepted") {
+                                setLastNotification(<><b>{notificationInfo.sender}</b> has acepted the invite for your challenge titled <b>{notificationInfo.challengeTitle}</b>!</>)
+                                setIcon(<Avatar className={classes.green}><WhatshotIcon fontSize="small" /></Avatar>)
+                            }
+                            
                         }
                         else if (window.location.pathname !== "/notifications") {
                             db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).get().then((doc) => {
