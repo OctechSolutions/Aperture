@@ -64,7 +64,7 @@ export default function ChallengesPage() {
     }
 
     // Function that loads all challenges
-    const loadChallengeObjects = () => {
+    const loadChallengeObjects = async () => {
         // Load challenges (once).
         if(loadChallenges) { // If challenges are to be loaded, then load them.
             setChallenges([]) // Set challenges to an empty array.
@@ -73,11 +73,15 @@ export default function ChallengesPage() {
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
                     let data = doc.data() // data = a single challenge object.
+                    let p = [{}]
+                    if(data.participants!==undefined) {
+                        p = data.participants
+                    }
                     // Display only if ...
                     if( 
                         !data.isPrivate || // The challenge is not private.
                         data.creator === userName || // The user is the creator of the challenge.
-                        Object.keys(data.invitees).includes(userName) // The user was invited to this challenge.
+                        p.map(u=>u.name).includes(userName) // The user was invited to this challenge.
                     ){ 
                         setChallenges((prevArr) => // Create a Challenge object and add to the list of challenges. 
                             [
@@ -99,6 +103,8 @@ export default function ChallengesPage() {
                                     setLoadChallenges={setLoadChallenges}
                                     timestamp={data.timestamp}
                                     openEditForm={handleFormOpen}
+                                    invitees={data.invitees}
+                                    participants={data.participants?data.participants:{}}
                                 > </Challenge>
                             ]
                         )
@@ -125,6 +131,7 @@ export default function ChallengesPage() {
     const handleFormOpen = (editInfo) => {
         if(editInfo) { 
             setEditChallenge(editInfo) 
+            
             setChallengeName(editInfo.name)
             setChallengeDescription(editInfo.description)
             setChallengeHint1(editInfo.hint1)
@@ -141,8 +148,7 @@ export default function ChallengesPage() {
     const handleFormClose = () => {
         setOpenForm(false)
         setEditChallenge(null)
-        resetFormValues()
-        
+        resetFormValues()      
     }
 
     // Function that submits the form to add a new challenge.
@@ -181,7 +187,8 @@ export default function ChallengesPage() {
                                 creatorPhotoUrl: user.photoUrl,
                                 description: challengeDescription,
                                 hints: [challengeHint1, challengeHint2,challengeHint3],
-                                invitees: {},
+                                invitees: editChallenge.invitees,
+                                participants: editChallenge.participants,
                                 isPrivate: challengeIsPrivate,
                                 name: challengeName,
                                 leader: "",
@@ -224,7 +231,8 @@ export default function ChallengesPage() {
                             creatorPhotoUrl: user.photoUrl,
                             description: challengeDescription,
                             hints: [challengeHint1, challengeHint2,challengeHint3],
-                            invitees: {},
+                            invitees: [],
+                            participants: [],
                             isPrivate: challengeIsPrivate,
                             name: challengeName,
                             leader: "",

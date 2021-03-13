@@ -473,13 +473,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       // Remove this challenge from the challenges list of this post.
       db.collection("posts").doc(id).update({ challenge: firebase.firestore.FieldValue.delete() })
         .then(() => {
-          console.log("Challenge removed = " + challengeName)
           updateChallengeChip() // Display updated chllenges.
         })
       // Remove corresponding challenge post from the challengePosts collection.
       db.collection("challengePosts").doc(id).delete()
         .then(() => {
-          console.log("Challenge removed = " + challengeName)
           updateChallengeChip() // Display updated chllenges.
         })
     }
@@ -574,7 +572,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
             </IconButton>
             <div className="postInfo">
-              <div>
+              <div style= {{marginLeft : "-12px"}}>
                 <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
 
                   {channelBy ? channelBy : name}</Link>
@@ -623,7 +621,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                       <MapIcon />
                     </IconButton>
                   }
-                  {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
+                  {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-12px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
                     a few seconds ago
                       </div>}
                 </>  {/* Link is a component from react router that redirects to a particular route on click */}
@@ -706,7 +704,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           }
         </div>
         <div className="post_body">
-          <br />
+          {/* <br /> */}
           <p>{message}</p>
         </div>
         {loading && <Skeleton variant="rect" width={"100%"} height={250} />}
