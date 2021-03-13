@@ -53,7 +53,7 @@ const Chat = (props) => {
         })
         if(users.length >= 2) {
             users.forEach(a => {
-                if(a.name != props.user.name) {
+                if(a.name !== props.user.name) {
                     db.collection("users").doc(a.name).collection("notifications").doc(a.name).update({
                         notifications: firebase.firestore.FieldValue.arrayUnion({
                             type: "groupChat",
@@ -67,7 +67,7 @@ const Chat = (props) => {
         }
         else {
             users.forEach(a => {
-                if(a.name != props.user.name) {
+                if(a.name !== props.user.name) {
                     db.collection("users").doc(a.name).collection("notifications").doc(a.name).update({
                         notifications: firebase.firestore.FieldValue.arrayUnion({
                             type: "chat",
@@ -114,16 +114,18 @@ const Chat = (props) => {
         <>
             <div style={{ width: "100%", position: "sticky", top: "85px", display: "flex", justifyContent: "space-between" }}>
                 <div style={{ marginLeft: "2px", fontSize: "20px" }}> {(users.length > 1) ?
-                    <AvatarGroup max={10}>
+                    <AvatarGroup max={10} onClick={() => { setAdd(true) }}>
                         {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
                     </AvatarGroup>
                     : <>
-                        {/* <ListItemIcon> */}
-                        <IconButton disableRipple={true} disableFocusRipple={true} disableTouchRipple={true} style={{ backgroundColor: "transparent" }}>
+                        {/* <ListItemIcon> */ }
+                        <IconButton disableRipple={true} disableFocusRipple={true} disableTouchRipple={true} style={{ backgroundColor: "transparent" }} >
                             <AvatarGroup max={3} style={{marginRight: "5px"}}>
-                                {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
+                                {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} onClick= {()=>{
+                                history.push(`/user/${user.name}`)
+                               }}/> : "")}
                             </AvatarGroup>
-                            <div>{props.participants.map(user => user.name)}</div>
+                            <div >{props.participants.map(user => user.name)}</div>
                             {/* <ListItemText primary={props.participants.map(user => user.name)} primaryTypographyProps={{ noWrap: true }}></ListItemText> */}
                         </IconButton>
 

@@ -284,7 +284,8 @@ function Profile({ match }) {
                                     :
                                     <>
                                     </>}
-                                <h1>Profile Points :{profileInfo.profilePoints}</h1>
+                                <h1>Profile Points : {profileInfo.profilePoints}</h1>
+                                {(profileInfo.league ? <h1>League : {profileInfo.league}</h1> :<> </>)}
                             </center>}
                         <Tabs
                             id="controlled-tab-example"
@@ -294,7 +295,7 @@ function Profile({ match }) {
                             fill
                         >
                             <Tab eventKey="posts" title="Posts" style={{ color: "black", width: "100%" }}>
-                                {<FlipMove style={{ marginBottom: "70px" }}>
+                                {<FlipMove style={{ marginBottom: "70px", paddingLeft: "3%", paddingRight: "3%" }}>
                                     {posts.map(
                                         ({
                                             id,

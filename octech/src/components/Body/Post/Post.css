@@ -55,6 +55,13 @@
 }
 
 @media (max-width: 947px) {
+  .post {
+    width: 100%;
+  }
+  .post > img {
+    padding: 0;
+    margin: 0;
+  }
   .post__image > img {
     max-width: 100%;
     min-width: 100%;
@@ -65,6 +72,8 @@
     margin-left: auto;
     margin-right: auto;
     display: flex;
+    padding: 0;
+    margin: 0;
     border-radius: 20px;
   }
 }

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import {CopyToClipboard} from 'react-copy-to-clipboard'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Link } from "react-router-dom"
 import { useHistory } from "react-router-dom"
 import Modal from 'react-bootstrap/Modal'
-import Alert from 'react-bootstrap/Alert'
+// import Alert from 'react-bootstrap/Alert'
 import Spinner from 'react-bootstrap/Spinner'
 import Camera, { FACING_MODES } from "react-html5-camera-photo"
 import Countdown from 'react-countdown'
 
 import './Challenge.css'
 
-import Post from "../Body/Post/Post"
+// import Post from "../Body/Post/Post"
 import ChallengePost from "./ChallengePost"
 
 import firebase from "firebase"
@@ -21,17 +21,17 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItem from '@material-ui/core/ListItem'
-import List from '@material-ui/core/List'
-import Divider from '@material-ui/core/Divider'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Slide from '@material-ui/core/Slide'
-import Typography from '@material-ui/core/Typography'
+// import ListItemText from '@material-ui/core/ListItemText'
+// import ListItem from '@material-ui/core/ListItem'
+// import List from '@material-ui/core/List'
+// import Divider from '@material-ui/core/Divider'
+// import AppBar from '@material-ui/core/AppBar'
+// import Toolbar from '@material-ui/core/Toolbar'
+// import Slide from '@material-ui/core/Slide'
+// import Typography from '@material-ui/core/Typography'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
+// import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import InputBase from '@material-ui/core/InputBase'
 import Cropper from "react-cropper"
@@ -50,7 +50,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import LockIcon from '@material-ui/icons/Lock'
 import PublicIcon from '@material-ui/icons/Public'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
-import CloseIcon from '@material-ui/icons/Close'
+// import CloseIcon from '@material-ui/icons/Close'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 import VisibilityIcon from '@material-ui/icons/Visibility'
 import ImageIcon from "@material-ui/icons/Image"
@@ -58,7 +58,7 @@ import PhotoCameraIcon from "@material-ui/icons/PhotoCamera"
 import SendIcon from '@material-ui/icons/Send'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
-export default function Challenge({user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges}) {
+export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges }) {
 
     const [anchorEl3Dots, setAnchorEl3Dots] = useState(null)
     const [isPublic, setIsPublic] = useState(!isPrivate)
@@ -71,7 +71,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     const [loadEntries, setLoadEntries] = useState(true)
     const [openOverlay, setOpenOverlay] = useState(false) // For entries overlay.
     const [challengeComplete, setChallengeComplete] = useState(false)
-    
+
     const useStyles = makeStyles(
         (theme) => ({
             appBar: { // For entries overlay.
@@ -107,9 +107,9 @@ export default function Challenge({user, name, description, hints, creator, crea
     const open = Boolean(anchorEl3Dots) // Related to 3 Dots Menu.
     const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds)) // For sleep functionality. Reference = https://flaviocopes.com/javascript-sleep/
     const { vertical, horizontal, openCopiedMessage } = showCopiedMessage // Related to copied message popup.
-    const Transition = React.forwardRef(function Transition(props, ref) { // For entries overlay.
-        return <Slide direction="up" ref={ref} {...props} />
-    })
+    // const Transition = React.forwardRef(function Transition(props, ref) { // For entries overlay.
+    //     return <Slide direction="up" ref={ref} {...props} />
+    // })
     const endDateObj = new Date(endDate) // Date object from the endDate string passed.
 
     // Function to close the 3 dots menu.
@@ -126,7 +126,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     const handleOverlayClickOpen = () => {
         setOpenOverlay(true)
     }
-    
+
     // Function to open the full screen participating posts overlay.
     const handleOverlayClose = () => {
         setOpenOverlay(false)
@@ -136,14 +136,14 @@ export default function Challenge({user, name, description, hints, creator, crea
     // Function to delete a challenge.
     const deleteChallenge = () => {
         db.collection("challenges").doc(name).delete().then(() => setLoadChallenges(true))
-        
+
         // Delete this challenge from list of challenges of all participating posts.
         db.collection("challengePosts").where("challenge", "==", name)
-        .get().then((snapShot) => { 
-            snapShot.forEach((postDoc) => {
-                if(postDoc) { db.collection("challengePosts").doc(postDoc.id).delete() }
+            .get().then((snapShot) => {
+                snapShot.forEach((postDoc) => {
+                    if (postDoc) { db.collection("challengePosts").doc(postDoc.id).delete() }
+                })
             })
-        })
     }
 
     // Function that displays the copied to clipboard message.
@@ -159,41 +159,42 @@ export default function Challenge({user, name, description, hints, creator, crea
 
         // Add all posts that have this challenge in its challenges list to entries array.
         db.collection("challengePosts").orderBy('timestamp', 'desc').get()
-        .then((postDocArr) => {
-            postDocArr.forEach((postDoc) => {
-                let postChallenge = postDoc.data().challenge
-                if(postChallenge) {
-                    if(postChallenge == name){
-                        //console.log("postDoc.data() = " + postDoc.data().ref)
-                        setEntries((prev) => [
-                            ...prev,
-                            <ChallengePost
-                                key={postDoc.data().ref}
-                                user={user}
-                                caption={postDoc.data().caption}
-                                challengePoints={postDoc.data().challengePoints}
-                                creator={postDoc.data().creator}
-                                creatorPhotoUrl={postDoc.data().creatorPhotoUrl}
-                                imageSrc={postDoc.data().imageSrc}
-                                style={postDoc.data().style}
-                                timestamp={postDoc.data().timestamp}
-                                id={postDoc.data().ref}
-                                loadChallengeEntries={loadChallengeEntries}
-                                challengeName={name}
-                            ></ChallengePost>
-                        ])
+            .then((postDocArr) => {
+                postDocArr.forEach((postDoc) => {
+                    let postChallenge = postDoc.data().challenge
+                    if (postChallenge) {
+                        if (postChallenge === name) {
+                            //console.log("postDoc.data() = " + postDoc.data().ref)
+                            setEntries((prev) => [
+                                ...prev,
+                                <ChallengePost
+                                    key={postDoc.data().ref}
+                                    user={user}
+                                    caption={postDoc.data().caption}
+                                    star={postDoc.data().stars}
+                                    totalStar={postDoc.data().totalStars}
+                                    creator={postDoc.data().creator}
+                                    creatorPhotoUrl={postDoc.data().creatorPhotoUrl}
+                                    imageSrc={postDoc.data().imageSrc}
+                                    style={postDoc.data().style}
+                                    timestamp={postDoc.data().timestamp}
+                                    id={postDoc.data().ref}
+                                    loadChallengeEntries={loadChallengeEntries}
+                                    challengeName={name}
+                                ></ChallengePost>
+                            ])
+                        }
                     }
-                }
+                })
             })
-        })
     }
 
     // To properly format the countdown clock.
-    const countdownRenderer = ({days, hours, minutes, seconds, completed}) => {
-        if(completed) { 
+    const countdownRenderer = ({ days, hours, minutes, seconds, completed }) => {
+        if (completed) {
             setChallengeComplete(true)
-            db.collection("challenges").doc(name).update({hasEnded : true})
-            return "Challenge Ended!" 
+            db.collection("challenges").doc(name).update({ hasEnded: true })
+            return "Challenge Ended!"
         }
         else { return days + " days : " + hours + " hrs : " + minutes + " mins : " + seconds + " secs" }
     }
@@ -201,39 +202,39 @@ export default function Challenge({user, name, description, hints, creator, crea
     // For NEW POST ----------------------------------------------------
     const DEFAULT_EDIT_OPTIONS = [
         {
-          name: 'Brightness',
-          property: 'brightness',
-          value: 100,
-          range: { min: 0, max: 200 },
-          unit: '%'
+            name: 'Brightness',
+            property: 'brightness',
+            value: 100,
+            range: { min: 0, max: 200 },
+            unit: '%'
         },
         {
-          name: 'Contrast',
-          property: 'contrast',
-          value: 100,
-          range: { min: 0, max: 200 },
-          unit: '%'
+            name: 'Contrast',
+            property: 'contrast',
+            value: 100,
+            range: { min: 0, max: 200 },
+            unit: '%'
         },
         {
-          name: 'Saturation',
-          property: 'saturate',
-          value: 100,
-          range: { min: 0, max: 200 },
-          unit: '%'
+            name: 'Saturation',
+            property: 'saturate',
+            value: 100,
+            range: { min: 0, max: 200 },
+            unit: '%'
         },
         {
-          name: 'Grayscale',
-          property: 'grayscale',
-          value: 0,
-          range: { min: 0, max: 100 },
-          unit: '%'
+            name: 'Grayscale',
+            property: 'grayscale',
+            value: 0,
+            range: { min: 0, max: 100 },
+            unit: '%'
         },
         {
-          name: 'Hue',
-          property: 'hue-rotate',
-          value: 0,
-          range: { min: 0, max: 360 },
-          unit: 'deg'
+            name: 'Hue',
+            property: 'hue-rotate',
+            value: 0,
+            range: { min: 0, max: 360 },
+            unit: 'deg'
         }
     ]
 
@@ -248,7 +249,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     const [, setNohuman] = useState(false)
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [isPrivatePost, setIsPrivatePost] = useState(false)
+    const [, setIsPrivatePost] = useState(false)
     const [showPostComponent, setShowPostComponent] = useState(false)
 
     const cocoSsd = require('@tensorflow-models/coco-ssd')
@@ -288,7 +289,7 @@ export default function Challenge({user, name, description, hints, creator, crea
         setCameraActive("")
         setSelectedInputImg("")
     }
-    
+
     // Function that handles case when user cancels editing.
     const editingCancelled = async () => {
         setInputImg("");
@@ -304,7 +305,7 @@ export default function Challenge({user, name, description, hints, creator, crea
         setEditOptions(DEFAULT_EDIT_OPTIONS)
 
         setFile(e.target.files[0])
-        
+
         const compress = new Compress()
         compress.compress([e.target.files[0]], {
             size: 0.7, // the max size in MB, defaults to 2MB
@@ -314,38 +315,38 @@ export default function Challenge({user, name, description, hints, creator, crea
             resize: true, // defaults to true, set false if you do not want to resize the image width and height
         }).then((data) => {
 
-        // returns an array of compressed images
-        console.log("compressed data = " + data[0].prefix + data[0].data)
-        var compressedb64 = data[0].prefix + data[0].data
-        setInputImg(compressedb64)
+            // returns an array of compressed images
+            console.log("compressed data = " + data[0].prefix + data[0].data)
+            var compressedb64 = data[0].prefix + data[0].data
+            setInputImg(compressedb64)
 
-        // Human Detection.
-        setLoading(true)
-        cocoSsd.load().then((model) => {
-            // detect objects in the image.
-            const img = document.getElementById("img")
-            model.detect(img).then(
-                (predictions) => {
-                    console.log("Predictions: ", predictions)
-                    if (predictions.length) {
-                        predictions.forEach((prediction) => {
-                            if (prediction.class === "person") {
-                                setInputImg("")
-                                console.log("HUMAN DETECTED!!!")
-                                setShow(true)
-                            }
-                            else {
-                                setNohuman(true)
-                            }
-                        })
+            // Human Detection.
+            setLoading(true)
+            cocoSsd.load().then((model) => {
+                // detect objects in the image.
+                const img = document.getElementById("img")
+                model.detect(img).then(
+                    (predictions) => {
+                        console.log("Predictions: ", predictions)
+                        if (predictions.length) {
+                            predictions.forEach((prediction) => {
+                                if (prediction.class === "person") {
+                                    setInputImg("")
+                                    console.log("HUMAN DETECTED!!!")
+                                    setShow(true)
+                                }
+                                else {
+                                    setNohuman(true)
+                                }
+                            })
+                        }
+                        else {
+                            setNohuman(true)
+                        }
+                        setLoading(false)
+                        setCropping(true)
                     }
-                    else {
-                        setNohuman(true)
-                    }
-                    setLoading(false)
-                    setCropping(true)
-                }
-            )
+                )
             })
         })
 
@@ -359,39 +360,39 @@ export default function Challenge({user, name, description, hints, creator, crea
     }
 
     // Function that closes the camera.
-    const closeCamera = (e) => { 
+    const closeCamera = (e) => {
         setCameraActive("") // Setting this to an empty state stops the rendering of the camera component.
     }
 
     // Handle taking photo with camera.
-    async function handleTakePhoto(dataUri) { 
+    async function handleTakePhoto(dataUri) {
         // console.log(dataUri);
         setInputImg(dataUri)
         setCameraActive("");
         setLoading(true);
         await inputImg;
         cocoSsd.load().then((model) => {
-    
+
             // detect objects in the image.
-        
+
             const img = document.getElementById("img")
             model.detect(img).then((predictions) => {
-        
+
                 console.log("Predictions: ", predictions)
                 if (predictions.length) {
-                predictions.forEach((prediction) => {
-                    if (prediction.class === "person") {
-                    setInputImg("")
-                    console.log("HUMAN DETECTED!!!")
-                    setShow(true)
-                    }
-                    else {
-                    setNohuman(true)
-                    }
-                })
+                    predictions.forEach((prediction) => {
+                        if (prediction.class === "person") {
+                            setInputImg("")
+                            console.log("HUMAN DETECTED!!!")
+                            setShow(true)
+                        }
+                        else {
+                            setNohuman(true)
+                        }
+                    })
                 }
                 else {
-                setNohuman(true)
+                    setNohuman(true)
                 }
                 setLoading(false)
                 setCropping(true)
@@ -402,15 +403,15 @@ export default function Challenge({user, name, description, hints, creator, crea
     // Function that deals with changes when the image edit slider is changed.
     const handleSliderChange = (value) => {
         setEditOptions(prevEditOptions => {
-        return (
-            (prevEditOptions.map((option, index) => {
+            return (
+                (prevEditOptions.map((option, index) => {
 
-            if (index !== selectedOptionIndex) {
-                return option
-            }
-            return { ...option, value: value }
-            }))
-        )
+                    if (index !== selectedOptionIndex) {
+                        return option
+                    }
+                    return { ...option, value: value }
+                }))
+            )
         })
     }
 
@@ -445,11 +446,11 @@ export default function Challenge({user, name, description, hints, creator, crea
     }
 
     // Function that is called when a new post is submitted.
-    const sendPost = async (e) => { 
+    const sendPost = async (e) => {
         e.preventDefault() // This is to prevent the default behaviour of submitting a form.
-        
+
         // If the post does not have a caption, then ask user to enter one.
-        if (caption===""){ setOpenCaptionError(true) }
+        if (caption === "") { setOpenCaptionError(true) }
 
         else {
             if (selectedInputImg !== {}) {
@@ -462,7 +463,8 @@ export default function Challenge({user, name, description, hints, creator, crea
                     creator: creator,
                     creatorPhotoUrl: creatorPhotoUrl || "",
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    challengePoints: 0,
+                    stars: {},
+                    totalStars: 0,
                     challenge: name,
                     ref: ref.id,
                     hasEnded: false
@@ -479,7 +481,7 @@ export default function Challenge({user, name, description, hints, creator, crea
     const handleEditOptionsMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
     }
-    
+
     // Closes the edit options drop down list.
     const handleEditOptionsClose = () => {
         setAnchorEl(null);
@@ -488,36 +490,68 @@ export default function Challenge({user, name, description, hints, creator, crea
     // -----------------------------------------------------------------
 
     useEffect(() => {
-        if(loadEntries) { loadChallengeEntries(); setLoadEntries(false); resetVals() }
+        if (loadEntries) { loadChallengeEntries(); setLoadEntries(false); resetVals() }
+        // eslint-disable-next-line
     }, [loadEntries])
 
     return (
         <div className="challenge" >
             {/* CHALLENGE HEADER = CREATOR, PUBLIC/PRIVATE, DELETE, EDIT, SEND INVITES. */}
-            <div className="challenge_header"> 
+            <div className="challenge_header">
 
                 <div className="challenge_info">
                     {/* Creator avatar icon. */}
-                    <div style={{ 
-                        textDecoration: 'none', 
-                        fontSize: '20px', 
-                        color: "black" 
-                    }}> 
+                    <div style={{
+                        textDecoration: 'none',
+                        fontSize: '20px',
+                        color: "black",
+                        display: "flex",
+
+                    }}>
                         <IconButton
                             aria-label="more"
                             aria-controls="long-menu"
                             aria-haspopup="true"
-                            onClick={() => { history.push(`/user/${creator}`) }} 
+                            onClick={() => { history.push(`/user/${creator}`) }}
                         > {/* Redirect to creator profile when clicking creator's user icon. */}
-                            <Avatar src={creatorPhotoUrl}></Avatar> 
+                            <Avatar src={creatorPhotoUrl}></Avatar>
                         </IconButton>
+                        <div style={{ display: "flex", flexDirection: "column", padding: "0px" }}>
+                            <div style={{ padding: "0px" }}>
+                                {name} {/* Challenge's name. */}
 
-                        {name} {/* Challenge's name. */}
-
-                        {/* Copy to Clipboard button */}
-                        <CopyToClipboard text={name} onCopy={displayCodeToClipboardDialog}>
-                            <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
-                        </CopyToClipboard>
+                                {/* Copy to Clipboard button */}
+                                <CopyToClipboard text={name} onCopy={displayCodeToClipboardDialog}>
+                                    <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
+                                </CopyToClipboard>
+                                {/* Public/Private Icon*/}
+                                <IconButton
+                                    aria-label="more"
+                                    aria-controls="long-menu"
+                                    aria-haspopup="true"
+                                    onClick={() => {
+                                        if (isAdmin) {
+                                            db.collection("challenges").doc(name).update({ isPrivate: isPublic })
+                                            setIsPublic(!isPublic)
+                                        }
+                                    }}
+                                >{/* Toggle public or private if this user is admin.*/}
+                                    {!isPublic ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
+                                </IconButton>
+                            </div>
+                            <div style= {{marginTop: "-15px"}}>
+                                {/* Creator's name. */}
+                                <Link style={{
+                                    textDecoration: 'none',
+                                    fontSize: '15px',
+                                    color: "black"
+                                }} to={`/user/${creator}`}> {/* Redirect to creator profile when clicking creator's name. */}
+                                    {" by " + creator}
+                                </Link>
+                                {/* Link is a component from react router that redirects to a particular route on click.
+                            This dynamically creates a new page with /user/{username} and sends the user to that page. */}
+                            </div>
+                        </div>
 
                         {/* Copied to clipboard message */}
                         <Snackbar
@@ -527,37 +561,11 @@ export default function Challenge({user, name, description, hints, creator, crea
                             message={"Copied \"" + name + "\" to Clipboard!"}
                             key={vertical + horizontal}
                         />
-
-                        {/* Creator's name. */}
-                        <Link style={{ 
-                            textDecoration: 'none', 
-                            fontSize: '15px', 
-                            color: "black" 
-                        }} to={`/user/${creator}`}> {/* Redirect to creator profile when clicking creator's name. */}
-                            {" by " + creator}
-                        </Link>
-                        {/* Link is a component from react router that redirects to a particular route on click.
-                            This dynamically creates a new page with /user/{username} and sends the user to that page. */}
-
-                        {/* Public/Private Icon*/}
-                        <IconButton
-                            aria-label="more"
-                            aria-controls="long-menu"
-                            aria-haspopup="true"
-                            onClick={() => { 
-                                if(isAdmin){
-                                    db.collection("challenges").doc(name).update({isPrivate: isPublic})
-                                    setIsPublic(!isPublic)
-                                }
-                            }} 
-                        >{/* Toggle public or private if this user is admin.*/}
-                            {!isPublic ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />} 
-                        </IconButton>
                     </div>
                 </div>
 
                 {/* 3 Dots Menu. */}
-                { isAdmin &&
+                {isAdmin &&
                     <>
                         {/* 3 dots icon */}
                         <IconButton
@@ -581,13 +589,13 @@ export default function Challenge({user, name, description, hints, creator, crea
                                 <ListItemIcon> <DeleteIcon /> </ListItemIcon>
                                 Delete
                             </MenuItem>
-                            
+
                             {/* Edit challenge. */}
                             <MenuItem key={"edit"} selected={false} onClick={() => { console.log("Edit challenge."); handleMenuClose() }}>
                                 <ListItemIcon> <EditIcon /> </ListItemIcon>
                                 Edit
                             </MenuItem>
-                            
+
                             {/* Send invites. */}
                             <MenuItem key={"invite"} selected={false} onClick={() => { console.log("Send invites to join challenge."); handleMenuClose() }}>
                                 <ListItemIcon> <CallMadeIcon /> </ListItemIcon>
@@ -597,53 +605,67 @@ export default function Challenge({user, name, description, hints, creator, crea
                     </>
                 }
             </div>
-        
+
             {/* CHALLENGE DESRIPTION + HINTS + CHALLENGE CODE + VIEW ENTRIES. */}
             <div className="challenge_body">
-                <p><b>Description</b><br />{ description }</p>
-                { (hints!=",,") && <p><b>Hints</b><br />{ hints.toString().replaceAll(",", ", ") }</p> }       
-                <p><b>Duration</b><br />{ startDate } - { endDate }</p>
-                <p><b>Countdown to Challenge End</b></p>
-                <Countdown date={Date.now() + (endDateObj - Date.now())} renderer={countdownRenderer} />
+                <p><b>Description</b><br />{description}</p>
+                {(hints !== ",,") && <p><b>Hints</b><br />{hints.toString().replaceAll(",", ", ")}</p>}
+                <p><b>Duration</b><br />{startDate} - {endDate}</p>
+                <p><b>Countdown to Challenge End</b><br />
+                    <Countdown date={Date.now() + (endDateObj - Date.now())} renderer={countdownRenderer} /></p>
                 {/* Add new post to challenge and view entries button. */}
-                <div className="buttons" style={{display:"flex", justifyContent:"space-evenly"}}>
+                <div className="buttons" style={{ display: "flex", justifyContent: "space-evenly" }}>
                     {   // Display option to add to a challenge only if its not completed yet.
                         !challengeComplete &&
                         <IconButton aria-label="addPostToChallenge" color="primary" onClick={() => { setShowPostComponent(true) }}>
                             <AddCircleOutlineIcon fontSize="large" />
                         </IconButton>
                     }
-                    <IconButton aria-label="viewEntries" color="primary" onClick={ handleOverlayClickOpen }>
-                        <VisibilityIcon fontSize="large"/>
+                    <IconButton aria-label="viewEntries" color="primary" onClick={handleOverlayClickOpen}>
+                        <VisibilityIcon fontSize="large" />
                     </IconButton>
                 </div>
             </div>
-            
+
             {/* CHALLENGE LEADER / WINNER */}
             <div className="winner">
-                { 
+                {
                     leader !== "" ? // Display a leader / winner if one exists.
-                    (new Date() < new Date(endDate))? <p>Leader: </p>: <p>Winner: </p>
-                    :<></>
+                        (new Date() < new Date(endDate)) ? <p>Leader: </p> : <p>Winner: </p>
+                        : <></>
                 }
                 {leader}
             </div>
-       
+
             {/* FULLSCREEN OVERLAY TO DISPLAY PARTICIPATING POSTS */}
-            <Dialog open={openOverlay} onClose={handleOverlayClose} aria-labelledby="form-dialog-title" fullScreen="true">
-                <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle>
+            <Dialog open={openOverlay} onClose={handleOverlayClose} aria-labelledby="form-dialog-title" fullScreen={true} PaperProps={{
+                style: {
+                    backgroundColor: 'whitesmoke',
+                    boxShadow: 'none',
+                },
+            }}>
+                {/* <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle> */}
+                <DialogTitle id="form-dialog-title">
+                    <div>
+                        <center><h1>{name}</h1></center>
+                        <center>
+                            <Countdown date={Date.now() + (endDateObj - Date.now())} renderer={countdownRenderer} />
+                        </center>
+                    </div>
+
+                </DialogTitle>
                 <DialogContent>
                     {
                         entries.length === 0 ?
-                        <h3 style={{display:'flex', justifyContent:"center", padding:"10% 5%", color:"grey"}}>No posts yet!</h3> :
-                        entries
+                            <h3 style={{ display: 'flex', justifyContent: "center", padding: "10% 5%", color: "grey" }}>No posts yet!</h3> :
+                            entries
                     }
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleOverlayClose} color="primary"> Done </Button>
                 </DialogActions>
             </Dialog>
-        
+
             {/* POP UP MODAL TO ADD A NEW CHALLENGE POST */}
             <Modal
                 show={showPostComponent}
@@ -656,7 +678,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                 <Modal.Header closeButton onClick={() => { setShowPostComponent(false) }}>
                     <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}> Posting as {user.displayName} </h4>
                 </Modal.Header>
-                
+
                 <Modal.Body>
                     <div className="feed_inputContainer">
                         <div className="feed_input">
@@ -675,8 +697,8 @@ export default function Challenge({user, name, description, hints, creator, crea
                         {/* Image Upload */}
                         <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
                             {   // To upload an image file.
-                                !inputImg && 
-                                <div className="upload-btn-wrapper"> 
+                                !inputImg &&
+                                <div className="upload-btn-wrapper">
                                     {/* Add image file input. */}
                                     <input type="file" name="myfile" id="myFile" accept="image" onChange={handleImageInputChange} style={{ opacity: "0" }} />
                                     <label htmlFor="myFile">
@@ -686,8 +708,8 @@ export default function Challenge({user, name, description, hints, creator, crea
                             }
 
                             {   // To upload image using camera.
-                                !inputImg && 
-                                <label> 
+                                !inputImg &&
+                                <label>
                                     <IconButton
                                         aria-label="open camera"
                                         component="span"
@@ -745,7 +767,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                         >
                             <Modal.Body>
                                 {
-                                    inputImg && 
+                                    inputImg &&
                                     <>
                                         {
                                             !loading && cropping &&
@@ -772,7 +794,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                                         }
 
                                         <br />
-                                    
+
                                         {   // View image for editing.
                                             inputImg &&
                                             <div className="photoEditor"> {/* Div in which to view the photo. */}
@@ -804,7 +826,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                                                         </Menu><br></br>
 
                                                         {/* Slider to adjust edit values. */}
-                                                        <Slider 
+                                                        <Slider
                                                             min={selectedOption.range.min}
                                                             max={selectedOption.range.max}
                                                             value={selectedOption.value}
@@ -818,15 +840,15 @@ export default function Challenge({user, name, description, hints, creator, crea
                                 }
 
                                 {
-                                    loading && 
+                                    loading &&
                                     <div> {/* Loading image spinner. */}
                                         <Spinner animation="border" role="status"></Spinner>
                                         <span>{'  '}Scanning Image...</span>
                                     </div>
                                 }
 
-                                {   
-                                    !loading && !cropping && 
+                                {
+                                    !loading && !cropping &&
                                     <div className="buttons" style={{ justifyContent: "space-evenly" }}> {/* Editing Done / Cancel button. */}
                                         <Button variant="contained" onClick={editingDone}>Add Image</Button>
                                         <Button variant="contained" onClick={editingCancelled}>Cancel</Button>
@@ -836,7 +858,7 @@ export default function Challenge({user, name, description, hints, creator, crea
                             </Modal.Body>
                         </Modal>
 
-                        { selectedInputImg && <ImageGallery sliderImages={[selectedInputImg]} /> }
+                        {selectedInputImg && <ImageGallery sliderImages={[selectedInputImg]} />}
                         {
                             selectedInputImg &&
                             <center style={{ marginTop: "15px" }}> {/* Post button. */}
@@ -854,14 +876,14 @@ export default function Challenge({user, name, description, hints, creator, crea
                     </div>
                 </Modal.Body>
             </Modal>
-            
+
             {/* Post added success message alert! */}
             <Snackbar open={openSnackbar} autoHideDuration={5000} onClose={handleSnackbarClose}>
                 <Alert onClose={handleSnackbarClose} severity="success">
                     Post added to challenge "{name}" :)
                 </Alert>
             </Snackbar>
-        
+
             {/* Post must have a caption error message! */}
             <Snackbar open={openCaptionError} autoHideDuration={6000} onClose={() => setOpenCaptionError(false)}>
                 <Alert onClose={() => setOpenCaptionError(false)} severity="error">
