@@ -63,7 +63,7 @@ export default function ChallengesPage() {
     }
 
     // Function that loads all challenges
-    const loadChallengeObjects = () => {
+    const loadChallengeObjects = async () => {
         // Load challenges (once).
         if(loadChallenges) { // If challenges are to be loaded, then load them.
             setChallenges([]) // Set challenges to an empty array.
@@ -72,12 +72,13 @@ export default function ChallengesPage() {
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
                     let data = doc.data() // data = a single challenge object.
-                    console.log("challenge doc data = " + data.name)
+                    console.log("challenge doc data = " , data)
+                    let p = data.participants.length>0?data.participants:[{}]
                     // Display only if ...
                     if( 
                         !data.isPrivate || // The challenge is not private.
                         data.creator === userName || // The user is the creator of the challenge.
-                        Object.keys(data.invitees).includes(userName) // The user was invited to this challenge.
+                        p.map(u=>u.name).includes(userName) // The user was invited to this challenge.
                     ){ 
                         setChallenges((prevArr) => // Create a Challenge object and add to the list of challenges. 
                             [
@@ -98,6 +99,8 @@ export default function ChallengesPage() {
                                     endDate={data.endDate}
                                     setLoadChallenges={setLoadChallenges}
                                     timestamp={data.timestamp}
+                                    invitees={data.invitees}
+                                    participants={data.participants?data.participants:{}}
                                 > </Challenge>
                             ]
                         )
@@ -149,7 +152,8 @@ export default function ChallengesPage() {
                         creatorPhotoUrl: user.photoUrl,
                         description: challengeDescription,
                         hints: [challengeHint1, challengeHint2,challengeHint3],
-                        invitees: {},
+                        invitees: [],
+                        participants: [],
                         isPrivate: challengeIsPrivate,
                         name: challengeName,
                         leader: "",
