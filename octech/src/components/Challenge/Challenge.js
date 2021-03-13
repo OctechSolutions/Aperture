@@ -171,7 +171,8 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                     key={postDoc.data().ref}
                                     user={user}
                                     caption={postDoc.data().caption}
-                                    challengePoints={postDoc.data().challengePoints}
+                                    star={postDoc.data().stars}
+                                    totalStar={postDoc.data().totalStars}
                                     creator={postDoc.data().creator}
                                     creatorPhotoUrl={postDoc.data().creatorPhotoUrl}
                                     imageSrc={postDoc.data().imageSrc}
@@ -248,7 +249,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [, setNohuman] = useState(false)
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [ , setIsPrivatePost] = useState(false)
+    const [, setIsPrivatePost] = useState(false)
     const [showPostComponent, setShowPostComponent] = useState(false)
 
     const cocoSsd = require('@tensorflow-models/coco-ssd')
@@ -462,7 +463,8 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     creator: creator,
                     creatorPhotoUrl: creatorPhotoUrl || "",
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    challengePoints: 0,
+                    stars: {},
+                    totalStars: 0,
                     challenge: name,
                     ref: ref.id,
                     hasEnded: false
@@ -489,8 +491,8 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
     useEffect(() => {
         if (loadEntries) { loadChallengeEntries(); setLoadEntries(false); resetVals() }
-    // eslint-disable-next-line
-    },[loadEntries])
+        // eslint-disable-next-line
+    }, [loadEntries])
 
     return (
         <div className="challenge" >
@@ -502,7 +504,9 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     <div style={{
                         textDecoration: 'none',
                         fontSize: '20px',
-                        color: "black"
+                        color: "black",
+                        display: "flex",
+
                     }}>
                         <IconButton
                             aria-label="more"
@@ -512,13 +516,42 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         > {/* Redirect to creator profile when clicking creator's user icon. */}
                             <Avatar src={creatorPhotoUrl}></Avatar>
                         </IconButton>
+                        <div style={{ display: "flex", flexDirection: "column", padding: "0px" }}>
+                            <div style={{ padding: "0px" }}>
+                                {name} {/* Challenge's name. */}
 
-                        {name} {/* Challenge's name. */}
-
-                        {/* Copy to Clipboard button */}
-                        <CopyToClipboard text={name} onCopy={displayCodeToClipboardDialog}>
-                            <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
-                        </CopyToClipboard>
+                                {/* Copy to Clipboard button */}
+                                <CopyToClipboard text={name} onCopy={displayCodeToClipboardDialog}>
+                                    <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
+                                </CopyToClipboard>
+                                {/* Public/Private Icon*/}
+                                <IconButton
+                                    aria-label="more"
+                                    aria-controls="long-menu"
+                                    aria-haspopup="true"
+                                    onClick={() => {
+                                        if (isAdmin) {
+                                            db.collection("challenges").doc(name).update({ isPrivate: isPublic })
+                                            setIsPublic(!isPublic)
+                                        }
+                                    }}
+                                >{/* Toggle public or private if this user is admin.*/}
+                                    {!isPublic ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
+                                </IconButton>
+                            </div>
+                            <div style= {{marginTop: "-15px"}}>
+                                {/* Creator's name. */}
+                                <Link style={{
+                                    textDecoration: 'none',
+                                    fontSize: '15px',
+                                    color: "black"
+                                }} to={`/user/${creator}`}> {/* Redirect to creator profile when clicking creator's name. */}
+                                    {" by " + creator}
+                                </Link>
+                                {/* Link is a component from react router that redirects to a particular route on click.
+                            This dynamically creates a new page with /user/{username} and sends the user to that page. */}
+                            </div>
+                        </div>
 
                         {/* Copied to clipboard message */}
                         <Snackbar
@@ -528,32 +561,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                             message={"Copied \"" + name + "\" to Clipboard!"}
                             key={vertical + horizontal}
                         />
-
-                        {/* Creator's name. */}
-                        <Link style={{
-                            textDecoration: 'none',
-                            fontSize: '15px',
-                            color: "black"
-                        }} to={`/user/${creator}`}> {/* Redirect to creator profile when clicking creator's name. */}
-                            {" by " + creator}
-                        </Link>
-                        {/* Link is a component from react router that redirects to a particular route on click.
-                            This dynamically creates a new page with /user/{username} and sends the user to that page. */}
-
-                        {/* Public/Private Icon*/}
-                        <IconButton
-                            aria-label="more"
-                            aria-controls="long-menu"
-                            aria-haspopup="true"
-                            onClick={() => {
-                                if (isAdmin) {
-                                    db.collection("challenges").doc(name).update({ isPrivate: isPublic })
-                                    setIsPublic(!isPublic)
-                                }
-                            }}
-                        >{/* Toggle public or private if this user is admin.*/}
-                            {!isPublic ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
-                        </IconButton>
                     </div>
                 </div>
 
@@ -604,8 +611,8 @@ export default function Challenge({ user, name, description, hints, creator, cre
                 <p><b>Description</b><br />{description}</p>
                 {(hints !== ",,") && <p><b>Hints</b><br />{hints.toString().replaceAll(",", ", ")}</p>}
                 <p><b>Duration</b><br />{startDate} - {endDate}</p>
-                <p><b>Countdown to Challenge End</b></p>
-                <Countdown date={Date.now() + (endDateObj - Date.now())} renderer={countdownRenderer} />
+                <p><b>Countdown to Challenge End</b><br />
+                    <Countdown date={Date.now() + (endDateObj - Date.now())} renderer={countdownRenderer} /></p>
                 {/* Add new post to challenge and view entries button. */}
                 <div className="buttons" style={{ display: "flex", justifyContent: "space-evenly" }}>
                     {   // Display option to add to a challenge only if its not completed yet.
@@ -631,7 +638,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
             </div>
 
             {/* FULLSCREEN OVERLAY TO DISPLAY PARTICIPATING POSTS */}
-            <Dialog open={openOverlay} onClose={handleOverlayClose} aria-labelledby="form-dialog-title" fullScreen="true" PaperProps={{
+            <Dialog open={openOverlay} onClose={handleOverlayClose} aria-labelledby="form-dialog-title" fullScreen={true} PaperProps={{
                 style: {
                     backgroundColor: 'whitesmoke',
                     boxShadow: 'none',

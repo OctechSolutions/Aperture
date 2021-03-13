@@ -284,7 +284,8 @@ function Profile({ match }) {
                                     :
                                     <>
                                     </>}
-                                <h1>Profile Points :{profileInfo.profilePoints}</h1>
+                                <h1>Profile Points : {profileInfo.profilePoints}</h1>
+                                {(profileInfo.league ? <h1>League : {profileInfo.league}</h1> :<> </>)}
                             </center>}
                         <Tabs
                             id="controlled-tab-example"

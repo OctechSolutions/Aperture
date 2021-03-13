@@ -46,6 +46,7 @@ function App() {
                 profilePoints:0,
                 blocked:[],
                 blockedBy: [],
+                league:"No league profile points less than 100",
                 collections :[]
               });         
             }

@@ -25,6 +25,8 @@ import Slider from '@material-ui/core/Slider';
 import MenuItem from '@material-ui/core/MenuItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ImageGallery from "../../Feed/ImageGallery";
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -40,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
   input: {
     marginLeft: theme.spacing(2),
     flex: 1,
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
 }));
 
@@ -98,7 +104,7 @@ function FeedbackForum({ match }, props) {
   const [showEditMap,] = useState(false);
   const [isPrivatePost, setIsPrivatePost] = useState(false);
   const [showPostComponent, setShowPostComponent] = useState(false);
-
+  const [open, setOpen] = useState(true);
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
   const classes = useStyles();
@@ -153,6 +159,7 @@ function FeedbackForum({ match }, props) {
           key: doc.id,
           data: doc.data(),
         })))
+        setOpen(false)
       })
 
 
@@ -458,7 +465,9 @@ function FeedbackForum({ match }, props) {
             </div>
           </Modal.Body>
         </Modal>
-
+        <Backdrop className={classes.backdrop} open={open}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <FlipMove>
           {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over

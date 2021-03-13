@@ -21,10 +21,25 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
+import { makeStyles } from '@material-ui/core/styles';
+
+
+const useStyles = makeStyles((theme) => ({
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 'auto',
+      bottom: 45,
+      left: 'auto',
+      position: 'fixed',
+      zIndex: 100
+    }
+  }));
 
 export default function ChallengesPage() {
+    const classes = useStyles();
     const user = useSelector(selectUser) // Related to routing.
-    const userName = user.displayName // Name of current users.
+    const userName = user.displayName // Name of current user.
     const alphaNumeric = /^[a-z0-9?!,.:;"' ]+$/i // Regular expression for input sanity check.
 
     const [challenges, setChallenges] = useState([])
@@ -182,7 +197,7 @@ export default function ChallengesPage() {
                 }}
             >
                 <p style={{fontSize: "3.5vh", alignItems:'center'}}>Looking for a Challenge?</p> {/* Page heading. */}
-                <Fab color="primary"  aria-label="add"  onClick={handleFormOpen}> <AddIcon /> </Fab> {/* Floating Action Button */}
+                <Fab color="primary"  aria-label="add" className={classes.fab} onClick={handleFormOpen}> <AddIcon /> </Fab> {/* Floating Action Button */}
             </div>
             
             { challenges } {/* Render all challenge objects in the challenges list. */}

@@ -23,7 +23,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { useHistory } from "react-router-dom";
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Fab from '@material-ui/core/Fab';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
@@ -36,6 +36,8 @@ import Menu from '@material-ui/core/Menu';
 import Slider from '@material-ui/core/Slider';
 import MenuItem from '@material-ui/core/MenuItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -65,6 +67,10 @@ const useStyles = makeStyles((theme) => ({
   input: {
     marginLeft: theme.spacing(2),
     flex: 1,
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
 }));
 
@@ -142,6 +148,7 @@ function Feed({ match }, props) {
   const [cropper, setCropper] = useState("");
   const [cropping, setCropping] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(true);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -215,6 +222,38 @@ function Feed({ match }, props) {
   // }
   // fixDB()
 
+  useEffect(() => {
+    db.collection("users").doc(user.displayName).get().then(doc => {
+      console.log(doc.data())
+      if (doc.data().notifyLeague) {
+        //Sending Notification About league change
+        if (doc.data().leagueStatus === "p") {
+          db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+            notifications: firebase.firestore.FieldValue.arrayUnion({
+              type: "leaguePromote",
+              sentAt: firebase.firestore.Timestamp.now(),
+              league: doc.data().league,
+              message: `Yaayy! You have been promoted to `
+            })
+          }, { merge: true })
+        }
+        else if (doc.data().leagueStatus === "d") {
+          db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+            notifications: firebase.firestore.FieldValue.arrayUnion({
+              type: "leagueDemote",
+              sentAt: firebase.firestore.Timestamp.now(),
+              league: doc.data().league,
+              message: `Oops! You have been demoted to `
+            })
+          }, { merge: true })
+        }
+        db.collection("users").doc(user.displayName).set({
+          notifyLeague: false
+        }, { merge: true })
+      }
+    })
+  }, [user.displayName])
+
   useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
     db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
       .onSnapshot(doc => {
@@ -233,6 +272,7 @@ function Feed({ match }, props) {
                     key: doc.id,
                     data: doc.data(),
                   }))))).filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i).sort((a, b) => a.data.timestamp < b.data.timestamp))
+                  setOpen(false);
                 })
             }
           }
@@ -251,7 +291,7 @@ function Feed({ match }, props) {
               .where("name", "==", match.params.channel)
               .where("channelBy", "==", match.params.id)
               .orderBy("timestamp", "desc") // Sorting by timestamp descending allows the new posts to be shown on top
-              .onSnapshot((snapshot) =>
+              .onSnapshot((snapshot) => {
                 setPosts(
                   snapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -259,7 +299,8 @@ function Feed({ match }, props) {
                     data: doc.data(),
                   }))
                 )
-              );
+                setOpen(false)
+              })
           }
         } else {
           console.log("No such document!");
@@ -609,35 +650,42 @@ function Feed({ match }, props) {
 
         {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
         {(profileInfo && (match.params.channel)) ?
-          <center>
-            <h1>{match.params.channel}</h1>
-            <p onClick={() => setShowFollowers(true)} >Followers:{channelInfo && channelInfo.data.followers.length}</p>
-            <Modal
-              show={showFollowers}
-              onHide={() => { setShowFollowers(false) }}
-              keyboard={false}
-              size="xl"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
-              <Modal.Body>
-                {channelInfo.data && setFollowersList(channelInfo.data.followers)}
-              </Modal.Body>
-            </Modal>
-            {(match.params.id !== user.displayName) ?
-              (profileInfo.followingChannels.some(channel => channel.name === match.params.channel)) ?
-                <Button onClick={unfollowChannel} variant="success">Following</Button>
+          <>
+            <center>
+              <h1>{match.params.channel}</h1>
+            </center>
+            <div style={{ display: "flex", justifyContent:"space-evenly", alignItems:"center", justifyItems: "center" }}>
+              <div style={{cursor: "pointer"}} onClick={() => setShowFollowers(true)} >Followers:{channelInfo && channelInfo.data.followers.length}</div>
+              <Modal
+                show={showFollowers}
+                onHide={() => { setShowFollowers(false) }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+              >
+                <Modal.Body>
+                  {channelInfo.data && setFollowersList(channelInfo.data.followers)}
+                </Modal.Body>
+              </Modal>
+              {(match.params.id !== user.displayName) ?
+                (profileInfo.followingChannels.some(channel => channel.name === match.params.channel)) ?
+                  <Button onClick={unfollowChannel} variant="success">Following</Button>
+                  :
+                  <Button onClick={followChannel} variant="outline-primary">Follow</Button>
                 :
-                <Button onClick={followChannel} variant="outline-primary">Follow</Button>
-              :
-              <>
-              </>
-            }
-          </center>
+                <>
+                </>
+              }
+            </div>
+          </>
           :
-          <center>
-            <h1>Home</h1>
-          </center>}
+          <div style={{ position: "sticky", top: "65px", zIndex: "100", backgroundColor: "whitesmoke", width: "105vw", marginLeft: "-5vw" }}>
+            <center>
+              <h1>Home</h1>
+            </center>
+          </div>
+        }
         {((match.params.id === user.displayName) || (match.path === "/")) &&
 
           <Modal
@@ -891,7 +939,9 @@ function Feed({ match }, props) {
             )}
           </Modal.Body>
         </Modal>
-
+        <Backdrop className={classes.backdrop} open={open}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <FlipMove>
           {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
@@ -928,7 +978,7 @@ function Feed({ match }, props) {
       </div>
       {(((match.params.channel) && (match.params.id === user.displayName)) || (match.path === "/")) &&
         <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
-          <AddCircleOutlineIcon className={classes.extendedIcon} />
+          <AddIcon className={classes.extendedIcon} />
           {/* <b>New Post</b> */}
         </Fab>
       }
