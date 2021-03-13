@@ -9,7 +9,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import { useHistory } from "react-router-dom"
 import CommentIcon from '@material-ui/icons/Comment';
-import { green } from '@material-ui/core/colors';
+import { green, red } from '@material-ui/core/colors';
 import moment from 'moment';
 import { db } from "../../firebase";
 import { useSelector } from "react-redux"
@@ -21,6 +21,8 @@ import Fab from '@material-ui/core/Fab';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import CheckIcon from '@material-ui/icons/Check';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -35,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
     green: {
         color: '#fff',
         backgroundColor: green[500],
+    },
+    red: {
+        color: '#fff',
+        backgroundColor: red[500],
     },
     fab: {
         top: 'auto',
@@ -335,6 +341,58 @@ export default function Notifications({ match, notifications }) {
                             notifications: notifications.filter(a => a !== notificationInfo)
                         }, { merge: true })
                     }}><><b>{notificationInfo.sender}</b> sent a new message in a group chat</></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
+        else if (notificationInfo.type === "leaguePromote") {
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar className={classes.green}><TrendingUpIcon fontSize="small" /></Avatar>}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => {
+                        history.push(`/leaderboards/globalUsersLeaderBoard`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><>{notificationInfo.message}<b>{notificationInfo.league}</b></></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
+        else if (notificationInfo.type === "leagueDemote") {
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar className={classes.red}><TrendingDownIcon fontSize="small" /></Avatar>}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => {
+                        history.push(`/leaderboards/globalUsersLeaderBoard`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><>{notificationInfo.message}<b>{notificationInfo.league}</b></></div>}
                     subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
                 />
             </Card>

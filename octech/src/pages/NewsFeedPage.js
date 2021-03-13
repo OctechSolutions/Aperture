@@ -34,8 +34,10 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CommentIcon from '@material-ui/icons/Comment';
-import { green } from '@material-ui/core/colors';
+import { green, red } from '@material-ui/core/colors';
 import moment from 'moment';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const useStyles = makeStyles({
@@ -53,6 +55,10 @@ const useStyles = makeStyles({
     green: {
         color: '#fff',
         backgroundColor: green[500],
+    },
+    red: {
+        color: '#fff',
+        backgroundColor: red[500],
     },
 })
 
@@ -84,14 +90,14 @@ export default function NewsfeedPage(props) {
     };
 
     useEffect(() => {
-        if(props.isVerified) {
+        if (props.isVerified) {
             db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).onSnapshot(doc => {
                 if (doc.exists) {
-    
+
                     setHasNotifications(doc.data().notifications.length)
                     setNotifications(doc.data().notifications)
                     if (hasNotifications !== doc.data().notifications.length) {
-    
+
                         setOpenNotification(Boolean(doc.data().notifications.length))
                         if (Boolean(doc.data().notifications.length) && window.location.pathname !== "/notifications" && window.location.pathname !== "/chatRoom") {
                             const notificationInfo = doc.data().notifications[doc.data().notifications.length - 1]
@@ -132,12 +138,20 @@ export default function NewsfeedPage(props) {
                                 setLastNotification(<><b>{notificationInfo.sender}</b> sent a new message in a group chat</>)
                                 setIcon(<Avatar src={notificationInfo.icon} />)
                             }
+                            else if (notificationInfo.type === "leaguePromote") {
+                                setLastNotification(<>{notificationInfo.message}<b>{notificationInfo.league}</b></>)
+                                setIcon(<Avatar className={classes.green}><TrendingUpIcon fontSize="small" /></Avatar>)
+                            }
+                            else if (notificationInfo.type === "leagueDemote") {
+                                setLastNotification(<>{notificationInfo.message}<b>{notificationInfo.league}</b></>)
+                                setIcon(<Avatar className={classes.red}><TrendingDownIcon fontSize="small" /></Avatar>)
+                            }
                         }
-                        else if(window.location.pathname !== "/notifications") {
+                        else if (window.location.pathname !== "/notifications") {
                             db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).get().then((doc) => {
                                 db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
-                                    notifications: doc.data().notifications.filter(a => (a.type === "chat") || (a.type === "groupChat")?false:true)
-                                }, {merge: true})   
+                                    notifications: doc.data().notifications.filter(a => (a.type === "chat") || (a.type === "groupChat") ? false : true)
+                                }, { merge: true })
                             });
                         }
                         else {
@@ -153,7 +167,7 @@ export default function NewsfeedPage(props) {
                 }
             })
         }
-    }, [user.displayName, classes.green, hasNotifications, props.isVerified])
+    }, [user.displayName, classes.green, hasNotifications, props.isVerified, classes])
 
     return (
         <>

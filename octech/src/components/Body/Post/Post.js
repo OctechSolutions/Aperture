@@ -108,7 +108,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [stars, setStars] = useState((star[viewingUser.uid] === undefined) ? 0 : star[viewingUser.uid]);
 
   const history = useHistory();
-  
+
   //TO update the stars after the user has given the stars
   const updateStars = async (e) => {
     let givenStars = parseInt(e.target.value);
@@ -159,7 +159,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       transaction.get(user).then(doc => {
         let profilePoints = doc.data().profilePoints;
         let newProfilePoints = profilePoints + (givenStars - stars);
-        let notifications = doc.data().notifications;
         let league = doc.data().league;
         let leaguee = "";
         
@@ -178,16 +177,10 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           
         if(league && (league===leaguee || leaguee===""))
           transaction.update(user, { profilePoints: newProfilePoints });
-        else{
-          transaction.update(user, { profilePoints: newProfilePoints, league : leaguee, 
-            
-            //Sending Notification About league change
-            notifications: [...notifications, {
-              type: "leagueChange",
-              sentAt: firebase.firestore.Timestamp.now(),
-              league: leaguee,
-              message: profilePoints > newProfilePoints ? "Opps! You have been demoted" : "Yaayy! You have been promoted"
-            }]});
+        else {
+          transaction.update(user, {
+            profilePoints: newProfilePoints, league: leaguee, notifyLeague: true, leagueStatus: profilePoints > newProfilePoints ? "d" : "p"
+          });
         }
       })));
     setStars(givenStars);
@@ -247,7 +240,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         })
       }
       if (name !== user.displayName) {
-        if(channelBy) {
+        if (channelBy) {
           db.collection("users").doc(channelBy).collection("notifications").doc(channelBy).set({
             notifications: firebase.firestore.FieldValue.arrayUnion({
               type: "comment",
@@ -479,16 +472,16 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     if (user.displayName === name) { // If the user is the admin user, then allow to withdraw from challenge.
       // Remove this challenge from the challenges list of this post.
       db.collection("posts").doc(id).update({ challenge: firebase.firestore.FieldValue.delete() })
-      .then(() => {
-        console.log("Challenge removed = " + challengeName)
-        updateChallengeChip() // Display updated chllenges.
-      })
+        .then(() => {
+          console.log("Challenge removed = " + challengeName)
+          updateChallengeChip() // Display updated chllenges.
+        })
       // Remove corresponding challenge post from the challengePosts collection.
       db.collection("challengePosts").doc(id).delete()
-      .then(() => {
-        console.log("Challenge removed = " + challengeName)
-        updateChallengeChip() // Display updated chllenges.
-      })
+        .then(() => {
+          console.log("Challenge removed = " + challengeName)
+          updateChallengeChip() // Display updated chllenges.
+        })
     }
   }
 
@@ -503,8 +496,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           if (!challengeDoc.data()) { // If entered code is invalid then let user know.
             challengeCodeTextField.value = "Please Enter Valid Challenge Title."
           } else { // If entered code is valid then ...
-            if(challengeDoc.data().hasEnded) { 
-              challengeCodeTextField.value = "Sorry, this challenge has ended." 
+            if (challengeDoc.data().hasEnded) {
+              challengeCodeTextField.value = "Sorry, this challenge has ended."
             }
             else {
               setChallengeName(challengeCodeTextField.value) // Set the challenge code to be the textbox value.
@@ -526,6 +519,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                 challengePoints: 0,
                 challenge: challengeName,
                 ref: id,
+                stars: {},
                 hasEnded: false
               })
             }
@@ -543,8 +537,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         if (postDoc.data()) {
           let postChallenge = postDoc.data().challenge
           if (postChallenge) { // If this post has a challenge then ...
-              setChallengeChip(postChallenge)
-              setChallengeChip(<Chip label={postChallenge} onDelete={() => removeChallenge(challengeName)} />)
+            setChallengeChip(postChallenge)
+            setChallengeChip(<Chip label={postChallenge} onDelete={() => removeChallenge(challengeName)} />)
           }
         }
       })
@@ -740,7 +734,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                         onChange={updateStars}
                         icon={<GradeIcon fontSize="inherit" />}
                       />
-                      <CountUp end={totalStars} />
+                  &nbsp;
+                  <CountUp end={totalStars} style={{ marginTop: "-8px" }} />
                     </IconButton>
                     :
                     <IconButton
@@ -751,8 +746,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                       disableRipple={true}
                       disableFocusRipple={true}
                     >
-                      Rating : {totalStars}
-                    </IconButton>}
+                      Rating : &nbsp;<CountUp end={totalStars} style={{ marginTop: "5px" }} />
+                    </IconButton>
+                  }
                 </>
                 : <div></div>
             }
@@ -826,7 +822,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               >
                 <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
               </IconButton>
-              <div className="postInfo">
+              <div className="postInfo" style={{ display: "flex" }}>
                 <div>
                   <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
 
@@ -877,6 +873,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               </div>
 
             </div>
+
           </Modal.Header>
           <Modal.Body>
             <div className="post_body">
@@ -884,6 +881,26 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             </div>
             {slideshow}
             <br />
+            {showStars && !isForumPost &&
+              <center>
+                <IconButton
+                  aria-label="stars"
+                  aria-controls="long-menu"
+                  aria-haspopup="true"
+                  className={classes.root}
+                  disableRipple={true}
+                  disableFocusRipple={true}
+                >
+
+                  <StyledRating
+                    max={3}
+                    value={stars}
+                    onChange={updateStars}
+                    icon={<GradeIcon fontSize="inherit" />}
+                  />
+                </IconButton>
+              </center>
+            }
             {isForumPost ? <h3>Feedback</h3> : <h3>Comments</h3>}
             <TextField
               variant="outlined"
