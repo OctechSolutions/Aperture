@@ -57,6 +57,11 @@ import ImageIcon from "@material-ui/icons/Image"
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera"
 import SendIcon from '@material-ui/icons/Send'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import TextField from '@material-ui/core/TextField';
+import AddIcon from '@material-ui/icons/Add';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges }) {
 
@@ -71,6 +76,24 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [loadEntries, setLoadEntries] = useState(true)
     const [openOverlay, setOpenOverlay] = useState(false) // For entries overlay.
     const [challengeComplete, setChallengeComplete] = useState(false)
+    const [userData, setUserData] = useState({})
+
+    useEffect(() => {
+        // helper.current.scrollIntoView({ behavior: 'smooth' });
+
+        db.collection("users").doc(user.displayName).get().then(doc => {
+            if (doc.exists) {
+                setUserData({
+                    id: doc.id,
+                    data: doc.data()
+                })
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function (error) {
+            console.log("Error getting user data:", error)
+        });
+    }, [user.displayName])
 
     const useStyles = makeStyles(
         (theme) => ({
@@ -237,7 +260,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
             unit: 'deg'
         }
     ]
-
+    let selectedUsers = []
     const [caption, setCaption] = useState("")
     const [, setFile] = useState(null)
     const [inputImg, setInputImg] = useState("")
@@ -259,6 +282,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [anchorEl, setAnchorEl] = useState(null)
     const [openSnackbar, setOpenSnackbar] = useState(false)
     const [openCaptionError, setOpenCaptionError] = useState(false)
+    const [add, setAdd] = useState(false)
 
     const Compress = require('compress.js')
 
@@ -538,7 +562,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                     <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
                                 </CopyToClipboard>
                             </div>
-                            <div style= {{marginTop: "-15px"}}>
+                            <div style={{ marginTop: "-15px" }}>
                                 {/* Creator's name. */}
                                 <Link style={{
                                     textDecoration: 'none',
@@ -562,7 +586,81 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         />
                     </div>
                 </div>
-
+                <Modal
+                    show={add}
+                    onHide={() => { setAdd(false) }}
+                    keyboard={false}
+                    size="xl"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header closeButton onClick={() => { setShow(false) }}>
+                        <h5>
+                            {`Invite friends to ${name}`}
+                        </h5>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {
+                            <>
+                                <Autocomplete
+                                    multiple
+                                    autoComplete={true}
+                                    autoSelect={true}
+                                    clearOnEscape={true}
+                                    fullWidth={true}
+                                    autoHighlight={true}
+                                    onChange={(event, selectedUser) => {
+                                        selectedUsers = selectedUser
+                                    }}
+                                    id="search"
+                                    options={userData.data ? userData.data.friends : []}
+                                    getOptionLabel={option => option.name}
+                                    renderOption={(option) => {
+                                        return (
+                                            <ListItem >
+                                                <ListItemIcon>
+                                                    <Avatar alt={option.name} src={option.photoUrl} />
+                                                </ListItemIcon>
+                                                <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                            </ListItem>
+                                        )
+                                    }
+                                    }
+                                    disableClearable
+                                    forcePopupIcon={false}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Search"
+                                            margin="normal"
+                                            variant="outlined"
+                                            style={{
+                                                position: "sticky",
+                                                zIndex: 100,
+                                                top: 200,
+                                                backgroundColor: "white",
+                                                marginBottom: "20px"
+                                            }}
+                                        />
+                                    )}
+                                />
+                                <center>
+                                    <IconButton
+                                        aria-label="invite to challenge"
+                                        onClick={() => {
+                                            if (selectedUsers.length > 0) {
+                                                console.log(selectedUsers);
+                                            }
+                                        }}
+                                        onMouseDown={() => { }}
+                                    >
+                                        <AddIcon />
+                                    </IconButton>
+                                </center>
+                            </>
+                        }
+                    </Modal.Body>
+                </Modal>
                 {/* 3 Dots Menu. */}
                 {isAdmin &&
                     <>
@@ -596,7 +694,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                             </MenuItem>
 
                             {/* Send invites. */}
-                            <MenuItem key={"invite"} selected={false} onClick={() => { console.log("Send invites to join challenge."); handleMenuClose() }}>
+                            <MenuItem key={"invite"} selected={false} onClick={() => { console.log("Send invites to join challenge."); handleMenuClose(); setAdd(true) }}>
                                 <ListItemIcon> <CallMadeIcon /> </ListItemIcon>
                                 Send Invites
                             </MenuItem>
