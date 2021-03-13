@@ -519,11 +519,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         <div style={{ display: "flex", flexDirection: "column", padding: "0px" }}>
                             <div style={{ padding: "0px" }}>
                                 {name} {/* Challenge's name. */}
-
-                                {/* Copy to Clipboard button */}
-                                <CopyToClipboard text={name} onCopy={displayCodeToClipboardDialog}>
-                                    <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
-                                </CopyToClipboard>
                                 {/* Public/Private Icon*/}
                                 <IconButton
                                     aria-label="more"
@@ -538,6 +533,10 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                 >{/* Toggle public or private if this user is admin.*/}
                                     {!isPublic ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
                                 </IconButton>
+                                {/* Copy to Clipboard button */}
+                                <CopyToClipboard text={name} onCopy={displayCodeToClipboardDialog}>
+                                    <IconButton color="primary" aria-label="copy to clipboard"> <FileCopyIcon /> </IconButton>
+                                </CopyToClipboard>
                             </div>
                             <div style= {{marginTop: "-15px"}}>
                                 {/* Creator's name. */}
