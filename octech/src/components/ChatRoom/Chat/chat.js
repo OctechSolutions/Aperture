@@ -114,16 +114,18 @@ const Chat = (props) => {
         <>
             <div style={{ width: "100%", position: "sticky", top: "85px", display: "flex", justifyContent: "space-between" }}>
                 <div style={{ marginLeft: "2px", fontSize: "20px" }}> {(users.length > 1) ?
-                    <AvatarGroup max={10}>
+                    <AvatarGroup max={10} onClick={() => { setAdd(true) }}>
                         {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
                     </AvatarGroup>
                     : <>
-                        {/* <ListItemIcon> */}
-                        <IconButton disableRipple={true} disableFocusRipple={true} disableTouchRipple={true} style={{ backgroundColor: "transparent" }}>
+                        {/* <ListItemIcon> */ }
+                        <IconButton disableRipple={true} disableFocusRipple={true} disableTouchRipple={true} style={{ backgroundColor: "transparent" }} >
                             <AvatarGroup max={3} style={{marginRight: "5px"}}>
-                                {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
+                                {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} onClick= {()=>{
+                                history.push(`/user/${user.name}`)
+                               }}/> : "")}
                             </AvatarGroup>
-                            <div>{props.participants.map(user => user.name)}</div>
+                            <div >{props.participants.map(user => user.name)}</div>
                             {/* <ListItemText primary={props.participants.map(user => user.name)} primaryTypographyProps={{ noWrap: true }}></ListItemText> */}
                         </IconButton>
 
