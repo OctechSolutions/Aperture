@@ -20,7 +20,13 @@ import Badge from '@material-ui/core/Badge'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import DeleteIcon from '@material-ui/icons/Delete'
 
-export default function ChallengePost({user, caption, challengePoints, creator, creatorPhotoUrl, imageSrc, style, timestamp, id, loadChallengeEntries, challengeName}) {
+//Rating Sttuff
+import Rating from '@material-ui/lab/Rating';
+import GradeIcon from '@material-ui/icons/Grade';
+import CountUp from 'react-countup';
+import { withStyles } from '@material-ui/core/styles';
+
+export default function ChallengePost({user, caption, star, totalStar, creator, creatorPhotoUrl, imageSrc, style, timestamp, id, loadChallengeEntries, challengeName}) {
     
     // console.log("user = " + user)
     // console.log("caption = " + caption)
@@ -32,7 +38,76 @@ export default function ChallengePost({user, caption, challengePoints, creator, 
     // console.log("timestamp = " + timestamp.toDate().toDateString())
 
     // const [liked, setLiked] = useState(false)
-    const [postChallengePoints, ] = useState(challengePoints)
+    // const [postChallengePoints, ] = useState(challengePoints)
+
+    //Rating Stuff
+    const [showStars,] = useState(((creator === user.displayName)) ? false : true);
+    //Total Stars of the post
+    const [totalStars, setTotalStars] = useState(totalStar);
+    //Stars given by the user on the post
+    const [stars, setStars] = useState((star[user.uid] === undefined) ? 0 : star[user.uid]);
+    //TO update the stars after the user has given the stars
+    const updateStars = async (e) => {
+      let givenStars = parseInt(e.target.value);
+      if (givenStars === stars)
+        givenStars = 0;
+      let newTotalStars = totalStars + (givenStars - stars);
+      const post = db.collection("challengePosts").doc(id);
+      star[user.uid] = givenStars;
+
+      if (givenStars > 0) {
+        db.collection("users").doc(creator).collection("notifications").doc(creator).set({
+          notifications: firebase.firestore.FieldValue.arrayUnion({
+            type: "rating",
+            sentAt: firebase.firestore.Timestamp.now(),
+            sender: user.displayName,
+            icon: user.photoUrl,
+            stars: givenStars,
+            postId: id
+          })
+        }, { merge: true })
+      }
+
+      post.update({ totalStars: newTotalStars, stars: star });
+
+      const uploader = db.collection("users").doc(creator);
+      db.runTransaction(transaction => (
+        transaction.get(uploader).then(doc => {
+          let profilePoints = doc.data().profilePoints;
+          let newProfilePoints = profilePoints + (givenStars - stars);
+          let notifications = doc.data().notifications;
+          let league = doc.data().league;
+          let leaguee = "";
+          
+          if(newProfilePoints<100)
+            leaguee = "No league profile points less than 100"
+          else if(newProfilePoints<500)
+            leaguee = "Silver"
+          else if(newProfilePoints<1000)
+            leaguee = "Gold"
+          else if(newProfilePoints<1200)
+            leaguee = "Diamond"
+          else 
+            leaguee = "Platinum"
+            
+          if(league && league===leaguee)
+            transaction.update(uploader, { profilePoints: newProfilePoints });
+          else{
+            transaction.update(uploader, { profilePoints: newProfilePoints, league : leaguee, 
+              
+              //Sending Notification About league change
+              notifications: [...notifications, {
+                type: "leagueChange",
+                sentAt: firebase.firestore.Timestamp.now(),
+                league: leaguee,
+                message: profilePoints > newProfilePoints ? "Opps! You have been demoted" : "Yaayy! You have been promoted"
+              }]});
+          }
+        })));
+      setStars(givenStars);
+      setTotalStars(newTotalStars);
+    }
+
 
     // To style the challenge post
     const useStyles = makeStyles((theme) => ({
@@ -68,7 +143,14 @@ export default function ChallengePost({user, caption, challengePoints, creator, 
     const likeUnlike = () => {
       console.log("Like / Unlike!") 
     }
-
+    const StyledRating = withStyles({
+      // iconFilled: {
+      //   color: '#ff6d75',
+      // },
+      // iconHover: {
+      //   color: '#ff3d47',
+      // },
+    })(Rating);
     return (
         <div className="challenge_post" >
             <Card className={classes.root}>
@@ -97,13 +179,44 @@ export default function ChallengePost({user, caption, challengePoints, creator, 
                 {/* Post image. */}
                 <CardMedia  className={classes.media} image={imageSrc} style={style} title={caption} />
     
-                {/* Like button. */}
+                {/* Rating. */}
                 <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites" style={{color:"red"}} onClick={likeUnlike}>
+                    {/* <IconButton aria-label="add to favorites" style={{color:"red"}} onClick={likeUnlike}>
                       <Badge badgeContent={postChallengePoints} color="primary">
                         <FavoriteIcon />
                       </Badge>
-                    </IconButton>
+                    </IconButton> */}
+                    <>
+                    {showStars ?
+                      <IconButton
+                        aria-label="stars"
+                        aria-controls="long-menu"
+                        aria-haspopup="true"
+                        className={classes.root}
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                      >
+
+                        <StyledRating
+                          max={3}
+                          value={stars}
+                          onChange={updateStars}
+                          icon={<GradeIcon fontSize="inherit" />}
+                        />
+                        <CountUp end={totalStars} />
+                      </IconButton>
+                      :
+                      <IconButton
+                        aria-label="rating"
+                        aria-controls="long-menu"
+                        aria-haspopup="true"
+                        className={classes.root}
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                      >
+                        Rating : {totalStars}
+                      </IconButton>}
+                  </>
                 </CardActions>
             </Card>
         </div>

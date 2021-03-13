@@ -171,7 +171,8 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                     key={postDoc.data().ref}
                                     user={user}
                                     caption={postDoc.data().caption}
-                                    challengePoints={postDoc.data().challengePoints}
+                                    star = {postDoc.data().stars}
+                                    totalStar={postDoc.data().totalStar}
                                     creator={postDoc.data().creator}
                                     creatorPhotoUrl={postDoc.data().creatorPhotoUrl}
                                     imageSrc={postDoc.data().imageSrc}
@@ -462,7 +463,8 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     creator: creator,
                     creatorPhotoUrl: creatorPhotoUrl || "",
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    challengePoints: 0,
+                    stars: {},
+                    totalStars: 0,
                     challenge: name,
                     ref: ref.id,
                     hasEnded: false
