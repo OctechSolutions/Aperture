@@ -78,7 +78,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [loadEntries, setLoadEntries] = useState(true)
     const [openOverlay, setOpenOverlay] = useState(false) // For entries overlay.
     const [challengeComplete, setChallengeComplete] = useState(false)
-    const [userData, setUserData] = useState({})
     const [showParticipants, setShowParticipants] = useState(false)
 
     useEffect(() => {
@@ -86,16 +85,14 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
         db.collection("users").doc(user.displayName).get().then(doc => {
             if (doc.exists) {
-                setUserData({
-                    id: doc.id,
-                    data: doc.data()
-                })
+                setData(doc.data().data.friends.filter(a => !participants.map(u => u.name).concat(invitees).includes(a.name)))
             } else {
                 console.log("No such document!");
             }
         }).catch(function (error) {
             console.log("Error getting user data:", error)
         });
+        // eslint-disable-next-line
     }, [user.displayName])
 
     const useStyles = makeStyles(
@@ -287,6 +284,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [openCaptionError, setOpenCaptionError] = useState(false)
     const [add, setAdd] = useState(false)
     const [openInviteSent, setOpenInviteSent] = useState(false)
+    const [data, setData] = useState([])
 
     const Compress = require('compress.js')
 
@@ -543,13 +541,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
         // eslint-disable-next-line
     }, [loadEntries])
 
-    function getOptions(data) {
-        if (participants.length)
-            return data.friends.filter(a => !participants.map(u => u.name).concat(invitees).includes(a.name))
-        else
-            return data.friends.filter(a => !invitees.includes(a.name))
-    }
-
     return (
         <div className="challenge" >
             {/* CHALLENGE HEADER = CREATOR, PUBLIC/PRIVATE, DELETE, EDIT, SEND INVITES. */}
@@ -647,7 +638,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                         selectedUsers = selectedUser
                                     }}
                                     id="search"
-                                    options={userData.data ? getOptions(userData.data) : []}
+                                    options={data}
                                     getOptionLabel={option => option.name}
                                     renderOption={(option) => {
                                         return (
@@ -718,13 +709,13 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         {
                             <List component="users" aria-label="chat participants">
                                 <ListItem button onClick={() => {
-                                        history.push(`/user/${user.displayName}`)
-                                    }}>
-                                        <ListItemIcon>
-                                            <Avatar alt={creator} src={creatorPhotoUrl} />
-                                        </ListItemIcon>
-                                        <ListItemText primary={creator} secondary={"Creator"} primaryTypographyProps={{ noWrap: true }} />
-                                    </ListItem>
+                                    history.push(`/user/${user.displayName}`)
+                                }}>
+                                    <ListItemIcon>
+                                        <Avatar alt={creator} src={creatorPhotoUrl} />
+                                    </ListItemIcon>
+                                    <ListItemText primary={creator} secondary={"Creator"} primaryTypographyProps={{ noWrap: true }} />
+                                </ListItem>
                                 {participants.length > 0 && participants.map(option => (
                                     <ListItem button onClick={() => {
                                         history.push(`/user/${option.name}`)

@@ -73,7 +73,10 @@ export default function ChallengesPage() {
                 snapshot.forEach((doc) => {
                     let data = doc.data() // data = a single challenge object.
                     console.log("challenge doc data = " , data)
-                    let p = data.participants.length>0?data.participants:[{}]
+                    let p = [{}]
+                    if(data.participants!==undefined) {
+                        p = data.participants
+                    }
                     // Display only if ...
                     if( 
                         !data.isPrivate || // The challenge is not private.
