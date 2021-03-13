@@ -721,9 +721,9 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                         history.push(`/user/${user.displayName}`)
                                     }}>
                                         <ListItemIcon>
-                                            <Avatar alt={user.displayName} src={user.photoUrl} />
+                                            <Avatar alt={creator} src={creatorPhotoUrl} />
                                         </ListItemIcon>
-                                        <ListItemText primary={user.displayName} secondary={"Creator"} primaryTypographyProps={{ noWrap: true }} />
+                                        <ListItemText primary={creator} secondary={"Creator"} primaryTypographyProps={{ noWrap: true }} />
                                     </ListItem>
                                 {participants.length > 0 && participants.map(option => (
                                     <ListItem button onClick={() => {
