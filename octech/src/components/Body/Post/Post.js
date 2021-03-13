@@ -161,19 +161,21 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         let newProfilePoints = profilePoints + (givenStars - stars);
         let league = doc.data().league;
         let leaguee = "";
-
-        if (newProfilePoints < 100)
-          leaguee = "Bronze"
-        else if (newProfilePoints < 500)
-          leaguee = "Silver"
-        else if (newProfilePoints < 1000)
-          leaguee = "Gold"
-        else if (newProfilePoints < 1200)
-          leaguee = "Platinum"
-        else
-          leaguee = "Diamond"
-
-        if (league && league === leaguee)
+        
+        if(league !== "Champion" && league !== "Legendary"){
+          if(newProfilePoints<100)
+            leaguee = "No league profile points less than 100"
+          else if(newProfilePoints<500)
+            leaguee = "Silver"
+          else if(newProfilePoints<1000)
+            leaguee = "Gold"
+          else if(newProfilePoints<1200)
+            leaguee = "Diamond"
+          else 
+            leaguee = "Platinum"
+        }
+          
+        if(league && (league===leaguee || leaguee===""))
           transaction.update(user, { profilePoints: newProfilePoints });
         else {
           transaction.update(user, {
