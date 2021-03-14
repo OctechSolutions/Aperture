@@ -155,7 +155,7 @@ export default function NewsfeedPage(props) {
                                 setIcon(<Avatar className={classes.blue}><WhatshotIcon fontSize="small" /></Avatar>)
                             }
                             else if (notificationInfo.type === "challengeAccepted") {
-                                setLastNotification(<><b>{notificationInfo.sender}</b> has acepted the invite for your challenge titled <b>{notificationInfo.challengeTitle}</b>!</>)
+                                setLastNotification(<><b>{notificationInfo.sender}</b> has accepted the invite for your challenge titled <b>{notificationInfo.challengeTitle}</b>!</>)
                                 setIcon(<Avatar className={classes.green}><WhatshotIcon fontSize="small" /></Avatar>)
                             }
                             

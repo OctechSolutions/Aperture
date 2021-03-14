@@ -485,7 +485,7 @@ export default function Notifications({ match, notifications }) {
                         history.push(`/challenges/${user.displayName}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
                             notifications: notifications.filter(a => a !== notificationInfo)
                         }, { merge: true })
-                    }}><><b>{notificationInfo.sender}</b> has acepted the invite for your challenge titled <b>{notificationInfo.title}</b>!</></div>}
+                    }}><><b>{notificationInfo.sender}</b> has accepted the invite for your challenge titled <b>{notificationInfo.title}</b>!</></div>}
                     subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
                 />
             </Card>

@@ -93,7 +93,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
             console.log("Error getting user data:", error)
         });
         // eslint-disable-next-line
-    }, [user.displayName])
+    }, [])
 
     const useStyles = makeStyles(
         (theme) => ({
