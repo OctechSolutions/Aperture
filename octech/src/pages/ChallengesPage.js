@@ -312,6 +312,7 @@ export default function ChallengesPage() {
                                         fullWidth
                                         required
                                         placeholder={challengeName}
+                                        value={challengeName}
                                         onChange={(event) => {setChallengeName(event.target.value)}}
                                     />
 
@@ -342,6 +343,7 @@ export default function ChallengesPage() {
                                     type="text"
                                     fullWidth
                                     required
+                                    value={challengeDescription}
                                     placeholder={challengeDescription}
                                     onChange={(event) => {setChallengeDescription(event.target.value)}}
                                 />
@@ -356,6 +358,7 @@ export default function ChallengesPage() {
                                         label="Hint 1"
                                         type="text"
                                         fullWidth
+                                        value={challengeHint1}
                                         placeholder={challengeHint1}
                                         onChange={(event) => {setChallengeHint1(event.target.value)}}
                                     />
@@ -368,6 +371,7 @@ export default function ChallengesPage() {
                                         label="Hint 2"
                                         type="text"
                                         fullWidth
+                                        value={challengeHint2}
                                         placeholder={challengeHint2}
                                         onChange={(event) => {setChallengeHint2(event.target.value)}}
                                     />
@@ -380,6 +384,7 @@ export default function ChallengesPage() {
                                         label="Hint 3"
                                         type="text"
                                         fullWidth
+                                        value={challengeHint3}
                                         placeholder={challengeHint3}
                                         onChange={(event) => {setChallengeHint3(event.target.value)}}
                                     />

@@ -224,24 +224,22 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
     // Allows challenge editing.
     const handleChallengeEdit = () => {
-        db.collection("challenges").doc(name).get()
-        .then((challengeDoc) => {
-            let curData = {
-                name: name,
-                description: description,
-                hint1: hints.length >= 1 ? hints[0] : "",
-                hint2: hints.length >= 2 ? hints[1] : "",
-                hint3: hints.length >= 3 ? hints[2] : "",
-                isPrivate: isPrivate, 
-                startDate: new Date(startDate),
-                endDate: new Date(endDate),
-                timestamp: timestamp,
-                invitees: challengeDoc.data().invitees,
-                participants: challengeDoc.data().participants
-            }
-            openEditForm(curData)
-            handleMenuClose() 
-        })
+
+        let curData = {
+            name: name,
+            description: description,
+            hint1: hints.length >= 1 ? hints[0] : "",
+            hint2: hints.length >= 2 ? hints[1] : "",
+            hint3: hints.length >= 3 ? hints[2] : "",
+            isPrivate: isPrivate,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate),
+            timestamp: timestamp,
+            invitees: invitees,
+            participants: participants
+        }
+        openEditForm(curData)
+        handleMenuClose()
     }
 
     // For NEW POST ----------------------------------------------------
@@ -954,88 +952,88 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
             {/* POP UP MODAL TO INVITE FRIENDS. */}
             <Modal
-                    show={add}
-                    onHide={() => { setAdd(false) }}
-                    keyboard={false}
-                    size="xl"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                >
-                    <Modal.Header closeButton onClick={() => { setAdd(false) }}>
-                        <h5>
-                            {`Invite friends to ${name}`}
-                        </h5>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {
-                            <>
-                                <Autocomplete
-                                    multiple
-                                    autoComplete={true}
-                                    autoSelect={true}
-                                    clearOnEscape={true}
-                                    fullWidth={true}
-                                    autoHighlight={true}
-                                    onChange={(event, selectedUser) => {
-                                        selectedUsers = selectedUser
-                                    }}
-                                    id="search"
-                                    options={data}
-                                    getOptionLabel={option => option.name}
-                                    renderOption={(option) => {
-                                        return (
-                                            <ListItem >
-                                                <ListItemIcon>
-                                                    <Avatar alt={option.name} src={option.photoUrl} />
-                                                </ListItemIcon>
-                                                <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
-                                            </ListItem>
-                                        )
+                show={add}
+                onHide={() => { setAdd(false) }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton onClick={() => { setAdd(false) }}>
+                    <h5>
+                        {`Invite friends to ${name}`}
+                    </h5>
+                </Modal.Header>
+                <Modal.Body>
+                    {
+                        <>
+                            <Autocomplete
+                                multiple
+                                autoComplete={true}
+                                autoSelect={true}
+                                clearOnEscape={true}
+                                fullWidth={true}
+                                autoHighlight={true}
+                                onChange={(event, selectedUser) => {
+                                    selectedUsers = selectedUser
+                                }}
+                                id="search"
+                                options={data}
+                                getOptionLabel={option => option.name}
+                                renderOption={(option) => {
+                                    return (
+                                        <ListItem >
+                                            <ListItemIcon>
+                                                <Avatar alt={option.name} src={option.photoUrl} />
+                                            </ListItemIcon>
+                                            <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                        </ListItem>
+                                    )
+                                }
+                                }
+                                disableClearable
+                                forcePopupIcon={false}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Search"
+                                        margin="normal"
+                                        variant="outlined"
+                                        style={{
+                                            position: "sticky",
+                                            zIndex: 100,
+                                            top: 200,
+                                            backgroundColor: "white",
+                                            marginBottom: "20px"
+                                        }}
+                                    />
+                                )}
+                            />
+                            <center>
+                                <ButtonBase onClick={() => {
+                                    if (selectedUsers.length > 0) {
+                                        console.log(selectedUsers);
+                                        sendInviteNotifications(selectedUsers);
                                     }
-                                    }
-                                    disableClearable
-                                    forcePopupIcon={false}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Search"
-                                            margin="normal"
-                                            variant="outlined"
-                                            style={{
-                                                position: "sticky",
-                                                zIndex: 100,
-                                                top: 200,
-                                                backgroundColor: "white",
-                                                marginBottom: "20px"
-                                            }}
-                                        />
-                                    )}
-                                />
-                                <center>
-                                    <ButtonBase onClick={() => {
-                                        if (selectedUsers.length > 0) {
-                                            console.log(selectedUsers);
-                                            sendInviteNotifications(selectedUsers);
-                                        }
-                                    }}>
-                                        &nbsp;Invite
+                                }}>
+                                    &nbsp;Invite
                                         <IconButton
-                                            aria-label="invite to challenge"
-                                            onClick={() => {
-                                                if (selectedUsers.length > 0) {
-                                                    console.log(selectedUsers);
-                                                }
-                                            }}
-                                            color="primary"
-                                        >
-                                            <CallMadeIcon />
-                                        </IconButton>
-                                    </ButtonBase>
-                                </center>
-                            </>
-                        }
-                    </Modal.Body>
-                </Modal>
+                                        aria-label="invite to challenge"
+                                        onClick={() => {
+                                            if (selectedUsers.length > 0) {
+                                                console.log(selectedUsers);
+                                            }
+                                        }}
+                                        color="primary"
+                                    >
+                                        <CallMadeIcon />
+                                    </IconButton>
+                                </ButtonBase>
+                            </center>
+                        </>
+                    }
+                </Modal.Body>
+            </Modal>
 
             {/* POP UP MODAL TO SHOW PARTICIPANTS. */}
             <Modal
