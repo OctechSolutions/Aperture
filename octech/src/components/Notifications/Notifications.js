@@ -9,7 +9,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import { useHistory } from "react-router-dom"
 import CommentIcon from '@material-ui/icons/Comment';
-import { green, red } from '@material-ui/core/colors';
+import { blue, green, red } from '@material-ui/core/colors';
 import moment from 'moment';
 import { db } from "../../firebase";
 import { useSelector } from "react-redux"
@@ -23,6 +23,8 @@ import MuiAlert from '@material-ui/lab/Alert';
 import CheckIcon from '@material-ui/icons/Check';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
+import WhatshotIcon from '@material-ui/icons/Whatshot';
+import BlockIcon from '@material-ui/icons/Block';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -42,6 +44,10 @@ const useStyles = makeStyles((theme) => ({
         color: '#fff',
         backgroundColor: red[500],
     },
+    blue: {
+        color: '#fff',
+        backgroundColor: blue[500],
+    },
     fab: {
         top: 'auto',
         bottom: 65,
@@ -53,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Notifications({ match, notifications }) {
     const classes = useStyles();
-    const history = useHistory() 
+    const history = useHistory()
     const user = useSelector(selectUser)
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState("");
@@ -397,7 +403,93 @@ export default function Notifications({ match, notifications }) {
                 />
             </Card>
         }
+        else if (notificationInfo.type === "challengeInivitation") {
+            return <Card style={{ marginBottom: "20px" }} >
 
+                <CardHeader
+
+                    avatar={<Avatar className={classes.blue}><WhatshotIcon fontSize="small" /></Avatar>}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("challenges").doc(notificationInfo.challengeTitle).update({
+                                    invitees: firebase.firestore.FieldValue.arrayRemove(user.displayName)
+                                });
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div><><b>{notificationInfo.sender}</b> invited you to a challenge titled <b>{notificationInfo.challengeTitle}</b></></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+
+                <CardActions>
+                    <Fab variant="extended" style={{ boxShadow: "none" }} onClick={() => {
+                        setMessage(`You are part of ${notificationInfo.challengeTitle}!`)
+                        setOpen(true);
+                        db.collection("challenges").doc(notificationInfo.challengeTitle).update({
+                            invitees: firebase.firestore.FieldValue.arrayRemove(user.displayName),
+                            participants: firebase.firestore.FieldValue.arrayUnion({ name: user.displayName, photoUrl: user.photoUrl })
+                        });
+
+
+                        db.collection("users").doc(notificationInfo.sender).collection("notifications").doc(notificationInfo.sender).set({
+                            notifications: firebase.firestore.FieldValue.arrayUnion({
+                                type: "challengeAccepted",
+                                sentAt: firebase.firestore.Timestamp.now(),
+                                sender: user.displayName,
+                                title: notificationInfo.challengeTitle
+                            })
+                        }, { merge: true })
+
+
+                        db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+
+                        
+                    }}>
+
+                        <CheckIcon style={{ marginRight: "10px" }} />
+                        <b>Accept</b>
+                    </Fab>
+                    <Fab variant="extended" style={{ boxShadow: "none" }} >
+                        <BlockIcon style={{ marginRight: "10px" }} />
+                        <b>Ignore</b>
+                    </Fab>
+                </CardActions>
+            </Card>
+        }
+        else if (notificationInfo.type === "challengeAccepted") {
+            return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
+
+                <CardHeader
+
+                    avatar={<Avatar className={classes.green}><WhatshotIcon fontSize="small" /></Avatar>}
+                    action={
+                        <>
+                            <IconButton aria-label="close" color="inherit" onClick={() => {
+                                db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                                    notifications: notifications.filter(a => a !== notificationInfo)
+                                }, { merge: true })
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </>
+                    }
+                    title={<div onClick={() => {
+                        history.push(`/challenges/${user.displayName}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                            notifications: notifications.filter(a => a !== notificationInfo)
+                        }, { merge: true })
+                    }}><><b>{notificationInfo.sender}</b> has accepted the invite for your challenge titled <b>{notificationInfo.title}</b>!</></div>}
+                    subheader={moment(notificationInfo.sentAt.toDate()).fromNow()}
+                />
+            </Card>
+        }
     }
 
     function objToDate(obj) {
