@@ -473,13 +473,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       // Remove this challenge from the challenges list of this post.
       db.collection("posts").doc(id).update({ challenge: firebase.firestore.FieldValue.delete() })
         .then(() => {
-          console.log("Challenge removed = " + challengeName)
           updateChallengeChip() // Display updated chllenges.
         })
       // Remove corresponding challenge post from the challengePosts collection.
       db.collection("challengePosts").doc(id).delete()
         .then(() => {
-          console.log("Challenge removed = " + challengeName)
           updateChallengeChip() // Display updated chllenges.
         })
     }

@@ -28,18 +28,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 export default function ChallengePost({ user, caption, star, totalStar, creator, creatorPhotoUrl, imageSrc, style, timestamp, id, loadChallengeEntries, challengeName }) {
 
-  // console.log(user)
-  // console.log("caption = " + caption)
-  // console.log("challengePoints = " + challengePoints)
-  // console.log("creator = " + creator)
-  // console.log("creatorPhotoUrl = " + creatorPhotoUrl)
-  // console.log("imageSrc = " + imageSrc)
-  // console.log("style = " + style)
-  // console.log("timestamp = " + timestamp.toDate().toDateString())
-
-  // const [liked, setLiked] = useState(false)
-  // const [postChallengePoints, ] = useState(challengePoints)
-
   //Rating Stuff
   const [showStars,] = useState(((creator === user.displayName)) ? false : true);
   //Total Stars of the post
@@ -142,10 +130,6 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
     if (profilePost) { profilePost.update({ challenge: firebase.firestore.FieldValue.delete() }) }
   }
 
-  // Like unlike post.
-  // const likeUnlike = () => {
-  //   console.log("Like / Unlike!")
-  // }
   const StyledRating = withStyles({
     // iconFilled: {
     //   color: '#ff6d75',

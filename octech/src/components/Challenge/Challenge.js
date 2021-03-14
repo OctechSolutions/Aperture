@@ -65,7 +65,7 @@ import { ButtonBase } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import GroupIcon from '@material-ui/icons/Group';
 
-export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges, invitees, participants }) {
+export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges, openEditForm, timestamp, invitees, participants }) {
 
     const [anchorEl3Dots, setAnchorEl3Dots] = useState(null)
     const [isPublic, setIsPublic] = useState(!isPrivate)
@@ -85,7 +85,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
         db.collection("users").doc(user.displayName).get().then(doc => {
             if (doc.exists) {
-                setData(doc.data().data.friends.filter(a => !participants.map(u => u.name).concat(invitees).includes(a.name)))
+                setData(doc.data().friends.filter(a => !participants.map(u => u.name).concat(invitees).includes(a.name)))
             } else {
                 console.log("No such document!");
             }
@@ -93,7 +93,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
             console.log("Error getting user data:", error)
         });
         // eslint-disable-next-line
-    }, [user.displayName])
+    }, [])
 
     const useStyles = makeStyles(
         (theme) => ({
@@ -220,6 +220,26 @@ export default function Challenge({ user, name, description, hints, creator, cre
             return "Challenge Ended!"
         }
         else { return days + " days : " + hours + " hrs : " + minutes + " mins : " + seconds + " secs" }
+    }
+
+    // Allows challenge editing.
+    const handleChallengeEdit = () => {
+
+        let curData = {
+            name: name,
+            description: description,
+            hint1: hints.length >= 1 ? hints[0] : "",
+            hint2: hints.length >= 2 ? hints[1] : "",
+            hint3: hints.length >= 3 ? hints[2] : "",
+            isPrivate: isPrivate,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate),
+            timestamp: timestamp,
+            invitees: invitees,
+            participants: participants
+        }
+        openEditForm(curData)
+        handleMenuClose()
     }
 
     // For NEW POST ----------------------------------------------------
@@ -611,127 +631,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         />
                     </div>
                 </div>
-                <Modal
-                    show={add}
-                    onHide={() => { setAdd(false) }}
-                    keyboard={false}
-                    size="xl"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                >
-                    <Modal.Header closeButton onClick={() => { setShow(false) }}>
-                        <h5>
-                            {`Invite friends to ${name}`}
-                        </h5>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {
-                            <>
-                                <Autocomplete
-                                    multiple
-                                    autoComplete={true}
-                                    autoSelect={true}
-                                    clearOnEscape={true}
-                                    fullWidth={true}
-                                    autoHighlight={true}
-                                    onChange={(event, selectedUser) => {
-                                        selectedUsers = selectedUser
-                                    }}
-                                    id="search"
-                                    options={data}
-                                    getOptionLabel={option => option.name}
-                                    renderOption={(option) => {
-                                        return (
-                                            <ListItem >
-                                                <ListItemIcon>
-                                                    <Avatar alt={option.name} src={option.photoUrl} />
-                                                </ListItemIcon>
-                                                <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
-                                            </ListItem>
-                                        )
-                                    }
-                                    }
-                                    disableClearable
-                                    forcePopupIcon={false}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Search"
-                                            margin="normal"
-                                            variant="outlined"
-                                            style={{
-                                                position: "sticky",
-                                                zIndex: 100,
-                                                top: 200,
-                                                backgroundColor: "white",
-                                                marginBottom: "20px"
-                                            }}
-                                        />
-                                    )}
-                                />
-                                <center>
-                                    <ButtonBase onClick={() => {
-                                        if (selectedUsers.length > 0) {
-                                            console.log(selectedUsers);
-                                            sendInviteNotifications(selectedUsers);
-                                        }
-                                    }}>
-                                        &nbsp;Invite
-                                        <IconButton
-                                            aria-label="invite to challenge"
-                                            onClick={() => {
-                                                if (selectedUsers.length > 0) {
-                                                    console.log(selectedUsers);
-                                                }
-                                            }}
-                                            color="primary"
-                                        >
-                                            <CallMadeIcon />
-                                        </IconButton>
-                                    </ButtonBase>
-                                </center>
-                            </>
-                        }
-                    </Modal.Body>
-                </Modal>
-                <Modal
-                    show={showParticipants}
-                    onHide={() => { setShowParticipants(false) }}
-                    keyboard={false}
-                    size="xl"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                >
-                    <Modal.Header closeButton onClick={() => { setShowParticipants(false) }}>
-                        <center><h3>Participants</h3></center>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {
-                            <List component="users" aria-label="chat participants">
-                                <ListItem button onClick={() => {
-                                    history.push(`/user/${user.displayName}`)
-                                }}>
-                                    <ListItemIcon>
-                                        <Avatar alt={creator} src={creatorPhotoUrl} />
-                                    </ListItemIcon>
-                                    <ListItemText primary={creator} secondary={"Creator"} primaryTypographyProps={{ noWrap: true }} />
-                                </ListItem>
-                                {participants.length > 0 && participants.map(option => (
-                                    <ListItem button onClick={() => {
-                                        history.push(`/user/${option.name}`)
-                                    }}>
-                                        <ListItemIcon>
-                                            <Avatar alt={option.name} src={option.photoUrl} />
-                                        </ListItemIcon>
-                                        <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
-                                    </ListItem>
-                                ))
-                                }
-                            </List>
-                        }
-                    </Modal.Body>
-
-                </Modal>
                 {/* 3 Dots Menu. */}
                 {isAdmin &&
                     <>
@@ -759,7 +658,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                             </MenuItem>
 
                             {/* Edit challenge. */}
-                            <MenuItem key={"edit"} selected={false} onClick={() => { console.log("Edit challenge."); handleMenuClose() }}>
+                            <MenuItem key={"edit"} selected={false} onClick={handleChallengeEdit}>
                                 <ListItemIcon> <EditIcon /> </ListItemIcon>
                                 Edit
                             </MenuItem>
@@ -777,7 +676,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
             {/* CHALLENGE DESRIPTION + HINTS + CHALLENGE CODE + VIEW ENTRIES. */}
             <div className="challenge_body">
                 <p><b>Description</b><br />{description}</p>
-                {(hints !== ",,") && <p><b>Hints</b><br />{hints.toString().replaceAll(",", ", ")}</p>}
+                {(hints != ",,") && <p><b>Hints</b><br />{hints.toString().replaceAll(",", ", ")}</p>}
                 <p><b>Duration</b><br />{startDate} - {endDate}</p>
                 <p><b>Countdown to Challenge End</b><br />
                     <Countdown date={Date.now() + (endDateObj - Date.now())} renderer={countdownRenderer} /></p>
@@ -1049,6 +948,131 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         }
                     </div>
                 </Modal.Body>
+            </Modal>
+
+            {/* POP UP MODAL TO INVITE FRIENDS. */}
+            <Modal
+                show={add}
+                onHide={() => { setAdd(false) }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton onClick={() => { setAdd(false) }}>
+                    <h5>
+                        {`Invite friends to ${name}`}
+                    </h5>
+                </Modal.Header>
+                <Modal.Body>
+                    {
+                        <>
+                            <Autocomplete
+                                multiple
+                                autoComplete={true}
+                                autoSelect={true}
+                                clearOnEscape={true}
+                                fullWidth={true}
+                                autoHighlight={true}
+                                onChange={(event, selectedUser) => {
+                                    selectedUsers = selectedUser
+                                }}
+                                id="search"
+                                options={data}
+                                getOptionLabel={option => option.name}
+                                renderOption={(option) => {
+                                    return (
+                                        <ListItem >
+                                            <ListItemIcon>
+                                                <Avatar alt={option.name} src={option.photoUrl} />
+                                            </ListItemIcon>
+                                            <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                        </ListItem>
+                                    )
+                                }
+                                }
+                                disableClearable
+                                forcePopupIcon={false}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Search"
+                                        margin="normal"
+                                        variant="outlined"
+                                        style={{
+                                            position: "sticky",
+                                            zIndex: 100,
+                                            top: 200,
+                                            backgroundColor: "white",
+                                            marginBottom: "20px"
+                                        }}
+                                    />
+                                )}
+                            />
+                            <center>
+                                <ButtonBase onClick={() => {
+                                    if (selectedUsers.length > 0) {
+                                        console.log(selectedUsers);
+                                        sendInviteNotifications(selectedUsers);
+                                    }
+                                }}>
+                                    &nbsp;Invite
+                                        <IconButton
+                                        aria-label="invite to challenge"
+                                        onClick={() => {
+                                            if (selectedUsers.length > 0) {
+                                                console.log(selectedUsers);
+                                            }
+                                        }}
+                                        color="primary"
+                                    >
+                                        <CallMadeIcon />
+                                    </IconButton>
+                                </ButtonBase>
+                            </center>
+                        </>
+                    }
+                </Modal.Body>
+            </Modal>
+
+            {/* POP UP MODAL TO SHOW PARTICIPANTS. */}
+            <Modal
+                show={showParticipants}
+                onHide={() => { setShowParticipants(false) }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton onClick={() => { setShowParticipants(false) }}>
+                    <center><h3>Participants</h3></center>
+                </Modal.Header>
+                <Modal.Body>
+                    {
+                        <List component="users" aria-label="chat participants">
+                            <ListItem button onClick={() => {
+                                history.push(`/user/${user.displayName}`)
+                            }}>
+                                <ListItemIcon>
+                                    <Avatar alt={creator} src={creatorPhotoUrl} />
+                                </ListItemIcon>
+                                <ListItemText primary={creator} secondary={"Creator"} primaryTypographyProps={{ noWrap: true }} />
+                            </ListItem>
+                            {participants.length > 0 && participants.map(option => (
+                                <ListItem button onClick={() => {
+                                    history.push(`/user/${option.name}`)
+                                }}>
+                                    <ListItemIcon>
+                                        <Avatar alt={option.name} src={option.photoUrl} />
+                                    </ListItemIcon>
+                                    <ListItemText primary={option.name} primaryTypographyProps={{ noWrap: true }} />
+                                </ListItem>
+                            ))
+                            }
+                        </List>
+                    }
+                </Modal.Body>
+
             </Modal>
 
             {/* Post added success message alert! */}
