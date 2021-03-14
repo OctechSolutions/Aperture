@@ -676,7 +676,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
             {/* CHALLENGE DESRIPTION + HINTS + CHALLENGE CODE + VIEW ENTRIES. */}
             <div className="challenge_body">
                 <p><b>Description</b><br />{description}</p>
-                {(hints != ",,") && <p><b>Hints</b><br />{hints.toString().replaceAll(",", ", ")}</p>}
+                {(hints !== ",,") && <p><b>Hints</b><br />{hints.toString().replaceAll(",", ", ")}</p>}
                 <p><b>Duration</b><br />{startDate} - {endDate}</p>
                 <p><b>Countdown to Challenge End</b><br />
                     <Countdown date={Date.now() + (endDateObj - Date.now())} renderer={countdownRenderer} /></p>
