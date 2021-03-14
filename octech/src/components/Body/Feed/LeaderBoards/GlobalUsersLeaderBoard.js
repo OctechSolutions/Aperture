@@ -16,7 +16,7 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
           let counter = 0;
           setLeaderBoardData(data.docs.map(user => {
             if(counter === 0 ){
-              if(user.data().league !== "Champion")
+              if(user.data().league !== "Champion" && user.data().profilePoints !== 0)
                 db.collection("users").doc(user.data().name).update({league : "Champion", notifyLeague: true, leagueStatus: "p"})
               counter++;}
               else if(counter>0 && counter < 10){//It should be 100 but for demo purpose keep it 10

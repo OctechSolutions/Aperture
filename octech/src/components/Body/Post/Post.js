@@ -678,7 +678,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
                 {/* To enter a challenge. */}
                 {
-                  (images.length === 1) && !challengeChip &&
+                  (images.length === 1) && !challengeChip && !isForumPost &&
                   <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
                     <ListItemIcon>
                       <AddAlarmRoundedIcon />
