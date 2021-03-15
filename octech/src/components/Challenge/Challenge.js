@@ -786,7 +786,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                 !inputImg &&
                                 <div className="upload-btn-wrapper">
                                     {/* Add image file input. */}
-                                    <input type="file" name="myfile" id="myFile" accept="image" onChange={handleImageInputChange} style={{ opacity: "0" }} />
+                                    <input type="file" name="myfile" id="myFile" accept="image/*" onChange={handleImageInputChange} style={{ opacity: "0" }} />
                                     <label htmlFor="myFile">
                                         <IconButton aria-label="upload image" component="span"> <ImageIcon fontSize="large" /> </IconButton>
                                     </label>
