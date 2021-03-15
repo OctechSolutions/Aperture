@@ -10,7 +10,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 
-
 const useStyles = makeStyles(theme => ({
   large: {
     width: theme.spacing(15),
@@ -44,43 +43,24 @@ function EditProfile() {
       setFile(e.target.files[0]);
     }
     reader.onloadend = function() {
-      // Since this is asyncronous on completion of the loading the image is set with the base64 string
       auth.currentUser.updateProfile({ photo_URL: reader.result });
-      // alert("Image Uploaded Sucessfully!")
     };
   };
 
-  const handleSubmit = async event => {
-    event.preventDefault(); // Prevent default behavior of re-loading etc.
-
-    const updateUserProfile = async () => {
-      return this.db.collection("users").doc(auth.currentUser).update({
-              name: data.username,
-              email: data.email,
-              avatar: data.photoUrl
-            })
-          }
+  const updateUserProfile = () => {
+    auth.currentUser.updateProfile({
+      name: data.displayName,
+      email: data.email,
+      avatar: data.photoUrl
+    });
   };
 
   const deleteProfile = () => {
-
-    db.collection("users").doc(user.displayName).update({
-      user: firebase.firestore.doc.docRemove() 
-    })
-
-    console.log(refs)
-    refs.forEach((ids) => {
-      console.log(ids);
-      db.collection('postImages').doc(ids).delete();
-      db.collection("forumPosts") 
-        .doc(ids)
-        .delete()
-      db.collection("portfolios").doc(auth.currentUser).delete();
-      
-    });
-
-
-
+    db.collection("users")
+      .doc(user.displayName)
+      .update({
+        user: firebase.firestore.doc.docRemove()
+      });
   };
 
   return (
@@ -157,7 +137,7 @@ function EditProfile() {
       <Button
         variant="contained"
         color="secondary"
-        onClick={handleSubmit}
+        onClick={updateUserProfile}
         style={{ marginLeft: "10px" }}
       >
         <b>Submit</b>
@@ -181,3 +161,4 @@ function EditProfile() {
 }
 
 export default EditProfile;
+
