@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import '../Body/Post/Post.css'
 
 import firebase from "firebase"
 import { db } from "../../firebase"
@@ -8,7 +9,7 @@ import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
-import CardMedia from '@material-ui/core/CardMedia'
+// import CardMedia from '@material-ui/core/CardMedia'
 // import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 // import Collapse from '@material-ui/core/Collapse'
@@ -164,7 +165,8 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
         />
 
         {/* Post image. */}
-        <CardMedia className={classes.media} image={imageSrc} style={style} title={caption} />
+        {/* <CardMedia className={classes.media} image={imageSrc} style={style} title={caption} /> */}
+        <div className="post__image"><img src={imageSrc} style={style} alt="User Post" /></div>
 
         {/* Rating. */}
         <CardActions disableSpacing>
