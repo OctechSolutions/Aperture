@@ -48,19 +48,34 @@ function EditProfile() {
   };
 
   const updateUserProfile = () => {
-    auth.currentUser.updateProfile({
-      name: data.displayName,
+    db.collection("users").doc(user.displayName).update({
+      name: data.username,
       email: data.email,
-      avatar: data.photoUrl
+      photoUrl: data.avatar
+    })
+    auth.currentUser.updateProfile({
+      name: data.username,
+      email: data.email,
+      avatar: data.avatar
     });
   };
 
-  const deleteProfile = () => {
-    db.collection("users")
-      .doc(user.displayName)
-      .update({
-        user: firebase.firestore.doc.docRemove()
-      });
+  const deleteProfile = async () => {
+    const docRef = db.collection("users").doc(user.displayName)
+        const collectionRef = docRef.collection("notifications")
+        await collectionRef.get().then(docs => {
+            docs.forEach(doc => {
+                collectionRef.doc(doc.id).delete()
+            });
+        })
+        await docRef.delete()
+        firebase.auth().currentUser.delete()
+    //     )
+    // db.collection("users")
+    //   .doc(user.displayName)
+    //   .update({
+    //     user: firebase.firestore.doc.docRemove()
+    //   });
   };
 
   return (
