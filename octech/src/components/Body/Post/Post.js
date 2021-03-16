@@ -46,6 +46,9 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Chip from '@material-ui/core/Chip'
 import AddAlarmRoundedIcon from '@material-ui/icons/AddAlarmRounded'
 import Skeleton from '@material-ui/lab/Skeleton';
+import Carousel from 'react-bootstrap/Carousel';
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -161,21 +164,21 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         let newProfilePoints = profilePoints + (givenStars - stars);
         let league = doc.data().league;
         let leaguee = "";
-        
-        if(league !== "Champion" && league !== "Legendary"){
-          if(newProfilePoints<100)
+
+        if (league !== "Champion" && league !== "Legendary") {
+          if (newProfilePoints < 100)
             leaguee = "No league profile points less than 100"
-          else if(newProfilePoints<500)
+          else if (newProfilePoints < 500)
             leaguee = "Silver"
-          else if(newProfilePoints<1000)
+          else if (newProfilePoints < 1000)
             leaguee = "Gold"
-          else if(newProfilePoints<1200)
+          else if (newProfilePoints < 1200)
             leaguee = "Diamond"
-          else 
+          else
             leaguee = "Platinum"
         }
-          
-        if(league && (league===leaguee || leaguee===""))
+
+        if (league && (league === leaguee || leaguee === ""))
           transaction.update(user, { profilePoints: newProfilePoints });
         else {
           transaction.update(user, {
@@ -361,7 +364,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   var slideshow;
   if (images.length === 1) {
-    slideshow = <div className="post__image"><img src={images[0].src} style={images[0].style} alt="User Post" /></div>;
+    slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
   } else if (images.length > 1) {
     slideshow = <div><ImageGallery sliderImages={images} /></div>;
   }
@@ -572,7 +575,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
             </IconButton>
             <div className="postInfo">
-              <div style= {{marginLeft : "-12px"}}>
+              <div style={{ marginLeft: "-12px" }}>
                 <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
 
                   {channelBy ? channelBy : name}</Link>
@@ -877,7 +880,27 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             <div className="post_body">
               <p>{message}</p>
             </div>
-            {slideshow}
+            {/* {slideshow} */}
+            <Carousel
+              interval={null}
+              controls={(images.length > 1) ? true : false}
+              indicators={(images.length > 1) ? true : false}
+            >
+              {images.map((a) =>
+                <Carousel.Item>
+                  <center>
+                    <Zoom>
+                      <img
+                        src={a.src}
+                        style={a.style}
+                        alt="Carousel"
+                        className="post__image"
+                      />
+                    </Zoom>
+                  </center>
+                </Carousel.Item>
+              )}
+            </Carousel >
             <br />
             {showStars && !isForumPost &&
               <center>

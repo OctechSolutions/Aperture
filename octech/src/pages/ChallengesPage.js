@@ -57,14 +57,44 @@ export default function ChallengesPage() {
     const [snackbarErrorMessage, setSnackbarErrorMessage] = useState("")
     const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false)
     const [editChallenge, setEditChallenge] = useState(null)
+    const [canCreateNewChallenge, setCanCreateNewChallenge] = useState(true)
 
     // Function for Snackbar.
     function Alert(props) {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
+    // Function that calculates the start and end of current week.
+    const checkCanCreateNewChallenge = () => {
+        var todayDay = new Date().getDay()
+        var start = new Date()
+        var end = new Date()
+        start.setDate(start.getDate() - todayDay)
+        end.setDate(end.getDate() + (6 - todayDay))
+        // console.log("weekStart = " + start.toString())
+        // console.log("weekEnd = " + end.toString())
+        
+        var numChallengesThisWeek = 0
+        setCanCreateNewChallenge(true)
+
+        // Query challenges collection to see if this user has created 3 challenges this week.
+        db.collection("challenges").where("creator", "==", user.displayName).get()
+        .then((docs) => {
+            docs.forEach((doc) => { // Check if this user has created more than 3 challenges this week.
+                if((doc.data().timestamp.toDate() >= start) && (doc.data().timestamp.toDate() <= end)) { numChallengesThisWeek += 1 }
+                // If yes, then this user cannot create another challenge this week.
+                if(numChallengesThisWeek >= 3) { 
+                    setCanCreateNewChallenge(false) 
+                    console.log(user.displayName + " has already created 3 challenges.")
+                }
+            })
+        })
+    }
+
     // Function that loads all challenges
     const loadChallengeObjects = async () => {
+        checkCanCreateNewChallenge()
+
         // Load challenges (once).
         if(loadChallenges) { // If challenges are to be loaded, then load them.
             setChallenges([]) // Set challenges to an empty array.
@@ -152,49 +182,96 @@ export default function ChallengesPage() {
     }
 
     // Function that submits the form to add a new challenge.
-    const handleFormSubmit = () => {
-
-        if(challengeStartDate > challengeEndDate) {
-            setSnackbarErrorMessage("Please select valid start and end dates.")
-            setOpenErrorSnackbar(true)
-        }
-
-        else if(!alphaNumeric.test(challengeName)) {
-            setSnackbarErrorMessage("Please enter a valid Challenge Title.")
-            setOpenErrorSnackbar(true)
-        }
-
-        else if(!alphaNumeric.test(challengeDescription)){
-            setSnackbarErrorMessage("Please enter a valid Challenge Description.")
-            setOpenErrorSnackbar(true)
-        }
-
-        else {
-            if(editChallenge !== null) { // IF FORM SUBMITTED TO EDIT A CHALLENGE.
-                // Delete the old version of this challenge.
-                db.collection("challenges").doc(editChallenge.name).delete()
-                .then(() => { // Replace with new version having the same old timestamp.
+    const handleFormSubmit = () => {      
+        if(canCreateNewChallenge) {
+            // Check if selected start and end date are valid.
+            if(challengeStartDate > challengeEndDate) {
+                setSnackbarErrorMessage("Please select valid start and end dates.")
+                setOpenErrorSnackbar(true)
+            }
+    
+            // Check if challenge name entered is valid.
+            else if(!alphaNumeric.test(challengeName)) {
+                setSnackbarErrorMessage("Please enter a valid Challenge Title.")
+                setOpenErrorSnackbar(true)
+            }
+    
+            // Check if challenge description entered is valid.
+            else if(!alphaNumeric.test(challengeDescription)){
+                setSnackbarErrorMessage("Please enter a valid Challenge Description.")
+                setOpenErrorSnackbar(true)
+            }
+    
+            else {
+                if(editChallenge !== null) { // IF FORM SUBMITTED TO EDIT A CHALLENGE.
+                    // Delete the old version of this challenge.
+                    db.collection("challenges").doc(editChallenge.name).delete()
+                    .then(() => { // Replace with new version having the same old timestamp.
+                        db.collection("challenges").doc(challengeName).get()
+                        .then((challengeDoc) => {
+                            if(challengeDoc.exists) {
+                                setSnackbarErrorMessage("A challenge with this name already exists!")
+                                setOpenErrorSnackbar(true)
+                            }
+                            else{
+                                let newChallenge = {
+                                    key: challengeDoc.id,
+                                    creator: user.displayName,
+                                    creatorPhotoUrl: user.photoUrl,
+                                    description: challengeDescription,
+                                    hints: [challengeHint1, challengeHint2,challengeHint3],
+                                    invitees: editChallenge.invitees,
+                                    participants: editChallenge.participants,
+                                    isPrivate: challengeIsPrivate,
+                                    name: challengeName,
+                                    leader: "",
+                                    startDate: challengeStartDate.toDateString(),
+                                    endDate: challengeEndDate.toDateString(),
+                                    timestamp: editChallenge.timestamp
+                                }
+                        
+                                db.collection("challenges").doc(challengeName).set(newChallenge)
+                                .then(() => {
+                                    handleFormClose()
+                                    setLoadChallenges(true)
+                                })
+                                .catch((error) => {
+                                    console.error("Error adding document: ", error);
+                                });
+                            }
+                        })
+                    })
+    
+                    // If the name of this challenge has changed, then update it in all its challengePosts.
+                    db.collection("challengePosts").where("challenge", "==", editChallenge.name).get()
+                    .then((docs) => { docs.forEach((doc) => { doc.ref.update({challenge: challengeName}) }) })
+    
+                    // If the name of this challenge has changed, then update it in all linked profile posts.
+                    db.collection("posts").where("challenge", "==", editChallenge.name).get()
+                    .then((docs) => { docs.forEach((doc) => { doc.ref.update({challenge: challengeName}) }) })
+                }
+                else { // IF FORM SUBMITTED TO CREATE A NEW CHALLENGE.
                     db.collection("challenges").doc(challengeName).get()
                     .then((challengeDoc) => {
                         if(challengeDoc.exists) {
                             setSnackbarErrorMessage("A challenge with this name already exists!")
                             setOpenErrorSnackbar(true)
                         }
-                        else{
+                        else{ 
                             let newChallenge = {
                                 key: challengeDoc.id,
                                 creator: user.displayName,
                                 creatorPhotoUrl: user.photoUrl,
                                 description: challengeDescription,
                                 hints: [challengeHint1, challengeHint2,challengeHint3],
-                                invitees: editChallenge.invitees,
-                                participants: editChallenge.participants,
+                                invitees: [],
+                                participants: [],
                                 isPrivate: challengeIsPrivate,
                                 name: challengeName,
                                 leader: "",
                                 startDate: challengeStartDate.toDateString(),
                                 endDate: challengeEndDate.toDateString(),
-                                timestamp: editChallenge.timestamp
+                                timestamp: firebase.firestore.FieldValue.serverTimestamp()
                             }
                     
                             db.collection("challenges").doc(challengeName).set(newChallenge)
@@ -207,51 +284,11 @@ export default function ChallengesPage() {
                             });
                         }
                     })
-                })
-
-                // If the name of this challenge has changed, then update it in all its challengePosts.
-                db.collection("challengePosts").where("challenge", "==", editChallenge.name).get()
-                .then((docs) => { docs.forEach((doc) => { doc.ref.update({challenge: challengeName}) }) })
-
-                // If the name of this challenge has changed, then update it in all linked profile posts.
-                db.collection("posts").where("challenge", "==", editChallenge.name).get()
-                .then((docs) => { docs.forEach((doc) => { doc.ref.update({challenge: challengeName}) }) })
+                } 
             }
-            else { // IF FORM SUBMITTED TO CREATE A NEW CHALLENGE.
-                db.collection("challenges").doc(challengeName).get()
-                .then((challengeDoc) => {
-                    if(challengeDoc.exists) {
-                        setSnackbarErrorMessage("A challenge with this name already exists!")
-                        setOpenErrorSnackbar(true)
-                    }
-                    else{ 
-                        let newChallenge = {
-                            key: challengeDoc.id,
-                            creator: user.displayName,
-                            creatorPhotoUrl: user.photoUrl,
-                            description: challengeDescription,
-                            hints: [challengeHint1, challengeHint2,challengeHint3],
-                            invitees: [],
-                            participants: [],
-                            isPrivate: challengeIsPrivate,
-                            name: challengeName,
-                            leader: "",
-                            startDate: challengeStartDate.toDateString(),
-                            endDate: challengeEndDate.toDateString(),
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        }
-                
-                        db.collection("challenges").doc(challengeName).set(newChallenge)
-                        .then(() => {
-                            handleFormClose()
-                            setLoadChallenges(true)
-                        })
-                        .catch((error) => {
-                            console.error("Error adding document: ", error);
-                        });
-                    }
-                })
-            } 
+        } else { 
+            setSnackbarErrorMessage("Sorry! You have already created 3 challenges this week.")
+            setOpenErrorSnackbar(true)
         }
     }
 
@@ -263,7 +300,7 @@ export default function ChallengesPage() {
 
     useEffect(() => { 
         let isMounted = true // To ensure the component doesnt get loaded before the component is mounted.
-        if(isMounted) { loadChallengeObjects() }
+        if(isMounted) { loadChallengeObjects(); }
         return () => { isMounted = false }
         // eslint-disable-next-line
     }, [loadChallenges])
