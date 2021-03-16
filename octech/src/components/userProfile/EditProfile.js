@@ -3,7 +3,6 @@ import { TextField, Avatar, Button } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { auth } from "../../firebase";
 import { db } from "../../firebase";
-import firebase from "firebase";
 import EditIcon from "@material-ui/icons/Edit";
 import { selectUser } from "../../features/userSlice";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -23,7 +22,6 @@ const useStyles = makeStyles(theme => ({
 
 function EditProfile() {
   const user = useSelector(selectUser);
-  const [refs, setRefs] = useState([]);
   const [file, setFile] = useState();
   const classes = useStyles();
   const [data, setData] = useState({
@@ -48,11 +46,13 @@ function EditProfile() {
   };
 
   const updateUserProfile = () => {
-    db.collection("users").doc(user.displayName).update({
-      name: data.username,
-      email: data.email,
-      photoUrl: data.avatar
-    })
+    db.collection("users")
+      .doc(user.displayName)
+      .update({
+        name: data.username,
+        email: data.email,
+        photoUrl: data.avatar
+      });
     auth.currentUser.updateProfile({
       name: data.username,
       email: data.email,
@@ -61,21 +61,50 @@ function EditProfile() {
   };
 
   const deleteProfile = async () => {
-    const docRef = db.collection("users").doc(user.displayName)
-        const collectionRef = docRef.collection("notifications")
-        await collectionRef.get().then(docs => {
-            docs.forEach(doc => {
-                collectionRef.doc(doc.id).delete()
-            });
-        })
-        await docRef.delete()
-        firebase.auth().currentUser.delete()
-    //     )
-    // db.collection("users")
-    //   .doc(user.displayName)
-    //   .update({
-    //     user: firebase.firestore.doc.docRemove()
-    //   });
+    db.collection("users").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          if(doc.data().name === auth.currentUser.displayName)
+            db.collection("users").doc(doc.id).delete()
+      });
+  });
+  
+  db.collection("posts").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          if(doc.data().name === auth.currentUser.displayName) {
+            db.collection("postImages").get().then((postImage) => {
+              postImage.forEach((docc) => {
+                if(docc.data().ref === doc.id)
+                  db.collection("postImages").doc(docc.id).delete()
+              })
+            })
+           db.collection("posts").doc(doc.id).delete()
+          }
+      });
+  });
+  
+  db.collection("portfolios").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          if(doc.id === auth.currentUser.displayName)
+            db.collection("portfolios").doc(doc.id).delete()
+      });
+  });
+  
+  db.collection("forumPosts").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          if(doc.data().name === auth.currentUser.displayName) {
+            db.collection("forumPosts").doc(doc.id).delete()
+          }
+      });
+  });
+  
+  db.collection("collections").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          if(doc.data().creator === auth.currentUser.displayName) {
+            db.collection("collections").doc(doc.id).delete()
+          }
+      });
+  });
+        auth.currentUser.delete()
   };
 
   return (
@@ -176,4 +205,5 @@ function EditProfile() {
 }
 
 export default EditProfile;
+
 
