@@ -26,6 +26,8 @@ import Rating from '@material-ui/lab/Rating';
 import GradeIcon from '@material-ui/icons/Grade';
 import CountUp from 'react-countup';
 import { withStyles } from '@material-ui/core/styles';
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 
 export default function ChallengePost({ user, caption, star, totalStar, creator, creatorPhotoUrl, imageSrc, style, timestamp, id, loadChallengeEntries, challengeName }) {
 
@@ -166,7 +168,7 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
 
         {/* Post image. */}
         {/* <CardMedia className={classes.media} image={imageSrc} style={style} title={caption} /> */}
-        <div className="post__image"><img src={imageSrc} style={style} alt="User Post" /></div>
+        <div><center><Zoom><img src={imageSrc} style={style} alt="User Post" className="post__image"/></Zoom></center></div>
 
         {/* Rating. */}
         <CardActions disableSpacing>
