@@ -1,33 +1,45 @@
 import React from 'react';
-import Carousel from 'react-bootstrap/Carousel';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+import SwiperCore, { Navigation, Pagination, EffectFlip, Keyboard } from 'swiper';
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 
+// Import Swiper styles
+import 'swiper/swiper.scss';
+import 'swiper/components/navigation/navigation.scss';
+import 'swiper/components/pagination/pagination.scss';
+import 'swiper/components/scrollbar/scrollbar.scss';
+import 'swiper/components/zoom/zoom.min.css';
+import 'swiper/components/effect-flip/effect-flip.scss'
 
+SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
 function ImageGallery({ sliderImages }) {
 
     return (
-        <div style={{
-            // display: "block",
-            // maxHeight : "50vh",
-            // marginLeft: "auto",
-            // marginRight: "auto",
-        }}>
-            <Carousel 
-            interval={null}
-            controls={(sliderImages.length > 1)?true:false}
-            >
-                {sliderImages.map((a) => 
-                    <Carousel.Item className="post__image">
+        <Swiper
+            autoHeight={true}
+            navigation
+            pagination={{ clickable: true }}
+            loop={true}
+            effect='flip'
+            keyboard={true}
+        >
+            {sliderImages.map((a) =>
+                <SwiperSlide style={{textAlign: "center"}}>
+                    <Zoom>
                         <img
                             src={a.src}
                             style={a.style}
                             alt="Carousel"
+                            className="post__image"
                         />
-                    </Carousel.Item>
-                )}
-
-            </Carousel>
-        </div>
+                    </Zoom>
+                </SwiperSlide>
+            )}
+        </Swiper >
     )
 }
 
