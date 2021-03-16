@@ -10,21 +10,45 @@ function ChallengesLeaderBoard() {
 
   if (dataFetched === false) {
 
-    db.collection('challengePosts')
-      .orderBy('totalStars', 'desc')
-      .limit(100)
-      .onSnapshot(data => {
+    db.collection('challenges')
+      .onSnapshot(async data => {
+        let challenges = data.docs.map(chal => {
+          return chal.data();
+        });
+
+        let tempLeaderboardData = [];
+        challenges.forEach(async chal => {
+          await new Promise(resolve => {
+            db.collection('challengePosts')
+            .where('challenge', '==', chal.name)
+            .orderBy('totalStars', 'desc')
+            .limit(100)
+            .onSnapshot(async chalPosts => {
+              tempLeaderboardData.push({
+                challengeName: chal.name,
+                challengeDesc: chal.description,
+                postData: chalPosts.docs.map(post => {
+                  return post.data();
+                })
+              });
+              resolve();
+            })
+          });
+        });
+
+        
         setDataFetched(true);
-        setLeaderBoardData(data.docs.map(post => {
-          return post.data();
-        }));
+        setLeaderBoardData(tempLeaderboardData);
       })
-    }
-    return (
+  }
 
-      <LeaderBoardComponent title="Challenges LeaderBoard" headers={['Post Caption', 'Submitted By', 'Total Stars']} columns={['caption','creator','totalStars']} data={leaderboardData} />
-
-    )
-  };
+  return (
+    leaderboardData.map((data, i) => {
+      if (data.postData.length !== 0)
+        return <LeaderBoardComponent key={i} title={data.challengeName + " LeaderBoard"} headers={['Post Caption', 'Submitted By', 'Total Stars']} columns={['caption', 'creator', 'totalStars']} data={data.postData} />;
+    })
+    
+  )
+}
 
 export default ChallengesLeaderBoard;

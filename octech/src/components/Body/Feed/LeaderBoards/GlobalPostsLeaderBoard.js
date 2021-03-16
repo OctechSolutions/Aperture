@@ -17,11 +17,9 @@ function GlobalPostsLeaderBoard() {
         setDataFetched(true);
         setLeaderBoardData(data.docs.map(post => {
           return post.data();
-
         }));
       })
   }
-
 
   return (
 
