@@ -3,7 +3,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
-import SwiperCore, { Navigation, Pagination, EffectFlip } from 'swiper';
+import SwiperCore, { Navigation, Pagination, EffectFlip, Keyboard } from 'swiper';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 
@@ -15,7 +15,7 @@ import 'swiper/components/scrollbar/scrollbar.scss';
 import 'swiper/components/zoom/zoom.min.css';
 import 'swiper/components/effect-flip/effect-flip.scss'
 
-SwiperCore.use([Navigation, Pagination, EffectFlip]);
+SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
 function ImageGallery({ sliderImages }) {
 
     return (
@@ -25,6 +25,7 @@ function ImageGallery({ sliderImages }) {
             pagination={{ clickable: true }}
             loop={true}
             effect='flip'
+            keyboard={true}
         >
             {sliderImages.map((a) =>
                 <SwiperSlide style={{textAlign: "center"}}>
