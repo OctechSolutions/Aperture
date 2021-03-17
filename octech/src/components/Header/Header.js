@@ -20,6 +20,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import EditIcon from "@material-ui/icons/Edit";
 
 function Header({ setValue, hasNotifications }) {
   const dispatch = useDispatch();
@@ -142,6 +143,12 @@ function Header({ setValue, hasNotifications }) {
             <ExitToAppIcon />
           </ListItemIcon>
             Sign Out
+        </MenuItem>
+        <MenuItem onClick={e => {history.push("/editprofile")}}>
+          <ListItemIcon>
+            <EditIcon/>
+          </ListItemIcon>
+            Edit Profile
         </MenuItem>
       </Menu>
     </div>
