@@ -105,6 +105,7 @@ function EditProfile() {
       });
   });
         auth.currentUser.delete()
+        this.props.history.push('/login')
   };
 
   return (
