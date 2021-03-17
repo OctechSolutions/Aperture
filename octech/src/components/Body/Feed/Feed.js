@@ -599,7 +599,7 @@ function Feed({ match }, props) {
             })
           });
         });
-      }, 200);
+      }, 300);
       setCameraActive("");
     }
   };
@@ -912,10 +912,8 @@ function Feed({ match }, props) {
           }}>
             {/* <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle> */}
             <DialogTitle id="form-dialog-title">
-              {!cropping &&
                 <img src={inputImg}
                   className="post__image" id="img" alt="Preview" style={getImageStyle()} ref={overlayParentRef} ></img>
-              }
 
             </DialogTitle>
             <DialogContent>
