@@ -47,7 +47,7 @@ import Chip from '@material-ui/core/Chip'
 import AddAlarmRoundedIcon from '@material-ui/icons/AddAlarmRounded'
 import Skeleton from '@material-ui/lab/Skeleton';
 import Carousel from 'react-bootstrap/Carousel';
-import Zoom from 'react-medium-image-zoom'
+import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css'
 
 function Alert(props) {
@@ -199,7 +199,10 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       snapshot.forEach((doc) => {
         tempImages.push({
           src: doc.data().url,
-          style: doc.data().styleModification
+          style: doc.data().styleModification,
+          overlayGifs: doc.data().overlayGifs,
+          overlayCoordinates: doc.data().overlayCoordinates,
+          orignalDimensions: doc.data().orignalDimensions
         });
         tempRefs.push(doc.id);
         // console.log(doc.data(), doc.id)
@@ -363,11 +366,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
 
   var slideshow;
-  if (images.length === 1) {
-    slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
-  } else if (images.length > 1) {
+  if (images.length >= 1) 
+    // slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
+  // } else if (images.length > 1) {
     slideshow = <div><ImageGallery sliderImages={images} /></div>;
-  }
+  // }
   else {
     slideshow = <></>
   }
