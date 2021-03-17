@@ -1,0 +1,76 @@
+// rules_version = '2';
+
+// service cloud.firestore {
+
+//   match /databases/{database}/documents {
+
+//     // Allow public read access, but only content owners can write
+
+//     match /posts/{document} {
+
+//       allow read: if true
+//       allow create: if request.auth.uid == request.resource.data.author_uid;
+//       allow update, delete: if request.auth.uid == resource.data.author_uid;
+
+//     }
+    
+//     match /postImages/{document} {
+
+//       allow read: if true
+//       allow create: if request.auth.uit == request.resource.data.author_uid;
+//       allow update, delete: if request.auth.uid == resource.data.author_uid;
+
+//     }
+
+//     match /collections/{document} {
+
+//       allow read: if true
+//       allow create: if request.auth.uit == request.resource.data.author_uid;
+//       allow update, delete: if request.auth.uid == resource.data.author_uid;
+
+//     }
+
+//     match /channels/{document} {
+
+//       allow read: if true
+//       allow create: if request.auth.uit == request.resource.data.author_uid;
+//       allow update, delete: if request.auth.uid == resource.data.author_uid;
+
+//     }
+
+
+
+//     // Allow only authenticated content owners access
+
+//     match /some_collection/{userId}/{documents=**} {
+
+//       allow read, write: if request.auth != null && request.auth.uid == userId
+    
+//     }
+
+
+//     //Checking if a Document Being Created Belongs to the Requesting User 
+
+//     match /petowners/{ownerId} {
+
+//       request.auth.uid == request.resource.data.userId;
+
+//     }
+//     // match /{document=**} {
+//     //   allow read, write: if request.auth != null;
+
+
+//           match /posts/stars {
+//         allow read, write: if request.resource.auth &&
+//           request.resource.auth.token.role == 'User'
+//       }
+
+//       allow delete: if isOneOfRoles(resource, ['owner', 'admin']);
+//         allow update: if isOneOfRoles(resource, ['owner', 'admin'])
+//                       || (isOneOfRoles(resource, ['writer', 'admin']) && onlyContentChanged());
+//         allow read: if isOneOfRoles(resource, ['owner', 'writer', 'commenter', 'reader', 'admin']);
+
+
+//     }
+//   }
+// }
