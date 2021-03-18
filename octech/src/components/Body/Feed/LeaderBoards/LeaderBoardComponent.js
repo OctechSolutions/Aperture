@@ -67,7 +67,7 @@ function LeaderBoardComponent(props) {
                                             else {
                                                 return (
                                                     <td style={{ display: "flex", alignItems: "center" }}>
-                                                        <IconButton >
+                                                        <IconButton>
                                                             <Avatar src={info.photoUrl} onClick={() => history.push(`/user/${info.name}`)} />
                                                         </IconButton>
                                                         <div style = {{cursor: "pointer"}} onClick ={ () => history.push(`/user/${info.name}`) }>&nbsp;&nbsp;&nbsp;{info.name}</div>
@@ -101,7 +101,7 @@ function LeaderBoardComponent(props) {
     } else {
         return (
             <div className="container">
-                <h1 className="text-center text-muted py-5">There seems to be no data in this table.</h1>
+                <h1 className="text-center text-muted py-5">There seems to be no entries.</h1>
             </div>
         )
     }
