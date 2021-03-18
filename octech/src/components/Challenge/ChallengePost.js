@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import '../Body/Post/Post.css'
+import Map from '../Body/Map/Map'
 
 import firebase from "firebase"
 import { db } from "../../firebase"
@@ -9,17 +10,13 @@ import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
-// import CardMedia from '@material-ui/core/CardMedia'
-// import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
-// import Collapse from '@material-ui/core/Collapse'
 import Avatar from '@material-ui/core/Avatar'
+import Modal from 'react-bootstrap/Modal'
 import IconButton from '@material-ui/core/IconButton'
-// import Typography from '@material-ui/core/Typography'
 import { red } from '@material-ui/core/colors'
-// import Badge from '@material-ui/core/Badge'
-// import FavoriteIcon from '@material-ui/icons/Favorite'
 import DeleteIcon from '@material-ui/icons/Delete'
+import MapIcon from '@material-ui/icons/Map'
 
 //Rating Sttuff
 import Rating from '@material-ui/lab/Rating';
@@ -29,7 +26,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 
-export default function ChallengePost({ user, caption, star, totalStar, creator, creatorPhotoUrl, imageSrc, style, timestamp, id, loadChallengeEntries, challengeName }) {
+export default function ChallengePost({ user, caption, star, totalStar, creator, creatorPhotoUrl, imageSrc, style, timestamp, id, loadChallengeEntries, challengeName, hasCoordinates, lat, lng, setMapComponent }) {
 
   //Rating Stuff
   const [showStars,] = useState(((creator === user.displayName)) ? false : true);
@@ -97,7 +94,6 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
     setTotalStars(newTotalStars);
   }
 
-
   // To style the challenge post
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -141,6 +137,7 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
     //   color: '#ff3d47',
     // },
   })(Rating);
+  
   return (
     <div className="challenge_post" >
       <Card className={classes.root}>
@@ -162,14 +159,14 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
               </div> :
               <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
                 <br />By {" " + creator + ", "} Few Seconds Ago
-                      </div>
+              </div>
           }
         />
 
         {/* Post image. */}
         {/* <CardMedia className={classes.media} image={imageSrc} style={style} title={caption} /> */}
         <div><center><Zoom><img src={imageSrc} style={style} alt="User Post" className="post__image"/></Zoom></center></div>
-
+        
         {/* Rating. */}
         <CardActions disableSpacing>
           {/* <IconButton aria-label="add to favorites" style={{color:"red"}} onClick={likeUnlike}>
@@ -207,6 +204,17 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
                 disableFocusRipple={true}
               >
                 Rating : &nbsp;<CountUp end={totalStars} style={{ marginTop: "5px" }} />
+              </IconButton>
+            }
+            {
+              hasCoordinates &&
+              <IconButton
+                aria-label="map"
+                aria-controls="long-menu"
+                aria-haspopup="true"
+                onClick={() => { console.log("view maps clicked."); setMapComponent(lat, lng) }}
+              >
+                <MapIcon />
               </IconButton>
             }
           </>
