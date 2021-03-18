@@ -95,6 +95,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
   const StyledRating = withStyles({
     // iconFilled: {
     //   color: '#ff6d75',
@@ -307,12 +308,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const user = useSelector(selectUser); // Select current user from slice
   const deletePost = () => { // This function is called when the delete button is clicked
 
-
     db.collection("users").doc(user.displayName).update({
       posts: firebase.firestore.FieldValue.arrayRemove(id) // The post is removed from the users array of posts
     })
-
-
 
     console.log(refs)
     refs.forEach((ids) => {
@@ -333,8 +331,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         })
       })
     }
-
-
 
     if (isForumPost) {
       db.collection("forumPosts") // The post is removed from the posts database
@@ -363,7 +359,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
 
   };
-
 
   var slideshow;
   if (images.length >= 1) 
@@ -512,20 +507,41 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   updateChallengeChip() // Update the challenge chips that are displayed on the post.
                   handleChallengeNameFormClose()
                 })
-              db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
-                key: id,
-                caption: message || "My Awesome Post",
-                imageSrc: images[0].src,
-                style: images[0].style,
-                creator: name,
-                creatorPhotoUrl: photoUrl || "",
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                challengePoints: 0,
-                challenge: challengeName,
-                ref: id,
-                stars: {},
-                hasEnded: false
-              })
+              if(hasCoordinates){
+                db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
+                  key: id,
+                  caption: message || "My Awesome Post",
+                  imageSrc: images[0].src,
+                  style: images[0].style,
+                  creator: name,
+                  creatorPhotoUrl: photoUrl || "",
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  challengePoints: 0,
+                  challenge: challengeName,
+                  ref: id,
+                  stars: {},
+                  hasEnded: false,
+                  hasCoordinates: hasCoordinates,
+                  lat: lat,
+                  lng: lng
+                })
+              } else {
+                db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
+                  key: id,
+                  caption: message || "My Awesome Post",
+                  imageSrc: images[0].src,
+                  style: images[0].style,
+                  creator: name,
+                  creatorPhotoUrl: photoUrl || "",
+                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                  challengePoints: 0,
+                  challenge: challengeName,
+                  ref: id,
+                  stars: {},
+                  hasEnded: false,
+                  hasCoordinates: hasCoordinates
+                })
+              }
             }
           }
         })
