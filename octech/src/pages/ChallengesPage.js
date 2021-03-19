@@ -104,19 +104,14 @@ export default function ChallengesPage() {
                 snapshot.forEach((doc) => {
                     let data = doc.data() // data = a single challenge object.
                     let p = [{}]
-                    let i = []
                     if(data.participants!==undefined) {
                         p = data.participants
-                    }
-                    if(data.invitees!==undefined) {
-                        i = data.invitees
                     }
                     // Display only if ...
                     if( 
                         !data.isPrivate || // The challenge is not private.
                         data.creator === userName || // The user is the creator of the challenge.
-                        p.map(u=>u.name).includes(userName) || // The user is participating in this challenge.
-                        i.includes(userName) // The user was invited to this challenge.
+                        p.map(u=>u.name).includes(userName) // The user is participating in this challenge.
                     ){ 
                         setChallenges((prevArr) => // Create a Challenge object and add to the list of challenges. 
                             [
@@ -189,6 +184,7 @@ export default function ChallengesPage() {
     // Function that submits the form to add a new challenge.
     const handleFormSubmit = () => {      
         if(canCreateNewChallenge) {
+
             // Check if selected start and end date are valid.
             if(challengeStartDate > challengeEndDate) {
                 setSnackbarErrorMessage("Please select valid start and end dates.")
@@ -241,8 +237,8 @@ export default function ChallengesPage() {
                                     setLoadChallenges(true)
                                 })
                                 .catch((error) => {
-                                    console.error("Error adding document: ", error);
-                                });
+                                    console.error("Error adding document: ", error)
+                                })
                             }
                         })
                     })
@@ -450,7 +446,7 @@ export default function ChallengesPage() {
                     <Button onClick={() => handleFormSubmit()} color="primary"> Submit </Button>
                 </DialogActions>
             </Dialog>
-        
+
             {/* Error SnackBar */}
             <Snackbar open={openErrorSnackbar} autoHideDuration={6000} onClose={() => setOpenErrorSnackbar(false)}>
                 <Alert onClose={() => setOpenErrorSnackbar(false)} severity="error">
