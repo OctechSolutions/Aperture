@@ -49,6 +49,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Carousel from 'react-bootstrap/Carousel';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css'
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -74,6 +75,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showTags, setShowTags] = useState(false);
+  const [tags, setTags] = useState([]);
   const [showStars,] = useState(((name === viewingUser.displayName) || (channelBy === viewingUser.displayName)) ? false : true);
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
@@ -570,6 +573,36 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   // ------------------------------------------------------------------------------------------------------------
 
+   //Add tags 
+   const addTag = (e) => {
+    if (e.key === "Enter") {
+      if (e.target.value.length > 0) {
+        setTags([...tags, e.target.value.toLowerCase()]);
+        e.target.value = "";
+      }
+    }
+    console.log(tags, id);
+     db.collection("posts").doc(id).update({
+      tags: firebase.firestore.FieldValue.arrayUnion({
+        tag: tags,
+      })
+    })
+
+
+  };
+
+  //Remove tags
+  const removeTag = (removedTag) => {
+    const newTags = tags.filter((tag) => tag !== removedTag);
+    setTags(newTags);
+    /*
+    db.collection("posts").doc(id).update({
+        tags: firebase.firestore.FieldValue.arrayRemove({tags: tags}) 
+      })
+    */
+  };
+
+
   return (
     <div ref={ref} className="post" key={id}>
       <div>
@@ -832,6 +865,14 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               >
                 <FullscreenIcon />
               </IconButton>
+              <IconButton
+               aria-label="tags"
+               aria-controls="long-menu"
+               aria-haspopup="true"
+               onClick={() => {setShowTags(true)}}
+               >
+                 <LocalOfferIcon/>
+               </IconButton>
             </div>
           </div>
 
@@ -1019,6 +1060,39 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             />
           </Modal.Body>
         </Modal>
+
+        {/*Tags Modal*/}
+        <Modal
+          show={showTags}
+          onHide={() => { setShowTags(false) }}
+          keyboard={false}
+          size="l"
+          aria-labelledby="contained-modal-title-vcenter"
+          scrollable={true}
+          centered
+        >
+        <Modal.Header closeButton onClick={handleClose}>
+        <Modal.Title> Tags </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <TextField className="tag-container"  label="Add tags" margin="normal" variant="outlined"
+           onKeyUp={addTag} />
+        {tags.map((tag, index) => {
+          return (
+            <div key={index} className="tag" >
+                <Chip
+                    className = "tag-chip"
+                    label={tag}
+                    onDelete={() => removeTag(tag)}
+                    color="primary"
+        
+                />
+            </div>
+          );
+        })}
+        </Modal.Body>
+        </Modal>
+
         <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
           <Alert onClose={() => { setSnackbarOpen(false) }} severity={snackbarType}>
             {snackbarMessage}
