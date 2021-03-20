@@ -638,7 +638,21 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                       aria-label="map"
                       aria-controls="long-menu"
                       aria-haspopup="true"
-                      onClick={() => { setShowMap(true) }}
+                      onClick={() => {
+                        
+                        const locationref = db.collection('posts');
+                        const locationquery = locationref.where('hasCoordinates', '==', true).get()
+                        .then((querySnapshot) => {
+                          querySnapshot.forEach((doc) => {
+                            setShowMap(true)
+                            console.log(doc.id, " => ", doc.data());
+                          });
+                      })
+                      .catch((error) => {
+                          console.log("Error getting documents: ", error);
+                      });
+                
+                       }}
                     >
                       <MapIcon />
                     </IconButton>
