@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./Feed.css";
 import { Avatar } from "@material-ui/core";
 import Post from "../Post/Post";
@@ -38,6 +38,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Giphy } from '../../Body/ImageManipulation';
+import { motion } from "framer-motion";
+import CloseIcon from '@material-ui/icons/Close';
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import ReactGiphySearchbox from "react-giphy-searchbox";
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -120,7 +128,7 @@ function Feed({ match }, props) {
   const [profileInfo, setProfileInfo] = useState("");
   const [, setFile] = useState(null)
   const [inputImg, setInputImg] = useState("");
-  const [inputImgs, setInputImgs] = useState([]);
+  // const [inputImgs, setInputImgs] = useState([]);
   const [posts, setPosts] = useState([]);
   const [cameraActive, setCameraActive] = useState("");
   const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS);
@@ -149,6 +157,8 @@ function Feed({ match }, props) {
   const [cropping, setCropping] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(true);
+  const [showGifSearch, setShowGifSearch] = useState(false)
+
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -357,7 +367,10 @@ function Feed({ match }, props) {
         db.collection('postImages').doc().set({
           url: image.src,
           styleModification: image.style,
-          ref: ref.id
+          ref: ref.id,
+          overlayGifs: image.overlayGifs !== undefined ? image.overlayGifs : [],
+          overlayCoordinates: image.overlayCoordinates !== undefined ? image.overlayCoordinates : [],
+          orignalDimensions: image.orignalDimensions
         });
       });
 
@@ -376,12 +389,16 @@ function Feed({ match }, props) {
     setShowPostComponent(false);
     setCropping("false");
     setCameraActive("");
+    setImgOverlays([])
+    setImgOverlayCoordinates([])
   }
 
   const editingCancelled = async () => {
     setInputImg("");
     setEditOptions(DEFAULT_EDIT_OPTIONS);
     setIsPrivatePost(false);
+    setImgOverlays([])
+    setImgOverlayCoordinates([])
   }
 
   // const editingDone = async () => {
@@ -490,15 +507,24 @@ function Feed({ match }, props) {
       //   })
       // }
       // else {
-      setInputImgs(inputImgs.concat(inputImg))
-      setSliderImages(sliderImages.concat({
+      // setInputImgs(inputImgs.concat(inputImg))
+      var w = overlayParentRef.current.width
+      var h = overlayParentRef.current.height
+      var temp = sliderImages.concat({
         src: inputImg,
-        style: getImageStyle()
-      }))
+        style: getImageStyle(),
+        overlayGifs: imgOverlays,
+        overlayCoordinates: imgOverlayCoordinates,
+        orignalDimensions: { width: w, height: h }
+      })
+      setSliderImages(temp)
+      setImgOverlays([])
+      setImgOverlayCoordinates([])
       setInputImg("");
       setEditOptions(DEFAULT_EDIT_OPTIONS);
-
+      console.log(sliderImages)
       // }
+
     }
   }
 
@@ -540,37 +566,40 @@ function Feed({ match }, props) {
         console.log(data);
         var compressedb64 = data[0].prefix + data[0].data;
         setInputImg(compressedb64);
+        setTimeout(() => {
 
-        setLoading(true);
 
-        cocoSsd.load().then((model) => {
+          setLoading(true);
 
-          // detect objects in the image.
+          cocoSsd.load().then((model) => {
 
-          const img = document.getElementById("img");
-          model.detect(img).then((predictions) => {
+            // detect objects in the image.
 
-            console.log("Predictions: ", predictions);
-            if (predictions.length) {
-              predictions.forEach((prediction) => {
-                if (prediction.class === "person") {
-                  setInputImg("");
-                  console.log("HUMAN DETECTED!!!")
-                  setShow(true);
-                }
-                else {
-                  setNohuman(true);
-                }
-              })
-            }
-            else {
-              setNohuman(true);
-            }
-            setLoading(false);
-            setCropping(true);
-          })
+            const img = document.getElementById("img");
+            model.detect(img).then((predictions) => {
+
+              console.log("Predictions: ", predictions);
+              if (predictions.length) {
+                predictions.forEach((prediction) => {
+                  if (prediction.class === "person") {
+                    setInputImg("");
+                    console.log("HUMAN DETECTED!!!")
+                    setShow(true);
+                  }
+                  else {
+                    setNohuman(true);
+                  }
+                })
+              }
+              else {
+                setNohuman(true);
+              }
+              setLoading(false);
+              setCropping(true);
+            })
+          });
         });
-      });
+      }, 300);
       setCameraActive("");
     }
   };
@@ -644,8 +673,59 @@ function Feed({ match }, props) {
     </ListItem>
   ))
 
+  const [imgOverlays, setImgOverlays] = useState([]) // imgOverlays = array of giffs ot stickers on the image.
+  const [imgOverlayCoordinates, setImgOverlayCoordinates] = useState([])
+  const overlayParentRef = useRef() // Reference to the parent element of overlays.
+
+  function handleOverlayClick(overlay) {
+    /* When am overlay is clicked, it is added to the list of overlays
+       causing it to be rendered on screen. */
+    console.log(overlay)
+    setShowGifSearch(false)
+    setImgOverlayCoordinates(imgOverlayCoordinates.concat({ x: 0, y: 0 }));
+    setTimeout(() => { setImgOverlays(imgOverlays.concat(overlay.images.original)); }, 300);
+    /* Add new overlay url to the list of overlays. */
+
+  }
+  function removeOverlay(preview_gif, index) {
+    setImgOverlays(imgOverlays.filter(obj => obj !== preview_gif))
+    setImgOverlayCoordinates(imgOverlayCoordinates.splice(index, 1))
+  }
+
+  function getCoordinates(gif, index) {
+    console.log(overlayParentRef.current.getBoundingClientRect())
+    let x = document.getElementById(gif.url).getBoundingClientRect().x - overlayParentRef.current.getBoundingClientRect().left
+    let y = document.getElementById(gif.url).getBoundingClientRect().y - overlayParentRef.current.getBoundingClientRect().top
+    console.log(x, y)
+    imgOverlayCoordinates[index] = { x: x, y: y }
+    setImgOverlayCoordinates(imgOverlayCoordinates)
+    console.log(imgOverlays, imgOverlayCoordinates)
+  }
+
+  const [, setDimensions] = useState({
+    height: window.innerHeight,
+    width: window.innerWidth
+  })
+  useEffect(() => {
+    function handleResize() {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth
+      })
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    return _ => {
+      window.removeEventListener('resize', handleResize)
+
+    }
+  })
+
+
   return (
     <>
+
       <div className="feed">
 
         {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
@@ -654,8 +734,8 @@ function Feed({ match }, props) {
             <center>
               <h1>{match.params.channel}</h1>
             </center>
-            <div style={{ display: "flex", justifyContent:"space-evenly", alignItems:"center", justifyItems: "center" }}>
-              <div style={{cursor: "pointer"}} onClick={() => setShowFollowers(true)} >Followers:{channelInfo && channelInfo.data.followers.length}</div>
+            <div style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", justifyItems: "center" }}>
+              <div style={{ cursor: "pointer" }} onClick={() => setShowFollowers(true)} >Followers:{channelInfo && channelInfo.data.followers.length}</div>
               <Modal
                 show={showFollowers}
                 onHide={() => { setShowFollowers(false) }}
@@ -680,7 +760,7 @@ function Feed({ match }, props) {
             </div>
           </>
           :
-          <div style={{ position: "sticky", top: "66px", zIndex: "100", backgroundColor: "whitesmoke", width: "108%",marginLeft: "-4%",overflow: "hidden"}}>
+          <div style={{ position: "sticky", top: "66px", zIndex: "100", backgroundColor: "whitesmoke", width: "108%", marginLeft: "-4%", overflow: "hidden" }}>
             <center>
               <h1>Home</h1>
             </center>
@@ -784,101 +864,8 @@ function Feed({ match }, props) {
                     </p>
                   </Alert>
                 }
-                <Modal
-                  show={inputImg}
-                  onHide={() => { setInputImg("") }}
-                  keyboard={false}
-                  size="xl"
-                  aria-labelledby="contained-modal-title-vcenter"
-                  centered
-                >
-                  <Modal.Body>
 
-                    {inputImg && (
-                      <>
-                        {!loading && cropping &&
-                          <div>
-                            <Cropper
-                              style={{ height: 400, width: "100%" }}
-                              initialAspectRatio={1}
-                              src={inputImg}
-                              viewMode={1}
-                              guides={true}
-                              minCropBoxHeight={10}
-                              minCropBoxWidth={10}
-                              background={false}
-                              responsive={true}
-                              autoCropArea={1}
-                              checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
-                              onInitialized={(instance) => {
-                                setCropper(instance);
-                              }}
-                            />
-                            <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-                              <Button color="primary" onClick={getCropData}>Crop Image</Button>
-                              <Button onClick={() => { setCropping(false) }}>Continue without cropping</Button>
-                            </div>
-                          </div>}
-                        <br />
-                        {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
-                        {inputImg &&
-                          <div className="photoEditor">
-                            {/* Div in which to view the photo. */}
-                            <img src={inputImg}
-                              className="previewImage" id="img" alt="Preview" style={getImageStyle()}></img>
-                            {!loading &&
-                              <div>
-                                <br /><br />
-                                <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon />} onClick={handleMenuClick} centered>
-                                  {editOptions[selectedOptionIndex].name}
-                                </Button>
-                                <Menu
-                                  id="simple-menu"
-                                  anchorEl={anchorEl}
-                                  keepMounted
-                                  open={Boolean(anchorEl)}
-                                  onClose={handleClose}
-                                >
-                                  {editOptions.map((option, index) => {
-                                    return (
-                                      <MenuItem
-                                        key={index}
-                                        onClick={() => { setSelectedOptionIndex(index); setAnchorEl(null) }}
-                                      >{option.name}</MenuItem>
-                                    )
-                                  })}
-                                </Menu><br></br>
-                                <Slider
-                                  min={selectedOption.range.min}
-                                  max={selectedOption.range.max}
-                                  value={selectedOption.value}
-                                  onChange={(event, result) => { handleSliderChange(result) }}
-                                />
-                              </div>}
-
-
-                          </div>
-                        }
-                        {/* Slider to adjust edit values. */}
-
-
-                      </>
-                    )}
-                    {loading &&
-                      <div>
-                        <Spinner animation="border" role="status">
-                        </Spinner>
-                        <span>{'  '}Scanning Image...</span>
-                      </div>}
-                    {(!loading) && !cropping &&
-                      <div className="buttons" style={{ justifyContent: "space-evenly" }}>
-                        <Button variant="contained" onClick={editingDone}>Add Image</Button>
-                        <Button variant="contained" onClick={editingCancelled}>Cancel</Button>
-                      </div>
-                    }
-
-                  </Modal.Body>
-                </Modal>{showEditMap &&
+                {showEditMap &&
                   <>
                     <Map
                       center={{ lat: lat, lng: lng }}
@@ -892,7 +879,11 @@ function Feed({ match }, props) {
 
                   </>
                 }
-                {sliderImages && !showEditMap && <ImageGallery sliderImages={sliderImages} />}
+                {(sliderImages.length > 0 && !showEditMap) ?
+                  <ImageGallery sliderImages={sliderImages} />
+                  :
+                  <></>
+                }
                 {sliderImages.length > 0 && !showEditMap &&
 
                   <center style={{ marginTop: "15px" }}>
@@ -912,7 +903,146 @@ function Feed({ match }, props) {
           </Modal>
 
         }
+        {!showGifSearch &&
+        <Modal
+        show={Boolean(inputImg)}
+        // onHide={() => { setShowPostComponent(false); resetVals(); }}
+        keyboard={false}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        >
+          <Modal.Body>
+          {/* <Dialog open={Boolean(inputImg)} aria-labelledby="form-dialog-title" fullScreen={true} PaperProps={{
+            style: {
+              backgroundColor: 'whitesmoke',
+              boxShadow: 'none',
+            },
+          }}> */}
+            {/* <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle> */}
+            {/* <DialogTitle id="form-dialog-title"> */}
+                <img src={inputImg}
+                  className="post__image" id="img" alt="Preview" style={getImageStyle()} ref={overlayParentRef} ></img>
 
+            {/* </DialogTitle> */}
+            {/* <DialogContent> */}
+              {inputImg && (
+                <>
+                  {!loading && cropping &&
+                    <div>
+                      <Cropper
+                        style={{ height: 400, width: "100%" }}
+                        initialAspectRatio={1}
+                        src={inputImg}
+                        viewMode={1}
+                        guides={true}
+                        minCropBoxHeight={10}
+                        minCropBoxWidth={10}
+                        background={false}
+                        responsive={true}
+                        autoCropArea={1}
+                        checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                        onInitialized={(instance) => {
+                          setCropper(instance);
+                        }}
+                      />
+                      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                        <Button color="primary" onClick={getCropData}>Crop Image</Button>
+                        <Button onClick={() => { setCropping(false) }}>Continue without cropping</Button>
+                      </div>
+                    </div>}
+                  <br />
+                  {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
+                  {inputImg &&
+                    <div className="photoEditor">
+                      {/* Div in which to view the photo. */}
+
+                      {!loading &&
+                        <div>
+                          <div>
+
+                            {overlayParentRef.current !== null && imgOverlays.map((gif, index) => {
+                              return (
+
+                                <motion.div
+                                  id={gif.url}
+                                  drag dragConstraints={overlayParentRef}
+                                  dragElastic={0}
+                                  style={{
+                                    backgroundImage: "url(" + gif.url + ")",
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundSize: "contain",
+                                    width: overlayParentRef.current.clientWidth / 5 + "px",
+                                    height: (((overlayParentRef.current.clientWidth / 5) / gif.width) * gif.height) + "px",
+                                    position: "absolute",
+                                    top: overlayParentRef.current.offsetTop + imgOverlayCoordinates[index].y,
+                                    left: overlayParentRef.current.offsetLeft + imgOverlayCoordinates[index].x,
+                                  }}
+                                  dragMomentum={false}
+                                  onDragEnd={() => getCoordinates(gif, index)}
+                                >
+                                  <motion.div style={{ position: "absolute", top: "-10px", right: "-10px" }}><IconButton size="small" style={{ backgroundColor: "white" }} onClick={() => removeOverlay(gif)}><CloseIcon fontSize="small" /></IconButton></motion.div>
+                                </motion.div >
+                              )
+                            })}
+                          </div>
+                          <button onClick={() => { setShowGifSearch(true) }} >Gif</button>
+                          <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon />} onClick={handleMenuClick} centered>
+                            {editOptions[selectedOptionIndex].name}
+                          </Button>
+                          <Menu
+                            id="simple-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                          >
+                            {editOptions.map((option, index) => {
+                              return (
+                                <MenuItem
+                                  key={index}
+                                  onClick={() => { setSelectedOptionIndex(index); setAnchorEl(null) }}
+                                >{option.name}</MenuItem>
+                              )
+                            })}
+                          </Menu><br></br>
+                          <Slider
+                            min={selectedOption.range.min}
+                            max={selectedOption.range.max}
+                            value={selectedOption.value}
+                            onChange={(event, result) => { handleSliderChange(result) }}
+                          />
+                        </div>}
+
+
+                    </div>
+                  }
+                  {/* Slider to adjust edit values. */}
+
+
+                </>
+              )}
+              {loading &&
+                <div>
+                  <Spinner animation="border" role="status">
+                  </Spinner>
+                  <span>{'  '}Scanning Image...</span>
+                </div>}
+
+
+            {/* </DialogContent> */}
+            {/* <DialogActions> */}
+              {(!loading) && !cropping &&
+                <div className="buttons" style={{ justifyContent: "space-evenly" }}>
+                  <Button variant="contained" onClick={editingDone}>Add Image</Button>
+                  <Button variant="contained" onClick={editingCancelled}>Cancel</Button>
+                </div>
+              }
+            {/* </DialogActions> */}
+          {/* </Dialog> */}
+          </Modal.Body>
+          </Modal>
+        }
         <Modal
           show={Boolean(cameraActive)}
           onHide={() => { setCameraActive("") }}
@@ -981,6 +1111,29 @@ function Feed({ match }, props) {
           <AddIcon className={classes.extendedIcon} />
           {/* <b>New Post</b> */}
         </Fab>
+      }
+      {showGifSearch &&
+
+        <Modal
+          show={showGifSearch}
+          onHide={() => { setShowGifSearch(false) }}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          style={{ overlay: { zIndex: 1000 } }}
+          size="xl"
+        >
+          <Modal.Body>
+            <center><ReactGiphySearchbox
+              apiKey="SL07jZg7zFxxOTBN29YaS4979AUIInJK"
+              onSelect={(item) => handleOverlayClick(item)}
+              masonryConfig={[
+                { columns: 2, imageWidth: 110, gutter: 5 },
+                { mq: "900px", columns: 3, imageWidth: 120, gutter: 5 }
+              ]}
+            />
+            </center>
+          </Modal.Body>
+        </Modal>
       }
     </>
   );
