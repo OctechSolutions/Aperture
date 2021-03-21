@@ -4,10 +4,12 @@ import LeaderBoardComponent from './LeaderBoardComponent';
 
 
 function GlobalUsersLeaderBoard({ match, setValue }) {
+
   const [leaderboardData, setLeaderBoardData] = useState([]);
   const [dataFetched, setDataFetched] = useState(false);
 
     if (dataFetched===false) {
+
       db.collection('users')
         .orderBy('profilePoints', 'desc')
         .limit(100)
@@ -30,7 +32,9 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
     }
 
   return (
+
     <LeaderBoardComponent title="Global Users LeaderBoard" headers={['Name','Profile Points']} columns={['name', 'profilePoints']} data={leaderboardData} />
+    
   )
 }
 
