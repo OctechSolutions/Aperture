@@ -776,7 +776,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           {/* <br /> */}
           <p>{message}</p>
         </div>
-        {loading && <Skeleton variant="rect" width={"100%"} height={250} />}
+        {loading && <Skeleton variant="rect" width={"85vw"} height={250} />}
         {slideshow}
         <br />
         <div >
