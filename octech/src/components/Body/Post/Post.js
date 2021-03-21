@@ -47,9 +47,8 @@ import Chip from '@material-ui/core/Chip'
 import AddAlarmRoundedIcon from '@material-ui/icons/AddAlarmRounded'
 import Skeleton from '@material-ui/lab/Skeleton';
 import Carousel from 'react-bootstrap/Carousel';
-import Zoom from 'react-medium-image-zoom';
+import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -75,8 +74,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
   const [showComments, setShowComments] = useState(false);
-  const [showTags, setShowTags] = useState(false);
-  const [tags, setTags] = useState([]);
   const [showStars,] = useState(((name === viewingUser.displayName) || (channelBy === viewingUser.displayName)) ? false : true);
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
@@ -98,7 +95,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
   const StyledRating = withStyles({
     // iconFilled: {
     //   color: '#ff6d75',
@@ -203,10 +199,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       snapshot.forEach((doc) => {
         tempImages.push({
           src: doc.data().url,
-          style: doc.data().styleModification,
-          overlayGifs: doc.data().overlayGifs,
-          overlayCoordinates: doc.data().overlayCoordinates,
-          orignalDimensions: doc.data().orignalDimensions
+          style: doc.data().styleModification
         });
         tempRefs.push(doc.id);
         // console.log(doc.data(), doc.id)
@@ -311,9 +304,12 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const user = useSelector(selectUser); // Select current user from slice
   const deletePost = () => { // This function is called when the delete button is clicked
 
+
     db.collection("users").doc(user.displayName).update({
       posts: firebase.firestore.FieldValue.arrayRemove(id) // The post is removed from the users array of posts
     })
+
+
 
     console.log(refs)
     refs.forEach((ids) => {
@@ -334,6 +330,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         })
       })
     }
+
+
 
     if (isForumPost) {
       db.collection("forumPosts") // The post is removed from the posts database
@@ -363,12 +361,13 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   };
 
+
   var slideshow;
-  if (images.length >= 1) 
-    // slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
-  // } else if (images.length > 1) {
+  if (images.length === 1) {
+    slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
+  } else if (images.length > 1) {
     slideshow = <div><ImageGallery sliderImages={images} /></div>;
-  // }
+  }
   else {
     slideshow = <></>
   }
@@ -510,41 +509,20 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   updateChallengeChip() // Update the challenge chips that are displayed on the post.
                   handleChallengeNameFormClose()
                 })
-              if(hasCoordinates){
-                db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
-                  key: id,
-                  caption: message || "My Awesome Post",
-                  imageSrc: images[0].src,
-                  style: images[0].style,
-                  creator: name,
-                  creatorPhotoUrl: photoUrl || "",
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  challengePoints: 0,
-                  challenge: challengeName,
-                  ref: id,
-                  stars: {},
-                  hasEnded: false,
-                  hasCoordinates: hasCoordinates,
-                  lat: lat,
-                  lng: lng
-                })
-              } else {
-                db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
-                  key: id,
-                  caption: message || "My Awesome Post",
-                  imageSrc: images[0].src,
-                  style: images[0].style,
-                  creator: name,
-                  creatorPhotoUrl: photoUrl || "",
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  challengePoints: 0,
-                  challenge: challengeName,
-                  ref: id,
-                  stars: {},
-                  hasEnded: false,
-                  hasCoordinates: hasCoordinates
-                })
-              }
+              db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
+                key: id,
+                caption: message || "My Awesome Post",
+                imageSrc: images[0].src,
+                style: images[0].style,
+                creator: name,
+                creatorPhotoUrl: photoUrl || "",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                challengePoints: 0,
+                challenge: challengeName,
+                ref: id,
+                stars: {},
+                hasEnded: false
+              })
             }
           }
         })
@@ -572,36 +550,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   useEffect(() => { updateChallengeChip() }, []);
 
   // ------------------------------------------------------------------------------------------------------------
-
-   //Add tags 
-   const addTag = (e) => {
-    if (e.key === "Enter") {
-      if (e.target.value.length > 0) {
-        setTags([...tags, e.target.value.toLowerCase()]);
-        e.target.value = "";
-      }
-    }
-    console.log(tags, id);
-     db.collection("posts").doc(id).update({
-      tags: firebase.firestore.FieldValue.arrayUnion({
-        tag: tags,
-      })
-    })
-
-
-  };
-
-  //Remove tags
-  const removeTag = (removedTag) => {
-    const newTags = tags.filter((tag) => tag !== removedTag);
-    setTags(newTags);
-    /*
-    db.collection("posts").doc(id).update({
-        tags: firebase.firestore.FieldValue.arrayRemove({tags: tags}) 
-      })
-    */
-  };
-
 
   return (
     <div ref={ref} className="post" key={id}>
@@ -671,21 +619,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                       aria-label="map"
                       aria-controls="long-menu"
                       aria-haspopup="true"
-                      onClick={() => {
-                        
-                        const locationref = db.collection('posts');
-                        const locationquery = locationref.where('hasCoordinates', '==', true).get()
-                        .then((querySnapshot) => {
-                          querySnapshot.forEach((doc) => {
-                            setShowMap(true)
-                            console.log(doc.id, " => ", doc.data());
-                          });
-                      })
-                      .catch((error) => {
-                          console.log("Error getting documents: ", error);
-                      });
-                
-                       }}
+                      onClick={() => { setShowMap(true) }}
                     >
                       <MapIcon />
                     </IconButton>
@@ -865,14 +799,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               >
                 <FullscreenIcon />
               </IconButton>
-              <IconButton
-               aria-label="tags"
-               aria-controls="long-menu"
-               aria-haspopup="true"
-               onClick={() => {setShowTags(true)}}
-               >
-                 <LocalOfferIcon/>
-               </IconButton>
             </div>
           </div>
 
@@ -1060,39 +986,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             />
           </Modal.Body>
         </Modal>
-
-        {/*Tags Modal*/}
-        <Modal
-          show={showTags}
-          onHide={() => { setShowTags(false) }}
-          keyboard={false}
-          size="l"
-          aria-labelledby="contained-modal-title-vcenter"
-          scrollable={true}
-          centered
-        >
-        <Modal.Header closeButton onClick={handleClose}>
-        <Modal.Title> Tags </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <TextField className="tag-container"  label="Add tags" margin="normal" variant="outlined"
-           onKeyUp={addTag} />
-        {tags.map((tag, index) => {
-          return (
-            <div key={index} className="tag" >
-                <Chip
-                    className = "tag-chip"
-                    label={tag}
-                    onDelete={() => removeTag(tag)}
-                    color="primary"
-        
-                />
-            </div>
-          );
-        })}
-        </Modal.Body>
-        </Modal>
-
         <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
           <Alert onClose={() => { setSnackbarOpen(false) }} severity={snackbarType}>
             {snackbarMessage}

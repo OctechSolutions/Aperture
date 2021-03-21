@@ -10,8 +10,8 @@ import Countdown from 'react-countdown'
 
 import './Challenge.css'
 
+// import Post from "../Body/Post/Post"
 import ChallengePost from "./ChallengePost"
-import Map from "../Body/Map/Map";
 
 import firebase from "firebase"
 import { db } from "../../firebase"
@@ -21,8 +21,17 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
+// import ListItemText from '@material-ui/core/ListItemText'
+// import ListItem from '@material-ui/core/ListItem'
+// import List from '@material-ui/core/List'
+// import Divider from '@material-ui/core/Divider'
+// import AppBar from '@material-ui/core/AppBar'
+// import Toolbar from '@material-ui/core/Toolbar'
+// import Slide from '@material-ui/core/Slide'
+// import Typography from '@material-ui/core/Typography'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
+// import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import InputBase from '@material-ui/core/InputBase'
 import Cropper from "react-cropper"
@@ -41,6 +50,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import LockIcon from '@material-ui/icons/Lock'
 import PublicIcon from '@material-ui/icons/Public'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
+// import CloseIcon from '@material-ui/icons/Close'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 import VisibilityIcon from '@material-ui/icons/Visibility'
 import ImageIcon from "@material-ui/icons/Image"
@@ -54,7 +64,6 @@ import TextField from '@material-ui/core/TextField';
 import { ButtonBase } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import GroupIcon from '@material-ui/icons/Group';
-import EditLocationIcon from '@material-ui/icons/EditLocation';
 
 export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges, openEditForm, timestamp, invitees, participants }) {
 
@@ -151,16 +160,11 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
         // Delete this challenge from list of challenges of all participating posts.
         db.collection("challengePosts").where("challenge", "==", name)
-        .get().then((snapShot) => {
-            snapShot.forEach((postDoc) => {
-                if (postDoc) { 
-                    db.collection("challengePosts").doc(postDoc.id).delete() 
-                    db.collection("posts").doc(postDoc.id).update({
-                        challenge: firebase.firestore.FieldValue.delete()
-                    })
-                }
+            .get().then((snapShot) => {
+                snapShot.forEach((postDoc) => {
+                    if (postDoc) { db.collection("challengePosts").doc(postDoc.id).delete() }
+                })
             })
-        })
     }
 
     // Function that displays the copied to clipboard message.
@@ -182,50 +186,24 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     if (postChallenge) {
                         if (postChallenge === name) {
                             //console.log("postDoc.data() = " + postDoc.data().ref)
-                            if(postDoc.data().lat) {
-                                setEntries((prev) => [
-                                    ...prev,
-                                    <ChallengePost
-                                        key={postDoc.data().ref}
-                                        user={user}
-                                        caption={postDoc.data().caption}
-                                        star={postDoc.data().stars}
-                                        totalStar={postDoc.data().totalStars}
-                                        creator={postDoc.data().creator}
-                                        creatorPhotoUrl={postDoc.data().creatorPhotoUrl}
-                                        imageSrc={postDoc.data().imageSrc}
-                                        style={postDoc.data().style}
-                                        timestamp={postDoc.data().timestamp}
-                                        id={postDoc.data().ref}
-                                        loadChallengeEntries={loadChallengeEntries}
-                                        challengeName={name}
-                                        hasCoordinates={postDoc.data().hasCoordinates}
-                                        lat={postDoc.data().lat}
-                                        lng={postDoc.data().lng}
-                                        setMapComponent={setMapComponent}
-                                    ></ChallengePost>
-                                ])
-                            } else {
-                                setEntries((prev) => [
-                                    ...prev,
-                                    <ChallengePost
-                                        key={postDoc.data().ref}
-                                        user={user}
-                                        caption={postDoc.data().caption}
-                                        star={postDoc.data().stars}
-                                        totalStar={postDoc.data().totalStars}
-                                        creator={postDoc.data().creator}
-                                        creatorPhotoUrl={postDoc.data().creatorPhotoUrl}
-                                        imageSrc={postDoc.data().imageSrc}
-                                        style={postDoc.data().style}
-                                        timestamp={postDoc.data().timestamp}
-                                        id={postDoc.data().ref}
-                                        loadChallengeEntries={loadChallengeEntries}
-                                        challengeName={name}
-                                        hasCoordinates={postDoc.data().hasCoordinates}
-                                    ></ChallengePost>
-                                ])
-                            }
+                            setEntries((prev) => [
+                                ...prev,
+                                <ChallengePost
+                                    key={postDoc.data().ref}
+                                    user={user}
+                                    caption={postDoc.data().caption}
+                                    star={postDoc.data().stars}
+                                    totalStar={postDoc.data().totalStars}
+                                    creator={postDoc.data().creator}
+                                    creatorPhotoUrl={postDoc.data().creatorPhotoUrl}
+                                    imageSrc={postDoc.data().imageSrc}
+                                    style={postDoc.data().style}
+                                    timestamp={postDoc.data().timestamp}
+                                    id={postDoc.data().ref}
+                                    loadChallengeEntries={loadChallengeEntries}
+                                    challengeName={name}
+                                ></ChallengePost>
+                            ])
                         }
                     }
                 })
@@ -321,6 +299,9 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [loading, setLoading] = useState(false)
     const [, setIsPrivatePost] = useState(false)
     const [showPostComponent, setShowPostComponent] = useState(false)
+
+    const cocoSsd = require('@tensorflow-models/coco-ssd')
+
     const [cropper, setCropper] = useState("")
     const [cropping, setCropping] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null)
@@ -329,17 +310,9 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [add, setAdd] = useState(false)
     const [openInviteSent, setOpenInviteSent] = useState(false)
     const [data, setData] = useState([])
-    const [showEditMap, setShowEditMap] = useState(false)
-    const [lat, setLat] = useState(25.1972)
-    const [lng, setLng] = useState(55.2744)
-    const [coordinatesSelected, setCoordinatesSelected] = useState(false)
-    const [map, setMap] = useState(null)
 
     const Compress = require('compress.js')
 
-    const cocoSsd = require('@tensorflow-models/coco-ssd')
-
-    // Send notifications function.
     const sendInviteNotifications = (names) => {
         let inviteeNames = []
         names.forEach(a => {
@@ -554,50 +527,24 @@ export default function Challenge({ user, name, description, hints, creator, cre
         else {
             if (selectedInputImg !== {}) {
                 const ref = db.collection('challengePosts').doc() // A reference to the next entry to the database is created in advance.
-                if (coordinatesSelected) {
-                    ref.set({ // This adds a new post to the database.
-                        key: ref.id,
-                        caption: caption,
-                        imageSrc: selectedInputImg.src,
-                        style: selectedInputImg.style,
-                        creator: user.displayName,
-                        creatorPhotoUrl: user.photoUrl || "",
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        stars: {},
-                        totalStars: 0,
-                        challenge: name,
-                        ref: ref.id,
-                        hasEnded: false,
-                        hasCoordinates: true,
-                        lat: lat,
-                        lng: lng
-                    }).then(() => {
-                        setLoadEntries(true)
-                        handleSnackbarOpen()
-                        resetVals()
-                    })
-                } 
-                else {
-                    ref.set({ // This adds a new post to the database.
-                        key: ref.id,
-                        caption: caption,
-                        imageSrc: selectedInputImg.src,
-                        style: selectedInputImg.style,
-                        creator: user.displayName,
-                        creatorPhotoUrl: user.photoUrl || "",
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        stars: {},
-                        totalStars: 0,
-                        challenge: name,
-                        ref: ref.id,
-                        hasEnded: false,
-                        hasCoordinates: false
-                    }).then(() => {
-                        setLoadEntries(true)
-                        handleSnackbarOpen()
-                        resetVals()
-                    })
-                }
+                ref.set({ // This adds a new post to the database.
+                    key: ref.id,
+                    caption: caption,
+                    imageSrc: selectedInputImg.src,
+                    style: selectedInputImg.style,
+                    creator: user.displayName,
+                    creatorPhotoUrl: user.photoUrl || "",
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    stars: {},
+                    totalStars: 0,
+                    challenge: name,
+                    ref: ref.id,
+                    hasEnded: false
+                }).then(() => {
+                    setLoadEntries(true)
+                    handleSnackbarOpen()
+                    resetVals()
+                })
             }
         }
     }
@@ -610,27 +557,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     // Closes the edit options drop down list.
     const handleEditOptionsClose = () => {
         setAnchorEl(null);
-    }
-
-    // Sets the latitutde and longitute.
-    const getData = (val) => {
-        //console.log(val);
-        setLat(val[0]);
-        setLng(val[1]);
-    }
-
-    // Set map = map component with given latitude and longitude
-    // and then displays the location as per given latitude and longitude.
-    const setMapComponent = (latitude, longitude) => {
-        setOpenOverlay(false)
-        setMap(
-            <Map
-                center={{ lat: latitude, lng: longitude }}
-                height='100vh'
-                zoom={15}
-                draggable={false}
-            />
-        )
     }
 
     // -----------------------------------------------------------------
@@ -718,7 +644,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         />
                     </div>
                 </div>
-                
                 {/* 3 Dots Menu. */}
                 {isAdmin &&
                     <>
@@ -881,20 +806,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                 </label>
                             }
 
-                            {   // Button to add map coordinates.
-                                !inputImg && !showEditMap && selectedInputImg &&
-                                <label>
-                                    <IconButton
-                                        aria-label="open map"
-                                        component="span"
-                                        onClick={(e) => { e.preventDefault(); setShowEditMap(true) }}
-                                    >
-                                        <EditLocationIcon fontSize="large" />
-                                        {coordinatesSelected && <div style={{ color: "green" }}>✓</div>}
-                                    </IconButton>
-                                </label>
-                            }
-
                             {/*Modal using which to take picture. */}
                             <Modal
                                 show={Boolean(cameraActive)}
@@ -920,20 +831,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                     }
                                 </Modal.Body>
                             </Modal>
-
-                            {/* Edit Map */}
-                            {
-                                showEditMap &&
-                                <Map
-                                    center={{ lat: lat, lng: lng }}
-                                    height='30vh'
-                                    zoom={15}
-                                    sendData={getData}
-                                    draggable={true}
-                                    setCoordinatesSelected={setCoordinatesSelected}
-                                    setShowEditMap={setShowEditMap}
-                                />
-                            }
 
                         </div>
 
@@ -1209,21 +1106,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     Invitation sent!
                 </Alert>
             </Snackbar>
-        
-            {/* Modal in which to view location. */}
-            <Modal
-                    show={map!==null}
-                    onHide={() => { setMap(null); setOpenOverlay(true) }}
-                    keyboard={false}
-                    size="xl"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                >
-                    <Modal.Header closeButton onClick={() => { setMap(null); setOpenOverlay(true) }}>
-                        <h3 style={{ marginLeft: "auto" }}>Map View</h3>
-                    </Modal.Header>
-                    <Modal.Body>{map}</Modal.Body>
-            </Modal>
         </div>
     )
 }
