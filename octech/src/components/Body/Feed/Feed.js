@@ -46,6 +46,9 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import ReactGiphySearchbox from "react-giphy-searchbox";
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import Chip from '@material-ui/core/Chip'
+import TextField from '@material-ui/core/TextField';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -146,6 +149,8 @@ function Feed({ match }, props) {
   const [isPrivatePost, setIsPrivatePost] = useState(false);
   const [showFollowers, setShowFollowers] = useState(false);
   const [showPostComponent, setShowPostComponent] = useState(false);
+  const [showTags, setShowTags] = useState(false);
+  const [tags, setTags] = useState([]);
 
 
   const [channelInfo, setChannelInfo] = useState("")
@@ -371,6 +376,7 @@ function Feed({ match }, props) {
           overlayGifs: image.overlayGifs !== undefined ? image.overlayGifs : [],
           overlayCoordinates: image.overlayCoordinates !== undefined ? image.overlayCoordinates : [],
           orignalDimensions: image.orignalDimensions
+          tags: tags
         });
       });
 
@@ -722,7 +728,25 @@ function Feed({ match }, props) {
     }
   })
 
+  //Add tags 
+  const addTag = (e) => {
+    if (e.key === "Enter") {
+      if (e.target.value.length > 0) {
+        setTags([...tags, e.target.value.toLowerCase()]);
+        e.target.value = "";
+      }
+    }
+  };
 
+  //Remove tags
+  const removeTag = (removedTag) => {
+    const newTags = tags.filter((tag) => tag !== removedTag);
+    setTags(newTags);
+  };
+  
+  
+  
+  
   return (
     <>
 
@@ -1069,6 +1093,39 @@ function Feed({ match }, props) {
             )}
           </Modal.Body>
         </Modal>
+
+        {/*Tags Modal*/}
+        <Modal
+          show={showTags}
+          onHide={() => { setShowTags(false) }}
+          keyboard={false}
+          size="l"
+          aria-labelledby="contained-modal-title-vcenter"
+          scrollable={true}
+          centered
+        >
+        <Modal.Header closeButton onClick={handleClose}>
+        <Modal.Title> Tags </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <TextField className="tag-container"  label="Add tags" margin="normal" variant="outlined"
+           onKeyUp={addTag} />
+        {tags.map((tag, index) => {
+          return (
+            <div key={index} className="tag">
+                <Chip
+                    className = "tag-chip"
+                    label={tag}
+                    onDelete={() => removeTag(tag)}
+                    color="primary"
+        
+                />
+            </div>
+          );
+        })}
+        </Modal.Body>
+        </Modal>
+
         <Backdrop className={classes.backdrop} open={open}>
           <CircularProgress color="inherit" />
         </Backdrop>
