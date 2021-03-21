@@ -574,25 +574,22 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   // ------------------------------------------------------------------------------------------------------------
 
    //Add tags 
-   const addTag = (e) => {
-    if (e.key === "Enter") {
+  const addTag = (e) => {
+    if (e.key === "Enter" && e.target.value !== "") {
       if (e.target.value.length > 0) {
         setTags([...tags, e.target.value.toLowerCase()]);
         e.target.value = "";
       }
     }
     console.log(tags, id);
-     db.collection("posts").doc(id).update({
-      tags: firebase.firestore.FieldValue.arrayUnion({
+     db.collection("postImages").doc(id).update({
         tag: tags,
       })
-    })
-
-
   };
 
   //Remove tags
   const removeTag = (removedTag) => {
+    //setTags([tags.filter((tag) => tag.indexOf(tag)!== removedTag)])
     const newTags = tags.filter((tag) => tag !== removedTag);
     setTags(newTags);
     /*
@@ -601,6 +598,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       })
     */
   };
+
 
 
   return (
@@ -1077,9 +1075,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         <Modal.Body>
         <TextField className="tag-container"  label="Add tags" margin="normal" variant="outlined"
            onKeyUp={addTag} />
-        {tags.map((tag, index) => {
-          return (
-            <div key={index} className="tag" >
                 <Chip
                     className = "tag-chip"
                     label={tag}
@@ -1087,9 +1082,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                     color="primary"
         
                 />
-            </div>
-          );
-        })}
         </Modal.Body>
         </Modal>
 
