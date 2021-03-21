@@ -904,19 +904,28 @@ function Feed({ match }, props) {
 
         }
         {!showGifSearch &&
-          <Dialog open={Boolean(inputImg)} aria-labelledby="form-dialog-title" fullScreen={true} PaperProps={{
+        <Modal
+        show={Boolean(inputImg)}
+        // onHide={() => { setShowPostComponent(false); resetVals(); }}
+        keyboard={false}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        >
+          <Modal.Body>
+          {/* <Dialog open={Boolean(inputImg)} aria-labelledby="form-dialog-title" fullScreen={true} PaperProps={{
             style: {
               backgroundColor: 'whitesmoke',
               boxShadow: 'none',
             },
-          }}>
+          }}> */}
             {/* <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle> */}
-            <DialogTitle id="form-dialog-title">
+            {/* <DialogTitle id="form-dialog-title"> */}
                 <img src={inputImg}
                   className="post__image" id="img" alt="Preview" style={getImageStyle()} ref={overlayParentRef} ></img>
 
-            </DialogTitle>
-            <DialogContent>
+            {/* </DialogTitle> */}
+            {/* <DialogContent> */}
               {inputImg && (
                 <>
                   {!loading && cropping &&
@@ -1021,16 +1030,18 @@ function Feed({ match }, props) {
                 </div>}
 
 
-            </DialogContent>
-            <DialogActions>
+            {/* </DialogContent> */}
+            {/* <DialogActions> */}
               {(!loading) && !cropping &&
                 <div className="buttons" style={{ justifyContent: "space-evenly" }}>
                   <Button variant="contained" onClick={editingDone}>Add Image</Button>
                   <Button variant="contained" onClick={editingCancelled}>Cancel</Button>
                 </div>
               }
-            </DialogActions>
-          </Dialog>
+            {/* </DialogActions> */}
+          {/* </Dialog> */}
+          </Modal.Body>
+          </Modal>
         }
         <Modal
           show={Boolean(cameraActive)}

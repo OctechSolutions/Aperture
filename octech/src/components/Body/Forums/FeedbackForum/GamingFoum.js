@@ -448,7 +448,7 @@ function GamingForum({ match }, props) {
                                 <>
                                 </>
                             }
-                            {sliderImages && !showEditMap && <ImageGallery sliderImages={sliderImages} />}
+                            {sliderImages.length > 0 && !showEditMap && <ImageGallery sliderImages={sliderImages} />}
                             {sliderImages.length > 0 &&
 
                                 <center style={{ marginTop: "15px" }}>

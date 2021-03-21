@@ -48,7 +48,7 @@ function LeaderBoardComponent(props) {
                             return (
                                 <tr>
                                     {/* {(index == 0) && <td>{index+1}</td>} */}
-                                    <td style={{ verticalAlign: "middle" }}>{index + 1}</td>
+                                    <td style={{ verticalAlign: "middle" }}>{(index < 3) ? ['🥇','🥈','🥉'][index] : (index + 1)}</td>
                                     {props.columns.map(col => {
 
                                         if (col === "name") {
