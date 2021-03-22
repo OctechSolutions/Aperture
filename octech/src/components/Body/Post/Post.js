@@ -367,7 +367,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   if (images.length >= 1) 
     // slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
   // } else if (images.length > 1) {
-    slideshow = <div><ImageGallery sliderImages={images} /></div>;
+    slideshow = <ImageGallery sliderImages={images} />;
   // }
   else {
     slideshow = <></>

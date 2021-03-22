@@ -17,6 +17,7 @@ import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
 import Map from "../Map/Map";
+import DraggableMap from "../Map/DraggableMap";
 import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -545,8 +546,8 @@ function Feed({ match }, props) {
   const getData = (val) => {
     // do not forget to bind getData in constructor
     console.log(val);
-    setLat(val[0]);
-    setLng(val[1]);
+    setLat(val.lat);
+    setLng(val.lng);
   }
 
   const handleChange = (e) => { // When a file is uploaded this function is called
@@ -749,7 +750,15 @@ function Feed({ match }, props) {
   return (
     <>
 
-
+      {/* <DraggableMap
+        center={{ lat: lat, lng: lng }}
+        height='30vh'
+        zoom={15}
+        sendData={getData}
+        draggable={true}
+        setCoordinatesSelected={setCoordinatesSelected}
+        setShowEditMap={setShowEditMap}
+      /> */}
       <div className="App">
 
         <FilerobotImageEditor
@@ -1117,7 +1126,7 @@ function Feed({ match }, props) {
               {loading &&
                 <div>
                   <center>
-                    <Spinner animation="border" role="status"/>{' '}
+                    <Spinner animation="border" role="status" />{' '}
                     Scanning Image...
                   </center>
                 </div>}
