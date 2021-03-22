@@ -38,7 +38,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Giphy } from '../../Body/ImageManipulation';
 import { motion } from "framer-motion";
 import CloseIcon from '@material-ui/icons/Close';
 import Dialog from '@material-ui/core/Dialog'
@@ -46,9 +45,13 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import ReactGiphySearchbox from "react-giphy-searchbox";
+import FilerobotImageEditor from "filerobot-image-editor";
+import TuneIcon from '@material-ui/icons/Tune';
+import GifIcon from '@material-ui/icons/Gif';
+import DoneIcon from '@material-ui/icons/Done';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
-
 
 const Compress = require('compress.js');
 
@@ -158,6 +161,7 @@ function Feed({ match }, props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(true);
   const [showGifSearch, setShowGifSearch] = useState(false)
+
 
 
   const handleMenuClick = (event) => {
@@ -391,6 +395,7 @@ function Feed({ match }, props) {
     setCameraActive("");
     setImgOverlays([])
     setImgOverlayCoordinates([])
+    setViewSlider(false)
   }
 
   const editingCancelled = async () => {
@@ -399,6 +404,7 @@ function Feed({ match }, props) {
     setIsPrivatePost(false);
     setImgOverlays([])
     setImgOverlayCoordinates([])
+    setShowPostComponent(true);
   }
 
   // const editingDone = async () => {
@@ -508,8 +514,6 @@ function Feed({ match }, props) {
       // }
       // else {
       // setInputImgs(inputImgs.concat(inputImg))
-      var w = overlayParentRef.current.width
-      var h = overlayParentRef.current.height
       var temp = sliderImages.concat({
         src: inputImg,
         style: getImageStyle(),
@@ -523,6 +527,7 @@ function Feed({ match }, props) {
       setInputImg("");
       setEditOptions(DEFAULT_EDIT_OPTIONS);
       console.log(sliderImages)
+      setShowPostComponent(true);
       // }
 
     }
@@ -549,7 +554,8 @@ function Feed({ match }, props) {
     e.preventDefault();
     console.log(e.target.files[0]);
     setEditOptions(DEFAULT_EDIT_OPTIONS);
-
+    setShowPostComponent(false)
+    setViewSlider(false)
     {
       // reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
       setFile(e.target.files[0]);
@@ -570,7 +576,8 @@ function Feed({ match }, props) {
 
 
           setLoading(true);
-
+          setW(overlayParentRef.current.clientWidth);
+          setH(overlayParentRef.current.clientHeight);
           cocoSsd.load().then((model) => {
 
             // detect objects in the image.
@@ -585,6 +592,7 @@ function Feed({ match }, props) {
                     setInputImg("");
                     console.log("HUMAN DETECTED!!!")
                     setShow(true);
+                    setTimeout(() => { setShowPostComponent(true); }, 100)
                   }
                   else {
                     setNohuman(true);
@@ -595,11 +603,11 @@ function Feed({ match }, props) {
                 setNohuman(true);
               }
               setLoading(false);
-              setCropping(true);
+              // setCropping(true);
             })
           });
         });
-      }, 300);
+      }, 100);
       setCameraActive("");
     }
   };
@@ -610,6 +618,10 @@ function Feed({ match }, props) {
     setCameraActive("");
     setLoading(true);
     await inputImg;
+    setW(overlayParentRef.current.clientWidth);
+    setH(overlayParentRef.current.clientHeight);
+    setShowPostComponent(false)
+    setViewSlider(false)
     cocoSsd.load().then((model) => {
 
       // detect objects in the image.
@@ -624,6 +636,7 @@ function Feed({ match }, props) {
               setInputImg("");
               console.log("HUMAN DETECTED!!!")
               setShow(true);
+              setTimeout(() => { setShowPostComponent(true); }, 100)
             }
             else {
               setNohuman(true);
@@ -634,7 +647,7 @@ function Feed({ match }, props) {
           setNohuman(true);
         }
         setLoading(false);
-        setCropping(true);
+        // setCropping(true);
       })
     });
   }
@@ -674,16 +687,18 @@ function Feed({ match }, props) {
   ))
 
   const [imgOverlays, setImgOverlays] = useState([]) // imgOverlays = array of giffs ot stickers on the image.
+  const [w, setW] = useState(0) // imgOverlays = array of giffs ot stickers on the image.
+  const [h, setH] = useState(0) // imgOverlays = array of giffs ot stickers on the image.
   const [imgOverlayCoordinates, setImgOverlayCoordinates] = useState([])
+  const [viewSlider, setViewSlider] = useState(false);
   const overlayParentRef = useRef() // Reference to the parent element of overlays.
 
   function handleOverlayClick(overlay) {
     /* When am overlay is clicked, it is added to the list of overlays
        causing it to be rendered on screen. */
     console.log(overlay)
-    setShowGifSearch(false)
     setImgOverlayCoordinates(imgOverlayCoordinates.concat({ x: 0, y: 0 }));
-    setTimeout(() => { setImgOverlays(imgOverlays.concat(overlay.images.original)); }, 300);
+    setImgOverlays(imgOverlays.concat(overlay.images.original));
     /* Add new overlay url to the list of overlays. */
 
   }
@@ -721,10 +736,37 @@ function Feed({ match }, props) {
 
     }
   })
-
-
+  const [showEditor, toggle] = useState(false);
+  const closeImageEditor = () => { toggle(false) };
+  const onComplete = (newUrl) => { setInputImg(newUrl.canvas.toDataURL('image/jpeg', 0.6)); closeImageEditor(); }
+  const config = {
+    translations: { en: { 'header.image_editor_title': 'Aperture', } },
+    tools: ["crop", "shapes", "adjust", "effects", "filters", "rotate", "text"],
+    replaceCloseWithBackButton: true,
+    finishButtonLabel: "Continue"
+  };
+  const slider = <ImageGallery sliderImages={sliderImages} />
   return (
     <>
+
+
+      <div className="App">
+
+        <FilerobotImageEditor
+          show={showEditor}
+          src={inputImg}
+          onComplete={onComplete}
+          onBeforeComplete={props => {
+            console.log(props);
+            closeImageEditor();
+            return false;
+          }}
+          onClose={closeImageEditor}
+          config={config}
+
+        />
+
+      </div>
 
       <div className="feed">
 
@@ -766,10 +808,10 @@ function Feed({ match }, props) {
             </center>
           </div>
         }
-        {((match.params.id === user.displayName) || (match.path === "/")) &&
+        {((match.params.id === user.displayName) || (match.path === "/")) && !showGifSearch &&
 
           <Modal
-            show={showPostComponent}
+            show={showPostComponent && !showGifSearch}
             onHide={() => { setShowPostComponent(false); resetVals(); }}
             keyboard={false}
             size="xl"
@@ -879,14 +921,23 @@ function Feed({ match }, props) {
 
                   </>
                 }
-                {(sliderImages.length > 0 && !showEditMap) ?
-                  <ImageGallery sliderImages={sliderImages} />
-                  :
-                  <></>
-                }
+
+                {viewSlider && slider}
                 {sliderImages.length > 0 && !showEditMap &&
 
-                  <center style={{ marginTop: "15px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                    {(sliderImages.length > 0) && !showGifSearch && !viewSlider &&
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        endIcon={<VisibilityIcon />}
+                        onClick={() => { setViewSlider(true) }}
+                      >
+                        <b>Preview</b>
+                      </Button>
+                    }
                     <Button
                       variant="contained"
                       color="primary"
@@ -896,39 +947,47 @@ function Feed({ match }, props) {
                     >
                       <b>Post</b>
                     </Button>
-                  </center>
+                  </div>
                 }
               </div>
             </Modal.Body>
           </Modal>
 
         }
-        {!showGifSearch &&
-        <Modal
-        show={Boolean(inputImg)}
-        // onHide={() => { setShowPostComponent(false); resetVals(); }}
-        keyboard={false}
-        size="xl"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        >
-          <Modal.Body>
-          {/* <Dialog open={Boolean(inputImg)} aria-labelledby="form-dialog-title" fullScreen={true} PaperProps={{
+        {!showEditor &&
+          <Modal
+            show={Boolean(inputImg)}
+            // onHide={() => { setShowPostComponent(false); resetVals(); }}
+            keyboard={false}
+            size="xl"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <Modal.Body>
+              {/* <Dialog open={Boolean(inputImg)} aria-labelledby="form-dialog-title" fullScreen={true} PaperProps={{
             style: {
               backgroundColor: 'whitesmoke',
               boxShadow: 'none',
             },
           }}> */}
-            {/* <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle> */}
-            {/* <DialogTitle id="form-dialog-title"> */}
-                <img src={inputImg}
-                  className="post__image" id="img" alt="Preview" style={getImageStyle()} ref={overlayParentRef} ></img>
+              {/* <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle> */}
+              {/* <DialogTitle id="form-dialog-title"> */}
 
-            {/* </DialogTitle> */}
-            {/* <DialogContent> */}
+              {/* </DialogTitle> */}
+              {/* <DialogContent> */}
               {inputImg && (
                 <>
-                  {!loading && cropping &&
+                  {(showGifSearch || loading) && <img src={inputImg}
+                    className="post__image" id="img" alt="Preview" style={getImageStyle()} ref={overlayParentRef} ></img>}
+                  {!showGifSearch && !loading && <ImageGallery sliderImages={[{
+                    src: inputImg,
+                    style: getImageStyle(),
+                    overlayGifs: imgOverlays,
+                    overlayCoordinates: imgOverlayCoordinates,
+                    orignalDimensions: { width: w, height: h }
+                  }]} ref={overlayParentRef} />}
+
+                  {/* {!loading && cropping &&
                     <div>
                       <Cropper
                         style={{ height: 400, width: "100%" }}
@@ -950,10 +1009,10 @@ function Feed({ match }, props) {
                         <Button color="primary" onClick={getCropData}>Crop Image</Button>
                         <Button onClick={() => { setCropping(false) }}>Continue without cropping</Button>
                       </div>
-                    </div>}
+                    </div>} */}
                   <br />
                   {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
-                  {inputImg &&
+                  {inputImg && !showEditor &&
                     <div className="photoEditor">
                       {/* Div in which to view the photo. */}
 
@@ -961,7 +1020,7 @@ function Feed({ match }, props) {
                         <div>
                           <div>
 
-                            {overlayParentRef.current !== null && imgOverlays.map((gif, index) => {
+                            {overlayParentRef.current !== null && showGifSearch && imgOverlays.map((gif, index) => {
                               return (
 
                                 <motion.div
@@ -975,8 +1034,8 @@ function Feed({ match }, props) {
                                     width: overlayParentRef.current.clientWidth / 5 + "px",
                                     height: (((overlayParentRef.current.clientWidth / 5) / gif.width) * gif.height) + "px",
                                     position: "absolute",
-                                    top: overlayParentRef.current.offsetTop + imgOverlayCoordinates[index].y,
-                                    left: overlayParentRef.current.offsetLeft + imgOverlayCoordinates[index].x,
+                                    top: overlayParentRef.current.offsetTop,
+                                    left: overlayParentRef.current.offsetLeft,
                                   }}
                                   dragMomentum={false}
                                   onDragEnd={() => getCoordinates(gif, index)}
@@ -984,10 +1043,43 @@ function Feed({ match }, props) {
                                   <motion.div style={{ position: "absolute", top: "-10px", right: "-10px" }}><IconButton size="small" style={{ backgroundColor: "white" }} onClick={() => removeOverlay(gif)}><CloseIcon fontSize="small" /></IconButton></motion.div>
                                 </motion.div >
                               )
-                            })}
+                            })
+                            }
                           </div>
-                          <button onClick={() => { setShowGifSearch(true) }} >Gif</button>
-                          <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon />} onClick={handleMenuClick} centered>
+                          {!showGifSearch && <center>
+                            <IconButton
+                              aria-label="open map"
+                              component="span"
+                              onClick={(e) => { e.preventDefault(); toggle(true); setShowPostComponent(false) }}
+                            >
+                              <TuneIcon fontSize="large" />
+                            </IconButton>
+                            <IconButton
+                              aria-label="open map"
+                              component="span"
+                              onClick={(e) => { e.preventDefault(); setShowGifSearch(true); setShowPostComponent(false) }}
+                            >
+                              <GifIcon fontSize="large" />
+                            </IconButton>
+                          </center>}
+
+                          {showGifSearch && <center>
+                            <ReactGiphySearchbox
+                              apiKey="SL07jZg7zFxxOTBN29YaS4979AUIInJK"
+                              onSelect={(item) => handleOverlayClick(item)}
+                              masonryConfig={[
+                                { columns: 2, imageWidth: 110, gutter: 5 },
+                                { mq: "900px", columns: 3, imageWidth: 120, gutter: 5 }
+                              ]}
+                            />
+                            <IconButton
+                              component="span"
+                              onClick={(e) => { e.preventDefault(); setShowGifSearch(false) }}
+                            >
+                              <DoneIcon fontSize="large" />
+                            </IconButton>
+                          </center>}
+                          {/* <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon />} onClick={handleMenuClick} centered>
                             {editOptions[selectedOptionIndex].name}
                           </Button>
                           <Menu
@@ -1011,7 +1103,7 @@ function Feed({ match }, props) {
                             max={selectedOption.range.max}
                             value={selectedOption.value}
                             onChange={(event, result) => { handleSliderChange(result) }}
-                          />
+                          /> */}
                         </div>}
 
 
@@ -1024,23 +1116,25 @@ function Feed({ match }, props) {
               )}
               {loading &&
                 <div>
-                  <Spinner animation="border" role="status">
-                  </Spinner>
-                  <span>{'  '}Scanning Image...</span>
+                  <center>
+                    <Spinner animation="border" role="status"/>{' '}
+                    Scanning Image...
+                  </center>
                 </div>}
 
 
-            {/* </DialogContent> */}
-            {/* <DialogActions> */}
-              {(!loading) && !cropping &&
+              {/* </DialogContent> */}
+              {/* <DialogActions> */}
+              {!loading && !showGifSearch &&
+                // !cropping &&
                 <div className="buttons" style={{ justifyContent: "space-evenly" }}>
                   <Button variant="contained" onClick={editingDone}>Add Image</Button>
                   <Button variant="contained" onClick={editingCancelled}>Cancel</Button>
                 </div>
               }
-            {/* </DialogActions> */}
-          {/* </Dialog> */}
-          </Modal.Body>
+              {/* </DialogActions> */}
+              {/* </Dialog> */}
+            </Modal.Body>
           </Modal>
         }
         <Modal
@@ -1112,29 +1206,7 @@ function Feed({ match }, props) {
           {/* <b>New Post</b> */}
         </Fab>
       }
-      {showGifSearch &&
 
-        <Modal
-          show={showGifSearch}
-          onHide={() => { setShowGifSearch(false) }}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          style={{ overlay: { zIndex: 1000 } }}
-          size="xl"
-        >
-          <Modal.Body>
-            <center><ReactGiphySearchbox
-              apiKey="SL07jZg7zFxxOTBN29YaS4979AUIInJK"
-              onSelect={(item) => handleOverlayClick(item)}
-              masonryConfig={[
-                { columns: 2, imageWidth: 110, gutter: 5 },
-                { mq: "900px", columns: 3, imageWidth: 120, gutter: 5 }
-              ]}
-            />
-            </center>
-          </Modal.Body>
-        </Modal>
-      }
     </>
   );
 }

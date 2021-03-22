@@ -18,7 +18,7 @@ import 'swiper/components/effect-flip/effect-flip.scss'
 
 SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
 function ImageGallery({ sliderImages }) {
-    SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
+
     const [, setDimensions] = useState({
         height: window.innerHeight,
         width: window.innerWidth
@@ -30,7 +30,6 @@ function ImageGallery({ sliderImages }) {
                 width: window.innerWidth
             })
         }
-        SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
         setSingleImage(Boolean(sliderImages.length - 1))
         window.addEventListener('resize', handleResize)
 
@@ -47,8 +46,8 @@ function ImageGallery({ sliderImages }) {
         })
 
     }
-
-    const [singleImage, setSingleImage] = useState(sliderImages!==null ? Boolean(sliderImages.length - 1): true)
+    SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard])
+    const [singleImage, setSingleImage] = useState(sliderImages !== null ? Boolean(sliderImages.length - 1) : true)
     return (
 
         <Swiper
@@ -71,7 +70,7 @@ function ImageGallery({ sliderImages }) {
                             id={`${a.src.length}${index}`}
                             onLoad={handleResize}
                         />
-                        {a.overlayGifs !== undefined && document.getElementById(`${a.src.length}${index}`) !== null && a.overlayGifs.map((b, i) => {
+                        {a.overlayGifs !== undefined && a !== undefined && document.getElementById(`${a.src.length}${index}`) !== null && a.overlayGifs.map((b, i) => {
                             return (
                                 <div
                                     id={`test`}
