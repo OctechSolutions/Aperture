@@ -2,13 +2,19 @@
 
 
 
-<img src="octech/src/components/Header/aperture_logo.png" alt="Aperture Logo" style="zoom:25%; float:left" />  
-
-<img src="octech_logo.png" alt="OcTech Logo" style="zoom:15%; float:right" />
+<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321134558256.png" alt="image-20210321134558256" style="zoom:25%; float:left" /><img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321133237121.png" alt="image-20210321133237121 a" style="zoom:50%; float:right" />
 
 
-<br />
----
+
+
+
+
+
+
+
+
+
+
 
 ### Formal Team
 
@@ -135,15 +141,25 @@ This section in addition to design elements and thoughts behind the final produc
 
 
 
-##### 3.2. <span style="color:orange">Implementation Methodology</span>
+##### 3.2. Implementation Methodology
 
 <span style="color:magenta">*Iterations/Scrum/Other agile techniques?*</span>
+
+It was decided after considering both a fully pre-planned approach and an agile approach that agile process scrum would be the best choice of implementation strategy particularly because the slight wiggle room that agile provides is ideal for accommodating learning curves that would have to be overcome in order to produce a final product. 
+
+Since all developers are students, it was expected that there would be a need to revisit and refine parts of the application from time to time. This approach of coming back to an implemented portion to further test and refine it in iterations was adopted to ensure that implemented parts of the application were indeed functional.
+
+The primary implementation schedule involved weekly scrums where every team member would be allocated certain tasks to complete for the week. Given the COVID-19 scenario, all group meetings were online. Efforts were made to ensure that at least 1 meeting via Microsoft Teams occurred every week. All the while, the team remained constantly in touch with each other via a shared and project only WhatsApp group. Additionally, weekly meetings where the line manager was present took place every week.
+
+It was decided that each member would regularly update all other members via shared WhatsApp group exclusive to scrums, about their progress in what was termed a "Daily Scrum Report". This report would include what the member had been able to implement the previous day and what he/she was hoping on implementing on the  current day. If a member was unable to complete his/her allocated task in the given time frame, then this task would be reallocated to the same/another member for the next scrum.  
+
+This system although initially agreed upon was slowly established through the 3 stages. This system was fully in place and efficient starting mid stage 2.
 
 <span style="color:blue">*MORE ...*</span>
 
 
 
-##### 3.3. <span style="color:orange">Development History</span>
+##### 3.3. <span style="color:red">Development History</span>
 
 <span style="color:magenta">*What was achieved in each iteration/sprint?*</span>
 
@@ -189,19 +205,19 @@ This section, after an overall analysis of the the production process and final 
 
 ##### 4.1. Organization
 
-###### 4.1.1. <span style="color:orange">Organizational Structure</span>
+###### 4.1.1. <span style="color:red">Organizational Structure</span>
 
 <span style="color:magenta">*How was your group organized?*</span>
 
 <span style="color:blue">*MORE ...*</span>
 
-###### 4.1.2. <span style="color:orange">Success Story</span>
+###### 4.1.2. <span style="color:red">Success Story</span>
 
-<span style="color:magenta">*Was the group organization successful? How well did your group*</span> collaborate?
+<span style="color:magenta">*Was the group organization successful? How well did your group collaborate?*</span> 
 
 <span style="color:blue">*MORE ...*</span>
 
-###### 4.1.3. <span style="color:orange">Overcoming Problems</span>
+###### 4.1.3. <span style="color:red">Overcoming Problems</span>
 
 <span style="color:magenta">*How did you handle any problems which arose?*</span>
 
