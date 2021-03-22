@@ -3,8 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="preconnect" href="https://fonts.gstatic.com"> <!-- Font from Google fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet"> <!-- Font from Google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <!-- Font from Google fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font from Google fonts -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
     <title>Aperture</title>
@@ -14,14 +19,17 @@
     <div id="root"></div>
   </body>
   <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', ()=> {
-            navigator
-            .serviceWorker
-            .register('sw.js')
-            .then(()=>console.log("Ready."))
-            .catch(()=>console.log("Err..."));
+    // we check if the browser supports ServiceWorkers
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register(
+          // path to the service worker file
+          "sw.js"
+        )
+        // the registration is async and it returns a promise
+        .then(function (reg) {
+          console.log("Registration Successful");
         });
     }
-</script>
+  </script>
 </html>
