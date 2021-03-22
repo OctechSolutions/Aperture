@@ -9,12 +9,7 @@ import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 
 // Import Swiper styles
-import 'swiper/swiper.scss';
-import 'swiper/components/navigation/navigation.scss';
-import 'swiper/components/pagination/pagination.scss';
-import 'swiper/components/scrollbar/scrollbar.scss';
-import 'swiper/components/zoom/zoom.min.css';
-import 'swiper/components/effect-flip/effect-flip.scss'
+import 'swiper/swiper-bundle.css';
 
 SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
 function ImageGallery({ sliderImages }) {

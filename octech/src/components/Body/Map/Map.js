@@ -105,7 +105,7 @@ export default function Map({
                         <Marker position={[51.5074, -0.0901]} eventHandlers={{
                             click: (e) => {
                             },
-                        }}><Popup>
+                        }}><Popup offset={[12, 0]}>
                                 <div style={{ width: "300px" }}><img src="https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png" style={{ width: "300px" }}></img></div>
                             </Popup></Marker>
                     </MarkerClusterGroup>;
