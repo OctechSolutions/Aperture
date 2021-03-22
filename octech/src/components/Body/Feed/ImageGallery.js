@@ -41,7 +41,6 @@ function ImageGallery({ sliderImages }) {
         })
 
     }
-    SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard])
     const [singleImage, setSingleImage] = useState(sliderImages !== null ? Boolean(sliderImages.length - 1) : true)
     return (
 
