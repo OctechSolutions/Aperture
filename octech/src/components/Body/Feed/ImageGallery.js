@@ -81,8 +81,8 @@ function ImageGallery({ sliderImages }) {
                                         width: (document.getElementById(`${a.src.length}${index}`).getBoundingClientRect().width / 5) + "px",
                                         height: (((document.getElementById(`${a.src.length}${index}`).getBoundingClientRect().width / 5) / b.width) * b.height) + "px",
                                         position: "absolute",
-                                        left: a.isPreview !== null ? a.overlayCoordinates[i].x : ((document.getElementById(`${a.src.length}${index}`).getBoundingClientRect().width / a.orignalDimensions.width) * a.overlayCoordinates[i].x) + "px",
-                                        top: a.isPreview !== null ? a.overlayCoordinates[i].y : ((document.getElementById(`${a.src.length}${index}`).getBoundingClientRect().height / a.orignalDimensions.height) * a.overlayCoordinates[i].y) + "px",
+                                        left: ((document.getElementById(`${a.src.length}${index}`).getBoundingClientRect().width / a.orignalDimensions.width) * a.overlayCoordinates[i].x) + "px",
+                                        top: ((document.getElementById(`${a.src.length}${index}`).getBoundingClientRect().height / a.orignalDimensions.height) * a.overlayCoordinates[i].y) + "px",
                                     }}
                                 >
                                 </div>

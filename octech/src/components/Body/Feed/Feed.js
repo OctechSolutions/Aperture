@@ -53,8 +53,6 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
-
-
 const Compress = require('compress.js');
 
 
@@ -750,6 +748,8 @@ function Feed({ match }, props) {
   const slider = <ImageGallery sliderImages={sliderImages} />
   return (
     <>
+
+
       <div className="App">
 
         <FilerobotImageEditor
@@ -925,7 +925,7 @@ function Feed({ match }, props) {
                 {viewSlider && slider}
                 {sliderImages.length > 0 && !showEditMap &&
 
-                  <div style ={{display: "flex", justifyContent: "space-evenly"}}>
+                  <div style={{ display: "flex", justifyContent: "space-evenly" }}>
                     {(sliderImages.length > 0) && !showGifSearch && !viewSlider &&
 
                       <Button
@@ -933,7 +933,7 @@ function Feed({ match }, props) {
                         color="primary"
                         className={classes.button}
                         endIcon={<VisibilityIcon />}
-                        onClick={() => {setViewSlider(true)}}
+                        onClick={() => { setViewSlider(true) }}
                       >
                         <b>Preview</b>
                       </Button>
@@ -984,7 +984,7 @@ function Feed({ match }, props) {
                     style: getImageStyle(),
                     overlayGifs: imgOverlays,
                     overlayCoordinates: imgOverlayCoordinates,
-                    isPreview: true
+                    orignalDimensions: { width: w, height: h }
                   }]} ref={overlayParentRef} />}
 
                   {/* {!loading && cropping &&
@@ -1116,9 +1116,10 @@ function Feed({ match }, props) {
               )}
               {loading &&
                 <div>
-                  <Spinner animation="border" role="status">
-                  </Spinner>
-                  <span>{'  '}Scanning Image...</span>
+                  <center>
+                    <Spinner animation="border" role="status"/>{' '}
+                    Scanning Image...
+                  </center>
                 </div>}
 
 
