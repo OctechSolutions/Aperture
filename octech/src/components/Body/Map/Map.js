@@ -85,13 +85,13 @@ export default function Map({
 
                     <MarkerClusterGroup>
                         {/* <Marker position={[lat, lng]}><Popup>
-              <div style={{ width: "300px" }}>
-                <div style={{display: "flex" ,alignItems: "center", alignSelf: "center"}}>
-                  <IconButton
-              aria-label="more"
-              aria-controls="long-menu"
-              aria-haspopup="true"
-            > */}
+                        <div style={{ width: "300px" }}>
+                        <div style={{display: "flex" ,alignItems: "center", alignSelf: "center"}}>
+                        <IconButton
+                            aria-label="more"
+                            aria-controls="long-menu"
+                            aria-haspopup="true"
+                        > */}
                         {/* <Avatar src={user.photoUrl}></Avatar>  */}
                         {/* Material ui component for avatar */}
                         {/* </IconButton>Post Caption Here</div><img src="https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png" style={{ width: "300px" }}></img></div> */}
@@ -108,8 +108,8 @@ export default function Map({
                         }}><Popup offset={[12, 0]}>
                                 <div style={{ width: "300px" }}><img src="https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png" style={{ width: "300px" }}></img></div>
                             </Popup></Marker>
-                    </MarkerClusterGroup>;
-      </MapContainer>
+                    </MarkerClusterGroup>
+                </MapContainer>
             </div>
             {draggable &&
                 <>
