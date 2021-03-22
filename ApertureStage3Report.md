@@ -2,19 +2,13 @@
 
 
 
-<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321134558256.png" alt="image-20210321134558256" style="zoom:25%; float:left" /><img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321133237121.png" alt="image-20210321133237121 a" style="zoom:50%; float:right" />
+<img src="octech/src/components/Header/aperture_logo.png" alt="Aperture Logo" style="zoom:25%; float:left" />  
+
+<img src="octech_logo.png" alt="OcTech Logo" style="zoom:15%; float:right" />
 
 
-
-
-
-
-
-
-
-
-
-
+<br />
+---
 
 ### Formal Team
 
