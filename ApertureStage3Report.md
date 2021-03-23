@@ -2,7 +2,7 @@
 
 
 
-<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321134558256.png" alt="image-20210321134558256" style="zoom:25%; float:left" /><img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321133237121.png" alt="image-20210321133237121 a" style="zoom:50%; float:right" />
+<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321134558256.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321133237121.png" alt="Octech Logo" style="zoom:50%; float:right" />
 
 
 
@@ -233,15 +233,73 @@ This section, after an overall analysis of the the production process and final 
 
 ##### 4.2. Implementation
 
-###### 4.2.1. <span style="color:red">The Plan</span>
+###### 4.2.1. Project Diary
 
 <span style="color:magenta">*What was your implementation schedule? How did the implementation schedule differ from the original plan?*</span>
 
+The implementation schedule taken from the "Aperture Project Diary" can be viewed below in 3 tables. One for stage1, stage2 and stage3 respectively. 
+
+<figure>
+	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224652203.png" alt="Project Diary - Stage 1" style="width:100%">
+    <figcaption style="text-align:center;">Fig1. Project Diary - Stage 1</figcaption>
+</figure>
+
+
+
+<figure>
+	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224812704.png" alt="Project Diary - Stage 2" style="width:100%">
+    <figcaption style="text-align:center;">Fig2. Project Diary - Stage 2</figcaption>
+</figure>
+
+
+
+<figure>
+	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224947639.png" alt="Project Diary - Stage 3" style="width:100%">
+    <figcaption style="text-align:center;">Fig3. Project Diary - Stage 3</figcaption>
+</figure>
+
+The above implementation schedule remained close to initial plan from stages 1 and 2 with a little deviation from original plan. The implemented schedule for stage 3, however was quite different from the initial plan due to the team's need to commit to other subjects and related course works with all team members being full time students. Unforeseen health issues faced by team members particularly our leader proved to be a setback. Hence greater collaboration and effort was required toward the end of stage   3 which was key in overcoming ordeals and submitting a finished product and necessary documentation. 
+
 <span style="color:blue">*MORE ...*</span>
 
-###### 4.2.2. <span style="color:red">Path to Success</span>
+###### 4.2.2. Path to Success
+
+###### <span style="color:red">*provide examples*</span>
 
 <span style="color:magenta">*Was your implementation approach successful (scrum, other, etc)? Why or why not? Use specific examples from your experiences to support your discussion.*</span> 
+
+<span style="color:green"><u>Positive Experiences</u></span>
+
+- Initially the team was very lost and awestruck as the massive task that lay ahead. This is when the decision to sit down and **identify systems** that would make up our application proved helpful. Initially 11 systems where identified which was then narrowed down to 6 ...
+
+  1. User Account System
+  2. Content Creation System
+  3. User Interaction System
+  4. Game Mechanics System
+  5. Notification System
+  6. Application Improvement System
+
+  This breakdown of the application allowed the team to develop a wholesome view of what the application would look like and what it would be capable of. We then went on tackling one system at a time, always beginning by identifying main tasks and implementing them.
+
+- The **flexibility** that **scrum** provides allowed us to implement parts of the app that felt manageable at a given moment knowing that once the team had amassed further knowledge regarding a topic, those very basic versions first implemented in a previous scrum may be revisited, tweaked and refined in a later scrum. 
+
+- Having a **scrum master** that regularly discussed with the group and allocated tasks on a weekly, at times, even daily basis allowed for the team to always have **an idea about the next most important task.**
+
+- **Daily scrum sessions/reports** was a reminder of just how much had been and were yet to be achieved every week. 
+
+- Any scrum tasks not achieved this week would be reallocated next week in addition to other tasks. This succeeded at keeping the team on toes and though at variable rates, **weekly scrums ensured that weekly progress was made**.
+
+- Every scrum would culminate in all members testing out the functions implemented thus far and then suggesting fixes that would be implemented in the next scrum. These **implement > test > fix > implement next** iterations ensured that the team **produced working parts** of the application almost **every week** and it would be **unlikely** that these parts **would need to be changed later** on. This approach also meant that we would have a working feature to show our line manager at almost every meeting.
+
+- Opting **React JS** enabled the team to create **components** that could be **reused** and take advantage of **vast libraries and frameworks** that React supports like Material UI, React Bootstrap etc. Due to React being a popular choice amongst we application developers, **finding** online **tutorials** and **reading material** on it **was not difficult**.
+
+<span style="color:red"><u>Negative Experiences</u></span>
+
+- Opting **ReactJS** meant that most of the team had to take the **time to learn** its key features. This resulted in some time in our development journey (Scrums 1 & 2 of stage 2) getting dedicated to learning it. Also, lack of sufficient knowledge of how to achieve a particular task had resulted in slower progress than ideal at several points in Stages 2 and 3.
+- In instances where the team was faced with may deadlines corresponding to other course works / tests and during the time of the F29PD debate, the pressure to produce **daily scrum reports** was **at times overwhelming**.
+- The team was always very active and driven to produce a great product. Every member had **lots of ideas/opinions** to make the application better. Whilst this meant no shortage of options, it also meant that it took **longer to reach a consensus** and would also lead to **disagreements** that had to be resolved from time to time. This scenario was especially prevalent during the **initial stages** of development when the team was just coming together. **By Stage 3**, however, the team was **united** and had understood strengths and the value of each member.
+
+Overall, it is safe to say that our approach was successful in helping keep the team close knit and productive. When problems arose, the team was able to rise to the challenge and brave though it. The milestones we set for ourselves and achieved via scrums, gave us a sense of accomplishment and was a source of motivation in our development journey.
 
 <span style="color:blue">*MORE ...*</span>
 
