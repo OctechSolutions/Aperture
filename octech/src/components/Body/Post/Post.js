@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../../features/userSlice";
 import firebase from "firebase";
 import { Link } from "react-router-dom";
+import { auth } from '../../../firebase';
 import ImageGallery from '../Feed/ImageGallery';
 import Modal from 'react-bootstrap/Modal';
 import CommentIcon from '@material-ui/icons/Comment';
@@ -46,10 +47,9 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Chip from '@material-ui/core/Chip'
 import AddAlarmRoundedIcon from '@material-ui/icons/AddAlarmRounded'
 import Skeleton from '@material-ui/lab/Skeleton';
-import Carousel from 'react-bootstrap/Carousel';
-import Zoom from 'react-medium-image-zoom';
-import 'react-medium-image-zoom/dist/styles.css'
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+
+
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -64,7 +64,7 @@ const useStyles = makeStyles({
 });
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, challenges, isChallengeView }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, challenges, isChallengeView}, ref) => {
 
   if (comments === undefined) {
     comments = [];
@@ -98,7 +98,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
   const StyledRating = withStyles({
     // iconFilled: {
     //   color: '#ff6d75',
@@ -108,7 +107,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     // },
   })(Rating);
 
-
+  
   //Total Stars of the post
   const [totalStars, setTotalStars] = useState(totalStar);
   //Stars given by the user on the post
@@ -168,21 +167,21 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         let newProfilePoints = profilePoints + (givenStars - stars);
         let league = doc.data().league;
         let leaguee = "";
-
-        if (league !== "Champion" && league !== "Legendary") {
-          if (newProfilePoints < 100)
+        
+        if(league !== "Champion" && league !== "Legendary"){
+          if(newProfilePoints<100)
             leaguee = "No league profile points less than 100"
-          else if (newProfilePoints < 500)
+          else if(newProfilePoints<500)
             leaguee = "Silver"
-          else if (newProfilePoints < 1000)
+          else if(newProfilePoints<1000)
             leaguee = "Gold"
-          else if (newProfilePoints < 1200)
+          else if(newProfilePoints<1200)
             leaguee = "Diamond"
-          else
+          else 
             leaguee = "Platinum"
         }
-
-        if (league && (league === leaguee || leaguee === ""))
+          
+        if(league && (league===leaguee || leaguee===""))
           transaction.update(user, { profilePoints: newProfilePoints });
         else {
           transaction.update(user, {
@@ -201,19 +200,18 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       const tempImages = [];
       const tempRefs = [];
       snapshot.forEach((doc) => {
+        console.log(doc.data())
         tempImages.push({
           src: doc.data().url,
           style: doc.data().styleModification,
-          overlayGifs: doc.data().overlayGifs,
-          overlayCoordinates: doc.data().overlayCoordinates,
-          orignalDimensions: doc.data().orignalDimensions
+          tags: doc.data().tags
         });
         tempRefs.push(doc.id);
-        // console.log(doc.data(), doc.id)
       });
       setLoading(false)
       setImages(tempImages);
       setRefs(tempRefs);
+      setTags(tempImages[0].tags)
     });
   }, [id]);
 
@@ -311,9 +309,12 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const user = useSelector(selectUser); // Select current user from slice
   const deletePost = () => { // This function is called when the delete button is clicked
 
+
     db.collection("users").doc(user.displayName).update({
       posts: firebase.firestore.FieldValue.arrayRemove(id) // The post is removed from the users array of posts
     })
+
+
 
     console.log(refs)
     refs.forEach((ids) => {
@@ -334,6 +335,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         })
       })
     }
+
+
 
     if (isForumPost) {
       db.collection("forumPosts") // The post is removed from the posts database
@@ -363,12 +366,13 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   };
 
+
   var slideshow;
-  if (images.length >= 1) 
-    // slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
-  // } else if (images.length > 1) {
+  if (images.length === 1) {
+    slideshow = <div className="post__image"><img src={images[0].src} style={images[0].style} alt="User Post" /></div>;
+  } else if (images.length > 1) {
     slideshow = <div><ImageGallery sliderImages={images} /></div>;
-  // }
+  }
   else {
     slideshow = <></>
   }
@@ -434,6 +438,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       </Modal>
     )
   }
+
+  
 
   const addToPortfolio = () => {
 
@@ -510,41 +516,20 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   updateChallengeChip() // Update the challenge chips that are displayed on the post.
                   handleChallengeNameFormClose()
                 })
-              if(hasCoordinates){
-                db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
-                  key: id,
-                  caption: message || "My Awesome Post",
-                  imageSrc: images[0].src,
-                  style: images[0].style,
-                  creator: name,
-                  creatorPhotoUrl: photoUrl || "",
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  challengePoints: 0,
-                  challenge: challengeName,
-                  ref: id,
-                  stars: {},
-                  hasEnded: false,
-                  hasCoordinates: hasCoordinates,
-                  lat: lat,
-                  lng: lng
-                })
-              } else {
-                db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
-                  key: id,
-                  caption: message || "My Awesome Post",
-                  imageSrc: images[0].src,
-                  style: images[0].style,
-                  creator: name,
-                  creatorPhotoUrl: photoUrl || "",
-                  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                  challengePoints: 0,
-                  challenge: challengeName,
-                  ref: id,
-                  stars: {},
-                  hasEnded: false,
-                  hasCoordinates: hasCoordinates
-                })
-              }
+              db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
+                key: id,
+                caption: message || "My Awesome Post",
+                imageSrc: images[0].src,
+                style: images[0].style,
+                creator: name,
+                creatorPhotoUrl: photoUrl || "",
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                challengePoints: 0,
+                challenge: challengeName,
+                ref: id,
+                stars: {},
+                hasEnded: false
+              })
             }
           }
         })
@@ -573,32 +558,41 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   // ------------------------------------------------------------------------------------------------------------
 
-   //Add tags 
+  //Add tags 
   const addTag = (e) => {
-    if (e.key === "Enter" && e.target.value !== "") {
-      if (e.target.value.length > 0) {
-        setTags([...tags, e.target.value.toLowerCase()]);
-        e.target.value = "";
-      }
-    }
-    console.log(tags, id);
-     db.collection("postImages").doc(id).update({
-        tag: tags,
-      })
-  };
+    const currentUser = auth.currentUser
+    db.collection("posts").doc(id).get().then(doc => {
+    db.collection("users").doc(currentUser.displayName).get().then(user => {
+      if (user.id !== doc.data().name) return alert("you can't change this user's tag");
+      if (e.key === "Enter" && e.target.value !== "") {
+        if (e.target.value.length > 0) {
+          const newTags = tags == undefined || tags == [] || tags.length < 0 ? [] : [...tags];
+          newTags.push(e.target.value.toLowerCase());
+          setTags(newTags);
 
+          db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
+            tags: newTags,
+          }));
+
+          e.target.value = "";
+        }
+      }
+    })
+    })
+    
+    console.log(tags, id);
+     
+  };
+  
   //Remove tags
   const removeTag = (removedTag) => {
     //setTags([tags.filter((tag) => tag.indexOf(tag)!== removedTag)])
     const newTags = tags.filter((tag) => tag !== removedTag);
     setTags(newTags);
-    /*
-    db.collection("posts").doc(id).update({
-        tags: firebase.firestore.FieldValue.arrayRemove({tags: tags}) 
-      })
-    */
+    db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
+        tags: newTags
+      }))
   };
-
 
 
   return (
@@ -625,7 +619,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
             </IconButton>
             <div className="postInfo">
-              <div style={{ marginLeft: "-12px" }}>
+              <div style= {{marginLeft : "-12px"}}>
                 <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
 
                   {channelBy ? channelBy : name}</Link>
@@ -669,21 +663,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                       aria-label="map"
                       aria-controls="long-menu"
                       aria-haspopup="true"
-                      onClick={() => {
-                        
-                        const locationref = db.collection('posts');
-                        const locationquery = locationref.where('hasCoordinates', '==', true).get()
-                        .then((querySnapshot) => {
-                          querySnapshot.forEach((doc) => {
-                            setShowMap(true)
-                            console.log(doc.id, " => ", doc.data());
-                          });
-                      })
-                      .catch((error) => {
-                          console.log("Error getting documents: ", error);
-                      });
-                
-                       }}
+                      onClick={() => { setShowMap(true) }}
                     >
                       <MapIcon />
                     </IconButton>
@@ -816,6 +796,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   }
                 </>
                 : <div></div>
+                
             }
 
             {/* Form to input Challenge Code. */}
@@ -872,6 +853,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                  <LocalOfferIcon/>
                </IconButton>
             </div>
+                
           </div>
 
         </div>
@@ -952,27 +934,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             <div className="post_body">
               <p>{message}</p>
             </div>
-            {/* {slideshow} */}
-            <Carousel
-              interval={null}
-              controls={(images.length > 1) ? true : false}
-              indicators={(images.length > 1) ? true : false}
-            >
-              {images.map((a) =>
-                <Carousel.Item>
-                  <center>
-                    <Zoom>
-                      <img
-                        src={a.src}
-                        style={a.style}
-                        alt="Carousel"
-                        className="post__image"
-                      />
-                    </Zoom>
-                  </center>
-                </Carousel.Item>
-              )}
-            </Carousel >
+            {slideshow}
             <br />
             {showStars && !isForumPost &&
               <center>
@@ -1037,7 +999,35 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               })
 
             }
+            
           </Modal.Body>
+        </Modal>
+        
+        {/*Tags Modal*/}
+        <Modal
+          show={showTags}
+          onHide={() => { setShowTags(false) }}
+          keyboard={false}
+          size="l"
+          aria-labelledby="contained-modal-title-vcenter"
+          scrollable={true}
+          centered
+        >
+        <Modal.Header closeButton onClick={handleClose}>
+        <Modal.Title> Tags </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <TextField className="tag-container"  label="Add tags" margin="normal" variant="outlined"
+           onKeyUp={addTag} />
+        <br/>
+            {tags && tags.map(m => 
+            <Chip
+              className="tag-chip"
+              label={m}
+              color="primary"
+              onDelete={() => removeTag(m)}
+            />)}
+        </Modal.Body>
         </Modal>
 
         <Modal
@@ -1059,37 +1049,13 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </Modal.Body>
         </Modal>
 
-        {/*Tags Modal*/}
-        <Modal
-          show={showTags}
-          onHide={() => { setShowTags(false) }}
-          keyboard={false}
-          size="l"
-          aria-labelledby="contained-modal-title-vcenter"
-          scrollable={true}
-          centered
-        >
-        <Modal.Header closeButton onClick={handleClose}>
-        <Modal.Title> Tags </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <TextField className="tag-container"  label="Add tags" margin="normal" variant="outlined"
-           onKeyUp={addTag} />
-                <Chip
-                    className = "tag-chip"
-                    label={tag}
-                    onDelete={() => removeTag(tag)}
-                    color="primary"
-        
-                />
-        </Modal.Body>
-        </Modal>
 
         <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
           <Alert onClose={() => { setSnackbarOpen(false) }} severity={snackbarType}>
             {snackbarMessage}
           </Alert>
         </Snackbar>
+
 
         {challengeChip} {/* Display all challenges that this post is participating in. */}
 
