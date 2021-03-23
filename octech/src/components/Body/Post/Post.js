@@ -5,6 +5,7 @@ import { db, storage } from "../../../firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../features/userSlice";
 import firebase from "firebase";
+import { auth } from '../../../firebase';
 import { Link } from "react-router-dom";
 import ImageGallery from '../Feed/ImageGallery';
 import Modal from 'react-bootstrap/Modal';
@@ -206,7 +207,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           style: doc.data().styleModification,
           overlayGifs: doc.data().overlayGifs,
           overlayCoordinates: doc.data().overlayCoordinates,
-          orignalDimensions: doc.data().orignalDimensions
+          orignalDimensions: doc.data().orignalDimensions,
+          tags: doc.data().tags
         });
         tempRefs.push(doc.id);
         // console.log(doc.data(), doc.id)
@@ -214,6 +216,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       setLoading(false)
       setImages(tempImages);
       setRefs(tempRefs);
+      setTags(tempImages[0].tags)
     });
   }, [id]);
 
@@ -574,34 +577,40 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   // ------------------------------------------------------------------------------------------------------------
 
    //Add tags 
-   const addTag = (e) => {
-    if (e.key === "Enter") {
-      if (e.target.value.length > 0) {
-        setTags([...tags, e.target.value.toLowerCase()]);
-        e.target.value = "";
+  const addTag = (e) => {
+    const currentUser = auth.currentUser
+    db.collection("posts").doc(id).get().then(doc => {
+    db.collection("users").doc(currentUser.displayName).get().then(user => {
+      if (user.id !== doc.data().name) return alert("you can't change this user's tag");
+      if (e.key === "Enter" && e.target.value !== "") {
+        if (e.target.value.length > 0) {
+          const newTags = tags == undefined || tags == [] || tags.length < 0 ? [] : [...tags];
+          newTags.push(e.target.value.toLowerCase());
+          setTags(newTags);
+
+          db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
+            tags: newTags,
+          }));
+
+          e.target.value = "";
+        }
       }
-    }
-    console.log(tags, id);
-     db.collection("posts").doc(id).update({
-      tags: firebase.firestore.FieldValue.arrayUnion({
-        tag: tags,
-      })
     })
-
-
+    })
+    
+    console.log(tags, id);
+     
   };
 
   //Remove tags
   const removeTag = (removedTag) => {
+    //setTags([tags.filter((tag) => tag.indexOf(tag)!== removedTag)])
     const newTags = tags.filter((tag) => tag !== removedTag);
     setTags(newTags);
-    /*
-    db.collection("posts").doc(id).update({
-        tags: firebase.firestore.FieldValue.arrayRemove({tags: tags}) 
-      })
-    */
+    db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
+        tags: newTags
+      }))
   };
-
 
   return (
     <div ref={ref} className="post" key={id}>
@@ -1061,8 +1070,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </Modal.Body>
         </Modal>
 
-        {/*Tags Modal*/}
-        <Modal
+       {/*Tags Modal*/}
+       <Modal
           show={showTags}
           onHide={() => { setShowTags(false) }}
           keyboard={false}
@@ -1077,19 +1086,14 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         <Modal.Body>
         <TextField className="tag-container"  label="Add tags" margin="normal" variant="outlined"
            onKeyUp={addTag} />
-        {tags.map((tag, index) => {
-          return (
-            <div key={index} className="tag" >
-                <Chip
-                    className = "tag-chip"
-                    label={tag}
-                    onDelete={() => removeTag(tag)}
-                    color="primary"
-        
-                />
-            </div>
-          );
-        })}
+        <br/>
+            {tags && tags.map(m => 
+            <Chip
+              className="tag-chip"
+              label={m}
+              color="primary"
+              onDelete={() => removeTag(m)}
+            />)}
         </Modal.Body>
         </Modal>
 
