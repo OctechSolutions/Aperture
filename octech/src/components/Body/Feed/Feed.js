@@ -750,15 +750,7 @@ function Feed({ match }, props) {
   return (
     <>
 
-      {/* <DraggableMap
-        center={{ lat: lat, lng: lng }}
-        height='30vh'
-        zoom={15}
-        sendData={getData}
-        draggable={true}
-        setCoordinatesSelected={setCoordinatesSelected}
-        setShowEditMap={setShowEditMap}
-      /> */}
+
       <div className="App">
 
         <FilerobotImageEditor
@@ -817,7 +809,7 @@ function Feed({ match }, props) {
             </center>
           </div>
         }
-        {((match.params.id === user.displayName) || (match.path === "/")) && !showGifSearch &&
+        {((match.params.id === user.displayName) || (match.path === "/")) && !showGifSearch && !showEditMap &&
 
           <Modal
             show={showPostComponent && !showGifSearch}
@@ -835,7 +827,7 @@ function Feed({ match }, props) {
             </Modal.Header>
             <Modal.Body>
               <div className="feed_inputContainer">
-                <div className="feed_input">
+                {!showEditMap && <div className="feed_input">
                   <IconButton
                     aria-label="more"
                   >
@@ -867,7 +859,7 @@ function Feed({ match }, props) {
                   >
                     {isPrivatePost ? <LockIcon /> : <PublicIcon />}
                   </IconButton>
-                </div>
+                </div>}
                 <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
                   {!inputImg && !showEditMap && <div className="upload-btn-wrapper">
                     <input type="file" name="myfile" id="myFile" accept="image/*" onChange={handleChange} style={{ opacity: "0" }} />
@@ -916,20 +908,7 @@ function Feed({ match }, props) {
                   </Alert>
                 }
 
-                {showEditMap &&
-                  <>
-                    <Map
-                      center={{ lat: lat, lng: lng }}
-                      height='30vh'
-                      zoom={15}
-                      sendData={getData}
-                      draggable={true}
-                      setCoordinatesSelected={setCoordinatesSelected}
-                      setShowEditMap={setShowEditMap}
-                    />
 
-                  </>
-                }
 
                 {viewSlider && slider}
                 {sliderImages.length > 0 && !showEditMap &&
@@ -973,17 +952,7 @@ function Feed({ match }, props) {
             centered
           >
             <Modal.Body>
-              {/* <Dialog open={Boolean(inputImg)} aria-labelledby="form-dialog-title" fullScreen={true} PaperProps={{
-            style: {
-              backgroundColor: 'whitesmoke',
-              boxShadow: 'none',
-            },
-          }}> */}
-              {/* <DialogTitle id="form-dialog-title">Participating Posts</DialogTitle> */}
-              {/* <DialogTitle id="form-dialog-title"> */}
 
-              {/* </DialogTitle> */}
-              {/* <DialogContent> */}
               {inputImg && (
                 <>
                   {(showGifSearch || loading) && <img src={inputImg}
@@ -1146,6 +1115,7 @@ function Feed({ match }, props) {
             </Modal.Body>
           </Modal>
         }
+
         <Modal
           show={Boolean(cameraActive)}
           onHide={() => { setCameraActive("") }}
@@ -1215,7 +1185,26 @@ function Feed({ match }, props) {
           {/* <b>New Post</b> */}
         </Fab>
       }
-
+      <Modal
+        show={showEditMap}
+        onHide={() => { setShowEditMap(false) }}
+        keyboard={false}
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Body>
+          <DraggableMap
+            center={{ lat: lat, lng: lng }}
+            height='30vh'
+            zoom={15}
+            sendData={getData}
+            draggable={true}
+            setCoordinatesSelected={setCoordinatesSelected}
+            setShowEditMap={setShowEditMap}
+          />
+        </Modal.Body>
+      </Modal>
     </>
   );
 }
