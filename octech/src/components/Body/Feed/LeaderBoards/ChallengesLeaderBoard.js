@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { db } from '../../../../firebase';
 import LeaderBoardComponent from './LeaderBoardComponent';
-
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../../../features/userSlice';
 
 function ChallengesLeaderBoard() {
 
   const [leaderboardData, setLeaderBoardData] = useState([]);
   const [dataFetched, setDataFetched] = useState(false);
+  const user = useSelector(selectUser);
 
   if (dataFetched === false) {
 
@@ -22,7 +24,6 @@ function ChallengesLeaderBoard() {
             db.collection('challengePosts')
             .where('challenge', '==', chal.name)
             .orderBy('totalStars', 'desc')
-            .limit(100)
             .onSnapshot(async chalPosts => {
               tempLeaderboardData.push({
                 challengeName: chal.name,
@@ -45,7 +46,7 @@ function ChallengesLeaderBoard() {
   return (
     leaderboardData.map((data, i) => {
       if (data.postData.length !== 0)
-        return <LeaderBoardComponent key={i} title={data.challengeName + " LeaderBoard"} headers={['Post Caption', 'Submitted By', 'Total Stars']} columns={['caption', 'creator', 'totalStars']} data={data.postData} />;
+        return <LeaderBoardComponent key={i} title={data.challengeName + " LeaderBoard"} headers={['Post Caption', 'Submitted By', 'Total Stars']} columns={['caption', 'creator', 'totalStars']} limit={100} data={data.postData} highlightColumn={'creator'} highlightColumnData={user.displayName} />;
     })
     
   )

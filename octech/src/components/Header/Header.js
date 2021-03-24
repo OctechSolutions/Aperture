@@ -84,9 +84,8 @@ function Header({ setValue, hasNotifications }) {
         </IconButton>
         <IconButton
           aria-label="leaderboards"
-          onClick={() => { history.push("/leaderboards/globalUsersLeaderBoard"); setValue("leaderboards") }}
-        >
-          <Tooltip title={"Leadearboards"} aria-label="leaderboards">
+          onClick={() => { history.push("/leaderboards/globalUsersLeaderBoard"); setValue("leaderboards") }}>
+          <Tooltip title={"Leaderboards"} aria-label="leaderboards">
             <EqualizerIcon />
           </Tooltip>
         </IconButton>

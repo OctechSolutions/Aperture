@@ -27,8 +27,33 @@ const useStyles = makeStyles((theme) => ({
 
 function LeaderBoardComponent(props) {
     const classes = useStyles();
-    const history = useHistory()
+    const history = useHistory();
+    let tableData = [];
+    let specialIndex = undefined;
     if (props.data.length !== 0) {
+        //Find our rank in the data
+        if (props.highlightColumn)
+        {
+            for (let i = 0; i < props.data.length; i++)
+            {
+                if (props.data[i][props.highlightColumn] === props.highlightColumnData)
+                {
+                    specialIndex = i;
+                }
+            }
+        }
+        
+        if (props.data.length > (props.limit || 10))
+        {
+            tableData = props.data.slice(0, props.limit || 10);
+        } else {
+            tableData = props.data;
+        }
+
+        if (specialIndex >= tableData.length) {
+            tableData.push(props.data[specialIndex]);
+        }
+
         return (
             <div className="container">
                 <h1 className="text-center py-3">{props.title}</h1>
@@ -44,11 +69,10 @@ function LeaderBoardComponent(props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.data.map((info, index) => {
+                        {tableData.map((info, index) => {
                             return (
-                                <tr>
-                                    {/* {(index == 0) && <td>{index+1}</td>} */}
-                                    <td style={{ verticalAlign: "middle" }}>{index + 1}</td>
+                                <tr className={(props.highlightColumn !== undefined && info[props.highlightColumn] === props.highlightColumnData) ? 'highlighted-user' : ((index < 3) ? ['first-place', 'second-place', 'third-place'][index] : '')}>
+                                    <td style={{ verticalAlign: "middle" }}>{(index < 3) ? ['🥇','🥈','🥉'][index] : (index + 1)}</td>
                                     {props.columns.map(col => {
 
                                         if (col === "name") {

@@ -5,6 +5,7 @@ import { db, storage } from "../../../firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../features/userSlice";
 import firebase from "firebase";
+import { auth } from '../../../firebase';
 import { Link } from "react-router-dom";
 import ImageGallery from '../Feed/ImageGallery';
 import Modal from 'react-bootstrap/Modal';
@@ -49,6 +50,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Carousel from 'react-bootstrap/Carousel';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css'
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -74,6 +76,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   const [refs, setRefs] = useState([]);
   const [show, setShow] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showTags, setShowTags] = useState(false);
+  const [tags, setTags] = useState([]);
   const [showStars,] = useState(((name === viewingUser.displayName) || (channelBy === viewingUser.displayName)) ? false : true);
   const [showMap, setShowMap] = useState(false);
   const [comment, setComment] = useState("");
@@ -203,7 +207,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           style: doc.data().styleModification,
           overlayGifs: doc.data().overlayGifs,
           overlayCoordinates: doc.data().overlayCoordinates,
-          orignalDimensions: doc.data().orignalDimensions
+          orignalDimensions: doc.data().orignalDimensions,
+          tags: doc.data().tags
         });
         tempRefs.push(doc.id);
         // console.log(doc.data(), doc.id)
@@ -211,6 +216,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       setLoading(false)
       setImages(tempImages);
       setRefs(tempRefs);
+      setTags(tempImages[0].tags)
     });
   }, [id]);
 
@@ -361,10 +367,10 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   };
 
   var slideshow;
-  if (images.length >= 1) 
+  if (images.length >= 1)
     // slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
-  // } else if (images.length > 1) {
-    slideshow = <div><ImageGallery sliderImages={images} /></div>;
+    // } else if (images.length > 1) {
+    slideshow = <ImageGallery sliderImages={images} />;
   // }
   else {
     slideshow = <></>
@@ -507,7 +513,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   updateChallengeChip() // Update the challenge chips that are displayed on the post.
                   handleChallengeNameFormClose()
                 })
-              if(hasCoordinates){
+              if (hasCoordinates) {
                 db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
                   key: id,
                   caption: message || "My Awesome Post",
@@ -569,6 +575,41 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   useEffect(() => { updateChallengeChip() }, []);
 
   // ------------------------------------------------------------------------------------------------------------
+
+  //Add tags 
+  const addTag = (e) => {
+    const currentUser = auth.currentUser
+    db.collection("posts").doc(id).get().then(doc => {
+      db.collection("users").doc(currentUser.displayName).get().then(user => {
+        if (user.id !== doc.data().name) return alert("you can't change this user's tag");
+        if (e.key === "Enter" && e.target.value !== "") {
+          if (e.target.value.length > 0) {
+            const newTags = tags == undefined || tags == [] || tags.length < 0 ? [] : [...tags];
+            newTags.push(e.target.value.toLowerCase());
+            setTags(newTags);
+
+            db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
+              tags: newTags,
+            }));
+
+            e.target.value = "";
+          }
+        }
+      })
+    })
+
+    console.log(tags, id);
+
+  };
+
+  //Remove tags
+  const removeTag = (removedTag) => {
+    const newTags = tags.filter((tag) => tag !== removedTag);
+    setTags(newTags);
+    db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
+      tags: newTags
+    }))
+  };
 
   return (
     <div ref={ref} className="post" key={id}>
@@ -639,20 +680,20 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                       aria-controls="long-menu"
                       aria-haspopup="true"
                       onClick={() => {
-                        
+
                         const locationref = db.collection('posts');
                         const locationquery = locationref.where('hasCoordinates', '==', true).get()
-                        .then((querySnapshot) => {
-                          querySnapshot.forEach((doc) => {
-                            setShowMap(true)
-                            console.log(doc.id, " => ", doc.data());
+                          .then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                              setShowMap(true)
+                              console.log(doc.id, " => ", doc.data());
+                            });
+                          })
+                          .catch((error) => {
+                            console.log("Error getting documents: ", error);
                           });
-                      })
-                      .catch((error) => {
-                          console.log("Error getting documents: ", error);
-                      });
-                
-                       }}
+
+                      }}
                     >
                       <MapIcon />
                     </IconButton>
@@ -743,9 +784,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           {/* <br /> */}
           <p>{message}</p>
         </div>
-        {loading && <Skeleton variant="rect" width={"100%"} height={250} />}
-        {slideshow}
-        <br />
+        {loading && <div style={{ width: "85vw" }}><Skeleton variant="rect" width={"100%"} height={"250px"} animation="wave" /></div>}
+        {!loading && slideshow}
         <div >
 
           <div className="rate" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
@@ -1019,6 +1059,34 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             />
           </Modal.Body>
         </Modal>
+
+        {/*Tags Modal*/}
+        <Modal
+          show={showTags}
+          onHide={() => { setShowTags(false) }}
+          keyboard={false}
+          size="l"
+          aria-labelledby="contained-modal-title-vcenter"
+          scrollable={true}
+          centered
+        >
+          <Modal.Header closeButton onClick={handleClose}>
+            <Modal.Title> Tags </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <TextField className="tag-container" label="Add tags" margin="normal" variant="outlined"
+              onKeyUp={addTag} />
+            <br />
+            {tags && tags.map(m =>
+              <Chip
+                className={classes.root}
+                label={m}
+                color="primary"
+                onDelete={() => removeTag(m)}
+              />)}
+          </Modal.Body>
+        </Modal>
+
         <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
           <Alert onClose={() => { setSnackbarOpen(false) }} severity={snackbarType}>
             {snackbarMessage}
