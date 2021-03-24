@@ -107,6 +107,18 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 
    This component enables interaction among users and/or application managers. Facilitated features include a chat between users, rating of posts, point (profile/challenge points) tracking, adding/deletion of comments, sending/accepting/ignoring friend requests, blocking/unblocking of users, following/unfollowing of channels, a feedback forum, a gaming forum, search/explore facility, news feed fetching, leaderboard management, participation in challenges, notification handling, user content/bug/help reporting management and making recommendations.
 
+4. **Game Mechanics System**
+
+   This component handles the game aspect of the application and deals with allowing users to create and participate in challenges and earn points and badges via user ratings on profile and challenge posts. Display of point status summary on leaderboards, announcing of winners and providing rewards are also managed by this system.
+
+5. **Notification System**
+
+   This system ensures that users are aware of all major events that they may be interested/involved in by sending notifications if and when they occur. Notifications will be sent when a user sends a friend request, likes a post, leaves a comment, accepts a friend request and deletes a challenge to name a few events.
+
+6. **Application Improvement System**
+
+   This component is the means through which users can contribute to improving the app by reporting bugs or inappropriate content. This system ensures that all user reports will be displayed to application managers so that they may monitor user satisfaction and take necessary action to ensure that the app remains safe and fun for all.
+
 
 
 ****
@@ -145,13 +157,13 @@ This section in addition to design elements and thoughts behind the final produc
 
 <span style="color:magenta">*Iterations/Scrum/Other agile techniques?*</span>
 
-It was decided after considering both a fully pre-planned approach and an agile approach that agile process scrum would be the best choice of implementation strategy particularly because the slight wiggle room that agile provides is ideal for accommodating learning curves that would have to be overcome in order to produce a final product. 
+It was decided after considering both a fully pre-planned approach and an agile approach that agile process scrum would be the best choice of implementation strategy particularly because the wiggle room that agile provides is ideal for accommodating learning curves that would have to be overcome in order to produce a final product. 
 
 Since all developers are students, it was expected that there would be a need to revisit and refine parts of the application from time to time. This approach of coming back to an implemented portion to further test and refine it in iterations was adopted to ensure that implemented parts of the application were indeed functional.
 
 The primary implementation schedule involved weekly scrums where every team member would be allocated certain tasks to complete for the week. Given the COVID-19 scenario, all group meetings were online. Efforts were made to ensure that at least 1 meeting via Microsoft Teams occurred every week. All the while, the team remained constantly in touch with each other via a shared and project only WhatsApp group. Additionally, weekly meetings where the line manager was present took place every week.
 
-It was decided that each member would regularly update all other members via shared WhatsApp group exclusive to scrums, about their progress in what was termed a "Daily Scrum Report". This report would include what the member had been able to implement the previous day and what he/she was hoping on implementing on the  current day. If a member was unable to complete his/her allocated task in the given time frame, then this task would be reallocated to the same/another member for the next scrum.  
+It was decided that each member would regularly update all other members via a shared WhatsApp group exclusive to scrums, about their progress in what was termed a "Daily Scrum Report". This report would include what the member had been able to implement the previous day and what he/she was hoping on implementing on the  current day. If a member was unable to complete his/her allocated task in the given time frame, then this task would be reallocated to the same/another member for the next scrum.  
 
 This system although initially agreed upon was slowly established through the 3 stages. This system was fully in place and efficient starting mid stage 2.
 
@@ -261,7 +273,7 @@ The implementation schedule taken from the "Aperture Project Diary" can be viewe
 </figure>
 
 
-The above implementation schedule remained close to initial plan from stages 1 and 2 with a little deviation from original plan. The implemented schedule for stage 3, however was quite different from the initial plan due to the team's need to commit to other subjects and related course works with all team members being full time students. Unforeseen health issues faced by team members particularly our leader proved to be a setback. Hence greater collaboration and effort was required toward the end of stage   3 which was key in overcoming ordeals and submitting a finished product and necessary documentation. 
+The above implementation schedule remained close to initial plans for stages 1 and 2 with a little deviation from the original plan. The implemented schedule for stage 3, however was quite different from the initial plan due to the need for an increased understanding of ReactJS contributing to some time lost in learning and failed attempts at achieving functionality particularly during the 1st 2 scrums of stage 3. Unforeseen health issues faced by team members particularly our leader proved to be a setback especially with regards to work on the stage 3 report and accompanying documentation. Hence, greater collaboration and effort was required toward the end of stage 3 which was key in overcoming ordeals and submitting a finished product and necessary documentation. 
 
 <span style="color:blue">*EDIT IF NEEDED ...*</span>
 
