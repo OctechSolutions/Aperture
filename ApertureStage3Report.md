@@ -65,7 +65,7 @@ Every user's user experience, suggestions and privacy is important to us. Apertu
 
 
 
-### 1. Overview of the System
+### 1. Overview of the System (Gayathri)
 
 <span style="color:magenta">*High-level overview of technologies and components.*</span>
 
@@ -73,7 +73,7 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 
 
 
-##### 1.1. <span style="color:red">Technology Used</span>
+##### 1.1. <span style="color:red">Technology Used</span> 
 
 - HTML, CSS, JavaScript
 - React JS, JSX
@@ -113,7 +113,7 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 
 
 
-### 2. <span style="color:red">Detailed Design</span>
+### 2. <span style="color:red">Detailed Design</span> (Elfarash, Hasan, Assad, Gaurav(Class Diagram))
 
 <span style="color:magenta">*Dataflow diagrams, UML diagrams, Class diagrams, etc.*</span>
 
@@ -133,7 +133,7 @@ This section in addition to design elements and thoughts behind the final produc
 
 
 
-##### 3.1. <span style="color:red">Application Layout & Navigation</span>
+##### 3.1. <span style="color:red">Application Layout & Navigation</span> (Elfarash, Yoshi)
 
 <span style="color:magenta">*Layout and navigation of the application or applications.*</span>
 
@@ -141,7 +141,7 @@ This section in addition to design elements and thoughts behind the final produc
 
 
 
-##### 3.2. Implementation Methodology
+##### 3.2. Implementation Methodology (Gayathri)
 
 <span style="color:magenta">*Iterations/Scrum/Other agile techniques?*</span>
 
@@ -155,11 +155,11 @@ It was decided that each member would regularly update all other members via sha
 
 This system although initially agreed upon was slowly established through the 3 stages. This system was fully in place and efficient starting mid stage 2.
 
-<span style="color:blue">*MORE ...*</span>
+<span style="color:blue">*EDIT IF NEEDED ...*</span>
 
 
 
-##### 3.3. <span style="color:red">Development History</span>
+##### 3.3. <span style="color:red">Development History</span> (Gayathri)
 
 <span style="color:magenta">*What was achieved in each iteration/sprint?*</span>
 
@@ -167,7 +167,7 @@ This system although initially agreed upon was slowly established through the 3 
 
 
 
-##### 3.4. <span style="color:red">Testing Regimen</span>
+##### 3.4. <span style="color:red">Testing Regimen</span> (Yoshi)
 
 <span style="color:magenta">*How was the final system tested for technical correctness?*</span>
 
@@ -175,7 +175,7 @@ This system although initially agreed upon was slowly established through the 3 
 
 
 
-##### 3.5. <span style="color:red">Install - Setup - Maintain</span>
+##### 3.5. <span style="color:red">Install - Setup - Maintain</span> (Baber)
 
 <span style="color:magenta">*Documentation on how to install/setup/maintain the final system.*</span>
 
@@ -183,7 +183,7 @@ This system although initially agreed upon was slowly established through the 3 
 
 
 
-##### 3.6. <span style="color:red">User Guide</span>
+##### 3.6. <span style="color:red">User Guide</span> (Baber)
 
 <span style="color:magenta">*Short user guide.*</span>
 
@@ -203,27 +203,27 @@ This section, after an overall analysis of the the production process and final 
 
 
 
-##### 4.1. Organization
+##### 4.1. Organization (Gayathri)
 
-###### 4.1.1. <span style="color:red">Organizational Structure</span>
+###### 4.1.1. <span style="color:red">Organizational Structure</span> 
 
 <span style="color:magenta">*How was your group organized?*</span>
 
 <span style="color:blue">*MORE ...*</span>
 
-###### 4.1.2. <span style="color:red">Success Story</span>
+###### 4.1.2. <span style="color:red">Success Story</span> 
 
 <span style="color:magenta">*Was the group organization successful? How well did your group collaborate?*</span> 
 
 <span style="color:blue">*MORE ...*</span>
 
-###### 4.1.3. <span style="color:red">Overcoming Problems</span>
+###### 4.1.3. <span style="color:red">Overcoming Problems</span> 
 
 <span style="color:magenta">*How did you handle any problems which arose?*</span>
 
 <span style="color:blue">*MORE ...*</span>
 
-###### 4.1.4. <span style="color:red">Sticking To Schedule</span>
+###### 4.1.4. <span style="color:red">Sticking To Schedule</span> 
 
 <span style="color:magenta">*How successful were the timings in your original plan?*</span>
 
@@ -233,7 +233,7 @@ This section, after an overall analysis of the the production process and final 
 
 ##### 4.2. Implementation
 
-###### 4.2.1. Project Diary
+###### 4.2.1. Project Diary (Gayathri)
 
 <span style="color:magenta">*What was your implementation schedule? How did the implementation schedule differ from the original plan?*</span>
 
@@ -260,9 +260,9 @@ The implementation schedule taken from the "Aperture Project Diary" can be viewe
 
 The above implementation schedule remained close to initial plan from stages 1 and 2 with a little deviation from original plan. The implemented schedule for stage 3, however was quite different from the initial plan due to the team's need to commit to other subjects and related course works with all team members being full time students. Unforeseen health issues faced by team members particularly our leader proved to be a setback. Hence greater collaboration and effort was required toward the end of stage   3 which was key in overcoming ordeals and submitting a finished product and necessary documentation. 
 
-<span style="color:blue">*MORE ...*</span>
+<span style="color:blue">*EDIT IF NEEDED ...*</span>
 
-###### 4.2.2. Path to Success
+###### 4.2.2. Path to Success (Gayathri)
 
 ###### <span style="color:red">*provide examples*</span>
 
@@ -303,7 +303,7 @@ Overall, it is safe to say that our approach was successful in helping keep the 
 
 <span style="color:blue">*MORE ...*</span>
 
-###### 4.2.3. <span style="color:red">Tools Used</span>
+###### 4.2.3. <span style="color:red">Tools Used</span> (Hasan)
 
 <span style="color:magenta">*Which languages, tools, and techniques did you use? How suitable were they?*</span>
 
@@ -311,7 +311,7 @@ Overall, it is safe to say that our approach was successful in helping keep the 
 
 
 
-##### 4.3. Product
+##### 4.3. Product (Tasneem)
 
 ###### 4.3.1. <span style="color:red">Functionality Achieved</span>
 
@@ -343,7 +343,7 @@ Overall, it is safe to say that our approach was successful in helping keep the 
 
 
 
-### <span style="color:red">Appendix</span>
+### <span style="color:red">Appendix</span> (Yoshi)
 
 <span style="color:magenta"> *Appendix of Supporting Documentation. Any other supporting documentation that might be relevant (Examples = project diaries/report, original implementation plan, marketing material, etc).*</span>
 
