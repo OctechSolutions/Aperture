@@ -72,7 +72,7 @@ export default function Map({
             <div style={{ width: "100%", height: "auto" }}>
                 <MapContainer
                     className="markercluster-map"
-                    center={[20, 30]}
+                    center={[52.2297, 21.0122]}
                     zoom={4}
                     minZoom={1}
                     maxBoundsViscosity={1.0}
@@ -80,7 +80,9 @@ export default function Map({
                 >
                     <TileLayer
                         url='https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png'
-                        attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+                        attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, 
+                        &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> 
+                        &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
                     />
 
                     <MarkerClusterGroup>

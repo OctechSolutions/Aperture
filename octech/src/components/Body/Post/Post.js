@@ -367,9 +367,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   };
 
   var slideshow;
-  if (images.length >= 1) 
+  if (images.length >= 1)
     // slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
-  // } else if (images.length > 1) {
+    // } else if (images.length > 1) {
     slideshow = <ImageGallery sliderImages={images} />;
   // }
   else {
@@ -513,7 +513,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   updateChallengeChip() // Update the challenge chips that are displayed on the post.
                   handleChallengeNameFormClose()
                 })
-              if(hasCoordinates){
+              if (hasCoordinates) {
                 db.collection("challengePosts").doc(id).set({ // This adds a new duplicate challenge post.
                   key: id,
                   caption: message || "My Awesome Post",
@@ -576,30 +576,30 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   // ------------------------------------------------------------------------------------------------------------
 
-   //Add tags 
+  //Add tags 
   const addTag = (e) => {
     const currentUser = auth.currentUser
     db.collection("posts").doc(id).get().then(doc => {
-    db.collection("users").doc(currentUser.displayName).get().then(user => {
-      if (user.id !== doc.data().name) return alert("you can't change this user's tag");
-      if (e.key === "Enter" && e.target.value !== "") {
-        if (e.target.value.length > 0) {
-          const newTags = tags == undefined || tags == [] || tags.length < 0 ? [] : [...tags];
-          newTags.push(e.target.value.toLowerCase());
-          setTags(newTags);
+      db.collection("users").doc(currentUser.displayName).get().then(user => {
+        if (user.id !== doc.data().name) return alert("you can't change this user's tag");
+        if (e.key === "Enter" && e.target.value !== "") {
+          if (e.target.value.length > 0) {
+            const newTags = tags == undefined || tags == [] || tags.length < 0 ? [] : [...tags];
+            newTags.push(e.target.value.toLowerCase());
+            setTags(newTags);
 
-          db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
-            tags: newTags,
-          }));
+            db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
+              tags: newTags,
+            }));
 
-          e.target.value = "";
+            e.target.value = "";
+          }
         }
-      }
+      })
     })
-    })
-    
+
     console.log(tags, id);
-     
+
   };
 
   //Remove tags
@@ -608,8 +608,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     const newTags = tags.filter((tag) => tag !== removedTag);
     setTags(newTags);
     db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
-        tags: newTags
-      }))
+      tags: newTags
+    }))
   };
 
   return (
@@ -681,20 +681,20 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                       aria-controls="long-menu"
                       aria-haspopup="true"
                       onClick={() => {
-                        
+
                         const locationref = db.collection('posts');
                         const locationquery = locationref.where('hasCoordinates', '==', true).get()
-                        .then((querySnapshot) => {
-                          querySnapshot.forEach((doc) => {
-                            setShowMap(true)
-                            console.log(doc.id, " => ", doc.data());
+                          .then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                              setShowMap(true)
+                              console.log(doc.id, " => ", doc.data());
+                            });
+                          })
+                          .catch((error) => {
+                            console.log("Error getting documents: ", error);
                           });
-                      })
-                      .catch((error) => {
-                          console.log("Error getting documents: ", error);
-                      });
-                
-                       }}
+
+                      }}
                     >
                       <MapIcon />
                     </IconButton>
@@ -785,9 +785,16 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           {/* <br /> */}
           <p>{message}</p>
         </div>
-        {loading && <div style={{width: "85vw"}}><Skeleton variant="rect" width={"100%"} height={"250px"} animation="wave" /></div>}
+        {loading && <div style={{ width: "85vw" }}><Skeleton variant="rect" width={"100%"} height={"250px"} animation="wave" /></div>}
         {!loading && slideshow}
         <br />
+        {tags && tags.map(m =>
+          <Chip
+            className="tag-chip"
+            label={m}
+            color="primary"
+            onDelete={() => removeTag(m)}
+          />)}
         <div >
 
           <div className="rate" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
@@ -858,6 +865,15 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             </Dialog>
 
             <div>
+              {((user.displayName === channelBy) || (user.displayName === name)) &&
+                <IconButton
+                  aria-label="tags"
+                  aria-controls="long-menu"
+                  aria-haspopup="true"
+                  onClick={() => { setShowTags(true) }}
+                >
+                  <LocalOfferIcon />
+                </IconButton>}
               <IconButton
                 aria-label="comments"
                 aria-controls="long-menu"
@@ -874,14 +890,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               >
                 <FullscreenIcon />
               </IconButton>
-              <IconButton
-               aria-label="tags"
-               aria-controls="long-menu"
-               aria-haspopup="true"
-               onClick={() => {setShowTags(true)}}
-               >
-                 <LocalOfferIcon/>
-               </IconButton>
             </div>
           </div>
 
@@ -1070,8 +1078,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </Modal.Body>
         </Modal>
 
-       {/*Tags Modal*/}
-       <Modal
+        {/*Tags Modal*/}
+        <Modal
           show={showTags}
           onHide={() => { setShowTags(false) }}
           keyboard={false}
@@ -1080,21 +1088,21 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           scrollable={true}
           centered
         >
-        <Modal.Header closeButton onClick={handleClose}>
-        <Modal.Title> Tags </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <TextField className="tag-container"  label="Add tags" margin="normal" variant="outlined"
-           onKeyUp={addTag} />
-        <br/>
-            {tags && tags.map(m => 
-            <Chip
-              className="tag-chip"
-              label={m}
-              color="primary"
-              onDelete={() => removeTag(m)}
-            />)}
-        </Modal.Body>
+          <Modal.Header closeButton onClick={handleClose}>
+            <Modal.Title> Tags </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <TextField className="tag-container" label="Add tags" margin="normal" variant="outlined"
+              onKeyUp={addTag} />
+            <br />
+            {tags && tags.map(m =>
+              <Chip
+                className={classes.root}
+                label={m}
+                color="primary"
+                onDelete={() => removeTag(m)}
+              />)}
+          </Modal.Body>
         </Modal>
 
         <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
