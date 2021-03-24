@@ -381,7 +381,7 @@ function Feed({ match }, props) {
           overlayGifs: image.overlayGifs !== undefined ? image.overlayGifs : [],
           overlayCoordinates: image.overlayCoordinates !== undefined ? image.overlayCoordinates : [],
           orignalDimensions: image.orignalDimensions,
-          tags: tags
+          tags: image.tags
         });
       });
 
@@ -526,10 +526,12 @@ function Feed({ match }, props) {
         style: getImageStyle(),
         overlayGifs: imgOverlays,
         overlayCoordinates: imgOverlayCoordinates,
-        orignalDimensions: { width: w, height: h }
+        orignalDimensions: { width: w, height: h },
+        tags: tags
       })
       setSliderImages(temp)
       setImgOverlays([])
+      setTags([])
       setImgOverlayCoordinates([])
       setInputImg("");
       setEditOptions(DEFAULT_EDIT_OPTIONS);
@@ -962,14 +964,7 @@ function Feed({ match }, props) {
                     >
                       <b>Post</b>
                     </Button>
-                    <IconButton
-                      aria-label="tags"
-                      aria-controls="long-menu"
-                      aria-haspopup="true"
-                      onClick={() => {setShowTags(true)}}
-                    >
-                    <LocalOfferIcon/>
-                    </IconButton>
+
                   </div>
                 }
               </div>
@@ -977,7 +972,7 @@ function Feed({ match }, props) {
           </Modal>
 
         }
-        {!showEditor &&
+        {!showEditor && !showTags && 
           <Modal
             show={Boolean(inputImg)}
             // onHide={() => { setShowPostComponent(false); resetVals(); }}
@@ -1000,29 +995,6 @@ function Feed({ match }, props) {
                     orignalDimensions: { width: w, height: h }
                   }]} ref={overlayParentRef} />}
 
-                  {/* {!loading && cropping &&
-                    <div>
-                      <Cropper
-                        style={{ height: 400, width: "100%" }}
-                        initialAspectRatio={1}
-                        src={inputImg}
-                        viewMode={1}
-                        guides={true}
-                        minCropBoxHeight={10}
-                        minCropBoxWidth={10}
-                        background={false}
-                        responsive={true}
-                        autoCropArea={1}
-                        checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
-                        onInitialized={(instance) => {
-                          setCropper(instance);
-                        }}
-                      />
-                      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-                        <Button color="primary" onClick={getCropData}>Crop Image</Button>
-                        <Button onClick={() => { setCropping(false) }}>Continue without cropping</Button>
-                      </div>
-                    </div>} */}
                   <br />
                   {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
                   {inputImg && !showEditor &&
@@ -1061,18 +1033,26 @@ function Feed({ match }, props) {
                           </div>
                           {!showGifSearch && <center>
                             <IconButton
-                              aria-label="open map"
+                              aria-label="edit button"
                               component="span"
                               onClick={(e) => { e.preventDefault(); toggle(true); setShowPostComponent(false) }}
                             >
                               <TuneIcon fontSize="large" />
                             </IconButton>
                             <IconButton
-                              aria-label="open map"
+                              aria-label="add GIF"
                               component="span"
                               onClick={(e) => { e.preventDefault(); setShowGifSearch(true); setShowPostComponent(false) }}
                             >
                               <GifIcon fontSize="large" />
+                            </IconButton>
+                            <IconButton
+                              aria-label="tags"
+                              aria-controls="long-menu"
+                              aria-haspopup="true"
+                              onClick={() => { setShowTags(true); setShowPostComponent(false) }}
+                            >
+                              <LocalOfferIcon fontSize="large" />
                             </IconButton>
                           </center>}
 
@@ -1177,37 +1157,35 @@ function Feed({ match }, props) {
             )}
           </Modal.Body>
         </Modal>
-        
+
         {/*Tags Modal*/}
         <Modal
           show={showTags}
-          onHide={() => { setShowTags(false) }}
+          onHide={() => { setShowTags(false); }}
           keyboard={false}
           size="l"
           aria-labelledby="contained-modal-title-vcenter"
           scrollable={true}
           centered
         >
-        <Modal.Header closeButton onClick={handleClose}>
-        <Modal.Title> Tags </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <TextField className="tag-container"  label="Add tags" margin="normal" variant="outlined"
-           onKeyUp={addTag} />
-        {tags.map((tag, index) => {
-          return (
-            <div key={index} className="tag">
-                <Chip
-                    className = "tag-chip"
+          <Modal.Header closeButton onClick={handleClose}>
+            <Modal.Title> Tags </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <TextField className="tag-container" label="Add tags" margin="normal" variant="outlined" style={{width: "100%"}}
+              onKeyUp={addTag} />
+            {tags.map((tag, index) => {
+              return (
+                  <Chip
+                    className="tag-chip"
                     label={tag}
                     onDelete={() => removeTag(tag)}
                     color="primary"
-        
-                />
-            </div>
-          );
-        })}
-        </Modal.Body>
+
+                  />
+              );
+            })}
+          </Modal.Body>
         </Modal>
 
         <Backdrop className={classes.backdrop} open={open}>

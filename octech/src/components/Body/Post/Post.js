@@ -604,7 +604,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   //Remove tags
   const removeTag = (removedTag) => {
-    //setTags([tags.filter((tag) => tag.indexOf(tag)!== removedTag)])
     const newTags = tags.filter((tag) => tag !== removedTag);
     setTags(newTags);
     db.collection("postImages").where("ref", "==", id).get().then(doc => db.collection("postImages").doc(doc.docs[0].id).update({
@@ -787,14 +786,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         </div>
         {loading && <div style={{ width: "85vw" }}><Skeleton variant="rect" width={"100%"} height={"250px"} animation="wave" /></div>}
         {!loading && slideshow}
-        <br />
-        {tags && tags.map(m =>
-          <Chip
-            className="tag-chip"
-            label={m}
-            color="primary"
-            onDelete={() => removeTag(m)}
-          />)}
         <div >
 
           <div className="rate" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
@@ -865,15 +856,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             </Dialog>
 
             <div>
-              {((user.displayName === channelBy) || (user.displayName === name)) &&
-                <IconButton
-                  aria-label="tags"
-                  aria-controls="long-menu"
-                  aria-haspopup="true"
-                  onClick={() => { setShowTags(true) }}
-                >
-                  <LocalOfferIcon />
-                </IconButton>}
               <IconButton
                 aria-label="comments"
                 aria-controls="long-menu"
