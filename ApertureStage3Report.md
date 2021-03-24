@@ -2,7 +2,7 @@
 
 
 
-<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321134558256.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321133237121.png" alt="Octech Logo" style="zoom:50%; float:right" />
+<img src="./reportImages/apertureLogo.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="./reportImages/octechLogo.png" alt="Octech Logo" style="zoom:50%; float:right" />
 
 
 
@@ -239,10 +239,13 @@ This section, after an overall analysis of the the production process and final 
 
 The implementation schedule taken from the "Aperture Project Diary" can be viewed below in 3 tables. One for stage1, stage2 and stage3 respectively. 
 
+
+
 <figure>
-	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224652203.png" alt="Project Diary - Stage 1" style="width:100%">
+	<img src="./reportImages/ProjectDiaryScrum2.png" alt="Project Diary - Stage 1" style="width:100%">
     <figcaption style="text-align:center;">Fig1. Project Diary - Stage 1</figcaption>
 </figure>
+
 
 
 
@@ -252,11 +255,11 @@ The implementation schedule taken from the "Aperture Project Diary" can be viewe
 </figure>
 
 
-
 <figure>
-	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224947639.png" alt="Project Diary - Stage 3" style="width:100%">
+	<img src="./reportImages/ProjectDiaryScrum3.png" alt="Project Diary - Stage 3" style="width:100%">
     <figcaption style="text-align:center;">Fig3. Project Diary - Stage 3</figcaption>
 </figure>
+
 
 The above implementation schedule remained close to initial plan from stages 1 and 2 with a little deviation from original plan. The implemented schedule for stage 3, however was quite different from the initial plan due to the team's need to commit to other subjects and related course works with all team members being full time students. Unforeseen health issues faced by team members particularly our leader proved to be a setback. Hence greater collaboration and effort was required toward the end of stage   3 which was key in overcoming ordeals and submitting a finished product and necessary documentation. 
 
