@@ -50,7 +50,6 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Carousel from 'react-bootstrap/Carousel';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css'
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -65,7 +64,7 @@ const useStyles = makeStyles({
 });
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, challenges, isChallengeView }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, challenges, isChallengeView, locationPosts }, ref) => {
 
   if (comments === undefined) {
     comments = [];
@@ -370,7 +369,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   if (images.length >= 1)
     // slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
     // } else if (images.length > 1) {
-    slideshow = <ImageGallery sliderImages={images} />;
+    slideshow = <ImageGallery sliderImages={images} />
   // }
   else {
     slideshow = <></>
@@ -681,17 +680,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                       aria-haspopup="true"
                       onClick={() => {
 
-                        const locationref = db.collection('posts');
-                        const locationquery = locationref.where('hasCoordinates', '==', true).get()
-                          .then((querySnapshot) => {
-                            querySnapshot.forEach((doc) => {
-                              setShowMap(true)
-                              console.log(doc.id, " => ", doc.data());
-                            });
-                          })
-                          .catch((error) => {
-                            console.log("Error getting documents: ", error);
-                          });
+                        setShowMap(true)
 
                       }}
                     >
@@ -1053,10 +1042,16 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           <Modal.Body>
             <Map
               center={{ lat: lat, lng: lng }}
-              height='100vh'
-              zoom={15}
-              draggable={false}
+              images={images}
+              name={name}
+              deacription={description}
+              message={message}
+              photoUrl={photoUrl}
+              totalStar={totalStar}
+              locationPosts={locationPosts}
+              id={id}
             />
+            {showMap && console.log(id)}
           </Modal.Body>
         </Modal>
 

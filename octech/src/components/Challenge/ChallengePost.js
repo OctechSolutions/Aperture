@@ -47,7 +47,7 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
     if (givenStars > 0) {
       db.collection("users").doc(creator).collection("notifications").doc(creator).set({
         notifications: firebase.firestore.FieldValue.arrayUnion({
-          type: "rating",
+          type: "challengeRating",
           sentAt: firebase.firestore.Timestamp.now(),
           sender: user.displayName,
           icon: user.photoUrl,
