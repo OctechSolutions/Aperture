@@ -2,9 +2,10 @@
 
 
 
-<img src="./reportImages/apertureLogo.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="./reportImages/octechLogo.png" alt="Octech Logo" style="zoom:50%; float:right" />
+<img src="./octech/src/components/Header/aperture_logo.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="./octech_logo.png" alt="Octech Logo" style="zoom:20%; float:right" />
 
 
+<br />
 
 
 
@@ -310,7 +311,7 @@ The implementation schedule taken from the "Aperture Project Diary" can be viewe
 
 
 <figure>
-	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224812704.png" alt="Project Diary - Stage 2" style="width:100%">
+	<img src="./reportImages/ProjectDiaryScrum2.png" alt="Project Diary - Stage 2" style="width:100%">
     <figcaption style="text-align:center;">Fig4. Project Diary - Stage 2</figcaption>
 </figure>
 
