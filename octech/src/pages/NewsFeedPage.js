@@ -39,6 +39,7 @@ import moment from 'moment';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 import EditProfile from '../components/userProfile/EditProfile';
+import BugReportForm from '../components/Body/Feed/Reports/BugReportForm';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const useStyles = makeStyles({
@@ -200,6 +201,7 @@ export default function NewsfeedPage(props) {
                             <Route path="/challenges/:id" exact component={ChallengesPage} />
                             <Route path="/forums" render={props => <Forums setValue={setValue} />} />
                             <Route path="/leaderBoards" render={props => <LeaderBoards setValue={setValue} />} />
+                            <Route path="/bugReportForm" render={props => <BugReportForm setValue={setValue} />} />
                             <Route path="/notifications" exact render={props => <Notifications notifications={notifications} />} />
                             <Route path="/editprofile"><EditProfile/></Route>
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
