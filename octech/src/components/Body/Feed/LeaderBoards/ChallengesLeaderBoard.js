@@ -24,11 +24,13 @@ function ChallengesLeaderBoard() {
             .orderBy('totalStars', 'desc')
             .limit(100)
             .onSnapshot(async chalPosts => {
+              let rank = 1
               tempLeaderboardData.push({
                 challengeName: chal.name,
                 challengeDesc: chal.description,
                 postData: chalPosts.docs.map(post => {
-                  return post.data();
+                  let postt = {...post.data(), rank : rank++}
+                  return postt;
                 })
               });
               resolve();

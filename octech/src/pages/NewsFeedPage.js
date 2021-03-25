@@ -39,6 +39,7 @@ import moment from 'moment';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
+import ChallengeLeaderBoard from '../components/Challenge/ChallengeLeaderBoard';
 
 const useStyles = makeStyles({
     root: {
@@ -199,6 +200,7 @@ export default function NewsfeedPage(props) {
                             <Route path="/challenges/:id" exact component={ChallengesPage} />
                             <Route path="/forums" render={props => <Forums setValue={setValue} />} />
                             <Route path="/leaderBoards" render={props => <LeaderBoards setValue={setValue} />} />
+                            <Route path="/challengeLeaderboard/:name" exact component ={ChallengeLeaderBoard} />
                             <Route path="/notifications" exact render={props => <Notifications notifications={notifications} />} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />

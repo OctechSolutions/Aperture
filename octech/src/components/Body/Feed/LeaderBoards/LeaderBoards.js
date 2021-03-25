@@ -12,6 +12,7 @@ function Forums({ match, setValue }) {
 
     useEffect(() => {
         setValue('leaderBoards/globalUsersLeaderBoard')
+        console.log(match);
     }, [setValue]);
 
     return (
