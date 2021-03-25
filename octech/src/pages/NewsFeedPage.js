@@ -128,7 +128,7 @@ export default function NewsfeedPage(props) {
                                 setLastNotification(<><b>{notificationInfo.sender}</b> commented <b>{notificationInfo.comment}</b> on your post titled <b>{notificationInfo.postTitle}</b></>)
                                 setIcon(<Avatar className={classes.green}><CommentIcon fontSize="small" /></Avatar>)
                             }
-                            else if (notificationInfo.type === "rating") {
+                            else if (notificationInfo.type === "rating" || notificationInfo.type === "challengeRating") {
                                 var stars = "";
                                 for (var i = 0; i < notificationInfo.stars; i++) {
                                     stars += "★"
