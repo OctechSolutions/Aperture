@@ -160,9 +160,8 @@ export default function Map({
                                 return (
                                     <Marker position={{ lat: p.data.lat, lng: p.data.lng }} eventHandlers={{
                                         click: (e) => {
-                                            console.log('marker clicked', e)
                                             setLoading(true)
-                                            db.collection("postImages").where("ref", "==", p.id).get().then((a) => { console.log(a.docs[0].data()); setSrc(a.docs[0].data().url); setLoading(false) })
+                                            db.collection("postImages").where("ref", "==", p.id).get().then((a) => { setSrc(a.docs[0].data().url); setLoading(false) })
                                         },
                                     }}
                                         icon={blueIcon}
