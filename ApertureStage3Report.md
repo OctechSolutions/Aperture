@@ -2,9 +2,10 @@
 
 
 
-<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321134558256.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210321133237121.png" alt="Octech Logo" style="zoom:50%; float:right" />
+<img src="./octech/src/components/Header/aperture_logo.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="./octech_logo.png" alt="Octech Logo" style="zoom:20%; float:right" />
 
 
+<br />
 
 
 
@@ -89,7 +90,7 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 - Visual Studio Code
 - Github
 
-<span style="color:blue">*MORE ...*</span>
+<span style="color:blue">*FIND OUT REMAINING TECH WE USED AND ADD HERE ...*</span>
 
 
 
@@ -106,6 +107,18 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 3. **User Interaction System**
 
    This component enables interaction among users and/or application managers. Facilitated features include a chat between users, rating of posts, point (profile/challenge points) tracking, adding/deletion of comments, sending/accepting/ignoring friend requests, blocking/unblocking of users, following/unfollowing of channels, a feedback forum, a gaming forum, search/explore facility, news feed fetching, leaderboard management, participation in challenges, notification handling, user content/bug/help reporting management and making recommendations.
+
+4. **Game Mechanics System**
+
+   This component handles the game aspect of the application and deals with allowing users to create and participate in challenges and earn points and badges via user ratings on profile and challenge posts. Display of point status summary on leaderboards, announcing of winners and providing rewards are also managed by this system.
+
+5. **Notification System**
+
+   This system ensures that users are aware of all major events that they may be interested/involved in by sending notifications if and when they occur. Notifications will be sent when a user sends a friend request, likes a post, leaves a comment, accepts a friend request and deletes a challenge to name a few events.
+
+6. **Application Improvement System**
+
+   This component is the means through which users can contribute to improving the app by reporting bugs or inappropriate content. This system ensures that all user reports will be displayed to application managers so that they may monitor user satisfaction and take necessary action to ensure that the app remains safe and fun for all.
 
 
 
@@ -145,17 +158,15 @@ This section in addition to design elements and thoughts behind the final produc
 
 <span style="color:magenta">*Iterations/Scrum/Other agile techniques?*</span>
 
-It was decided after considering both a fully pre-planned approach and an agile approach that agile process scrum would be the best choice of implementation strategy particularly because the slight wiggle room that agile provides is ideal for accommodating learning curves that would have to be overcome in order to produce a final product. 
+It was decided after considering both a fully pre-planned approach and an agile approach that agile process scrum would be the best choice of implementation strategy particularly because the wiggle room that agile provides is ideal for accommodating learning curves that would have to be overcome in order to produce a final product. 
 
 Since all developers are students, it was expected that there would be a need to revisit and refine parts of the application from time to time. This approach of coming back to an implemented portion to further test and refine it in iterations was adopted to ensure that implemented parts of the application were indeed functional.
 
 The primary implementation schedule involved weekly scrums where every team member would be allocated certain tasks to complete for the week. Given the COVID-19 scenario, all group meetings were online. Efforts were made to ensure that at least 1 meeting via Microsoft Teams occurred every week. All the while, the team remained constantly in touch with each other via a shared and project only WhatsApp group. Additionally, weekly meetings where the line manager was present took place every week.
 
-It was decided that each member would regularly update all other members via shared WhatsApp group exclusive to scrums, about their progress in what was termed a "Daily Scrum Report". This report would include what the member had been able to implement the previous day and what he/she was hoping on implementing on the  current day. If a member was unable to complete his/her allocated task in the given time frame, then this task would be reallocated to the same/another member for the next scrum.  
+It was decided that each member would regularly update all other members via a shared WhatsApp group exclusive to scrums, about their progress in what was termed a "Daily Scrum Report". This report would include what the member had been able to implement the previous day and what he/she was hoping on implementing on the  current day. If a member was unable to complete his/her allocated task in the given time frame, then this task would be reallocated to the same/another member for the next scrum.  
 
 This system although initially agreed upon was slowly established through the 3 stages. This system was fully in place and efficient starting mid stage 2.
-
-<span style="color:blue">*EDIT IF NEEDED ...*</span>
 
 
 
@@ -205,11 +216,64 @@ This section, after an overall analysis of the the production process and final 
 
 ##### 4.1. Organization (Gayathri)
 
-###### 4.1.1. <span style="color:red">Organizational Structure</span> 
+###### 4.1.1. Organizational Structure
 
 <span style="color:magenta">*How was your group organized?*</span>
 
-<span style="color:blue">*MORE ...*</span>
+The group was organized such that every member would contribute to all parts of design and development. 
+
+Some possible languages/technical skills which would potentially be needed in the project was identified and members were required to grade themselves and assign points reflecting their confidence levels in with regard to them. This was a good exercise in ascertaining capabilities of team members that would prove crucial in assigning team roles.
+
+<figure>
+	<img src="./reportImages/ConfidencePoints.png" alt=" Confidence Points" style="width:100%; border: black solid 1px">
+    <figcaption style="text-align:center;">Fig1. Confidence Points</figcaption>
+</figure>
+
+
+In order to ensure optimum deployment of team members, a **SWOT analysis** was carried out.
+
+<figure>
+    <center>
+        <img src="./reportImages/SwotSquare.png" alt="SWOT Square" style="width:80%; border: black solid 1px">
+    </center>
+    <figcaption style="text-align:center;">Fig2. SWOT Analysis Square</figcaption>
+</figure>
+
+
+
+Based on observations and after discussion, following roles were initially decided upon. However, it was decided that all members would contribute to all areas of developments. The allocated roles would mean that every member would oversee/guide activities that would fall under his/her role description.
+
+- Baber Jan - Back-End Lead Developer
+- Gaurav Gosain - Front-End Lead Developer
+- Gayathri Girish Nair - Programmer & Designer
+- Hasan Kapadia - Team Leader & Database Lead Developer
+- Mohamed M Elfarash - Programmer & Documentation In Charge
+- Muhammad Assad Khan - Programmer & Report In Charge
+- Tasneem Hussein - Graphic Design Lead & Programmer
+- Yoshi Jasmin - Application Testing In Charge & Programmer
+
+
+
+Towards the end of stage1, it was a collective decision to appoint Muhammad Assad Khan as the new leader as the previous leader was unable to fully commit to oversee the team due to personal issues. Later during stage 3, Baber Jan was selected as the project manager/acting team lead since Assad was unable to contribute on account of having to stick to a recovery regimen following medical eye procedures. As we worked together, each members' true strengths surfaced and it became clearer where each member would be most valuable given a task. 
+
+
+
+Following is a categorization of members as per their primary aptitude adhering to **Honey’s 5 Team Member Types**. 
+
+<figure>
+	<img src="./reportImages/Honeys5.png" alt="Honey's 5 Team Member Types" style="width:100%">
+    <figcaption style="text-align:center;">Fig3. Honey's 5 Team Member Types</figcaption>
+</figure>
+
+- **Leader**: Ensures clear objectives, collective involvement and commitment.
+- **Challenger**: Questions effectiveness, presses for improvement and results.
+- **Doer**: Is practical, reminds team to keep moving and thereby drives team forward.
+- **Thinker**: Produces carefully considered ideas and critically reflects upon other ideas/achievements.
+- **Supporter:** Maintains team harmony and helps carry out/complete tasks.
+
+That said, it was observed that collective efforts undertaken by the team led to all members qualifying to befit many of the above categories at various stages of design, development and documentation.
+
+<span style="color:blue">*EDIT IF NEEDED ...*</span>
 
 ###### 4.1.2. <span style="color:red">Success Story</span> 
 
@@ -240,27 +304,29 @@ This section, after an overall analysis of the the production process and final 
 The implementation schedule taken from the "Aperture Project Diary" can be viewed below in 3 tables. One for stage1, stage2 and stage3 respectively. 
 
 <figure>
-	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224652203.png" alt="Project Diary - Stage 1" style="width:100%">
-    <figcaption style="text-align:center;">Fig1. Project Diary - Stage 1</figcaption>
+	<img src="./reportImages/ProjectDiaryScrum1.png" alt="Project Diary - Stage 1" style="width:100%">
+    <figcaption style="text-align:center;">Fig3. Project Diary - Stage 1</figcaption>
 </figure>
 
 
 
 <figure>
-	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224812704.png" alt="Project Diary - Stage 2" style="width:100%">
-    <figcaption style="text-align:center;">Fig2. Project Diary - Stage 2</figcaption>
+	<img src="./reportImages/ProjectDiaryScrum2.png" alt="Project Diary - Stage 2" style="width:100%">
+    <figcaption style="text-align:center;">Fig4. Project Diary - Stage 2</figcaption>
 </figure>
 
 
 
 <figure>
-	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224947639.png" alt="Project Diary - Stage 3" style="width:100%">
-    <figcaption style="text-align:center;">Fig3. Project Diary - Stage 3</figcaption>
+	<img src="./reportImages/ProjectDiaryScrum3.png" alt="Project Diary - Stage 3" style="width:100%">
+    <figcaption style="text-align:center;">Fig5. Project Diary - Stage 3</figcaption>
 </figure>
 
-The above implementation schedule remained close to initial plan from stages 1 and 2 with a little deviation from original plan. The implemented schedule for stage 3, however was quite different from the initial plan due to the team's need to commit to other subjects and related course works with all team members being full time students. Unforeseen health issues faced by team members particularly our leader proved to be a setback. Hence greater collaboration and effort was required toward the end of stage   3 which was key in overcoming ordeals and submitting a finished product and necessary documentation. 
 
-<span style="color:blue">*EDIT IF NEEDED ...*</span>
+
+The above implementation schedule remained close to initial plans for stages 1 and 2 with a little deviation from the original plan. The implemented schedule for stage 3, however was quite different from the initial plan due to the need for an increased understanding of ReactJS contributing to some time lost in learning and failed attempts at achieving functionality particularly during the 1st 2 scrums of stage 3. Unforeseen health issues faced by team members particularly our leader proved to be a setback especially with regards to work on the stage 3 report and accompanying documentation. Hence, greater collaboration and effort was required toward the end of stage 3 which was key in overcoming ordeals and submitting a finished product and necessary documentation. 
+
+<span style="color:blue">*EDIT STAGE 3 (BLUE AND YELLOW PARTS) AS WE PROGRESS...*</span>
 
 ###### 4.2.2. Path to Success (Gayathri)
 
@@ -268,9 +334,9 @@ The above implementation schedule remained close to initial plan from stages 1 a
 
 <span style="color:magenta">*Was your implementation approach successful (scrum, other, etc)? Why or why not? Use specific examples from your experiences to support your discussion.*</span> 
 
-<span style="color:green"><u>Positive Experiences</u></span>
+<span style="color:green"><u>Pros</u></span>
 
-- Initially the team was very lost and awestruck as the massive task that lay ahead. This is when the decision to sit down and **identify systems** that would make up our application proved helpful. Initially 11 systems where identified which was then narrowed down to 6 ...
+- Initially the team was very lost and awestruck at the massive task that lay ahead. This is when the decision to sit down and **identify systems** that would make up our application proved helpful. Initially 11 systems where identified which was then narrowed down to 6 ...
 
   1. User Account System
   2. Content Creation System
@@ -279,29 +345,37 @@ The above implementation schedule remained close to initial plan from stages 1 a
   5. Notification System
   6. Application Improvement System
 
-  This breakdown of the application allowed the team to develop a wholesome view of what the application would look like and what it would be capable of. We then went on tackling one system at a time, always beginning by identifying main tasks and implementing them.
+  This breakdown of the application allowed the team to develop a wholesome view of what the application would look like and what it would be capable of. We then went on to tackle one system at a time, always beginning by identifying main tasks and implementing them.
 
-- The **flexibility** that **scrum** provides allowed us to implement parts of the app that felt manageable at a given moment knowing that once the team had amassed further knowledge regarding a topic, those very basic versions first implemented in a previous scrum may be revisited, tweaked and refined in a later scrum. 
+- The **flexibility** that **scrum** provides allowed us to implement parts of the app that felt manageable at a given moment knowing that once the team had amassed further knowledge regarding a topic, those very basic versions first implemented in a previous scrum may be revisited, tweaked and refined in a later scrum.
 
-- Having a **scrum master** that regularly discussed with the group and allocated tasks on a weekly, at times, even daily basis allowed for the team to always have **an idea about the next most important task.**
+- Having a **scrum master** that regularly discussed with the group and allocated tasks on a weekly basis, at times, even daily basis allowed for the team to always have **an idea about the next most important task.** At instances where the team was faced with an especially challenging system like the user interaction system with multiple components like creation/deletion of posts, collections etc, the scrum master's breakdown of large tasks into small tasks allocated frequently led to the team being able to divide and conquer it.
 
-- **Daily scrum sessions/reports** was a reminder of just how much had been and were yet to be achieved every week. 
+- **Daily scrum sessions/reports** were a constant reminder of just how much had been and were yet to be achieved every week. Any scrum tasks not achieved this week would be reallocated next week in addition to other tasks. This succeeded at keeping the team on toes and though at variable rates, **weekly scrums ensured that weekly progress was made**.
 
-- Any scrum tasks not achieved this week would be reallocated next week in addition to other tasks. This succeeded at keeping the team on toes and though at variable rates, **weekly scrums ensured that weekly progress was made**.
+- Every scrum would culminate in all members testing out functions implemented thus far and then suggesting fixes that would be implemented in the next scrum. These **implement > test > fix > implement next** iterations ensured that the team **produced working parts** of the application almost **every week** and it would be **unlikely** that these parts **would need to be changed later** on. This approach also meant that we would have a new working feature to show our line manager at nearly every meeting. 
 
-- Every scrum would culminate in all members testing out the functions implemented thus far and then suggesting fixes that would be implemented in the next scrum. These **implement > test > fix > implement next** iterations ensured that the team **produced working parts** of the application almost **every week** and it would be **unlikely** that these parts **would need to be changed later** on. This approach also meant that we would have a working feature to show our line manager at almost every meeting.
+- Opting **React JS** enabled the team to create **components** that could be **reused** and take advantage of **vast libraries and frameworks** that React supports like Material UI, React Bootstrap etc. Due to React being a popular choice amongst application developers, **finding** online **tutorials** and **reading material** on it **was not difficult**. 
 
-- Opting **React JS** enabled the team to create **components** that could be **reused** and take advantage of **vast libraries and frameworks** that React supports like Material UI, React Bootstrap etc. Due to React being a popular choice amongst we application developers, **finding** online **tutorials** and **reading material** on it **was not difficult**.
+<span style="color:red"><u>Cons</u></span>
 
-<span style="color:red"><u>Negative Experiences</u></span>
+- Opting **ReactJS** meant that most of the team had to take the **time to learn** its key features. This resulted in some time in our development journey (Scrums 1 & 2 of stage 3) getting dedicated to learning it. Also, lack of sufficient knowledge of how to achieve a particular task had resulted in slower progress than ideal at several points in Stages 2 and 3 corresponding to implementing complex systems like the user interaction system, game mechanics system and chat feature.
 
-- Opting **ReactJS** meant that most of the team had to take the **time to learn** its key features. This resulted in some time in our development journey (Scrums 1 & 2 of stage 2) getting dedicated to learning it. Also, lack of sufficient knowledge of how to achieve a particular task had resulted in slower progress than ideal at several points in Stages 2 and 3.
-- In instances where the team was faced with may deadlines corresponding to other course works / tests and during the time of the F29PD debate, the pressure to produce **daily scrum reports** was **at times overwhelming**.
-- The team was always very active and driven to produce a great product. Every member had **lots of ideas/opinions** to make the application better. Whilst this meant no shortage of options, it also meant that it took **longer to reach a consensus** and would also lead to **disagreements** that had to be resolved from time to time. This scenario was especially prevalent during the **initial stages** of development when the team was just coming together. **By Stage 3**, however, the team was **united** and had understood strengths and the value of each member.
+- The constant pressure to produce **daily scrum reports** was **at times overwhelming**.
+
+- The team was always very active and driven to produce a great product. Every member had **lots of ideas/opinions** to make the application better. Whilst this meant no shortage of options, it also meant that it took **longer to reach a consensus** and would also lead to **disagreements** that had to be resolved from time to time. This scenario was especially prevalent during the **initial stages** of development when the team was just coming together. **By Stage 3**, however, the team was **united** and had understood strengths and the value of each member. 
+
+  **For example...**
+
+  - A debate as to whether to implement adding posts to challenges by allowing addition of previous posts to a challenge via tags as opposed to allowing new posts dedicated to a challenge to be created by a user that arose in stage 3, culminated in a well thought out blend of both ideas where old posts could be added to challenges via a copy of that post participating in the challenge whilst at the same time enabling users to create new posts exclusive to a challenge. 
+  - A more trivial debate that occurred initially during stage 1 regarding how to represent requirements in the report (table/bullet points) lead to the team spending time discussing about a small detail. Few more similar less significant idea clashes occurred during stage 1.
+  - This scenario shows how a debate that occurred in stage 3 led to constructive improvement of functionality compared to petty disagreements from stage 1 showing the evolution of the team from a ragtag ensemble of passionate students to a real team that's goal oriented and focused on the betterment of the product.
+
+- Parts of the specification given were ambiguous and sometimes vague like when it was mentioned in that the system would enable users to provide feedback and leave comments, it is confusing because comments are feedback and no further explanation of what feedback ideally looks like here was mentioned. The team understood that such inexplicit areas of the report to be intentional opportunities to allow development teams to come up with unique spins on the application and chose to do just this.
 
 Overall, it is safe to say that our approach was successful in helping keep the team close knit and productive. When problems arose, the team was able to rise to the challenge and brave though it. The milestones we set for ourselves and achieved via scrums, gave us a sense of accomplishment and was a source of motivation in our development journey.
 
-<span style="color:blue">*MORE ...*</span>
+<span style="color:blue">*NEED SPECIFIC EXAMPES & MORE POINTS ARE WELCOME ...*</span>
 
 ###### 4.2.3. <span style="color:red">Tools Used</span> (Hasan)
 
