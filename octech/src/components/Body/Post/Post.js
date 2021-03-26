@@ -612,7 +612,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   return (
     <div ref={ref} className="post" key={id}>
-      <div>
+
+      {!loading ? <div>
         {(channelBy?.length > 0) ? <div className="post_channel">
           <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
           <hr />
@@ -773,7 +774,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           {/* <br /> */}
           <p>{message}</p>
         </div>
-        {loading && <div style={{ width: "85vw" }}><Skeleton variant="rect" width={"100%"} height={"250px"} animation="wave" /></div>}
         {!loading && slideshow}
         <div >
 
@@ -1090,7 +1090,15 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
         {challengeChip} {/* Display all challenges that this post is participating in. */}
 
-      </div>
+      </div> : <div style={{ width: "85vw" }}>
+        <div style= {{display: "flex", marginBottom: "20px"}}>
+          <Skeleton variant="circle" width={"40px"} height={"40px"} animation="wave" />
+          <Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" style={{marginLeft: "20px"}}/>
+        </div>
+        <center><Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" style={{marginBottom: "20px"}}/></center>
+        <center><Skeleton variant="rect" className="post__imageWrapper" height={"30vh"} animation="wave" style={{ borderRadius: "40px", marginBottom: "20px" }} /></center>
+        <center><Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" /></center>
+      </div>}
     </div>
   );
 });
