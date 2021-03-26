@@ -277,7 +277,7 @@ function Profile({ match }) {
                     <>
                         {profileInfo &&
                             <div>
-                                <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}><Avatar className={classes.large} src={profileInfo.photoUrl}></Avatar><h1 style={{marginLeft: "15px"}}>{profileInfo.name}</h1></div>
+                                <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}><Avatar className={classes.large} src={profileInfo.photoUrl}></Avatar><h2 style={{marginLeft: "15px"}}>{profileInfo.name}</h2></div>
                                 
                                 {(profileInfo.friends && (profileInfo.name !== user.displayName)) &&
                                     <center>
@@ -300,23 +300,7 @@ function Profile({ match }) {
                                         {<Button onClick={block} variant="contained" style={{margin:"10px"}} startIcon={<BlockIcon />}><b>Block</b></Button>}
                                     </center>
                                 }
-                                {/* <List style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    width: "200px",
-                                    marginLeft: "auto",
-                                    marginRight: "auto",
-                                }} >
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            <Avatar className={classes.yellow}>
-                                                <StarIcon />
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText secondary={<center>Profile Points</center>} primary={<center>{profileInfo.profilePoints}</center>} />
-                                    </ListItem>
-                                </List> */}
-                                {/* <Divider variant="middle" /> */}
+
                                 <List style={{
                                     display: 'flex',
                                     flexDirection: 'row',
