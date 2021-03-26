@@ -292,7 +292,7 @@ That said, it was observed that collective efforts undertaken by the team led to
 
 
 
-###### 4.1.2. <span style="color:red">Team Compatibility</span> 
+###### 4.1.2. <span style="color:red">Team Work</span> 
 
 <span style="color:magenta">*Was the group organization successful? How well did your group collaborate?*</span> 
 
@@ -304,7 +304,7 @@ A team member skilled at a particular task would guide others and draft a plan a
 
 In all instances where one member had tried to implement a feature but failed, either another member would go ahead and complete that task or would guide the member in completing his/her task. For example, for stage 2, a member had implemented the functionality of adding overlays to images but was unable to merge it with the main application due to differences in implementation styles of the post and of the overlays feature. Another member who had worked on the post creation functionality, later integrated it into the application in stage 3 thus ensuring that no member's work was lost.
 
-<span style="color:blue">*MORE ...*</span>
+<span style="color:blue">*EDIT IF NEEDED ...*</span>
 
 
 
@@ -312,7 +312,39 @@ In all instances where one member had tried to implement a feature but failed, e
 
 <span style="color:magenta">*How did you handle any problems which arose?*</span>
 
-<span style="color:blue">*MORE ...*</span>
+Following are few problems that the team had faced and methods that were adopted to combat them.
+
+1. **Lack of Communication**
+
+   <span style="color:red"><u>Problem</u></span>
+
+   Weekly meetings alone was insufficient at ensuring that all team members were up to date on all developments made. This meant that member's were a bit lost on what to do and by when to submit their parts. 
+
+   <span style="color:green"><u>Solution</u></span>
+
+   This problem was anticipated early on and hence it was decided that a WhatsApp group be made where members could regularly discuss all what they have done and share ideas in addition to Microsoft Team's Meetings. The scrum master would allocate tasks as well as a date before which each task had to be completed per sprint. But it was after this that a scenario where 2 members ended up implementing the same feature, the chat system, occurred. This happened because of a misunderstanding that stemmed from the fact that both members were not aware of the the other was implementing so one member decided to implement another feature after being done with his/her own. This was an issue because it meant that one member's work would be lost and because one of the members could have better spent his/her time implementing another feature that no one was working on. This issue was discussed to avoid further such misunderstandings, all members were then on strictly required to log their daily scrum reports, inform all other members if they planned on taking up a new task or request the scrum master for a new task and regularly update all members about what he/she was working on or planned to work on.
+
+2. **Unable to Find Files**
+
+   <span style="color:red"><u>Problem</u></span>
+
+   All stages of development involved production of various files (documents, images, excel sheets etc.). These files were shared via the WhatsApp discussion group and thus would get lost amongst conversation. This meant that files shared in the past would be very difficult to revisit.
+
+   <span style="color:green"><u>Solution</u></span>
+
+   This problem was addressed though the creation of another WhatsApp group for the sole purpose of sharing files only. Also, for parts of development that required a lot of common files like the report, it was decided that these files may also be stored on GitHub repositories where members can easily access and update them.
+
+3. **Too much of a good thing, a bad thing?**
+
+   <span style="color:red"><u>Problem</u></span>
+
+   Because every decision was discussed and because every member always had inputs and wanted the best, there were often a lot of different approaches to solving a particular problem and clash of ideas/opinions was frequent. There was a tendency to overthink and get stuck thinking about details which would lead to decision paralysis and one idea could not be chosen over another as both would be possible ways to implement a feature.
+
+   <span style="color:green"><u>Solution</u></span>
+
+   Such problems became less prevalent as the team continued to work together. Soon there was more trust amongst members and one member simply trusted the other to implement the best possible solution to a problem. An understanding was reached where in it was decided that every member would try and implement their appointed feature within the sprint upholding minimum standards. If the member managed to finish the feature before the sprint ended then he/she would spend time improving it. Else, that member was to move on to the next task until there came an opportunity when this feature could be improved either by the same person who first implemented it or by someone else. Decision dilemmas would also be solved via voting or asking for the line manager's view.
+
+<span style="color:blue">*EDIT IF NEEDED ...*</span>
 
 
 
