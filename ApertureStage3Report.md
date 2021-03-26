@@ -292,9 +292,17 @@ That said, it was observed that collective efforts undertaken by the team led to
 
 
 
-###### 4.1.2. <span style="color:red">Success Story</span> 
+###### 4.1.2. <span style="color:red">Team Compatibility</span> 
 
 <span style="color:magenta">*Was the group organization successful? How well did your group collaborate?*</span> 
+
+Throughout development, all members were willing to collaborate and have always tried to produce good work. Even though members were allocated primary responsibilities (see section 4.1.1), the group shared responsibility fairly equally. Challenging situations like when the leader was re-appointed and when the leader got sick was thus, less damaging and the team was still able to produce good work during these situations. 
+
+Having members who had fine tuned programming skills as well as those who were proficient at organizing work, producing documentation, creating diagrams, critical analysis, coming up with designs and presenting content meant that the team was well balanced. This mix of skills allowed for members to compliment each other well.
+
+A team member skilled at a particular task would guide others and draft a plan as to how to approach that task and all members would collaborate and contribute their portions to aid in completion of that task. A notable example of this system in action is the report generation process. One member who was skilled at organizing content, visualizing data and presenting information would be appointed to draft and oversee the report. This member would begin work on the report early on, decide what to put in it and appoint other members to contribute some parts of the report. Every member would submit their parts to the  report in-charge and this person would go on and compile the report, ensure uniformity and get it ready to submit.
+
+In all instances where one member had tried to implement a feature but failed, either another member would go ahead and complete that task or would guide the member in completing his/her task. For example, for stage 2, a member had implemented the functionality of adding overlays to images but was unable to merge it with the main application due to differences in implementation styles of the post and of the overlays feature. Another member who had worked on the post creation functionality, later integrated it into the application in stage 3 thus ensuring that no member's work was lost.
 
 <span style="color:blue">*MORE ...*</span>
 
