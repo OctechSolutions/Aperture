@@ -583,7 +583,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         if (user.id !== doc.data().name) return alert("you can't change this user's tag");
         if (e.key === "Enter" && e.target.value !== "") {
           if (e.target.value.length > 0) {
-            const newTags = tags == undefined || tags == [] || tags.length < 0 ? [] : [...tags];
+            const newTags = tags === undefined || tags === [] || tags.length < 0 ? [] : [...tags];
             newTags.push(e.target.value.toLowerCase());
             setTags(newTags);
 
