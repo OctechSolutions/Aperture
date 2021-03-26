@@ -134,3 +134,9 @@
 html,body {
   background-color: whitesmoke;
 }
+
+.swiper-pagination {
+  /* text-align: right !important; */
+  /* top: 0 !important; */
+  /* left: -40px !important */
+}

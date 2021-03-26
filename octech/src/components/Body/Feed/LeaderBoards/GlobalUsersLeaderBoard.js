@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import {db} from '../../../../firebase';
 import LeaderBoardComponent from './LeaderBoardComponent';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../../../features/userSlice';
 
 
 function GlobalUsersLeaderBoard({ match, setValue }) {
 
   const [leaderboardData, setLeaderBoardData] = useState([]);
   const [dataFetched, setDataFetched] = useState(false);
+  const user = useSelector(selectUser);
 
     if (dataFetched===false) {
 
       db.collection('users')
         .orderBy('profilePoints', 'desc')
-        .limit(100)
         .onSnapshot(data => {
           setDataFetched(true);
           let counter = 0;
@@ -28,12 +30,13 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
               }
             return user.data();
           }));
+          
         })
     }
 
   return (
 
-    <LeaderBoardComponent title="Global Users LeaderBoard" headers={['Name','Profile Points']} columns={['name', 'profilePoints']} data={leaderboardData} />
+    <LeaderBoardComponent title="Global Users LeaderBoard" headers={['Name','Profile Points']} columns={['name', 'profilePoints']} limit={8} data={leaderboardData} highlightColumn={'email'} highlightColumnData={user.email} />
     
   )
 }
