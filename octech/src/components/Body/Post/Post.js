@@ -1095,9 +1095,9 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           <Skeleton variant="circle" width={"40px"} height={"40px"} animation="wave" />
           <Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" style={{marginLeft: "20px"}}/>
         </div>
-        <center><Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" style={{marginBottom: "20px"}}/></center>
+        <center><Skeleton variant="text" className="post__imageWrapper" height={"40px"} animation="wave" style={{marginBottom: "20px"}}/></center>
         <center><Skeleton variant="rect" className="post__imageWrapper" height={"30vh"} animation="wave" style={{ borderRadius: "40px", marginBottom: "20px" }} /></center>
-        <center><Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" /></center>
+        <center><Skeleton variant="text" className="post__imageWrapper" height={"40px"} animation="wave" /></center>
       </div>}
     </div>
   );
