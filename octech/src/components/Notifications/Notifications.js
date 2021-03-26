@@ -268,7 +268,7 @@ export default function Notifications({ match, notifications }) {
                 />
             </Card>
         }
-        else if (notificationInfo.type === "rating") {
+        else if (notificationInfo.type === "rating" || notificationInfo.type === "challengeRating") {
             var stars = "";
             for (var i = 0; i < notificationInfo.stars; i++) {
 
@@ -291,7 +291,7 @@ export default function Notifications({ match, notifications }) {
                         </>
                     }
                     title={<div onClick={() => {
-                        history.push(`/post/${notificationInfo.postId}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
+                        history.push(notificationInfo.type === "challengeRating"?`/challenges/${user.displayName}`:`/post/${notificationInfo.postId}`); db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
                             notifications: notifications.filter(a => a !== notificationInfo)
                         }, { merge: true })
                     }}><><b>{notificationInfo.sender}</b> gave <b style={{ color: "gold" }}>{stars}</b> to your post titled <b>{notificationInfo.postTitle}</b>!</></div>}
