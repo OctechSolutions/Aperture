@@ -153,12 +153,6 @@ function Header({ setValue, hasNotifications }) {
           </ListItemIcon>
             Sign Out
         </MenuItem>
-        <MenuItem onClick={e => {history.push("/editprofile");handleClose()}}>
-          <ListItemIcon>
-            <EditIcon/>
-          </ListItemIcon>
-            Edit Profile
-        </MenuItem>
       </Menu>
       <Modal
           show={showEditProfile}

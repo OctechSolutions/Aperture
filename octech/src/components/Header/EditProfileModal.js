@@ -11,6 +11,10 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
 import "./EditProfileModal.css"
 import Box from '@material-ui/core/Box';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Modal from 'react-bootstrap/Modal';
+import { db } from "../../firebase";
+import firebase from "firebase"
 
 const EditProfileModal = ({setShowEditProfile}) =>{
     const user = useSelector(selectUser);
@@ -37,9 +41,95 @@ const EditProfileModal = ({setShowEditProfile}) =>{
     const [retypePasswordDoesNotMatch,setRetypePasswordDoesNotMatch] = useState("");
     const [showRetypePassword,setShowRetypePassword] = useState(false);
 
+    const [showConfirmDeleteAccount,setShowConfirmDeleteAccount] = useState(false)
+
     const submitHandler = ()=>{
-        
+                
     }
+    const deleteAccount = () =>{
+        setShowConfirmDeleteAccount(false)
+        //Delete User details
+        db.collection("users").doc(user.displayName).collection("notifications").get().then(docs =>{
+            docs.forEach(doc => {
+                db.collection("users").doc(user.displayName).collection("notifications").doc(doc.id).delete()
+            });
+        })
+        db.collection("users").doc(user.displayName).delete()
+
+        // Delete posts and post images
+        db.collection("posts").where("name","==",user.displayName).get().then(docs =>{
+            docs.forEach(doc =>{
+                db.collection("postImages").where("ref","==",doc.id).get().then(docs =>{
+                    docs.forEach(dpc => {
+                        db.collection("postImages").doc(dpc.id).delete()
+                    })
+                })
+                db.collection("posts").doc(doc.id).delete()
+            })
+        })
+
+        //Delete portfolio
+        db.collection("portfolios").doc(user.displayName).delete()
+
+        //Delete forum posts
+        db.collection("forumPosts").where("name","==",user.displayName).get().then(docs =>{
+            docs.forEach(doc =>{
+                db.collection("postImages").where("ref","==",doc.id).get().then(docs =>{
+                    docs.forEach(dpc => {
+                        db.collection("postImages").doc(dpc.id).delete()
+                    })
+                })
+                db.collection("posts").doc(doc.id).delete()
+            })
+        })
+
+        //Delete Collection
+        db.collection("collections").doc(user.displayName).delete()
+
+        //Delete Channaels
+        db.collection("channels").where("creator","==",user.displayName).get().then(docs =>{
+            docs.forEach(doc =>{
+                db.collection("posts").doc(doc.id).delete()
+            })
+        })
+
+        //Delete Challenge and its posts
+        db.collection("challengePosts").where("creator","==",user.displayName).get().then(docs =>{
+            docs.forEach(doc =>{
+                db.collection("challengePosts").doc(doc.id).delete()
+                db.collection("posts").doc(doc.id).update({
+                    challenge: firebase.firestore.FieldValue.delete()
+                })
+            })
+        })
+
+        //Delete Bug report
+        db.collection("BugReports").where("name","==",user.displayName).get().then(docs =>{
+            docs.forEach(doc =>{
+                db.collection("BugReports").doc(doc.id).delete()
+            })
+        })
+
+        //Delete from Chat rooms
+        db.collection("chatRooms").where("participantNames","array-contains",user.displayName).get().then(docs =>{
+            docs.forEach(doc =>{
+                const docRef = db.collection("chatRooms").doc(doc.id)
+                let data = doc.data()
+                let participantNames = data.participantNames.filter(n => name !=data.name)
+                let participants = data.participants.filter(u => u.name != data.name)
+                const collectionRef = docRef.collection("messages")
+                docRef.update({participantNames: participantNames,participants : participants})
+        })})  
+        
+        //Delete from friends and friends requested and blocked and all
+        db.collection("users").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                const blocked = data.blocked.filter
+            })
+        })
+    }
+
     return(
     <div>
         <TextField id="userNameField" className="field" variant="outlined" label="Username"  placeholder="Enter New Username" helperText={!name ? "Username cannot be empty" : nameNotUnique ? "Username should be unique" : ""} error ={!name | nameNotUnique} value ={name} onChange={(event)=>{setName(event.target.value)}} fullWidth InputLabelProps={{ shrink: true,}}
@@ -143,7 +233,47 @@ const EditProfileModal = ({setShowEditProfile}) =>{
             <>
             </>
         }
+        <Modal
+          show={showConfirmDeleteAccount}
+          onHide={() => { setShowConfirmDeleteAccount(false) }}
+          keyboard={false}
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+        <Modal.Body>
+            <Box component="span" m={1} className="buttonContainer2">
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    className="buttons"
+                    startIcon={<ClearIcon />}
+                    onClick={()=>{setShowConfirmDeleteAccount(false)}}
+                >
+                    Cancel
+                </Button>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    className="buttons"
+                    startIcon={<DeleteIcon />}
+                    onClick={deleteAccount}
+                >
+                    Yes Delete My Account
+                </Button>
+                </Box>
+        </Modal.Body>
+        </Modal>
         <Box component="span" m={1} className="buttonContainer">
+            <Button
+                variant="contained"
+                color="secondary"
+                className="buttons"
+                startIcon={<DeleteIcon />}
+                onClick={()=>{setShowEditProfile(false);setShowConfirmDeleteAccount(true)}}
+            >
+                Delete Account
+            </Button>
             <Button
                 variant="contained"
                 color="secondary"
