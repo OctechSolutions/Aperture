@@ -7,7 +7,7 @@ import { selectUser } from "../../features/userSlice";
 import Channels from "../Channels/Channels";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from 'react-bootstrap/Tab';
-import Button from 'react-bootstrap/Button';
+import Button from '@material-ui/core/Button';
 import firebase from "firebase";
 import Portfolio from "../Body/Portfolio/Portfolio"
 import { useHistory } from "react-router-dom";
@@ -18,7 +18,45 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import ImageIcon from '@material-ui/icons/Image';
 import Collection from '../Collection/Collection';
-
+import { makeStyles } from '@material-ui/core/styles';
+import Divider from '@material-ui/core/Divider';
+import GroupIcon from '@material-ui/icons/Group';
+import List from '@material-ui/core/List';
+import { blue, green, red, yellow } from '@material-ui/core/colors';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
+import BarChartIcon from '@material-ui/icons/BarChart';
+import StarIcon from '@material-ui/icons/Star';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import BlockIcon from '@material-ui/icons/Block';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
+const useStyles = makeStyles((theme) => ({
+    large: {
+        width: theme.spacing(15),
+        height: theme.spacing(15),
+    },
+    medium: {
+        width: theme.spacing(5),
+        height: theme.spacing(5),
+    },
+    green: {
+        color: '#fff',
+        backgroundColor: green[500],
+    },
+    red: {
+        color: '#fff',
+        backgroundColor: red[500],
+    },
+    blue: {
+        color: '#fff',
+        backgroundColor: blue[500],
+    },
+    yellow: {
+        color: '#fff',
+        backgroundColor: yellow[700],
+    },
+}));
 
 function Profile({ match }) {
     const history = useHistory();
@@ -96,11 +134,11 @@ function Profile({ match }) {
                 sender: user.displayName,
                 icon: user.photoUrl
             })
-        }, {merge: true})
+        }, { merge: true })
         db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).get().then((doc) => {
             db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
                 notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequestSent"))
-            }, {merge: true})   
+            }, { merge: true })
         });
     }
     const cancelfriendRequest = (e) => {
@@ -112,8 +150,8 @@ function Profile({ match }) {
         });
         db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).get().then((doc) => {
             db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).set({
-                notifications: doc.data().notifications.filter(a => (a.sender === user.displayName) && (a.type === "friendRequestSent")?false:true)
-            }, {merge: true})   
+                notifications: doc.data().notifications.filter(a => (a.sender === user.displayName) && (a.type === "friendRequestSent") ? false : true)
+            }, { merge: true })
         });
     }
     const rejectfriendRequest = (e) => {
@@ -134,7 +172,7 @@ function Profile({ match }) {
         db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).get().then((doc) => {
             db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
                 notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequestSent"))
-            }, {merge: true})   
+            }, { merge: true })
         });
     }
     const sendfriendRequest = (e) => {
@@ -151,7 +189,7 @@ function Profile({ match }) {
                 sender: user.displayName,
                 icon: user.photoUrl
             })
-        }, {merge: true})
+        }, { merge: true })
     }
 
     const unfriend = (e) => {
@@ -168,7 +206,7 @@ function Profile({ match }) {
                 sender: user.displayName,
                 icon: user.photoUrl
             })
-        }, {merge: true})
+        }, { merge: true })
     }
     const unBlock = (e) => {
         db.collection("users").doc(profileInfo.name).update({
@@ -194,9 +232,9 @@ function Profile({ match }) {
         db.collection("users").doc(profileInfo.name).collection("notifications").doc(profileInfo.name).get().then((doc) => {
             db.collection("users").doc(profileInfo.name).set({
                 notifications: doc.data().notifications.filter(a => (a.sender !== user.displayName) && (a.type !== "friendRequest"))
-            }, {merge: true})   
+            }, { merge: true })
         });
-        
+
     }
 
     const setUserList = (l) =>
@@ -227,6 +265,8 @@ function Profile({ match }) {
             <ListItemText primary={item.name} secondary={item.creator} />
         </ListItem>
     ))
+    const classes = useStyles();
+
 
     return (
         <div className="profile" style={{ color: "black", width: "100%", backgroundColor: "whitesmoke" }}>
@@ -236,8 +276,99 @@ function Profile({ match }) {
                     :
                     <>
                         {profileInfo &&
-                            <center>
-                                <h1>{profileInfo.name}</h1> <p onClick={() => setShowFriendList(true)}>Friends: {profileInfo.friends && profileInfo.friends.length}</p> <p onClick={() => setShowFollowingList(true)}>Channels Following: {profileInfo.followingChannels && profileInfo.followingChannels.length}</p>
+                            <div>
+                                <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}><Avatar className={classes.large} src={profileInfo.photoUrl}></Avatar><h1 style={{marginLeft: "15px"}}>{profileInfo.name}</h1></div>
+                                
+                                {(profileInfo.friends && (profileInfo.name !== user.displayName)) &&
+                                    <center>
+                                        {(profileInfo.friends.some(u => u.name === user.displayName)) ?
+                                            <Button onClick={unfriend} variant="contained"
+                                                color="primary" style={{margin:"10px"}} startIcon={<PersonAddDisabledIcon />}>Remove friend</Button>
+                                            : ((profileInfo.friendRequestReceived.includes(user.displayName)) ?
+                                                (<Button onClick={cancelfriendRequest} startIcon={<CancelOutlinedIcon />} variant="contained"
+                                                    color="primary" style={{margin:"10px"}}>Cancel Request</Button>)
+                                                : ((profileInfo.friendRequestSent.includes(user.displayName)) ?
+                                                    (<div>
+                                                        <Button onClick={acceptfriendRequest} variant="contained"
+                                                            color="primary" style={{margin:"10px"}} startIcon={<CheckCircleOutlineIcon />}>Accept Request</Button>
+                                                        <Button onClick={rejectfriendRequest} variant="contained"
+                                                            color="primary" style={{margin:"10px"}} startIcon={<CancelOutlinedIcon />}>Reject Request</Button>
+                                                    </div>)
+                                                    : (<Button onClick={sendfriendRequest} variant="contained"
+                                                        color="primary" style={{margin:"10px"}} startIcon={<PersonAddIcon />}><b>Send friend Request</b></Button>)
+                                                ))}
+                                        {<Button onClick={block} variant="contained" style={{margin:"10px"}} startIcon={<BlockIcon />}><b>Block</b></Button>}
+                                    </center>
+                                }
+                                {/* <List style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    width: "200px",
+                                    marginLeft: "auto",
+                                    marginRight: "auto",
+                                }} >
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar className={classes.yellow}>
+                                                <StarIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText secondary={<center>Profile Points</center>} primary={<center>{profileInfo.profilePoints}</center>} />
+                                    </ListItem>
+                                </List> */}
+                                {/* <Divider variant="middle" /> */}
+                                <List style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    maxWidth: "500px",
+                                    marginLeft: "auto",
+                                    marginRight: "auto",
+                                }} >
+                                    <ListItem button={true} onClick={() => setShowFriendList(true)}>
+                                        <ListItemAvatar>
+                                            <Avatar className={classes.green}>
+                                                <GroupIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText secondary={<center>Friends</center>} primary={<center>{profileInfo.friends && profileInfo.friends.length}</center>} />
+                                    </ListItem>
+                                    <Divider orientation="vertical" flexItem />
+                                    <ListItem button={true} onClick={() => setShowFollowingList(true)}>
+                                        <ListItemAvatar>
+                                            <Avatar className={classes.blue}>
+                                                <PhotoLibraryIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText secondary={<center>Channels Following</center>} primary={<center>{profileInfo.followingChannels && profileInfo.followingChannels.length}</center>} />
+                                    </ListItem>
+                                </List>
+                                <Divider variant="middle"/>
+                                {profileInfo.league && <List style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    maxWidth: "500px",
+                                    marginLeft: "auto",
+                                    marginRight: "auto",
+                                }} >
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar className={classes.red}>
+                                                <BarChartIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText secondary={<center>League</center>} primary={<center>{profileInfo.league}</center>} />
+                                    </ListItem>
+                                    <Divider orientation="vertical" flexItem />
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar className={classes.yellow}>
+                                                <StarIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText secondary={<center>Profile Points</center>} primary={<center>{profileInfo.profilePoints}</center>} />
+                                    </ListItem>
+                                </List>}
+                                {/* <p onClick={() => setShowFriendList(true)}>Friends: {profileInfo.friends && profileInfo.friends.length}</p> <p onClick={() => setShowFollowingList(true)}>Channels Following: {profileInfo.followingChannels && profileInfo.followingChannels.length}</p> */}
                                 {(profileInfo.friends && ((profileInfo.friends.some(u => u.name === user.displayName)) || (profileInfo.name === user.displayName))) &&
                                     <>
                                         <Modal
@@ -266,27 +397,10 @@ function Profile({ match }) {
                                         </Modal>
                                     </>
                                 }
-                                {(profileInfo.friends && (profileInfo.name !== user.displayName)) ?
-                                    <>
-                                        {(profileInfo.friends.some(u => u.name === user.displayName)) ?
-                                            <Button onClick={unfriend} variant="success">Remove friend : {profileInfo.name}</Button>
-                                            : ((profileInfo.friendRequestReceived.includes(user.displayName)) ?
-                                                (<Button onClick={cancelfriendRequest} variant="outline-primary">Cancel friend Request : {profileInfo.name}</Button>)
-                                                : ((profileInfo.friendRequestSent.includes(user.displayName)) ?
-                                                    (<div>
-                                                        <Button onClick={acceptfriendRequest} variant="outline-primary">Accept friend Request : {profileInfo.name}</Button>
-                                                        <Button onClick={rejectfriendRequest} variant="outline-primary">Reject friend Request : {profileInfo.name}</Button>
-                                                    </div>)
-                                                    : (<Button onClick={sendfriendRequest} variant="outline-primary">Send friend Request : {profileInfo.name}</Button>)
-                                                ))}
-                                        {<Button onClick={block} variant="success">Block : {profileInfo.name}</Button>}
-                                    </>
-                                    :
-                                    <>
-                                    </>}
-                                <h1>Profile Points : {profileInfo.profilePoints}</h1>
-                                {(profileInfo.league ? <h1>League : {profileInfo.league}</h1> :<> </>)}
-                            </center>}
+
+                                {/* <h1>Profile Points : {profileInfo.profilePoints}</h1>
+                                {(profileInfo.league ? <h1>League : {profileInfo.league}</h1> : <> </>)} */}
+                            </div>}
                         <Tabs
                             id="controlled-tab-example"
                             activeKey={key}
