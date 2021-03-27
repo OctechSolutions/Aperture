@@ -10,11 +10,11 @@ import Chip from '@material-ui/core/Chip'
 import Avatar from '@material-ui/core/Avatar'
 import 'react-medium-image-zoom/dist/styles.css'
 
-// Import Swiper styles
+// Import Swiper styles 
 import 'swiper/swiper-bundle.css';
 
 SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
-function ImageGallery({ sliderImages, isMapPreview }) {
+function ImageGallery({ sliderImages }) {
 
     const [singleImage, ] = useState(sliderImages !== null ? Boolean(sliderImages.length - 1) : true)
     const [index, setIndex] = useState(0)

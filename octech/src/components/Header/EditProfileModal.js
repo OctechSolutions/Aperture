@@ -166,7 +166,7 @@ const EditProfileModal = ({setShowEditProfile}) =>{
                 })
             })
             //Delete forum posts
-            await db.collection("forumPosts").where("channelBy","==",user.displayName).get().then(docs =>{
+            await db.collection("forumPosts").where("name","==",user.displayName).get().then(docs =>{
                 docs.forEach(doc =>{
                     db.collection("postImages").where("ref","==",doc.id).get().then(docs =>{
                         docs.forEach(dpc => {
@@ -478,7 +478,7 @@ const EditProfileModal = ({setShowEditProfile}) =>{
     }
 
     return(
-    <div>
+    <div style={{margin: "10px"}}>
         <TextField id="userNameField" className="field" variant="outlined" label="Username"  placeholder="Enter New Username" helperText={!name ? "Username cannot be empty" : nameNotUnique ? "Username should be unique" : ""} error ={!name | nameNotUnique} value ={name} onChange={(event)=>{setName(event.target.value); if(nameNotUnique) setNameNotUnique(false)}} fullWidth InputLabelProps={{ shrink: true,}}
         InputProps={{
             readOnly: !editName,
@@ -634,7 +634,7 @@ const EditProfileModal = ({setShowEditProfile}) =>{
                 startIcon={<DeleteIcon />}
                 onClick={()=>{setShowConfirmDeleteAccount(true)}}
             >
-                Delete Account
+                <b>Delete Account</b>
             </Button>
             <Button
                 variant="contained"
@@ -643,7 +643,7 @@ const EditProfileModal = ({setShowEditProfile}) =>{
                 startIcon={<ClearIcon />}
                 onClick={()=>{setShowEditProfile(false)}}
             >
-                Cancel
+                <b>Cancel</b>
             </Button>
             {(editName | editPassword | editEmail) ? 
                 <>
@@ -654,7 +654,7 @@ const EditProfileModal = ({setShowEditProfile}) =>{
                         endIcon={<EditIcon />}
                         onClick={submitHandler}
                     >
-                        Submit
+                        <b>Submit</b>
                     </Button>
                 </>
                 :

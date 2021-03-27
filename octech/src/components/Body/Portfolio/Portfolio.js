@@ -11,13 +11,15 @@ import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { db } from '../../../firebase';
 import firebase from "firebase";
+import Typography from '@material-ui/core/Typography';
+import ImageGallery from '../Feed/ImageGallery';
 
 
 const Compress = require('compress.js');
 const useStyles = makeStyles((theme) => ({
     large: {
-        width: theme.spacing(15),
-        height: theme.spacing(15),
+        width: theme.spacing(18),
+        height: theme.spacing(18),
     },
     medium: {
         width: theme.spacing(5),
@@ -50,7 +52,7 @@ function Portfolio({ match, user }) {
                 const tempImages = [];
                 doc.data().imageRef.forEach((id) => {
                     db.collection("postImages").doc(id).get().then((doc) => {
-                        if(doc.exists)
+                        if (doc.exists)
                             tempImages.push(doc.data().url);
                     });
                 })
@@ -128,8 +130,18 @@ function Portfolio({ match, user }) {
         db.collection("portfolios").doc(user.displayName).delete();
     }
 
+    const getImg = (test) => {
+        const tempImages = []
+        test.forEach((a) => {
+            tempImages.push({ src: a })
+        })
+        return tempImages;
+    }
+
+    const [slider, setSlider] = useState(false)
+
     return (
-        <>
+        <div style={{marginBottom: "100px"}}>
             {
                 (match.params.id === user.displayName) && (!portfolioExists) &&
                 <center style={{ margin: "18vh 0", padding: "20px" }}>
@@ -266,61 +278,47 @@ function Portfolio({ match, user }) {
 
             {portfolioExists &&
                 <>
-                
-                    <p><Avatar src={portfolio.headshot} /> Name - {portfolio.firstName + " " + portfolio.lastname}</p>
-                    <p>About me - {portfolio.description}</p>
-                    <p>{portfolio.quote} - {match.params.id}</p>
-                    
+                    <br />
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "10px" }}><Avatar className={classes.large} src={portfolio.headshot}></Avatar><h2 style={{ marginLeft: "15px" }}>{portfolio.firstName + " " + portfolio.lastName}<Typography variant="caption" display="block">{portfolio.description}</Typography></h2></div>
+                    <br />
+                    <Divider variant="middle" />
+                    <br />
+                    <div style={{ width: "80%", margin: "0 auto", backgroundColor: "#e6e6e6", padding: "15px", borderRadius: "40px" }}>
+                        <br />
+                        <Typography variant="h5" align='justify'>{portfolio.quote} </Typography><Typography variant="caption" display="block" style={{ float: "right" }}>- {match.params.id}</Typography>
+                        <br />
+                    </div>
+                    <br />
+                    <Divider variant="middle" />
+                    <br />
                 </>
             }
             {
                 portfolioExists && portfolio.images &&
-
-                <div style={{ width: "80vw", margin: "0 auto" }}>
-
-                    <div>
-                        <Carousel
-                            interval={null}
-                            controls={((portfolio.images.length + images.length) > 1) ? true : false}
-                        >
-                            {portfolio.images.map((a) =>
-
-                                <Carousel.Item className="post__image">
-                                    <img
-                                        src={a}
-                                        alt="Carousel"
-                                    />
-                                </Carousel.Item>
-                            )}
-
-                            {images.map((a) =>
-
-                                <Carousel.Item className="post__image">
-                                    <img
-                                        src={a}
-                                        alt="Carousel"
-                                    />
-                                </Carousel.Item>
-                            )}
-
-                        </Carousel>
-                    </div>
+                <div style={{ margin: "15px" }}>
+                    {!slider ? 
+                    <center>
+                        <Button variant="contained"
+                        color="primary"
+                        onClick={() => {setSlider(true)}}><b>See my best work!</b></Button>
+                    </center>
+                        :
+                        <ImageGallery sliderImages={getImg(portfolio.images)} />
+                    }
                 </div>
             }
             {(match.params.id === user.displayName) && (portfolioExists) &&
-                <>
+                <center>
                     <Button
-                        fullWidth
                         variant="contained"
                         color="secondary"
                         onClick={deletePortfolio}
-                        style={{ marginTop: "10px" }}
                     >
                         <b>Delete Portfolio</b>
                     </Button>
-                </>
+                </center>
             }
-        </>
+        </div>
     )
 }
 
