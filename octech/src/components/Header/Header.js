@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Header.css';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -20,12 +20,15 @@ import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import Modal from 'react-bootstrap/Modal';
+import EditProfileModal from "./EditProfileModal"
 import EditIcon from "@material-ui/icons/Edit";
 import BugReportIcon from '@material-ui/icons/BugReport';
 
 function Header({ setValue, hasNotifications }) {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [showEditProfile,setShowEditProfile] = useState(false);
 
   const logoutOfApp = async () => {
     dispatch(logout());
@@ -151,19 +154,18 @@ function Header({ setValue, hasNotifications }) {
           </ListItemIcon>
             Profile
         </MenuItem>
+        <MenuItem onClick={()=>{setShowEditProfile(true);handleClose()}}>
+          <ListItemIcon>
+            <EditIcon/>
+          </ListItemIcon>
+            Edit Profile
+        </MenuItem>
         <MenuItem onClick={logoutOfApp}>
           <ListItemIcon>
             <ExitToAppIcon />
           </ListItemIcon>
             Sign Out
         </MenuItem>
-        <MenuItem onClick={e => {history.push("/editprofile");handleClose()}}>
-          <ListItemIcon>
-            <EditIcon/>
-          </ListItemIcon>
-            Edit Profile
-        </MenuItem>
-
         <MenuItem onClick={e => {history.push("/bugReportForm");handleClose()}}>
           <ListItemIcon>
             <BugReportIcon/>
@@ -171,6 +173,18 @@ function Header({ setValue, hasNotifications }) {
             Report a Bug
         </MenuItem>
       </Menu>
+      <Modal
+          show={showEditProfile}
+          onHide={() => { setShowEditProfile(false) }}
+          keyboard={false}
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+      >
+        <Modal.Body>
+            <EditProfileModal setShowEditProfile ={setShowEditProfile} editEmail={false} />
+        </Modal.Body>
+      </Modal>
     </div>
   )
 }

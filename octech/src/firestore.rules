@@ -1,76 +1,107 @@
-// rules_version = '2';
+rules_version = '2';
 
-// service cloud.firestore {
-
-//   match /databases/{database}/documents {
-
-//     // Allow public read access, but only content owners can write
-
-//     match /posts/{document} {
-
-//       allow read: if true
-//       allow create: if request.auth.uid == request.resource.data.author_uid;
-//       allow update, delete: if request.auth.uid == resource.data.author_uid;
-
-//     }
+service cloud.firestore {
     
-//     match /postImages/{document} {
+  match /databases/{database}/documents {
 
-//       allow read: if true
-//       allow create: if request.auth.uid == request.resource.data.author_uid;
-//       allow update, delete: if request.auth.uid == resource.data.author_uid;
+      //users can only read and write their own data
 
-//     }
+       match /users/{document=**} {
 
-//     match /collections/{document} {
+         allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+         allow create: if request.auth != null;
 
-//       allow read: if true
-//       allow create: if request.auth.uid == request.resource.data.author_uid;
-//       allow update, delete: if request.auth.uid == resource.data.author_uid;
+    }
 
-//     }
+    //users can read/write their own bug reports
 
-//     match /channels/{document} {
+       match /bugReports/{document=**} {
 
-//       allow read: if true
-//       allow create: if request.auth.uid == request.resource.data.author_uid;
-//       allow update, delete: if request.auth.uid == resource.data.author_uid;
+         allow read, update, delete, create: if request.auth != null
 
-//     }
+    }
 
+    //All users can read channels, Channel owners have all access to read/write
 
+       match /channels/{document=**} {
 
-//     // Allow only authenticated content owners access
+         allow read: if request.auth != null
+         allow write, update, delete: if request.auth != null && request.auth.name == creator;
 
-//     match /some_collection/{userId}/{documents=**} {
+    }
 
-//       allow read, write: if request.auth != null && request.auth.uid == userId
+    //Read Access to chat participants, Write access to chat message owner
+
+       match /chatRooms/{document=**} {
+         
+         allow read: if request.auth != null && request.auth.token.name == participantNames;
     
-//     }
+         match /messages/{document=**} {
 
+             allow write, update, delete: if request.auth != null && request.auth.token.name == name;
 
-//     //Checking if a Document Being Created Belongs to the Requesting User 
+        }
+    }
 
-//     match /petowners/{ownerId} {
+    //All users can read collections, owners have read/write access
 
-//       request.auth.uid == request.resource.data.userId;
+       match /collections/{document=**} {
 
-//     }
-//     // match /{document=**} {
-//     //   allow read, write: if request.auth != null;
+         allow read: if request.auth != null
+         allow write, update, delete: if request.auth != null && request.auth.name == creator;
 
+    }
 
-//           match /posts/stars {
-//         allow read, write: if request.resource.auth &&
-//           request.resource.auth.token.role == 'User'
-//       }
+    //All users can check out the leaderboards only, No write access.
 
-//       allow delete: if isOneOfRoles(resource, ['owner', 'admin']);
-//         allow update: if isOneOfRoles(resource, ['owner', 'admin'])
-//                       || (isOneOfRoles(resource, ['writer', 'admin']) && onlyContentChanged());
-//         allow read: if isOneOfRoles(resource, ['owner', 'writer', 'commenter', 'reader', 'admin']);
+       match /globalLeaderBoards/{document=**} {
 
+         allow read: if request.auth != null
+         allow write: if false
 
-//     }
-//   }
-// }
+    }
+
+    //No access to any user. Backend function
+
+       match /Seasons/{document=**} {
+
+           allow read, write: if false;
+
+    }
+
+    //Group chat partcipants have read access to all messages but the owner of each message has edit/write access.
+
+       match /groupChats/{document=**} {
+           
+           allow read: if request.auth != null && request.auth.uid == userId;
+         
+         match /messages/{document=**} {
+
+             allow write, update, delete: if request.auth != null && request.auth.token.name == user;
+
+        }
+
+    }
+
+    //Access to only the owner of the portfolio
+
+       match /portfolios/{document=**} {
+
+         allow read, write, update, delete: if request.auth != null && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.name == 
+         get(/databases/$(database)/documents/portfolios/$(request.auth.uid)).data.firstName &&
+         get(/databases/$(database)/documents/portfolios/$(request.auth.uid)).data.lastName    
+
+    }
+
+    //All users can read a users profile but only the profile owner can edit
+    
+       match /users/{document=**} {
+
+         allow read: request.auth != null;
+         allow write, update, delete: if request.auth != null && request.auth.uid == userId;
+    
+    }
+
+  } 
+}

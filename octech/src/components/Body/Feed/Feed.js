@@ -218,7 +218,7 @@ function Feed({ match }, props) {
   useEffect(() => {
     db.collection("users").doc(user.displayName).get().then(doc => {
       console.log(doc.data())
-      if (doc.data().notifyLeague) {
+      if (doc.data() && doc.data().notifyLeague) {
         //Sending Notification About league change
         if (doc.data().leagueStatus === "p") {
           db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
