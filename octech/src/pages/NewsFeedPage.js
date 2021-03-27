@@ -42,6 +42,7 @@ import EditProfile from '../components/userProfile/EditProfile';
 import BugReportForm from '../components/Body/Feed/Reports/BugReportForm';
 import PostView from '../components/Body/Post/PostView';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
+import ChallengeLeaderBoard from '../components/Challenge/ChallengeLeaderBoard';
 
 const useStyles = makeStyles({
     root: {
@@ -202,6 +203,7 @@ export default function NewsfeedPage(props) {
                             <Route path="/challenges/:id" exact component={ChallengesPage} />
                             <Route path="/forums" render={props => <Forums setValue={setValue} />} />
                             <Route path="/leaderBoards" render={props => <LeaderBoards setValue={setValue} />} />
+                            <Route path="/challengeLeaderboard/:name" exact component ={ChallengeLeaderBoard} />
                             <Route path="/bugReportForm" render={props => <BugReportForm setValue={setValue} />} />
                             <Route path="/notifications" exact render={props => <Notifications notifications={notifications} />} />
                             <Route path="/editprofile"><EditProfile/></Route>
