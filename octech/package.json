@@ -16,6 +16,7 @@
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
     "autosuggest-highlight": "^3.1.1",
+    "avataaars": "^1.2.2",
     "bootstrap": "^4.6.0",
     "compress.js": "^1.1.2",
     "filerobot-image-editor": "^3.12.17",

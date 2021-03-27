@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {db} from '../../../../firebase';
 import LeaderBoardComponent from './LeaderBoardComponent';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../../../features/userSlice';
+import { selectUser } from "../../../../features/userSlice";
+import { useSelector } from "react-redux";
 
 
 function GlobalUsersLeaderBoard({ match, setValue }) {
@@ -13,26 +13,21 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
 
     if (dataFetched===false) {
 
-      db.collection('users')
-        .orderBy('profilePoints', 'desc')
-        .onSnapshot(data => {
+      db.collection('globalLeaderBoards').doc('userLeaderBoard').onSnapshot(data => {
           setDataFetched(true);
-          let counter = 0;
-          setLeaderBoardData(data.docs.map(user => {
-            if(counter === 0 ){
-              if(user.data().league !== "Champion" && user.data().profilePoints !== 0)
-                db.collection("users").doc(user.data().name).update({league : "Champion", notifyLeague: true, leagueStatus: "p"})
-              counter++;}
-              else if(counter>0 && counter < 10){//It should be 100 but for demo purpose keep it 10
-                if(user.data().league !== "Legendary")
-                  db.collection("users").doc(user.data().name).update({league : "Legendary", notifyLeague: true, leagueStatus: user.data().league === "Champion" ? "d" : "p" })
-                counter++;
-              }
-            return user.data();
-          }));
-          
-        })
-    }
+          let users = data.data().users;
+          let topUsers = [];
+          let gotMyRank = false;
+          for(let i = 0; (i< 8 || !gotMyRank) && i<users.length; i++){
+            if(users[i].data.name === user.displayName)
+              gotMyRank=true;
+            if(i<8)
+              topUsers.push(users[i].data)
+            else if(users[i].data.name === user.displayName)
+              topUsers.push(users[i].data)
+          }
+          setLeaderBoardData(topUsers);
+    })} 
 
   return (
 

@@ -10,13 +10,10 @@ function GlobalPostsLeaderBoard() {
 
   if (dataFetched === false) {
 
-    db.collection('posts')
-      .orderBy('totalStars', 'desc')
-      .limit(10)
-      .onSnapshot(data => {
+    db.collection('globalLeaderBoards').doc('postLeaderBoard').onSnapshot(data => {
         setDataFetched(true);
-        setLeaderBoardData(data.docs.map(post => {
-          return post.data();
+        setLeaderBoardData(data.data().posts.map(post => {
+          return post.data;
         }));
       })
   }

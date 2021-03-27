@@ -130,6 +130,7 @@ export default function ChallengesPage() {
                                     leader={data.leader}
                                     startDate={data.startDate}
                                     endDate={data.endDate}
+                                    ended = {data.ended}
                                     setLoadChallenges={setLoadChallenges}
                                     timestamp={data.timestamp}
                                     openEditForm={handleFormOpen}
@@ -272,6 +273,8 @@ export default function ChallengesPage() {
                                 leader: "",
                                 startDate: challengeStartDate.toDateString(),
                                 endDate: challengeEndDate.toDateString(),
+                                endTimeStamp : challengeEndDate,   
+                                ended:false,
                                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
                             }
                     
