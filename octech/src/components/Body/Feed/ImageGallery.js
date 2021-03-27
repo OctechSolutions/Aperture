@@ -10,41 +10,13 @@ import Chip from '@material-ui/core/Chip'
 import Avatar from '@material-ui/core/Avatar'
 import 'react-medium-image-zoom/dist/styles.css'
 
-// Import Swiper styles
+// Import Swiper styles 
 import 'swiper/swiper-bundle.css';
 
 SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
 function ImageGallery({ sliderImages }) {
 
-    // const [, setDimensions] = useState({
-    //     height: window.innerHeight,
-    //     width: window.innerWidth
-    // })
-    // useEffect(() => {
-    //     function handleResize() {
-    //         setDimensions({
-    //             height: window.innerHeight,
-    //             width: window.innerWidth
-    //         })
-    //     }
-    //     setSingleImage(Boolean(sliderImages.length - 1))
-    //     window.addEventListener('resize', handleResize)
-
-    //     return _ => {
-    //         window.removeEventListener('resize', handleResize)
-
-    //     }
-
-    // }, [sliderImages.length])
-
-    // function handleResize() {
-    //     setDimensions({
-    //         height: window.innerHeight,
-    //         width: window.innerWidth
-    //     })
-
-    // }
-    const [singleImage, setSingleImage] = useState(sliderImages !== null ? Boolean(sliderImages.length - 1) : true)
+    const [singleImage, ] = useState(sliderImages !== null ? Boolean(sliderImages.length - 1) : true)
     const [index, setIndex] = useState(0)
     const [loaded, setLoaded] = useState(false)
     return (
@@ -61,6 +33,7 @@ function ImageGallery({ sliderImages }) {
                 onSlideChangeTransitionStart={() => {setLoaded(false)}}
                 onSlideChangeTransitionEnd={() => {setLoaded(true)}}
                 updateOnWindowResize={true}
+                // width={300}
             >
                 {sliderImages.map((a, index) =>
                     <SwiperSlide style={{ textAlign: "center" }} key={index}>

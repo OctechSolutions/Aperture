@@ -47,7 +47,7 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
     if (givenStars > 0) {
       db.collection("users").doc(creator).collection("notifications").doc(creator).set({
         notifications: firebase.firestore.FieldValue.arrayUnion({
-          type: "rating",
+          type: "challengeRating",
           sentAt: firebase.firestore.Timestamp.now(),
           sender: user.displayName,
           icon: user.photoUrl,
@@ -90,6 +90,19 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
           });
         }
       })));
+
+      //Update the points of a user in a challenge
+      const challenge = db.collection("challenges").doc(challengeName);
+      db.runTransaction(transaction => (
+        transaction.get(challenge).then(doc => {
+          let participants = doc.data().participants;
+          let index = participants.findIndex(u => u.name === creator)
+          let challengePoints = participants[index].challengePoints ? participants[index].challengePoints :0 ;
+          participants[index].challengePoints = challengePoints + (givenStars - stars);
+          
+          transaction.update(challenge, { participants: participants });
+        })));
+
     setStars(givenStars);
     setTotalStars(newTotalStars);
   }

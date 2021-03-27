@@ -2,7 +2,8 @@
 
 
 
-<img src="./reportImages/apertureLogo.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="./reportImages/octechLogo.png" alt="Octech Logo" style="zoom:50%; float:right" />
+<img src="./octech/src/components/Header/aperture_logo.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="./octech_logo.png" alt="Octech Logo" style="zoom:20%; float:right" />
+
 
 
 
@@ -161,19 +162,36 @@ It was decided after considering both a fully pre-planned approach and an agile 
 
 Since all developers are students, it was expected that there would be a need to revisit and refine parts of the application from time to time. This approach of coming back to an implemented portion to further test and refine it in iterations was adopted to ensure that implemented parts of the application were indeed functional.
 
-The primary implementation schedule involved weekly scrums where every team member would be allocated certain tasks to complete for the week. Given the COVID-19 scenario, all group meetings were online. Efforts were made to ensure that at least 1 meeting via Microsoft Teams occurred every week. All the while, the team remained constantly in touch with each other via a shared and project only WhatsApp group. Additionally, weekly meetings where the line manager was present took place every week.
+The primary implementation schedule involved weekly sprints where every team member would be allocated certain tasks to complete for the week. Given the COVID-19 scenario, all group meetings were online. Efforts were made to ensure that at least 1 meeting via Microsoft Teams occurred every week. All the while, the team remained constantly in touch with each other via a shared and project only WhatsApp group. Additionally, weekly meetings where the line manager was present took place every week.
 
-It was decided that each member would regularly update all other members via a shared WhatsApp group exclusive to scrums, about their progress in what was termed a "Daily Scrum Report". This report would include what the member had been able to implement the previous day and what he/she was hoping on implementing on the  current day. If a member was unable to complete his/her allocated task in the given time frame, then this task would be reallocated to the same/another member for the next scrum.  
+It was decided that each member would regularly update all other members via a shared WhatsApp group exclusive to daily scrums, about their progress in what was termed a "Daily Scrum Report". This report would include what the member had been able to implement the previous day and what he/she was hoping on implementing on the current day. If a member was unable to complete his/her allocated task in the given time frame, then this task would be reallocated to the same/another member for the next sprint.  
 
 This system although initially agreed upon was slowly established through the 3 stages. This system was fully in place and efficient starting mid stage 2.
 
 
 
-##### 3.3. <span style="color:red">Development History</span> (Gayathri)
+##### 3.3. Development History (Gayathri)
 
 <span style="color:magenta">*What was achieved in each iteration/sprint?*</span>
 
-<span style="color:blue">*MORE ...*</span>
+Following are 3 tables that summarize all achievements from every sprint for stages 1, 2 and 3 respectively.
+
+<figure>
+	<img src="./reportImages/AchievementsSummaryStage1.png" alt="Achievements Summary Stage1" style="width:100%">
+    <figcaption style="text-align:center;">Achievements Summary Stage1</figcaption>
+</figure>
+
+<figure>
+	<img src="./reportImages/AchievementsSummaryStage2.png" alt="Achievements Summary Stage2" style="width:100%">
+    <figcaption style="text-align:center;">Achievements Summary Stage2</figcaption>
+</figure>
+
+<figure>
+	<img src="./reportImages/AchievementsSummaryStage3.png" alt="Achievements Summary Stage3" style="width:100%">
+    <figcaption style="text-align:center;">Achievements Summary Stage3</figcaption>
+</figure>
+
+<span style="color:blue">*UPDATE STAGE 3 AS WE PROGRESS & EDIT IF NEEDED...*</span>
 
 
 
@@ -224,8 +242,8 @@ The group was organized such that every member would contribute to all parts of 
 Some possible languages/technical skills which would potentially be needed in the project was identified and members were required to grade themselves and assign points reflecting their confidence levels in with regard to them. This was a good exercise in ascertaining capabilities of team members that would prove crucial in assigning team roles.
 
 <figure>
-	<img src="./reportImages/ConfidencePoints.png" alt=" Confidence Points" style="width:100%; border: black solid 1px">
-    <figcaption style="text-align:center;">Fig1. Confidence Points</figcaption>
+	<img src="./reportImages/ConfidencePoints.png" alt="Confidence Points" style="width:100%">
+    <figcaption style="text-align:center;">Confidence Points</figcaption>
 </figure>
 
 
@@ -233,12 +251,10 @@ In order to ensure optimum deployment of team members, a **SWOT analysis** was c
 
 <figure>
     <center>
-        <img src="./reportImages/SwotSquare.png" alt="SWOT Square" style="width:80%; border: black solid 1px">
+        <img src="./reportImages/SwotSquare.png" alt="SWOT Square" style="width:80%">
     </center>
-    <figcaption style="text-align:center;">Fig2. SWOT Analysis Square</figcaption>
+    <figcaption style="text-align:center;">SWOT Analysis Square</figcaption>
 </figure>
-
-
 
 Based on observations and after discussion, following roles were initially decided upon. However, it was decided that all members would contribute to all areas of developments. The allocated roles would mean that every member would oversee/guide activities that would fall under his/her role description.
 
@@ -261,7 +277,7 @@ Following is a categorization of members as per their primary aptitude adhering 
 
 <figure>
 	<img src="./reportImages/Honeys5.png" alt="Honey's 5 Team Member Types" style="width:100%">
-    <figcaption style="text-align:center;">Fig3. Honey's 5 Team Member Types</figcaption>
+    <figcaption style="text-align:center;">Honey's 5 Team Member Types</figcaption>
 </figure>
 
 - **Leader**: Ensures clear objectives, collective involvement and commitment.
@@ -274,17 +290,63 @@ That said, it was observed that collective efforts undertaken by the team led to
 
 <span style="color:blue">*EDIT IF NEEDED ...*</span>
 
-###### 4.1.2. <span style="color:red">Success Story</span> 
+
+
+###### 4.1.2. <span style="color:red">Team Work</span> 
 
 <span style="color:magenta">*Was the group organization successful? How well did your group collaborate?*</span> 
 
-<span style="color:blue">*MORE ...*</span>
+Throughout development, all members were willing to collaborate and have always tried to produce good work. Even though members were allocated primary responsibilities (see section 4.1.1), the group shared responsibility fairly equally. Challenging situations like when the leader was re-appointed and when the leader got sick was thus, less damaging and the team was still able to produce good work during these situations. 
+
+Having members who had fine tuned programming skills as well as those who were proficient at organizing work, producing documentation, creating diagrams, critical analysis, coming up with designs and presenting content meant that the team was well balanced. This mix of skills allowed for members to compliment each other well.
+
+A team member skilled at a particular task would guide others and draft a plan as to how to approach that task and all members would collaborate and contribute their portions to aid in completion of that task. A notable example of this system in action is the report generation process. One member who was skilled at organizing content, visualizing data and presenting information would be appointed to draft and oversee the report. This member would begin work on the report early on, decide what to put in it and appoint other members to contribute some parts of the report. Every member would submit their parts to the  report in-charge and this person would go on and compile the report, ensure uniformity and get it ready to submit.
+
+In all instances where one member had tried to implement a feature but failed, either another member would go ahead and complete that task or would guide the member in completing his/her task. For example, for stage 2, a member had implemented the functionality of adding overlays to images but was unable to merge it with the main application due to differences in implementation styles of the post and of the overlays feature. Another member who had worked on the post creation functionality, later integrated it into the application in stage 3 thus ensuring that no member's work was lost.
+
+<span style="color:blue">*EDIT IF NEEDED ...*</span>
+
+
 
 ###### 4.1.3. <span style="color:red">Overcoming Problems</span> 
 
 <span style="color:magenta">*How did you handle any problems which arose?*</span>
 
-<span style="color:blue">*MORE ...*</span>
+Following are few problems that the team had faced and methods that were adopted to combat them.
+
+1. **Lack of Communication**
+
+   <span style="color:red"><u>Problem</u></span>
+
+   Weekly meetings alone was insufficient at ensuring that all team members were up to date on all developments made. This meant that member's were a bit lost on what to do and by when to submit their parts. 
+
+   <span style="color:green"><u>Solution</u></span>
+
+   This problem was anticipated early on and hence it was decided that a WhatsApp group be made where members could regularly discuss all what they have done and share ideas in addition to Microsoft Team's Meetings. The scrum master would allocate tasks as well as a date before which each task had to be completed per sprint. But it was after this that a scenario where 2 members ended up implementing the same feature, the chat system, occurred. This happened because of a misunderstanding that stemmed from the fact that both members were not aware of the the other was implementing so one member decided to implement another feature after being done with his/her own. This was an issue because it meant that one member's work would be lost and because one of the members could have better spent his/her time implementing another feature that no one was working on. This issue was discussed to avoid further such misunderstandings, all members were then on strictly required to log their daily scrum reports, inform all other members if they planned on taking up a new task or request the scrum master for a new task and regularly update all members about what he/she was working on or planned to work on.
+
+2. **Unable to Find Files**
+
+   <span style="color:red"><u>Problem</u></span>
+
+   All stages of development involved production of various files (documents, images, excel sheets etc.). These files were shared via the WhatsApp discussion group and thus would get lost amongst conversation. This meant that files shared in the past would be very difficult to revisit.
+
+   <span style="color:green"><u>Solution</u></span>
+
+   This problem was addressed though the creation of another WhatsApp group for the sole purpose of sharing files only. Also, for parts of development that required a lot of common files like the report, it was decided that these files may also be stored on GitHub repositories where members can easily access and update them.
+
+3. **Too much of a good thing, a bad thing?**
+
+   <span style="color:red"><u>Problem</u></span>
+
+   Because every decision was discussed and because every member always had inputs and wanted the best, there were often a lot of different approaches to solving a particular problem and clash of ideas/opinions was frequent. There was a tendency to overthink and get stuck thinking about details which would lead to decision paralysis and one idea could not be chosen over another as both would be possible ways to implement a feature.
+
+   <span style="color:green"><u>Solution</u></span>
+
+   Such problems became less prevalent as the team continued to work together. Soon there was more trust amongst members and one member simply trusted the other to implement the best possible solution to a problem. An understanding was reached where in it was decided that every member would try and implement their appointed feature within the sprint upholding minimum standards. If the member managed to finish the feature before the sprint ended then he/she would spend time improving it. Else, that member was to move on to the next task until there came an opportunity when this feature could be improved either by the same person who first implemented it or by someone else. Decision dilemmas would also be solved via voting or asking for the line manager's view.
+
+<span style="color:blue">*EDIT IF NEEDED ...*</span>
+
+
 
 ###### 4.1.4. <span style="color:red">Sticking To Schedule</span> 
 
@@ -296,40 +358,43 @@ That said, it was observed that collective efforts undertaken by the team led to
 
 ##### 4.2. Implementation
 
-###### 4.2.1. Project Diary (Gayathri)
+###### 4.2.1. Implementation Schedule (Gayathri)
 
 <span style="color:magenta">*What was your implementation schedule? How did the implementation schedule differ from the original plan?*</span>
 
-The implementation schedule taken from the "Aperture Project Diary" can be viewed below in 3 tables. One for stage1, stage2 and stage3 respectively. 
+The implementation schedule took place in sprints where a single sprint would typically span a week. A stage of development was expected to be complete in 8-9 sprints which was indeed the case for all 3 stages of development.  Each sprint would have a plan drafted on day 1 with some goals to achieve in mind. Following days would be used to build, test, review and fix the portion of the application/document which was due that sprint. For sprints that were shorter than a week, some activities like building was done in parallel to testing and producing documentation.
 
-<figure>
-	<img src="./reportImages/ProjectDiaryScrum1.png" alt="Project Diary - Stage 1" style="width:100%">
-    <figcaption style="text-align:center;">Fig3. Project Diary - Stage 1</figcaption>
+ <figure>
+	<img src="./reportImages/SprintStructure.png" alt="Sprint Structure" style="width:100%">
+    <figcaption style="text-align:center;">Sprint Structure</figcaption>
 </figure>
 
-
-
-<figure>
-	<img src="C:\Users\ACER\AppData\Roaming\Typora\typora-user-images\image-20210323224812704.png" alt="Project Diary - Stage 2" style="width:100%">
-    <figcaption style="text-align:center;">Fig4. Project Diary - Stage 2</figcaption>
-</figure>
-
-
+The implementation schedule drawn from the "**Aperture Project Diary**" can be viewed below in 3 tables. One for stage1, stage2 and stage3 respectively. The "Success Measure" column ranging from 1 to 3 stars depict how successful/effective at getting work done, each sprint was.
 
 <figure>
-	<img src="./reportImages/ProjectDiaryScrum3.png" alt="Project Diary - Stage 3" style="width:100%">
-    <figcaption style="text-align:center;">Fig5. Project Diary - Stage 3</figcaption>
+	<img src="./reportImages/ProjectDiaryStage1.png" alt="Project Diary Stage 1" style="width:100%">
+    <figcaption style="text-align:center">Project Diary Stage 1</figcaption>
 </figure>
 
+<figure>
+	<img src="./reportImages/ProjectDiaryStage2.png" alt="Project Diary Stage 2" style="width:100%">
+    <figcaption style="text-align:center;">Project Diary Stage 2</figcaption>
+</figure>
+
+<figure>
+	<img src="./reportImages/ProjectDiaryStage3.png" alt="Project Diary Stage 3" style="width:100%">
+    <figcaption style="text-align:center;">Project Diary Stage 3</figcaption>
+</figure>
+
+The implementation schedule has remained close to initial plans for stages 1 and 2 with a little deviation from the original plan. The implemented schedule for stage 3, however was quite different from the initial plan due to the need for an increased understanding of ReactJS contributing to some time lost in learning and failed attempts at achieving functionality particularly during the 1st 2 sprints of stage 3. Unforeseen health issues faced by team members particularly our leader proved to be a setback especially with regards to work on the stage 3 report and accompanying documentation. Hence, greater collaboration and effort was required toward the end of stage 3 which was key in overcoming ordeals and submitting a finished product and necessary documentation. 
+
+<span style="color:blue">*UPDATE STAGE 3 AS WE PROGRESS & EDIT IF NEEDED...*</span>
 
 
-The above implementation schedule remained close to initial plans for stages 1 and 2 with a little deviation from the original plan. The implemented schedule for stage 3, however was quite different from the initial plan due to the need for an increased understanding of ReactJS contributing to some time lost in learning and failed attempts at achieving functionality particularly during the 1st 2 scrums of stage 3. Unforeseen health issues faced by team members particularly our leader proved to be a setback especially with regards to work on the stage 3 report and accompanying documentation. Hence, greater collaboration and effort was required toward the end of stage 3 which was key in overcoming ordeals and submitting a finished product and necessary documentation. 
-
-<span style="color:blue">*EDIT STAGE 3 (BLUE AND YELLOW PARTS) AS WE PROGRESS...*</span>
 
 ###### 4.2.2. Path to Success (Gayathri)
 
-###### <span style="color:red">*provide examples*</span>
+<span style="color:red">*provide examples*</span>
 
 <span style="color:magenta">*Was your implementation approach successful (scrum, other, etc)? Why or why not? Use specific examples from your experiences to support your discussion.*</span> 
 
@@ -350,9 +415,9 @@ The above implementation schedule remained close to initial plans for stages 1 a
 
 - Having a **scrum master** that regularly discussed with the group and allocated tasks on a weekly basis, at times, even daily basis allowed for the team to always have **an idea about the next most important task.** At instances where the team was faced with an especially challenging system like the user interaction system with multiple components like creation/deletion of posts, collections etc, the scrum master's breakdown of large tasks into small tasks allocated frequently led to the team being able to divide and conquer it.
 
-- **Daily scrum sessions/reports** were a constant reminder of just how much had been and were yet to be achieved every week. Any scrum tasks not achieved this week would be reallocated next week in addition to other tasks. This succeeded at keeping the team on toes and though at variable rates, **weekly scrums ensured that weekly progress was made**.
+- **Daily scrums** were a constant reminder of just how much had been and were yet to be achieved every week. Any sprint tasks not achieved this week would be reallocated next week in addition to other tasks. This succeeded at keeping the team on toes and though at variable rates, **weekly sprints ensured that weekly progress was made**.
 
-- Every scrum would culminate in all members testing out functions implemented thus far and then suggesting fixes that would be implemented in the next scrum. These **implement > test > fix > implement next** iterations ensured that the team **produced working parts** of the application almost **every week** and it would be **unlikely** that these parts **would need to be changed later** on. This approach also meant that we would have a new working feature to show our line manager at nearly every meeting. 
+- Every sprint would culminate in all members reviewing and testing out functions implemented thus far before suggesting fixes/improvements that would be implemented in the next sprint if deemed necessary. These **implement > test > fix > implement next** iterations ensured that the team **produced working parts** of the application almost **every week** and it would be **unlikely** that these parts **would need to be changed later** on. This approach also meant that we would have a new working feature to show our line manager at nearly every meeting. 
 
 - Opting **React JS** enabled the team to create **components** that could be **reused** and take advantage of **vast libraries and frameworks** that React supports like Material UI, React Bootstrap etc. Due to React being a popular choice amongst application developers, **finding** online **tutorials** and **reading material** on it **was not difficult**. 
 
@@ -372,9 +437,11 @@ The above implementation schedule remained close to initial plans for stages 1 a
 
 - Parts of the specification given were ambiguous and sometimes vague like when it was mentioned in that the system would enable users to provide feedback and leave comments, it is confusing because comments are feedback and no further explanation of what feedback ideally looks like here was mentioned. The team understood that such inexplicit areas of the report to be intentional opportunities to allow development teams to come up with unique spins on the application and chose to do just this.
 
-Overall, it is safe to say that our approach was successful in helping keep the team close knit and productive. When problems arose, the team was able to rise to the challenge and brave though it. The milestones we set for ourselves and achieved via scrums, gave us a sense of accomplishment and was a source of motivation in our development journey.
+Overall, it is safe to say that our approach was successful in helping keep the team close knit and productive. When problems arose, the team was able to rise to the challenge and brave though it. The milestones we set for ourselves and achieved via sprints, gave us a sense of accomplishment and was a source of motivation in our development journey.
 
 <span style="color:blue">*NEED SPECIFIC EXAMPES & MORE POINTS ARE WELCOME ...*</span>
+
+
 
 ###### 4.2.3. <span style="color:red">Tools Used</span> (Hasan)
 
@@ -392,17 +459,23 @@ Overall, it is safe to say that our approach was successful in helping keep the 
 
 <span style="color:blue">*MORE ...*</span>
 
+
+
 ###### 4.3.2. <span style="color:red">What's Special?</span>
 
 <span style="color:magenta">*What is particularly special about your product?  Have you included extra features? How robust is your final system?*</span>
 
 <span style="color:blue">*MORE ...*</span>
 
+
+
 ###### 4.3.3. <span style="color:red">Bugs/Constraints</span>
 
 <span style="color:magenta">*Are there known bugs or constraints?*</span>
 
 <span style="color:blue">*MORE ...*</span>
+
+
 
 ###### 4.3.4. <span style="color:red">Usability Results</span>
 

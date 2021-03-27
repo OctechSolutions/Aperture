@@ -55,6 +55,7 @@ import { ButtonBase } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import GroupIcon from '@material-ui/icons/Group';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
+import EqualizerIcon from '@material-ui/icons/Equalizer';
 
 export default function Challenge({ user, name, description, hints, creator, creatorPhotoUrl, isPrivate, isAdmin, leader, startDate, endDate, setLoadChallenges, openEditForm, timestamp, invitees, participants }) {
 
@@ -70,7 +71,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [openOverlay, setOpenOverlay] = useState(false) // For entries overlay.
     const [challengeComplete, setChallengeComplete] = useState(false)
     const [showParticipants, setShowParticipants] = useState(false)
-    const [checkChallengeComplete, setCheckChallengeComplete] = useState(true)
 
     useEffect(() => {
         // helper.current.scrollIntoView({ behavior: 'smooth' });
@@ -260,13 +260,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
         }
         openEditForm(curData)
         handleMenuClose()
-    }
-
-    // Checks if the challenge is due to be deleted.
-    const checkDeleteChallenge = () => {
-        let endDateObj = new Date(endDate)
-        if(((endDateObj - new Date())/86400000) <= -2) { deleteChallenge(); }
-        // console.log("endDate - Today = " + ((endDateObj - new Date())/86400000) + " days")
     }
 
     // For NEW POST ----------------------------------------------------
@@ -553,6 +546,12 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
         else {
             if (selectedInputImg !== {}) {
+                if (participants.length ===0 || !participants.some(u => u.displayName === user.displayName)) {
+                    db.collection("challenges").doc(name).update({
+                        participants: firebase.firestore.FieldValue.arrayUnion({...user,challengePoints : 0})
+                    })
+                    participants.push({...user,challengePoints : 0})
+                }
                 const ref = db.collection('challengePosts').doc() // A reference to the next entry to the database is created in advance.
                 if (coordinatesSelected) {
                     ref.set({ // This adds a new post to the database.
@@ -639,14 +638,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
         if (loadEntries) { loadChallengeEntries(); setLoadEntries(false); resetVals() }
         // eslint-disable-next-line
     }, [loadEntries])
-
-    useEffect(() => {
-        if(checkChallengeComplete) { 
-            checkDeleteChallenge()
-            setCheckChallengeComplete(false) 
-        }
-    // eslint-disable-next-line
-    }, [checkChallengeComplete])
 
     return (
         <div className="challenge" >
@@ -778,6 +769,9 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     }
                     <IconButton aria-label="viewEntries" color="primary" onClick={handleOverlayClickOpen}>
                         <VisibilityIcon fontSize="large" />
+                    </IconButton>
+                    <IconButton aria-label="viewEntries" color="primary" onClick={() => { history.push(`/challengeLeaderboard/${name}`)}}>
+                        <EqualizerIcon fontSize="large" />
                     </IconButton>
                     {
                         isPrivate && participants.length > 0 &&

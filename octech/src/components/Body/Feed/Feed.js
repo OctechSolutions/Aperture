@@ -168,36 +168,9 @@ function Feed({ match }, props) {
   const [open, setOpen] = React.useState(true);
   const [showGifSearch, setShowGifSearch] = useState(false)
 
-
-
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const getCropData = async () => {
-    if (typeof cropper !== "undefined") {
-      setInputImg(await cropper.getCroppedCanvas().toDataURL('image/jpeg', 0.5));
-      setCropping(false);
-    }
-  };
-
-  function handleSliderChange(value) {
-    setEditOptions(prevEditOptions => {
-      return (
-        (prevEditOptions.map((option, index) => {
-
-          if (index !== selectedOptionIndex) {
-            return option
-          }
-          return { ...option, value: value }
-        }))
-      )
-    })
-  }
 
   function getImageStyle() {
     const filters = editOptions.map(option => {
@@ -245,7 +218,7 @@ function Feed({ match }, props) {
   useEffect(() => {
     db.collection("users").doc(user.displayName).get().then(doc => {
       console.log(doc.data())
-      if (doc.data().notifyLeague) {
+      if (doc.data() && doc.data().notifyLeague) {
         //Sending Notification About league change
         if (doc.data().leagueStatus === "p") {
           db.collection("users").doc(user.displayName).collection("notifications").doc(user.displayName).set({
@@ -328,6 +301,23 @@ function Feed({ match }, props) {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [user.displayName, match.params]);
+
+  const [locationPosts, setLocationPosts] = useState([])
+
+  useEffect(() => {
+    db.collection("posts")
+      .where("hasCoordinates", "==", true)
+      .where("isPrivate", "==", false)
+      .get().then((a) => {
+        setLocationPosts(
+          a.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+          }))
+        )  
+      })
+    
+  },[])
 
   const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
@@ -414,113 +404,12 @@ function Feed({ match }, props) {
     setShowPostComponent(true);
   }
 
-  // const editingDone = async () => {
-  //   setNohuman(false);
-
-  //   if (file) {
-
-  //     if (file.size / (1024 * 1024) > 0.9) {
-  //       if (file.type === 'image/gif') {
-  //         console.log("Large gif using firebase storage");
-  //         const storageRef = storage.ref();
-  //         const fileRef = storageRef.child(user.displayName + file.name);
-  //         fileRef.put(file).then(() => {
-  //           fileRef.getDownloadURL().then((doc) => {
-  //             console.log(doc);
-  //             setInputImgs(inputImgs.concat(doc))
-  //             setSliderImages(sliderImages.concat({
-  //               src: doc,
-  //               style: getImageStyle()
-  //             }));
-  //             console.log(sliderImages);
-  //             var reference = user.displayName + file.name;
-  //             console.log(file, "name  =  ", reference);
-  //             setInputImg("");
-  //             setEditOptions(DEFAULT_EDIT_OPTIONS);
-  //             setLargeImages(largeImages.concat(reference));
-  //           });
-  //         });
-
-  //       }
-  //       else {
-  //         const compress = new Compress();
-  //         compress.compress([file], {
-  //           size: 0.8, // the max size in MB, defaults to 2MB
-  //           quality: .70, // the quality of the image, max is 1,
-  //           maxWidth: 1920, // the max width of the output image, defaults to 1920px
-  //           maxHeight: 1920, // the max height of the output image, defaults to 1920px
-  //           resize: true, // defaults to true, set false if you do not want to resize the image width and height
-  //         }).then((data) => {
-  //           // returns an array of compressed images
-  //           console.log(data);
-  //           var compressedb64 = data[0].prefix + data[0].data;
-  //           setInputImgs(inputImgs.concat(compressedb64))
-  //           setSliderImages(sliderImages.concat({
-  //             src: compressedb64,
-  //             style: getImageStyle()
-  //           }))
-  //           console.log(sliderImages);
-  //           console.log(file);
-  //           setInputImg("");
-  //           setEditOptions(DEFAULT_EDIT_OPTIONS);
-  //         })
-  //       }
-  //     }
-  //     else {
-  //       setInputImgs(inputImgs.concat(inputImg))
-  //       setSliderImages(sliderImages.concat({
-  //         src: inputImg,
-  //         style: getImageStyle()
-  //       }))
-  //       console.log(sliderImages);
-  //       console.log(file);
-  //       setInputImg("");
-  //       setEditOptions(DEFAULT_EDIT_OPTIONS);
-  //     }
-  //   }
-  //   else {
-  //     setInputImgs(inputImgs.concat(inputImg))
-  //     setSliderImages(sliderImages.concat({
-  //       src: inputImg,
-  //       style: getImageStyle()
-  //     }))
-  //     console.log(sliderImages);
-  //     console.log(file);
-  //     setInputImg("");
-  //     setEditOptions(DEFAULT_EDIT_OPTIONS);
-  //   }
-  // }
 
   const editingDone = async () => {
     setNohuman(false);
 
     if (inputImg) {
 
-      // if (file) {
-      //   const compress = new Compress();
-      //   compress.compress([file], {
-      //     size: 0.7, // the max size in MB, defaults to 2MB
-      //     quality: .65, // the quality of the image, max is 1,
-      //     maxWidth: 1920, // the max width of the output image, defaults to 1920px
-      //     maxHeight: 1920, // the max height of the output image, defaults to 1920px
-      //     resize: true, // defaults to true, set false if you do not want to resize the image width and height
-      //   }).then((data) => {
-      //     // returns an array of compressed images
-      //     console.log(data);
-      //     var compressedb64 = data[0].prefix + data[0].data;
-      //     setInputImgs(inputImgs.concat(compressedb64))
-      //     setSliderImages(sliderImages.concat({
-      //       src: compressedb64,
-      //       style: getImageStyle()
-      //     }))
-      //     console.log(sliderImages);
-      //     console.log(file);
-      //     setInputImg("");
-      //     setEditOptions(DEFAULT_EDIT_OPTIONS);
-      //   })
-      // }
-      // else {
-      // setInputImgs(inputImgs.concat(inputImg))
       var temp = sliderImages.concat({
         src: inputImg,
         style: getImageStyle(),
@@ -537,7 +426,6 @@ function Feed({ match }, props) {
       setEditOptions(DEFAULT_EDIT_OPTIONS);
       console.log(sliderImages)
       setShowPostComponent(true);
-      // }
 
     }
   }
@@ -863,14 +751,6 @@ function Feed({ match }, props) {
                     <Avatar src={user.photoUrl}></Avatar>
                   </IconButton>
                   <form onSubmit={(e) => { e.preventDefault() }}>
-                    {/* <input
-                      className="feed_inputbox"
-                      placeholder="Caption..."
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)} // when the input is changed the input state variable is updated
-                      type="text"
-                      required
-                    /> */}
                     <InputBase
                       className={classes.input}
                       placeholder="Optional Caption..."
@@ -972,7 +852,7 @@ function Feed({ match }, props) {
           </Modal>
 
         }
-        {!showEditor && !showTags && 
+        {!showEditor && !showTags &&
           <Modal
             show={Boolean(inputImg)}
             // onHide={() => { setShowPostComponent(false); resetVals(); }}
@@ -1072,38 +952,11 @@ function Feed({ match }, props) {
                               <DoneIcon fontSize="large" />
                             </IconButton>
                           </center>}
-                          {/* <Button aria-controls="simple-menu" aria-haspopup="true" endIcon={<ExpandMoreIcon />} onClick={handleMenuClick} centered>
-                            {editOptions[selectedOptionIndex].name}
-                          </Button>
-                          <Menu
-                            id="simple-menu"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleClose}
-                          >
-                            {editOptions.map((option, index) => {
-                              return (
-                                <MenuItem
-                                  key={index}
-                                  onClick={() => { setSelectedOptionIndex(index); setAnchorEl(null) }}
-                                >{option.name}</MenuItem>
-                              )
-                            })}
-                          </Menu><br></br>
-                          <Slider
-                            min={selectedOption.range.min}
-                            max={selectedOption.range.max}
-                            value={selectedOption.value}
-                            onChange={(event, result) => { handleSliderChange(result) }}
-                          /> */}
                         </div>}
 
 
                     </div>
                   }
-                  {/* Slider to adjust edit values. */}
-
 
                 </>
               )}
@@ -1115,18 +968,12 @@ function Feed({ match }, props) {
                   </center>
                 </div>}
 
-
-              {/* </DialogContent> */}
-              {/* <DialogActions> */}
               {!loading && !showGifSearch &&
-                // !cropping &&
                 <div className="buttons" style={{ justifyContent: "space-evenly" }}>
                   <Button variant="contained" onClick={editingDone}>Add Image</Button>
                   <Button variant="contained" onClick={editingCancelled}>Cancel</Button>
                 </div>
               }
-              {/* </DialogActions> */}
-              {/* </Dialog> */}
             </Modal.Body>
           </Modal>
         }
@@ -1172,17 +1019,17 @@ function Feed({ match }, props) {
             <Modal.Title> Tags </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <TextField className="tag-container" label="Add tags" margin="normal" variant="outlined" style={{width: "100%"}}
+            <TextField className="tag-container" label="Add tags" margin="normal" variant="outlined" style={{ width: "100%" }}
               onKeyUp={addTag} />
             {tags.map((tag, index) => {
               return (
-                  <Chip
-                    className="tag-chip"
-                    label={tag}
-                    onDelete={() => removeTag(tag)}
-                    color="primary"
+                <Chip
+                  className="tag-chip"
+                  label={tag}
+                  onDelete={() => removeTag(tag)}
+                  color="primary"
 
-                  />
+                />
               );
             })}
           </Modal.Body>
@@ -1219,6 +1066,7 @@ function Feed({ match }, props) {
                 type={type}
                 isForumPost={Boolean(type)}
                 challenges={challenges}
+                locationPosts = {locationPosts}
               >
               </Post>
             )
