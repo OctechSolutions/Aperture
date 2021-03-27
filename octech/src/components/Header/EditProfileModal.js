@@ -80,6 +80,7 @@ const EditProfileModal = ({setShowEditProfile}) =>{
                 }
             }
             if(noError){
+                setShowEditProfile(false)  
                 if(editName){
                     await editUserName(name)
                 }   
@@ -107,6 +108,7 @@ const EditProfileModal = ({setShowEditProfile}) =>{
             console.log(error,"e")
             setOldPasswordDoesNotMatch(true)
         });
+        firebase.auth().currentUser.reload()
     }
     const deleteAccount = async () =>{
         
@@ -192,7 +194,7 @@ const EditProfileModal = ({setShowEditProfile}) =>{
             //Delete Challenge and its posts
             await db.collection("challenges").where("creator","==",user.displayName).get().then(docs =>{
                 docs.forEach(doc => {
-                    db.collection("challenges").doc(doc.id).delete()
+                    db.collection("challenges").doc(doc.data().name).delete()
                 })
             })
             await db.collection("challengePosts").where("creator","==",user.displayName).get().then(docs =>{
@@ -345,9 +347,10 @@ const EditProfileModal = ({setShowEditProfile}) =>{
         //Update portfolio
         await db.collection("portfolios").doc(user.displayName).get().then(async doc => {
             const data = doc.data()
-            await db.collection("portfolios").doc(newName).set(data).then(async ()=>{
-                db.collection("portfolios").doc(user.displayName).delete()
-            })
+            if(data)
+                await db.collection("portfolios").doc(newName).set(data).then(async ()=>{
+                    db.collection("portfolios").doc(user.displayName).delete()
+                })
         })
 
         //Update forum posts
