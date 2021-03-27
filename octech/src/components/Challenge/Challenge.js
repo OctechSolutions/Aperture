@@ -3,7 +3,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Link } from "react-router-dom"
 import { useHistory } from "react-router-dom"
 import Modal from 'react-bootstrap/Modal'
-// import Alert from 'react-bootstrap/Alert'
+import DraggableMap from "../Body/Map/DraggableMap"
 import Spinner from 'react-bootstrap/Spinner'
 import Camera, { FACING_MODES } from "react-html5-camera-photo"
 import Countdown from 'react-countdown'
@@ -11,7 +11,7 @@ import Countdown from 'react-countdown'
 import './Challenge.css'
 
 import ChallengePost from "./ChallengePost"
-import Map from "../Body/Map/Map";
+import Map from "../Body/Map/Map"
 
 import firebase from "firebase"
 import { db } from "../../firebase"
@@ -540,7 +540,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     // Function that is called when a new post is submitted.
     const sendPost = async (e) => {
         e.preventDefault() // This is to prevent the default behaviour of submitting a form.
-
         // If the post does not have a caption, then ask user to enter one.
         if (caption === "") { setOpenCaptionError(true) }
 
@@ -553,7 +552,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     participants.push({...user,challengePoints : 0})
                 }
                 const ref = db.collection('challengePosts').doc() // A reference to the next entry to the database is created in advance.
-                if (coordinatesSelected) {
+                if (coordinatesSelected && lat && lng) {
                     ref.set({ // This adds a new post to the database.
                         key: ref.id,
                         caption: caption,
@@ -569,7 +568,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         hasEnded: false,
                         hasCoordinates: true,
                         lat: lat,
-                        lng: lng
+                        lng: lng,
                     }).then(() => {
                         setLoadEntries(true)
                         handleSnackbarOpen()
@@ -613,21 +612,26 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
     // Sets the latitutde and longitute.
     const getData = (val) => {
-        //console.log(val);
-        setLat(val[0]);
-        setLng(val[1]);
+        setLat(val.lat);
+        setLng(val.lng);
+        console.log(lat + "," + lng);
     }
 
     // Set map = map component with given latitude and longitude
     // and then displays the location as per given latitude and longitude.
-    const setMapComponent = (latitude, longitude) => {
+    const setMapComponent = (challengePostData) => {
         setOpenOverlay(false)
         setMap(
             <Map
-                center={{ lat: latitude, lng: longitude }}
-                height='100vh'
-                zoom={15}
-                draggable={false}
+                center={challengePostData.center}
+                images={challengePostData.images}
+                name={challengePostData.name}
+                deacription={challengePostData.description}
+                message={challengePostData.message}
+                photoUrl={challengePostData.photoUrl}
+                totalStar={challengePostData.totalStars}
+                locationPosts={challengePostData.locationPosts}
+                id={challengePostData.id}
             />
         )
     }
@@ -918,15 +922,26 @@ export default function Challenge({ user, name, description, hints, creator, cre
                             {/* Edit Map */}
                             {
                                 showEditMap &&
-                                <Map
-                                    center={{ lat: lat, lng: lng }}
-                                    height='30vh'
-                                    zoom={15}
-                                    sendData={getData}
-                                    draggable={true}
-                                    setCoordinatesSelected={setCoordinatesSelected}
-                                    setShowEditMap={setShowEditMap}
-                                />
+                                <Modal
+                                    show={showEditMap}
+                                    onHide={() => { setShowEditMap(false) }}
+                                    keyboard={false}
+                                    size="xl"
+                                    aria-labelledby="contained-modal-title-vcenter"
+                                    centered
+                                >
+                                    <Modal.Body>
+                                    <DraggableMap
+                                        center={{ lat: lat, lng: lng }}
+                                        height='30vh'
+                                        zoom={15}
+                                        sendData={getData}
+                                        draggable={true}
+                                        setCoordinatesSelected={setCoordinatesSelected}
+                                        setShowEditMap={setShowEditMap}
+                                    />
+                                    </Modal.Body>
+                                </Modal>
                             }
 
                         </div>
