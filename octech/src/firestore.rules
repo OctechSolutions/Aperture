@@ -99,9 +99,10 @@ service cloud.firestore {
        match /users/{document=**} {
 
          allow read: request.auth != null;
-         allow write, update, delete: if request.auth != null && request.auth.uid == userId;
+         allow write, update, delete: if request.auth != null && request.auth.uid == request.resource.data.author_uid;
     
     }
+    
 
   } 
 }

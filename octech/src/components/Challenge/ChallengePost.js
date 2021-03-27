@@ -225,8 +225,17 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
                 aria-label="map"
                 aria-controls="long-menu"
                 aria-haspopup="true"
-                onClick={() => { console.log("view maps clicked."); setMapComponent(lat, lng) }}
-              >
+                onClick={() => { console.log("view maps clicked."); 
+                setMapComponent(
+                  {
+                    center:{lat: lat, lng: lng},
+                    images:[{src: imageSrc}],
+                    message:caption,
+                    photoUrl:creatorPhotoUrl,
+                    locationPosts:[],
+                    id:id
+                }) 
+              }}>
                 <MapIcon />
               </IconButton>
             }
