@@ -1043,7 +1043,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             <Map
               center={{ lat: lat, lng: lng }}
               images={images}
-              name={name}
+              name={challengeName}
               deacription={description}
               message={message}
               photoUrl={photoUrl}
