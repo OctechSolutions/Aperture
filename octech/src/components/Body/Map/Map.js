@@ -42,13 +42,11 @@ require('react-leaflet-markercluster/dist/styles.min.css');
 export default function Map({
     center,
     images,
-    name,
-    description,
     message,
     photoUrl,
-    totalStar,
     locationPosts,
-    id
+    id,
+    isChallengePost
 }) {
 
     React.useEffect(() => {
@@ -155,13 +153,20 @@ export default function Map({
                             }
                         </Marker>
 
-                        {locationPosts.map((p) => {
+                        {locationPosts!==undefined && locationPosts.map((p) => {
                             if (p.id !== id) {
                                 return (
                                     <Marker position={{ lat: p.data.lat, lng: p.data.lng }} eventHandlers={{
                                         click: (e) => {
                                             setLoading(true)
-                                            db.collection("postImages").where("ref", "==", p.id).get().then((a) => { setSrc(a.docs[0].data().url); setLoading(false) })
+                                            if (isChallengePost === true) {
+                                                setSrc(p.data.imageSrc)
+                                                setLoading(false)
+                                            }
+                                            else {
+                                                db.collection("postImages").where("ref", "==", p.id).get().then((a) => { setSrc(a.docs[0].data().url); setLoading(false) })
+                                            }
+
                                         },
                                     }}
                                         icon={blueIcon}
@@ -174,9 +179,9 @@ export default function Map({
                                                         aria-controls="long-menu"
                                                         aria-haspopup="true"
                                                     >
-                                                        <Avatar src={p.data.photoUrl}></Avatar>
+                                                        <Avatar src={(isChallengePost === true) ? p.data.creatorPhotoUrl : p.data.photoUrl}></Avatar>
                                                     </IconButton> : <Skeleton variant="circle" width={"40px"} height={"40px"} animation="wave" style={{ marginBottom: "10px" }} />}
-                                                    {!loading ? <h6 style={{ fontWeight: "400" }}>{p.data.message}</h6> : <Skeleton variant="text" width={"80%"} height={"20px"} animation="wave" style={{ marginBottom: "10px", marginLeft: "20px" }} />}
+                                                    {!loading ? <h6 style={{ fontWeight: "400" }}>{(isChallengePost === true) ? p.data.caption : p.data.message}</h6> : <Skeleton variant="text" width={"80%"} height={"20px"} animation="wave" style={{ marginBottom: "10px", marginLeft: "20px" }} />}
                                                 </div>
                                                 {!loading ?
                                                     <Swiper
@@ -198,14 +203,14 @@ export default function Map({
                                                     :
                                                     <Skeleton variant="rect" width={"100%"} height={"180px"} animation="wave" />}
 
-                                                {!loading ? <div style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                                {(!loading && (isChallengePost !== true)) ? <div style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                                                     <h6>Go to Post</h6>
                                                     <IconButton onClick={() => { history.push(`post/${p.id}`); }}>
                                                         <OpenInNewIcon fontSize="small" />
                                                     </IconButton>
                                                 </div>
                                                     :
-                                                    <Skeleton variant="text" width={"100%"} height={"40px"} animation="wave" />
+                                                    <>{(isChallengePost !== true) && <Skeleton variant="text" width={"100%"} height={"40px"} animation="wave" />}</>
                                                 }
                                             </div>
                                         </Popup>
