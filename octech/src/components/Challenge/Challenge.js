@@ -174,7 +174,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
     // Funtion that loads all the posts participating in this challenge.
     const loadChallengeEntries = () => {
         setEntries([])
-
+        setLocationPosts([])
         // Add all posts that have this challenge in its challenges list to entries array.
         db.collection("challengePosts").orderBy('timestamp', 'desc').get()
             .then((postDocArr) => {
