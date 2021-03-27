@@ -64,7 +64,7 @@ const useStyles = makeStyles({
 });
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, challenges, isChallengeView, locationPosts }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, locationPosts }, ref) => {
 
   if (comments === undefined) {
     comments = [];
@@ -1043,11 +1043,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             <Map
               center={{ lat: lat, lng: lng }}
               images={images}
-              name={challengeName}
-              deacription={description}
               message={message}
               photoUrl={photoUrl}
-              totalStar={totalStar}
               locationPosts={locationPosts}
               id={id}
             />

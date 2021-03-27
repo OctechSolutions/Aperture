@@ -230,11 +230,8 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
                   {
                     center:{lat: lat, lng: lng},
                     images:[{src: imageSrc}],
-                    name:caption,
-                    deacription:"",
-                    message:"",
+                    message:caption,
                     photoUrl:creatorPhotoUrl,
-                    totalStars:totalStars,
                     locationPosts:[],
                     id:id
                 }) 
