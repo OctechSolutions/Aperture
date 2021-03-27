@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet';
-import ImageGallery from '../Feed/ImageGallery';
 import { db } from "../../../firebase";
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Avatar } from "@material-ui/core";
