@@ -84,6 +84,7 @@ const BugReportForm = () => {
                     onChange={(e) => setURL(e.target.value)}
                 />
                 {/* File input where the user can upload an image */}
+                <label>Attach a Screenshot of the Bug:</label>
                 <input type="file" id="fileUpload" onChange={onChange} />
 
 
