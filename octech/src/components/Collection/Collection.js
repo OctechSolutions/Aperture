@@ -72,7 +72,7 @@ const Compress = require('compress.js');
 
 
 function Collection({ match, user }) {
-    const [theme, settheme] = useState("");
+    const [theme] = useState("");
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [open, setOpen] = useState(false);
