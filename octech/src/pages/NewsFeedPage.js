@@ -40,6 +40,7 @@ import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 import EditProfile from '../components/userProfile/EditProfile';
 import BugReportForm from '../components/Body/Feed/Reports/BugReportForm';
+import PostView from '../components/Body/Post/PostView';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
 
 const useStyles = makeStyles({
@@ -204,6 +205,7 @@ export default function NewsfeedPage(props) {
                             <Route path="/bugReportForm" render={props => <BugReportForm setValue={setValue} />} />
                             <Route path="/notifications" exact render={props => <Notifications notifications={notifications} />} />
                             <Route path="/editprofile"><EditProfile/></Route>
+                            <Route path="/post/:id" exact component={PostView} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 {/* <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} /> */}
