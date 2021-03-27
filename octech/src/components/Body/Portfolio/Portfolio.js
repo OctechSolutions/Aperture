@@ -294,7 +294,7 @@ function Portfolio({ match, user }) {
                 </>
             }
             {
-                portfolioExists && portfolio.images &&
+                images && portfolioExists && portfolio.images &&
                 <div style={{ margin: "15px" }}>
                     {!slider ? 
                     <center>
@@ -303,7 +303,7 @@ function Portfolio({ match, user }) {
                         onClick={() => {setSlider(true)}}><b>See my best work!</b></Button>
                     </center>
                         :
-                        <ImageGallery sliderImages={getImg(portfolio.images)} />
+                        <ImageGallery sliderImages={getImg([...portfolio.images, ...images])} />
                     }
                 </div>
             }
