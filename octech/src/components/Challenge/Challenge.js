@@ -71,6 +71,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [openOverlay, setOpenOverlay] = useState(false) // For entries overlay.
     const [challengeComplete, setChallengeComplete] = useState(false)
     const [showParticipants, setShowParticipants] = useState(false)
+    const [locationPosts, setLocationPosts] = useState([])
 
     useEffect(() => {
         // helper.current.scrollIntoView({ behavior: 'smooth' });
@@ -151,16 +152,16 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
         // Delete this challenge from list of challenges of all participating posts.
         db.collection("challengePosts").where("challenge", "==", name)
-        .get().then((snapShot) => {
-            snapShot.forEach((postDoc) => {
-                if (postDoc) { 
-                    db.collection("challengePosts").doc(postDoc.id).delete() 
-                    db.collection("posts").doc(postDoc.id).update({
-                        challenge: firebase.firestore.FieldValue.delete()
-                    })
-                }
+            .get().then((snapShot) => {
+                snapShot.forEach((postDoc) => {
+                    if (postDoc) {
+                        db.collection("challengePosts").doc(postDoc.id).delete()
+                        db.collection("posts").doc(postDoc.id).update({
+                            challenge: firebase.firestore.FieldValue.delete()
+                        })
+                    }
+                })
             })
-        })
     }
 
     // Function that displays the copied to clipboard message.
@@ -173,7 +174,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
     // Funtion that loads all the posts participating in this challenge.
     const loadChallengeEntries = () => {
         setEntries([])
-
+        setLocationPosts([])
         // Add all posts that have this challenge in its challenges list to entries array.
         db.collection("challengePosts").orderBy('timestamp', 'desc').get()
             .then((postDocArr) => {
@@ -182,7 +183,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     if (postChallenge) {
                         if (postChallenge === name) {
                             //console.log("postDoc.data() = " + postDoc.data().ref)
-                            if(postDoc.data().lat) {
+                            if (postDoc.data().lat) {
                                 setEntries((prev) => [
                                     ...prev,
                                     <ChallengePost
@@ -205,6 +206,10 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                         setMapComponent={setMapComponent}
                                     ></ChallengePost>
                                 ])
+                                locationPosts.push({
+                                    id: postDoc.id,
+                                    data: postDoc.data(),
+                                })
                             } else {
                                 setEntries((prev) => [
                                     ...prev,
@@ -545,11 +550,11 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
         else {
             if (selectedInputImg !== {}) {
-                if (participants.length ===0 || !participants.some(u => u.displayName === user.displayName)) {
+                if (participants.length === 0 || !participants.some(u => u.displayName === user.displayName)) {
                     db.collection("challenges").doc(name).update({
-                        participants: firebase.firestore.FieldValue.arrayUnion({...user,challengePoints : 0})
+                        participants: firebase.firestore.FieldValue.arrayUnion({ ...user, challengePoints: 0 })
                     })
-                    participants.push({...user,challengePoints : 0})
+                    participants.push({ ...user, challengePoints: 0 })
                 }
                 const ref = db.collection('challengePosts').doc() // A reference to the next entry to the database is created in advance.
                 if (coordinatesSelected && lat && lng) {
@@ -574,7 +579,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         handleSnackbarOpen()
                         resetVals()
                     })
-                } 
+                }
                 else {
                     ref.set({ // This adds a new post to the database.
                         key: ref.id,
@@ -625,13 +630,12 @@ export default function Challenge({ user, name, description, hints, creator, cre
             <Map
                 center={challengePostData.center}
                 images={challengePostData.images}
-                name={challengePostData.name}
-                deacription={challengePostData.description}
                 message={challengePostData.message}
                 photoUrl={challengePostData.photoUrl}
-                totalStar={challengePostData.totalStars}
                 locationPosts={challengePostData.locationPosts}
                 id={challengePostData.id}
+                isChallengePost={true}
+                locationPosts={locationPosts}
             />
         )
     }
@@ -713,7 +717,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                         />
                     </div>
                 </div>
-                
+
                 {/* 3 Dots Menu. */}
                 {isAdmin &&
                     <>
@@ -774,7 +778,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     <IconButton aria-label="viewEntries" color="primary" onClick={handleOverlayClickOpen}>
                         <VisibilityIcon fontSize="large" />
                     </IconButton>
-                    <IconButton aria-label="viewEntries" color="primary" onClick={() => { history.push(`/challengeLeaderboard/${name}`)}}>
+                    <IconButton aria-label="viewEntries" color="primary" onClick={() => { history.push(`/challengeLeaderboard/${name}`) }}>
                         <EqualizerIcon fontSize="large" />
                     </IconButton>
                     {
@@ -931,15 +935,15 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                     centered
                                 >
                                     <Modal.Body>
-                                    <DraggableMap
-                                        center={{ lat: lat, lng: lng }}
-                                        height='30vh'
-                                        zoom={15}
-                                        sendData={getData}
-                                        draggable={true}
-                                        setCoordinatesSelected={setCoordinatesSelected}
-                                        setShowEditMap={setShowEditMap}
-                                    />
+                                        <DraggableMap
+                                            center={{ lat: lat, lng: lng }}
+                                            height='30vh'
+                                            zoom={15}
+                                            sendData={getData}
+                                            draggable={true}
+                                            setCoordinatesSelected={setCoordinatesSelected}
+                                            setShowEditMap={setShowEditMap}
+                                        />
                                     </Modal.Body>
                                 </Modal>
                             }
@@ -1218,20 +1222,20 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     Invitation sent!
                 </Alert>
             </Snackbar>
-        
+
             {/* Modal in which to view location. */}
             <Modal
-                    show={map!==null}
-                    onHide={() => { setMap(null); setOpenOverlay(true) }}
-                    keyboard={false}
-                    size="xl"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                >
-                    <Modal.Header closeButton onClick={() => { setMap(null); setOpenOverlay(true) }}>
-                        <h3 style={{ marginLeft: "auto" }}>Map View</h3>
-                    </Modal.Header>
-                    <Modal.Body>{map}</Modal.Body>
+                show={map !== null}
+                onHide={() => { setMap(null); setOpenOverlay(true) }}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton onClick={() => { setMap(null); setOpenOverlay(true) }}>
+                    <h3 style={{ marginLeft: "auto" }}>Map View</h3>
+                </Modal.Header>
+                <Modal.Body>{map}</Modal.Body>
             </Modal>
         </div>
     )
