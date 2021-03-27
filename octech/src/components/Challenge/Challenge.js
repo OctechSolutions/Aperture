@@ -206,13 +206,10 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                         setMapComponent={setMapComponent}
                                     ></ChallengePost>
                                 ])
-                                setLocationPosts(
-                                    locationPosts.push({
-                                        id: postDoc.id,
-                                        data: postDoc.data(),
-                                    })
-                                )
-                                console.log(locationPosts)
+                                locationPosts.push({
+                                    id: postDoc.id,
+                                    data: postDoc.data(),
+                                })
                             } else {
                                 setEntries((prev) => [
                                     ...prev,
