@@ -4,13 +4,104 @@ service cloud.firestore {
     
   match /databases/{database}/documents {
 
-// Allow read/write access on all documents to any user signed in to the application
+      //users can only read and write their own data
 
-    match /{document=**} {
+       match /users/{document=**} {
 
-      allow read: if request.auth != null;
-      , write: if request.auth != null;
+         allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+         allow create: if request.auth != null;
 
     }
-  }
+
+    //users can read/write their own bug reports
+
+       match /bugReports/{document=**} {
+
+         allow read, update, delete, create: if request.auth != null
+
+    }
+
+    //All users can read channels, Channel owners have all access to read/write
+
+       match /channels/{document=**} {
+
+         allow read: if request.auth != null
+         allow write, update, delete: if request.auth != null && request.auth.name == creator;
+
+    }
+
+    //Read Access to chat participants, Write access to chat message owner
+
+       match /chatRooms/{document=**} {
+         
+         allow read: if request.auth != null && request.auth.token.name == participantNames;
+    
+         match /messages/{document=**} {
+
+             allow write, update, delete: if request.auth != null && request.auth.token.name == name;
+
+        }
+    }
+
+    //All users can read collections, owners have read/write access
+
+       match /collections/{document=**} {
+
+         allow read: if request.auth != null
+         allow write, update, delete: if request.auth != null && request.auth.name == creator;
+
+    }
+
+    //All users can check out the leaderboards only, No write access.
+
+       match /globalLeaderBoards/{document=**} {
+
+         allow read: if request.auth != null
+         allow write: if false
+
+    }
+
+    //No access to any user. Backend function
+
+       match /Seasons/{document=**} {
+
+           allow read, write: if false;
+
+    }
+
+    //Group chat partcipants have read access to all messages but the owner of each message has edit/write access.
+
+       match /groupChats/{document=**} {
+           
+           allow read: if request.auth != null && request.auth.uid == userId;
+         
+         match /messages/{document=**} {
+
+             allow write, update, delete: if request.auth != null && request.auth.token.name == user;
+
+        }
+
+    }
+
+    //Access to only the owner of the portfolio
+
+       match /portfolios/{document=**} {
+
+         allow read, write, update, delete: if request.auth != null && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.name == 
+         get(/databases/$(database)/documents/portfolios/$(request.auth.uid)).data.firstName &&
+         get(/databases/$(database)/documents/portfolios/$(request.auth.uid)).data.lastName    
+
+    }
+
+    //All users can read a users profile but only the profile owner can edit
+    
+       match /users/{document=**} {
+
+         allow read: request.auth != null;
+         allow write, update, delete: if request.auth != null && request.auth.uid == userId;
+    
+    }
+
+  } 
 }
