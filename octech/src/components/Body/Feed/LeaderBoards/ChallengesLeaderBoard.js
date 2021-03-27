@@ -25,11 +25,13 @@ function ChallengesLeaderBoard() {
             .where('challenge', '==', chal.name)
             .orderBy('totalStars', 'desc')
             .onSnapshot(async chalPosts => {
+              let rank = 1
               tempLeaderboardData.push({
                 challengeName: chal.name,
                 challengeDesc: chal.description,
                 postData: chalPosts.docs.map(post => {
-                  return post.data();
+                  let postt = {...post.data(), rank : rank++}
+                  return postt;
                 })
               });
               resolve();
