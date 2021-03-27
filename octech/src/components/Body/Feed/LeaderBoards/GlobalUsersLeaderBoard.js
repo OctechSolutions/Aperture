@@ -31,7 +31,7 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
 
   return (
 
-    <LeaderBoardComponent title="Global Users LeaderBoard" headers={['Name','Profile Points']} columns={['name', 'profilePoints']} data={leaderboardData} />
+    <LeaderBoardComponent title="Global Users LeaderBoard" headers={['Name','Profile Points']} columns={['name', 'profilePoints']} limit={8} data={leaderboardData} highlightColumn={'email'} highlightColumnData={user.email} />
     
   )
 }

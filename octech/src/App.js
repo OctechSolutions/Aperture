@@ -5,9 +5,8 @@ import Login from './components/Login/Login';
 import { login, logout, selectUser } from './features/userSlice';
 import { auth } from './firebase';
 import { db } from "./firebase";
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import NewsfeedPage from './pages/NewsFeedPage'
-import EditProfile from './components/userProfile/EditProfile';
 
 
 function App() {
@@ -87,7 +86,6 @@ function App() {
           />
         )
       }
-      {user && <Switch><Route path="/editprofile"><EditProfile/></Route></Switch>}
     </Router>
   );
 }

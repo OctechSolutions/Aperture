@@ -1,136 +1,222 @@
 import React from 'react';
-import { withGoogleMap, GoogleMap, withScriptjs, Marker } from "react-google-maps";
-import { GoogleMapsAPI } from './client-config';
-import Button from 'react-bootstrap/Button';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import { geocodeByAddress, getLatLng } from 'react-google-places-autocomplete';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
+import "leaflet/dist/leaflet.css";
+import L from 'leaflet';
+import ImageGallery from '../Feed/ImageGallery';
+import { db } from "../../../firebase";
+import Skeleton from '@material-ui/lab/Skeleton';
+import { Avatar } from "@material-ui/core";
+import IconButton from '@material-ui/core/IconButton';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { useHistory } from "react-router-dom";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import SwiperCore, { Navigation, Pagination, EffectFlip, Keyboard } from 'swiper';
+import Zoom from 'react-medium-image-zoom'
+// Import Swiper styles
+import 'swiper/swiper-bundle.css';
+
+SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
+
+var greenIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var blueIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+require('react-leaflet-markercluster/dist/styles.min.css');
 
 
-
-function Map({
+export default function Map({
     center,
-    height,
-    zoom,
-    sendData,
-    draggable,
-    setCoordinatesSelected,
-    setShowEditMap
+    images,
+    name,
+    description,
+    message,
+    photoUrl,
+    totalStar,
+    locationPosts,
+    id
 }) {
 
-    const onMarkerDragEnd = (event) => {
-        let newLat = event.latLng.lat(),
-            newLng = event.latLng.lng();
-        console.log(event)
-        console.log(newLat, newLng);
-        setValue(null);
-        sendData([newLat, newLng]);
-        
-    };
+    React.useEffect(() => {
+        setTimeout(function () { setShowTooltip(false); }, 1000)
+    }, [])
 
-    const searchPlace = (a) => {
-        if (a) {
-            geocodeByAddress(a.label)
-                .then(results => getLatLng(results[0]))
-                .then(({ lat, lng }) =>
-                    sendData([lat, lng])
-                );
-        }
+    const [loading, setLoading] = React.useState(false)
+    const [showTooltip, setShowTooltip] = React.useState(true)
+    const [src, setSrc] = React.useState("")
+    const history = useHistory();
+    const [singleImage,] = React.useState(images !== null ? Boolean(images.length - 1) : true)
+    return (
+        <div>
 
-    }
+            <div style={{ width: "100%", height: "auto" }}>
+                <MapContainer
+                    className="markercluster-map"
+                    center={center}
+                    zoom={18}
+                    minZoom={3}
+                    maxBoundsViscosity={1.0}
+                    style={{ width: "100%", height: "80vh" }}
+                >
+                    <TileLayer
+                        url='https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png'
+                        attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, 
+                        &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> 
+                        &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+                    />
 
-    const [value, setValue] = React.useState(null);
+                    <MarkerClusterGroup>
+                        <Marker position={center} icon={greenIcon}>
+                            <Popup direction="top" opacity={1} >
+                                <div style={{ width: "300px" }}>
+                                    <div style={{ display: "flex", alignItems: "center", alignSelf: "center" }}>
+                                        <IconButton
+                                            aria-label="more"
+                                            aria-controls="long-menu"
+                                            aria-haspopup="true"
+                                        >
+                                            <Avatar src={photoUrl}></Avatar>
+                                        </IconButton>
+                                        <h6 style={{ fontWeight: "400" }}>{message}</h6>
+                                    </div>
+                                    <Swiper
+                                        autoHeight={true}
+                                        navigation={singleImage}
+                                        pagination={singleImage}
+                                        effect='flip'
+                                        keyboard={singleImage}
+                                        style={{ width: "300px" }}
+                                    >
+                                        {images.map((a, index) =>
+                                            <SwiperSlide>
+                                                <Zoom>
+                                                    <img
+                                                        src={a.src}
+                                                        alt="Carousel"
+                                                        style={{ width: "300px", borderRadius: "20px" }}
+                                                    />
+                                                </Zoom>
 
+                                            </SwiperSlide>
+                                        )}
+                                    </Swiper >
+                                </div>
+                            </Popup>
+                            {showTooltip &&
+                                <Tooltip direction="top" offset={[0, -35]} opacity={1} permanent>
+                                    <div style={{ width: "300px" }}>
+                                        <div style={{ display: "flex", alignItems: "center", alignSelf: "center" }}>
+                                            <IconButton
+                                                aria-label="more"
+                                                aria-controls="long-menu"
+                                                aria-haspopup="true"
+                                            >
+                                                <Avatar src={photoUrl}></Avatar>
+                                            </IconButton>
+                                            <h6 style={{ fontWeight: "400" }}>{message}</h6>
+                                        </div>
+                                        <Swiper
+                                            autoHeight={true}
+                                            navigation={singleImage}
+                                            pagination={singleImage}
+                                            effect='flip'
+                                            keyboard={singleImage}
+                                            style={{ width: "300px" }}
+                                        >
+                                            {images.map((a, index) =>
+                                                <SwiperSlide>
+                                                    <Zoom>
+                                                        <img
+                                                            src={a.src}
+                                                            alt="Carousel"
+                                                            style={{ width: "300px", borderRadius: "20px" }}
+                                                        />
+                                                    </Zoom>
 
-    const AsyncMap = withScriptjs(
-        withGoogleMap(
-            () => (
-                <>
+                                                </SwiperSlide>
+                                            )}
+                                        </Swiper >
+                                    </div>
+                                </Tooltip>
+                            }
+                        </Marker>
 
-                    <GoogleMap
-                        defaultZoom={zoom}
-                        defaultCenter={{ lat: center.lat, lng: center.lng }}
-                        onClick = {onMarkerDragEnd}
-                    >{/* For Auto complete Search Box */}
+                        {locationPosts.map((p) => {
+                            if (p.id !== id) {
+                                return (
+                                    <Marker position={{ lat: p.data.lat, lng: p.data.lng }} eventHandlers={{
+                                        click: (e) => {
+                                            setLoading(true)
+                                            db.collection("postImages").where("ref", "==", p.id).get().then((a) => { setSrc(a.docs[0].data().url); setLoading(false) })
+                                        },
+                                    }}
+                                        icon={blueIcon}
+                                    >
+                                        <Popup direction="top">
+                                            <div style={{ width: "300px" }}>
+                                                <div style={{ display: "flex", alignItems: "center", alignSelf: "center" }}>
+                                                    {!loading ? <IconButton
+                                                        aria-label="more"
+                                                        aria-controls="long-menu"
+                                                        aria-haspopup="true"
+                                                    >
+                                                        <Avatar src={p.data.photoUrl}></Avatar>
+                                                    </IconButton> : <Skeleton variant="circle" width={"40px"} height={"40px"} animation="wave" style={{ marginBottom: "10px" }} />}
+                                                    {!loading ? <h6 style={{ fontWeight: "400" }}>{p.data.message}</h6> : <Skeleton variant="text" width={"80%"} height={"20px"} animation="wave" style={{ marginBottom: "10px", marginLeft: "20px" }} />}
+                                                </div>
+                                                {!loading ?
+                                                    <Swiper
+                                                        autoHeight={true}
+                                                        effect='flip'
+                                                        style={{ width: "300px" }}
+                                                    >
+                                                        <SwiperSlide>
+                                                            <Zoom>
+                                                                <img
+                                                                    src={src}
+                                                                    alt="Carousel"
+                                                                    style={{ width: "300px", borderRadius: "20px" }}
+                                                                />
+                                                            </Zoom>
 
-                        {/*Marker*/}
-                        <Marker
-                            name={'Initial Mark'}
-                            draggable={draggable}
-                            onDragEnd={onMarkerDragEnd}
-                            position={{ lat: center.lat, lng: center.lng }}
-                            animation={2}
-                        />
-                        <Marker />
+                                                        </SwiperSlide>
+                                                    </Swiper >
+                                                    :
+                                                    <Skeleton variant="rect" width={"100%"} height={"180px"} animation="wave" />}
 
-                    </GoogleMap>
+                                                {!loading ? <div style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+                                                    <h6>Go to Post</h6>
+                                                    <IconButton onClick={() => { history.push(`post/${p.id}`); }}>
+                                                        <OpenInNewIcon fontSize="small" />
+                                                    </IconButton>
+                                                </div>
+                                                    :
+                                                    <Skeleton variant="text" width={"100%"} height={"40px"} animation="wave" />
+                                                }
+                                            </div>
+                                        </Popup>
+                                    </Marker>
+                                )
+                            }
 
-                </>
-            )
-        )
-    );
-    let map;
-    if (center.lat !== undefined) {
-        map = <div>
-
-            {/* {draggable && <Autocomplete
-                        style={{
-                            width: '100%',
-                            height: '40px',
-                        }}
-                        onPlaceSelected={onPlaceSelected}
-                        types={['(regions)']}
-                    /> */}
-
-
-
-
-            {/* } */}
-
-            {draggable &&
-                <div>
-                    <br />
-                <GooglePlacesAutocomplete
-                    // apiKey='AIzaSyC1EfNasAc6J8vIFP3Lephiv4sKQwFmvFQ'
-                    selectProps={{
-                        value,
-                        onChange: setValue,
-                    }}
-                />
-                {value && searchPlace(value)}
-                </div>
-            }
-
-            <AsyncMap
-                googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${GoogleMapsAPI}&libraries=places`}
-                loadingElement={
-                    <div style={{ height: `100%` }} />
-                }
-                containerElement={
-                    <div style={{ height: height }} />
-                }
-                mapElement={
-                    <div style={{ height: `90%` }} />
-                }
-            />
-
-
-            {draggable &&
-                <>
-
-                    <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-                        <br />
-                        <Button onClick={() => { setCoordinatesSelected(true); setShowEditMap(false) }} >Add Coordinates</Button>
-                        <Button onClick={() => { setCoordinatesSelected(false); setShowEditMap(false) }} >Cancel</Button>
-                    </div>
-                </>
-            }
-            {/* {this.props.draggable && <button style={{width: "20%", marginTop: "3px"}}>Done</button>} */}
-
+                        })}
+                    </MarkerClusterGroup>
+                </MapContainer>
+            </div>
         </div>
-    } else {
-        map = <div style={{ height: height }} />
-    }
-    return (map)
+    )
 }
-
-export default Map

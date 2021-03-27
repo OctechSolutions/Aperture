@@ -71,7 +71,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [openOverlay, setOpenOverlay] = useState(false) // For entries overlay.
     const [challengeComplete, setChallengeComplete] = useState(false)
     const [showParticipants, setShowParticipants] = useState(false)
-    const [checkChallengeComplete, setCheckChallengeComplete] = useState(true)
 
     useEffect(() => {
         // helper.current.scrollIntoView({ behavior: 'smooth' });
@@ -261,13 +260,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
         }
         openEditForm(curData)
         handleMenuClose()
-    }
-
-    // Checks if the challenge is due to be deleted.
-    const checkDeleteChallenge = () => {
-        let endDateObj = new Date(endDate)
-        if(((endDateObj - new Date())/86400000) <= -2) { deleteChallenge(); }
-        // console.log("endDate - Today = " + ((endDateObj - new Date())/86400000) + " days")
     }
 
     // For NEW POST ----------------------------------------------------
@@ -554,8 +546,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
         else {
             if (selectedInputImg !== {}) {
-                if (!participants.some(u => u.displayName === user.displayName)) {
-                    console.log("Added")
+                if (participants.length ===0 || !participants.some(u => u.displayName === user.displayName)) {
                     db.collection("challenges").doc(name).update({
                         participants: firebase.firestore.FieldValue.arrayUnion({...user,challengePoints : 0})
                     })
@@ -647,14 +638,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
         if (loadEntries) { loadChallengeEntries(); setLoadEntries(false); resetVals() }
         // eslint-disable-next-line
     }, [loadEntries])
-
-    useEffect(() => {
-        if(checkChallengeComplete) { 
-            checkDeleteChallenge()
-            setCheckChallengeComplete(false) 
-        }
-    // eslint-disable-next-line
-    }, [checkChallengeComplete])
 
     return (
         <div className="challenge" >

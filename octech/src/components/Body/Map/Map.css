@@ -1,0 +1,6 @@
+.pac-container {
+    background-color: #FFF;
+    z-index: 5001;
+    position: fixed;
+    display: inline-block;
+}

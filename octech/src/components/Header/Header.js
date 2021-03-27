@@ -20,9 +20,10 @@ import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
-import EditIcon from '@material-ui/icons/Edit';
 import Modal from 'react-bootstrap/Modal';
 import EditProfileModal from "./EditProfileModal"
+import EditIcon from "@material-ui/icons/Edit";
+import BugReportIcon from '@material-ui/icons/BugReport';
 
 function Header({ setValue, hasNotifications }) {
   const dispatch = useDispatch();
@@ -85,14 +86,16 @@ function Header({ setValue, hasNotifications }) {
             <SearchIcon />
           </Tooltip>
         </IconButton>
+
         <IconButton
           aria-label="leaderboards"
           onClick={() => { history.push("/leaderboards/globalUsersLeaderBoard"); setValue("leaderboards") }}
-        >
-          <Tooltip title={"Leadearboards"} aria-label="leaderboards">
+          >
+          <Tooltip title={"Leaderboards"} aria-label="leaderboards">
             <EqualizerIcon />
           </Tooltip>
         </IconButton>
+
         <IconButton
           aria-label="notifications"
           onClick={() => { history.push("/notifications"); setValue("notifications") }}
@@ -103,6 +106,16 @@ function Header({ setValue, hasNotifications }) {
             </Badge>
           </Tooltip>
         </IconButton>
+
+        {/* <IconButton
+          aria-label="BugReportForm"
+          onClick={() => { history.push("/bugReportForm"); setValue("BugReportForm") }}
+          >
+          <Tooltip title={"Report a Bug"} aria-label="BugReportForm">
+            <BugReportIcon />
+          </Tooltip>
+        </IconButton> */}
+
         <IconButton
           aria-label="avatar"
           onClick={handleMenu}
@@ -152,6 +165,12 @@ function Header({ setValue, hasNotifications }) {
             <ExitToAppIcon />
           </ListItemIcon>
             Sign Out
+        </MenuItem>
+        <MenuItem onClick={e => {history.push("/bugReportForm");handleClose()}}>
+          <ListItemIcon>
+            <BugReportIcon/>
+          </ListItemIcon>
+            Report a Bug
         </MenuItem>
       </Menu>
       <Modal
