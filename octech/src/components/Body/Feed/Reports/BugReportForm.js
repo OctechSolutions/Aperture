@@ -5,8 +5,6 @@ import { useSelector } from 'react-redux';
 import { selectUser } from '../../../../features/userSlice';
 
 const BugReportForm = () => {
-    // const [name, setName] = useState("");
-    // const [email, setEmail] = useState("");
     const [url, setURL] = useState("");
     const [bugReport, setBugReport] = useState("");
     const [imageData, setImageData] = useState("");
@@ -33,11 +31,9 @@ const BugReportForm = () => {
         //Setting the fields and values to be added to Firebase database
         db.collection("bugReports")
             .add({
-                // name: name,
-                // email: email,
                 url: url,
                 bugReport: bugReport,
-                image: imageData
+                image: imageData,
             })
             .then(() => {
                 setLoader(false);
@@ -49,8 +45,6 @@ const BugReportForm = () => {
                 setLoader(false);
             });
 
-        // setName("");
-        // setEmail("");
         setURL("");
         setBugReport("");
 
@@ -61,21 +55,6 @@ const BugReportForm = () => {
         <div>
             <form className="form" id="bugForm" onSubmit={handleSubmit}>
                 <h1 className="pb-5">Hello {user.displayName}, would you like to submit a bug report?</h1>
-
-
-                {/* <label>Name:</label>
-            <input
-                placeholder="Insert Your Full Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
-
-            <label>Email:</label>
-            <input
-                placeholder="Insert Your Email Address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            /> */}
 
                 <label>URL:</label>
                 <input
