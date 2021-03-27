@@ -407,6 +407,13 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             name="commentBox"
             label={isForumPost ? "Feedback" : "Comment"}
             id="commentBox"
+            onKeyPress={(ev) => {
+              if (ev.key === 'Enter') {
+                // Do code here
+                ev.preventDefault();
+                postComment();
+              }
+            }}
             InputProps=
             {{
               endAdornment:
