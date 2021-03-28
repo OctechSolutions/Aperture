@@ -55,8 +55,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
         const useR = firebase.auth().currentUser;
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPassword);
         // Now you can use that to reauthenticate
-        await useR.reauthenticateWithCredential(credential).then(async function (result) {
-
+        if(auth.currentUser.providerData[0].providerId !== "google.com"){
             if (editName)
                 await db.collection("users").doc(name).get().then(user => {
                     if (user.data()) {
@@ -64,54 +63,73 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                         noError = false;
                     }
                 })
-            if (editEmail) {
-                await db.collection("users").where("email", "==", email).limit(1).get().then(docs => {
-                    docs.forEach(doc => {
-                        noError = false
-                        setEmailAlreadyInUse(true)
-                    })
-                })
-
-            }
-            if (editPassword) {
-                if (!newPassword)
-                    noError = false
-                if (newPassword !== retypePassword) {
-                    noError = false
-                    setRetypePasswordDoesNotMatch(true)
-                }
-            }
             if (noError) {
                 setShowEditProfile(false)
                 setLoading(true)
                 if (editName) {
                     await editUserName(name)
                 }
+                setLoading(false)
+            }
+        }
+        else{
+            await useR.reauthenticateWithCredential(credential).then(async function (result) {
+
+                if (editName)
+                    await db.collection("users").doc(name).get().then(user => {
+                        if (user.data()) {
+                            setNameNotUnique(true)
+                            noError = false;
+                        }
+                    })
                 if (editEmail) {
-                    useR.updateEmail(email).then(function () {
-                        // useR.reload()
-                        useR.sendEmailVerification().then(function () {
+                    await db.collection("users").where("email", "==", email).limit(1).get().then(docs => {
+                        docs.forEach(doc => {
+                            noError = false
+                            setEmailAlreadyInUse(true)
+                        })
+                    })
+
+                }
+                if (editPassword) {
+                    if (!newPassword)
+                        noError = false
+                    if (newPassword !== retypePassword) {
+                        noError = false
+                        setRetypePasswordDoesNotMatch(true)
+                    }
+                }
+                if (noError) {
+                    setShowEditProfile(false)
+                    setLoading(true)
+                    if (editName) {
+                        await editUserName(name)
+                    }
+                    if (editEmail) {
+                        useR.updateEmail(email).then(function () {
+                            // useR.reload()
+                            useR.sendEmailVerification().then(function () {
+                            }).catch(function (error) {
+                                console.log(error)
+                            });
                         }).catch(function (error) {
                             console.log(error)
                         });
-                    }).catch(function (error) {
-                        console.log(error)
-                    });
-                    await db.collection("users").doc(useR.displayName).update({ email: email })
+                        await db.collection("users").doc(useR.displayName).update({ email: email })
+                    }
+                    if (editPassword) {
+                        useR.updatePassword(newPassword).then(function () {
+                            // Update successful.
+                        }).catch(function (error) {
+                            console.log(error)
+                        });
+                    }
+                    setLoading(false)
                 }
-                if (editPassword) {
-                    useR.updatePassword(newPassword).then(function () {
-                        // Update successful.
-                    }).catch(function (error) {
-                        console.log(error)
-                    });
-                }
-                setLoading(false)
-            }
-        }).catch(function (error) {
-            console.log(error, "e")
-            setOldPasswordDoesNotMatch(true)
-        });
+            }).catch(function (error) {
+                console.log(error, "e")
+                setOldPasswordDoesNotMatch(true)
+            });}
         firebase.auth().currentUser.reload()
     }
     const deleteAccount = async () => {
