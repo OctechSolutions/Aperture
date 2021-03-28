@@ -64,7 +64,7 @@ const useStyles = makeStyles({
 });
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, challenges, isChallengeView, locationPosts }, ref) => {
+const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, locationPosts }, ref) => {
 
   if (comments === undefined) {
     comments = [];
@@ -111,6 +111,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
 
   //Total Stars of the post
   const [totalStars, setTotalStars] = useState(totalStar);
+  const [update, setUpdate] = useState(0);
   //Stars given by the user on the post
   const [stars, setStars] = useState((star[viewingUser.uid] === undefined) ? 0 : star[viewingUser.uid]);
 
@@ -124,7 +125,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     let newTotalStars = totalStars + (givenStars - stars);
     const post = db.collection("posts").doc(id);
     star[viewingUser.uid] = givenStars;
-    console.log(viewingUser, givenStars, id)
     // await db.collection("users").doc(name).collection("notifications").doc(name).get().then((doc) => {
     //   db.collection("users").doc(name).collection("notifications").doc(name).set({
     //     notifications: doc.data().notifications.filter(a => (a.sender === viewingUser.displayName) && (a.type === "rating") && (a.postId === id) ? false : true)
@@ -279,20 +279,27 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           }, { merge: true })
         }
       }
-      if (isForumPost) {
-        db.collection("forumPosts").doc(id).onSnapshot((doc) => {
-          setCommentList(doc.data().comments);
-        })
-      }
-      else {
-        db.collection("posts").doc(id).onSnapshot((doc) => {
-          setCommentList(doc.data().comments);
-        })
-      }
+      setUpdate(update + 1);
       setComment("");
     }
 
   }
+
+  useEffect(() => {
+    if (isForumPost) {
+      db.collection("forumPosts").doc(id).onSnapshot((doc) => {
+        if (doc.data().comments !== undefined)
+          setCommentList(doc.data().comments.reverse());
+      })
+    }
+    else {
+      db.collection("posts").doc(id).onSnapshot((doc) => {
+        if (doc.data().comments !== undefined)
+          setCommentList(doc.data().comments.reverse());
+      })
+    }
+
+  }, [])
 
   const addToCollection = (event) => {
     setAddToChannelAnchorEl(event.currentTarget);
@@ -412,9 +419,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               endAdornment:
                 <InputAdornment position="end">
                   <IconButton
-                    aria-label="toggle confirm password visibility"
+                    aria-label="comment"
                     onClick={postComment}
-                    onMouseDown={() => { }}
                     edge="end"
                   >
                     <SendIcon />
@@ -427,8 +433,34 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           />
           <br />
           {
-            commentList.sort((a, b) => b.number - a.number).map((c) => {
-              return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
+            commentList.map((c) => {
+              return <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div style={{ padding: "10px" }}>
+                  <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}>
+                    <b>{c.name}</b>
+                  </Link>   {c.comment}
+                </div>
+                {c.name === user.displayName && <IconButton
+                  aria-label="toggle confirm password visibility"
+                  onClick={() => {
+                    if (comments !== undefined) {
+                      if (isForumPost) {
+                        db.collection("forumPosts").doc(id).update({
+                          comments: firebase.firestore.FieldValue.arrayRemove(c)
+                        })
+                      }
+                      else {
+                        db.collection("posts").doc(id).update({
+                          comments: firebase.firestore.FieldValue.arrayRemove(c)
+                        })
+                      }
+                    }
+                  }}
+                  edge="end"
+                >
+                  <DeleteIcon />
+                </IconButton>}
+              </div>
             })
 
           }
@@ -1022,8 +1054,34 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             />
             <br />
             {
-              commentList.sort((a, b) => b.number - a.number).map((c) => {
-                return <div><Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}><b>{c.name}</b></Link>   {c.comment}</div>
+              commentList.map((c) => {
+                return <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div style={{ padding: "10px" }}>
+                    <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}>
+                      <b>{c.name}</b>
+                    </Link>   {c.comment}
+                  </div>
+                  {c.name === user.displayName && <IconButton
+                    aria-label="toggle confirm password visibility"
+                    onClick={() => {
+                      if (comments !== undefined) {
+                        if (isForumPost) {
+                          db.collection("forumPosts").doc(id).update({
+                            comments: firebase.firestore.FieldValue.arrayRemove(c)
+                          })
+                        }
+                        else {
+                          db.collection("posts").doc(id).update({
+                            comments: firebase.firestore.FieldValue.arrayRemove(c)
+                          })
+                        }
+                      }
+                    }}
+                    edge="end"
+                  >
+                    <DeleteIcon />
+                  </IconButton>}
+                </div>
               })
 
             }
@@ -1043,11 +1101,8 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             <Map
               center={{ lat: lat, lng: lng }}
               images={images}
-              name={name}
-              deacription={description}
               message={message}
               photoUrl={photoUrl}
-              totalStar={totalStar}
               locationPosts={locationPosts}
               id={id}
             />
@@ -1091,11 +1146,11 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
         {challengeChip} {/* Display all challenges that this post is participating in. */}
 
       </div> : <div style={{ width: "85vw" }}>
-        <div style= {{display: "flex", marginBottom: "20px"}}>
+        <div style={{ display: "flex", marginBottom: "20px" }}>
           <Skeleton variant="circle" width={"40px"} height={"40px"} animation="wave" />
-          <Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" style={{marginLeft: "20px"}}/>
+          <Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" style={{ marginLeft: "20px" }} />
         </div>
-        <center><Skeleton variant="text" className="post__imageWrapper" height={"20px"} animation="wave" style={{marginBottom: "20px"}}/></center>
+        <center><Skeleton variant="text" className="post__imageWrapper" height={"20px"} animation="wave" style={{ marginBottom: "20px" }} /></center>
         <center><Skeleton variant="rect" className="post__imageWrapper" height={"30vh"} animation="wave" style={{ borderRadius: "40px", marginBottom: "20px" }} /></center>
         <center><Skeleton variant="text" className="post__imageWrapper" height={"50px"} animation="wave" /></center>
       </div>}

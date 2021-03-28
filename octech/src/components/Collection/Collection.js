@@ -8,23 +8,88 @@ import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { db } from '../../firebase';
 import firebase from "firebase";
+import Fab from '@material-ui/core/Fab';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import '../Body/Post/Post.css'
+import ImageGallery from '../../components/Body/Feed/ImageGallery';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import PermMediaIcon from '@material-ui/icons/PermMedia';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { red } from '@material-ui/core/colors';
+import Typography from '@material-ui/core/Typography';
 
+
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        backgroundColor: theme.palette.background.paper,
+        width: 500,
+        position: 'relative',
+        minHeight: 200,
+    },
+    fab: {
+        margin: 0,
+        top: 'auto',
+        right: 'auto',
+        bottom: 45,
+        left: 'auto',
+        position: 'fixed',
+        zIndex: 100
+    },
+    icon: {
+        color: red[400],
+    },
+}));
+
+const StyledMenu = withStyles({
+    paper: {
+        border: '1px solid #d3d4d5',
+    },
+})((props) => (
+    <Menu
+        elevation={0}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+        }}
+        {...props}
+    />
+));
+
+const StyledMenuItem = withStyles((theme) => ({}))(MenuItem);
 
 const Compress = require('compress.js');
 
 
 function Collection({ match, user }) {
-
-    const [theme, settheme] = useState("");
+    const [theme] = useState("");
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [open, setOpen] = useState(false);
     const [sliderImages, setSliderImages] = useState([]);
-   // const [images, setImages] = useState([]);
+    // const [images, setImages] = useState([]);
     const [CollectionExists, setCollectionExists] = useState(false);
     //const [Collection, setCollection] = useState([]);
     const [Collections, setCollections] = useState([]);
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     useEffect(() => {
         db.collection("collections").where("creator", "==", match.params.id).onSnapshot((snapshot) => {
@@ -35,12 +100,11 @@ function Collection({ match, user }) {
                 setCollectionExists(true);
 
                 setCollections(
-                    snapshot.docs.map((doc) => 
-                    {   
+                    snapshot.docs.map((doc) => {
                         let imgs = []
                         doc.data().imageRef.forEach((id) => {
                             db.collection("postImages").doc(id).get().then((doc) => {
-                                if(doc.exists) {
+                                if (doc.exists) {
                                     imgs.push(doc.data().url);
                                 }
                             });
@@ -50,11 +114,12 @@ function Collection({ match, user }) {
                             key: doc.id,
                             data: doc.data(),
                             images: imgs, // To store the images that we added to the collection from already uploaded post
-                            })
+                        })
                     }
                     )
                 )
             }
+
         })
 
     }, [match.params.id]);
@@ -107,13 +172,70 @@ function Collection({ match, user }) {
         setOpen(false)
         setSliderImages([])
     }
+    const classes = useStyles();
+    const getImg = (test) => {
+        const tempImages = []
+        test.forEach((a) => {
+            tempImages.push({ src: a })
+        })
+        return tempImages;
+    }
 
+    const [index, setIndex] = useState(null)
 
     return (
-        <div>
+        <div style={{ marginBottom: "100px" }}>
             {
-                (match.params.id === user.displayName) &&
-                <center style={{marginTop: "20vh", marginBottom: "25vh"}}>
+                !open && CollectionExists &&
+
+                <div>
+                    <div>
+                        <br />
+                        <center>
+                            <Button
+                                aria-controls="customized-menu"
+                                aria-haspopup="true"
+                                variant="contained"
+                                color="primary"
+                                onClick={handleClick}
+                                endIcon={<ArrowDropDownIcon />}
+                            >
+                                <b>Select Collection</b>
+                            </Button>
+                        </center>
+                        <StyledMenu
+                            id="customized-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            {
+                                Collections.map(
+                                    //  The posts from the useEffect hook that were saved are 
+                                    //  iterated over and a new Post component is created corresponding to the posts it is iterating over
+
+                                    ({
+                                        id,
+                                        data,
+                                        images
+                                    }, i) => (
+                                        <StyledMenuItem onClick={() => { setAnchorEl(null); setIndex(i) }}>
+                                            <ListItemIcon>
+                                                <PermMediaIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            <ListItemText primary={data.name} />
+                                        </StyledMenuItem>
+                                    ))}
+                        </StyledMenu>
+                    </div>
+                    <br />
+
+                </div>
+            }
+            {
+                (match.params.id === user.displayName) && !CollectionExists &&
+                <center style={{ marginTop: "15vh" }}>
                     <p>Ready to Create the Perfect Collection?</p>
                     <Button variant="contained"
                         color="primary" onClick={() => { setOpen(true) }}><b>Build a Collection</b></Button>
@@ -140,20 +262,20 @@ function Collection({ match, user }) {
                         />
 
                         {/* theme Input */}
-                        <TextField
+                        {/* <TextField
                             variant="outlined"
                             margin="normal"
                             fullWidth
                             label="A theme by you!"
                             onChange={(e) => settheme(e.target.value)}
-                        />
+                        /> */}
 
                         {/* Description Input */}
                         <TextField
                             variant="outlined"
                             margin="normal"
                             fullWidth
-                            label="Who are you? (A Short Description)"
+                            label="A Short Description..."
                             onChange={(e) => setDescription(e.target.value)}
                         />
 
@@ -209,75 +331,44 @@ function Collection({ match, user }) {
                 </div>
             </Modal>
 
+            
+            {Collections[index] !== undefined && index !== null &&
+                <div style={{ margin: "15px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "15px" }}>
+                        <div>
+                            <Typography variant="caption" display="block" >
+                                Collection Name :
+                            </Typography>
+                            <b>{Collections[index].data.name}</b>
+                        </div>
+                        <IconButton aria-label={`delete ${Collections[index].data.name}`} className={classes.icon}>
+                            {(match.params.id === user.displayName) && <DeleteIcon onClick={() => {
+                                db.collection("collections").doc(Collections[index].id).delete();
+                                db.collection("users").doc(user.displayName).update({
+                                    collections: firebase.firestore.FieldValue.arrayRemove(Collections[index].data.name)
+                                });
+                                Collections.splice(index, 1)
+                            }} />}
+                        </IconButton>
+                    </div>
+
+                    {[...Collections[index].data.images, ...Collections[index].images] && [...Collections[index].data.images, ...Collections[index].images].length > 0 && <ImageGallery sliderImages={getImg([...Collections[index].data.images, ...Collections[index].images])} />}
+                    <center style={{marginTop: "-10px"}}>
+                        <Typography variant="caption" display="block" >
+                            {Collections[index].data.description}
+                        </Typography>
+                    </center>
+                    <br />
+                </div>}
             {
-                CollectionExists && 
-
-                <div>
-                    {
-                         Collections.map( 
-                            //  The posts from the useEffect hook that were saved are 
-                            //  iterated over and a new Post component is created corresponding to the posts it is iterating over
-                            
-                            ({
-                                id,
-                                data,
-                                images
-                            }) => (
-
-                                <div>
-                                    {console.log(data)}
-
-                                    <p>Name - {data.name}</p>
-                                    <p>Theme - {data.theme} [{data.description}]</p>
-                                    <Carousel
-                                        interval={null}
-                                        controls={((data.images.length + images.length) > 1) ? true : false}
-                                    >
-                                        {[...(data.images.map((a) =>
-
-                                            <Carousel.Item className="post__image">
-                                                <img
-                                                    src={a}
-                                                    alt="Carousel"
-                                                />
-                                            </Carousel.Item>
-                                        )),...(images.map((a) =>
-
-                                        <Carousel.Item className="post__image">
-                                            <img
-                                                src={a}
-                                                alt="Carousel"
-                                            />
-                                        </Carousel.Item>
-                                        ))]
-                                        }
-    
-                                    </Carousel>
-
-                                    
-                                    {(match.params.id === user.displayName) &&
-                                        <Button
-                                            variant="contained"
-                                            color="secondary"
-                                            onClick={() => {
-                                                db.collection("collections").doc(id).delete();
-                                                db.collection("users").doc(user.displayName).update({
-                                                    collections: firebase.firestore.FieldValue.arrayRemove(data.name)
-                                                });
-                                            }}
-                                            style={{ marginTop: "20px" }}>
-
-                                            <b>Delete Collection</b>
-
-                                        </Button>}
-                                </div>
-                            )
-                        )
-                    }
-
-                </div>
+                (match.params.id === user.displayName) && CollectionExists &&
+                <center style={{ marginLeft: "-55px" }}>
+                    <Fab className={classes.fab} color='primary' onClick={() => { setOpen(true) }}>
+                        <AddPhotoAlternateIcon />
+                    </Fab>
+                </center>
             }
-        </div>
+        </div >
     )
 }
 
