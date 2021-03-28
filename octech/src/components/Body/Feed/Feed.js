@@ -1038,7 +1038,7 @@ function Feed({ match }, props) {
         <Backdrop className={classes.backdrop} open={open}>
           <CircularProgress color="inherit" />
         </Backdrop>
-        {posts.length > 0 ? <FlipMove>
+        <FlipMove>
           {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
           {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
@@ -1072,10 +1072,6 @@ function Feed({ match }, props) {
             )
           )}
         </FlipMove>
-          : <div>
-            <h2>No Posts to show! Follow channels or Add friends to see posts :)</h2>
-          </div>
-        }
       </div>
       {(((match.params.channel) && (match.params.id === user.displayName)) || (match.path === "/")) &&
         <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
