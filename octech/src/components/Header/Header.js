@@ -189,19 +189,9 @@ function Header({ setValue, hasNotifications }) {
         </Modal.Body>
       </Modal>
 
-      <Modal
-          show={loading}
-          keyboard={false}
-          size="xl"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-      >
-        <Modal.Body>
-          <Backdrop  open={loading} >
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        </Modal.Body>
-      </Modal>
+      <Backdrop  open={loading} >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   )
 }
