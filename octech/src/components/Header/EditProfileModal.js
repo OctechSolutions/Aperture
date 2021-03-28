@@ -55,7 +55,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
         const useR = firebase.auth().currentUser;
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPassword);
         // Now you can use that to reauthenticate
-        if(auth.currentUser.providerData[0].providerId !== "google.com"){
+        if(auth.currentUser.providerData[0].providerId === "google.com"){
             if (editName)
                 await db.collection("users").doc(name).get().then(user => {
                     if (user.data()) {
@@ -483,6 +483,18 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
     }
     const editUserName = async newName => {
 
+        await db.collection("users").doc(user.displayName).get().then(async doc => {
+            const data = { ...doc.data(), name: newName }
+            
+            await db.collection("users").doc(newName).set(data).then(async () => {
+                await db.collection("users").doc(user.displayName).collection("notifications").get().then(docs => {
+                    docs.forEach(doc => {
+                        db.collection("users").doc(user.displayName).collection("notifications").doc(doc.id).delete()
+                    });
+                })
+                await db.collection("users").doc(user.displayName).delete()
+            })
+        })
         // //Update User details
         firebase.auth().currentUser.updateProfile({ displayName: newName }).then(function () {
             // Profile updated successfully!
@@ -490,13 +502,6 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
         }, function (error) {
             console.log(error)
         });
-        await db.collection("users").doc(user.displayName).get().then(async doc => {
-            const data = { ...doc.data(), name: newName }
-            await db.collection("users").doc(newName).set(data).then(async () => {
-                db.collection("users").doc(user.displayName).delete()
-            })
-        })
-
         // Update posts and post images
         await db.collection("posts").get().then(docs => {
             docs.forEach(doc => {
@@ -606,7 +611,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
             docs.forEach(doc => {
                 const docRef = db.collection("chatRooms").doc(doc.id)
                 let data = doc.data()
-                let participantNames = data.participantNames.filter(n => name !== user.displayName).push(newName)
+                let participantNames = data.participantNames.map(n => n !== user.displayName ? n : newName)
                 let participants = data.participants.map(u => u.name !== user.displayName ? u : { ...u, name: newName })
                 docRef.update({ participantNames: participantNames, participants: participants })
                 const collectionRef = docRef.collection("messages")
