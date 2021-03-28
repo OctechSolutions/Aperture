@@ -131,6 +131,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                 setOldPasswordDoesNotMatch(true)
             });}
         firebase.auth().currentUser.reload()
+        window.location.reload();
     }
     const deleteAccount = async () => {
 
