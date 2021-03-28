@@ -12,9 +12,10 @@ function GlobalPostsLeaderBoard() {
 
     db.collection('globalLeaderBoards').doc('postLeaderBoard').onSnapshot(data => {
         setDataFetched(true);
-        setLeaderBoardData(data.data().posts.map(post => {
-          return post.data;
-        }));
+        if(data.data())
+          setLeaderBoardData(data.data().posts.map(post => {
+            return post.data;
+          }));
       })
   }
 
