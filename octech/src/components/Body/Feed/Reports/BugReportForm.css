@@ -18,6 +18,7 @@
     width: 100%;
     color: rgb(0, 0, 0);
     outline: none;
+    min-height: 70px;
     }
 
     #bugForm > input:focus, #bugForm > textarea:focus {
