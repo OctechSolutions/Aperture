@@ -251,33 +251,33 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             number: comments.length
           })
         })
-      }
-      if (name !== user.displayName) {
-        if (channelBy) {
-          db.collection("users").doc(channelBy).collection("notifications").doc(channelBy).set({
-            notifications: firebase.firestore.FieldValue.arrayUnion({
-              type: "comment",
-              sentAt: firebase.firestore.Timestamp.now(),
-              sender: user.displayName,
-              icon: user.photoUrl,
-              comment: comment,
-              postTitle: message,
-              postId: id
-            })
-          }, { merge: true })
-        }
-        else {
-          db.collection("users").doc(name).collection("notifications").doc(name).set({
-            notifications: firebase.firestore.FieldValue.arrayUnion({
-              type: "comment",
-              sentAt: firebase.firestore.Timestamp.now(),
-              sender: user.displayName,
-              icon: user.photoUrl,
-              comment: comment,
-              postTitle: message,
-              postId: id
-            })
-          }, { merge: true })
+        if (name !== user.displayName) {
+          if (channelBy) {
+            db.collection("users").doc(channelBy).collection("notifications").doc(channelBy).set({
+              notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "comment",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl,
+                comment: comment,
+                postTitle: message,
+                postId: id
+              })
+            }, { merge: true })
+          }
+          else {
+            db.collection("users").doc(name).collection("notifications").doc(name).set({
+              notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "comment",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl,
+                comment: comment,
+                postTitle: message,
+                postId: id
+              })
+            }, { merge: true })
+          }
         }
       }
       setUpdate(update + 1);
