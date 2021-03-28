@@ -15,8 +15,9 @@ function ChannelLeaderBoard({ match, setValue }) {
 
       db.collection('globalLeaderBoards').doc('channelLeaderBoard').onSnapshot(data => {
           setDataFetched(true);
-          let channels = data.data().channels;
-          setLeaderBoardData(channels);
+          if(data.data())
+            var channels = data.data().channels;
+            setLeaderBoardData(channels);
     })} 
 
   return (
