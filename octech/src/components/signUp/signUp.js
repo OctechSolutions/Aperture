@@ -104,7 +104,7 @@ const SignUp = () => {
 
                 await auth // Wait until the user has been added to authenticated users list in Firebase.
                     .createUserWithEmailAndPassword(email, confirmPassword)
-
+                await auth.currentUser.sendEmailVerification()
                 auth.currentUser.updateProfile({
                     displayName: username,
                     photoURL: profilePic

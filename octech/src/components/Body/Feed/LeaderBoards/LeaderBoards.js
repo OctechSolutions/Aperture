@@ -4,6 +4,7 @@ import Tab from 'react-bootstrap/Tab';
 import GlobalUsersLeaderBoard from './GlobalUsersLeaderBoard';
 import GlobalPostsLeaderBoard from './GlobalPostsLeaderBoard';
 import ChallengesLeaderBoard from './ChallengesLeaderBoard';
+import ChannelLeaderBoard from './ChannelLeaderBoard';
 // import TabContent from 'react-bootstrap/TabContent';
 
 function Forums({ match, setValue }) {
@@ -32,6 +33,9 @@ function Forums({ match, setValue }) {
                 </Tab>
                 <Tab eventKey="challengesLeaderBoard" title="Challenges" style={{ color: "black", width: "100%" }}>
                     <ChallengesLeaderBoard />
+                </Tab>
+                <Tab eventKey="channelLeaderBoard" title="Fastest Growing Channels" style={{ color: "black", width: "100%" }}>
+                    <ChannelLeaderBoard />
                 </Tab>
             </Tabs>
         </div>
