@@ -164,21 +164,9 @@ const EditProfileModal = ({ setShowEditProfile }) => {
                                 db.collection("postImages").doc(dpc.id).delete()
                             })
                         })
-                        db.collection("posts").doc(doc.id).delete()
+                        db.collection("forumPosts").doc(doc.id).delete()
                     })
                 })
-                //Delete forum posts
-                await db.collection("forumPosts").where("name", "==", user.displayName).get().then(docs => {
-                    docs.forEach(doc => {
-                        db.collection("postImages").where("ref", "==", doc.id).get().then(docs => {
-                            docs.forEach(dpc => {
-                                db.collection("postImages").doc(dpc.id).delete()
-                            })
-                        })
-                        db.collection("posts").doc(doc.id).delete()
-                    })
-                })
-
                 //Delete Collection
                 await db.collection("collections").where("creator", "==", user.displayName).get().then(docs => {
                     docs.forEach(doc => {
@@ -347,21 +335,9 @@ const EditProfileModal = ({ setShowEditProfile }) => {
                             db.collection("postImages").doc(dpc.id).delete()
                         })
                     })
-                    db.collection("posts").doc(doc.id).delete()
+                    db.collection("forumPosts").doc(doc.id).delete()
                 })
             })
-            //Delete forum posts
-            await db.collection("forumPosts").where("name", "==", user.displayName).get().then(docs => {
-                docs.forEach(doc => {
-                    db.collection("postImages").where("ref", "==", doc.id).get().then(docs => {
-                        docs.forEach(dpc => {
-                            db.collection("postImages").doc(dpc.id).delete()
-                        })
-                    })
-                    db.collection("posts").doc(doc.id).delete()
-                })
-            })
-
             //Delete Collection
             await db.collection("collections").where("creator", "==", user.displayName).get().then(docs => {
                 docs.forEach(doc => {
