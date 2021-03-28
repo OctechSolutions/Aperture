@@ -250,33 +250,33 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             number: comments.length
           })
         })
-      }
-      if (name !== user.displayName) {
-        if (channelBy) {
-          db.collection("users").doc(channelBy).collection("notifications").doc(channelBy).set({
-            notifications: firebase.firestore.FieldValue.arrayUnion({
-              type: "comment",
-              sentAt: firebase.firestore.Timestamp.now(),
-              sender: user.displayName,
-              icon: user.photoUrl,
-              comment: comment,
-              postTitle: message,
-              postId: id
-            })
-          }, { merge: true })
-        }
-        else {
-          db.collection("users").doc(name).collection("notifications").doc(name).set({
-            notifications: firebase.firestore.FieldValue.arrayUnion({
-              type: "comment",
-              sentAt: firebase.firestore.Timestamp.now(),
-              sender: user.displayName,
-              icon: user.photoUrl,
-              comment: comment,
-              postTitle: message,
-              postId: id
-            })
-          }, { merge: true })
+        if (name !== user.displayName) {
+          if (channelBy) {
+            db.collection("users").doc(channelBy).collection("notifications").doc(channelBy).set({
+              notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "comment",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl,
+                comment: comment,
+                postTitle: message,
+                postId: id
+              })
+            }, { merge: true })
+          }
+          else {
+            db.collection("users").doc(name).collection("notifications").doc(name).set({
+              notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "comment",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl,
+                comment: comment,
+                postTitle: message,
+                postId: id
+              })
+            }, { merge: true })
+          }
         }
       }
       setUpdate(update + 1);
@@ -550,7 +550,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   caption: message || "My Awesome Post",
                   imageSrc: images[0].src,
                   style: images[0].style,
-                  creator: name,
+                  creator: channelBy ? channelBy :name,
                   creatorPhotoUrl: photoUrl || "",
                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                   challengePoints: 0,
@@ -568,7 +568,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   caption: message || "My Awesome Post",
                   imageSrc: images[0].src,
                   style: images[0].style,
-                  creator: name,
+                  creator: channelBy ? channelBy :name,
                   creatorPhotoUrl: photoUrl || "",
                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                   challengePoints: 0,

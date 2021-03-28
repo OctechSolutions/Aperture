@@ -96,7 +96,7 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
       db.runTransaction(transaction => (
         transaction.get(challenge).then(doc => {
           let participants = doc.data().participants;
-          let index = participants.findIndex(u => u.name === creator)
+          let index = participants.findIndex(u => u.displayName === creator)
           let challengePoints = participants[index].challengePoints ? participants[index].challengePoints :0 ;
           participants[index].challengePoints = challengePoints + (givenStars - stars);
           
