@@ -55,7 +55,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
         const useR = firebase.auth().currentUser;
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPassword);
         // Now you can use that to reauthenticate
-        if(auth.currentUser.providerData[0].providerId !== "google.com"){
+        if(auth.currentUser.providerData[0].providerId === "google.com"){
             if (editName)
                 await db.collection("users").doc(name).get().then(user => {
                     if (user.data()) {
