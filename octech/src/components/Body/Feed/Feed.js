@@ -246,7 +246,7 @@ function Feed({ match }, props) {
       }
     })
   }, [user.displayName])
-
+  
   useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
     db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
       .onSnapshot(doc => {
