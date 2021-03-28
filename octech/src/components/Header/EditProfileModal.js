@@ -17,7 +17,7 @@ import { auth, db } from "../../firebase";
 import firebase from "firebase"
 import { useHistory } from "react-router-dom";
 
-const EditProfileModal = ({ setShowEditProfile }) => {
+const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
     const user = useSelector(selectUser);
     const history = useHistory();
 
@@ -48,6 +48,7 @@ const EditProfileModal = ({ setShowEditProfile }) => {
     const [showconfirmPassword, setShowconfirmPassword] = useState(false);
 
     const [showConfirmDeleteAccount, setShowConfirmDeleteAccount] = useState(false)
+    
 
     const submitHandler = async () => {
         let noError = true
@@ -82,6 +83,7 @@ const EditProfileModal = ({ setShowEditProfile }) => {
             }
             if (noError) {
                 setShowEditProfile(false)
+                setLoading(true)
                 if (editName) {
                     await editUserName(name)
                 }
@@ -104,6 +106,7 @@ const EditProfileModal = ({ setShowEditProfile }) => {
                         console.log(error)
                     });
                 }
+                setLoading(false)
             }
         }).catch(function (error) {
             console.log(error, "e")
@@ -120,6 +123,7 @@ const EditProfileModal = ({ setShowEditProfile }) => {
             await useR.reauthenticateWithCredential(credential).then(async function (result) {
                 setShowConfirmDeleteAccount(false)
                 setShowEditProfile(false)
+                setLoading(true)
 
                 // //Delete User details
                 await db.collection("users").doc(user.displayName).collection("notifications").get().then(docs => {
@@ -281,6 +285,7 @@ const EditProfileModal = ({ setShowEditProfile }) => {
                     })
                 })
                 await firebase.auth().currentUser.delete()
+                setLoading(false)
                 history.push('/');
                 window.location.reload();
             }).catch(function (error) {
@@ -291,6 +296,7 @@ const EditProfileModal = ({ setShowEditProfile }) => {
         else {
             setShowConfirmDeleteAccount(false)
             setShowEditProfile(false)
+            setLoading(true)
 
             // //Delete User details
             await db.collection("users").doc(user.displayName).collection("notifications").get().then(docs => {
@@ -452,6 +458,7 @@ const EditProfileModal = ({ setShowEditProfile }) => {
                 })
             })
             await firebase.auth().currentUser.delete()
+            setLoading(false)
             history.push('/');
             window.location.reload();
         }

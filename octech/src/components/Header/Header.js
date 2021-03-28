@@ -24,6 +24,8 @@ import Modal from 'react-bootstrap/Modal';
 import EditProfileModal from "./EditProfileModal"
 import EditIcon from "@material-ui/icons/Edit";
 import BugReportIcon from '@material-ui/icons/BugReport';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function Header({ setValue, hasNotifications }) {
   const dispatch = useDispatch();
@@ -40,6 +42,7 @@ function Header({ setValue, hasNotifications }) {
   const user = useSelector(selectUser);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [loading,setLoading] = useState(false)
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -182,7 +185,21 @@ function Header({ setValue, hasNotifications }) {
           centered
       >
         <Modal.Body>
-            <EditProfileModal setShowEditProfile ={setShowEditProfile} editEmail={false} />
+            <EditProfileModal setShowEditProfile ={setShowEditProfile} editEmail={false} setLoading ={setLoading} />
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+          show={loading}
+          keyboard={false}
+          size="xl"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+      >
+        <Modal.Body>
+          <Backdrop  open={loading} >
+            <CircularProgress color="inherit" />
+          </Backdrop>
         </Modal.Body>
       </Modal>
     </div>

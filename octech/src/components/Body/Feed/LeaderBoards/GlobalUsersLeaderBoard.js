@@ -15,18 +15,19 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
 
       db.collection('globalLeaderBoards').doc('userLeaderBoard').onSnapshot(data => {
           setDataFetched(true);
-          let users = data.data().users;
-          let topUsers = [];
-          let gotMyRank = false;
-          for(let i = 0; (i< 8 || !gotMyRank) && i<users.length; i++){
-            if(users[i].data.name === user.displayName)
-              gotMyRank=true;
-            if(i<8)
-              topUsers.push(users[i].data)
-            else if(users[i].data.name === user.displayName)
-              topUsers.push(users[i].data)
-          }
-          setLeaderBoardData(topUsers);
+          if(data.data())
+            var users = data.data().users;
+            var topUsers = [];
+            var gotMyRank = false;
+            for(let i = 0; (i< 8 || !gotMyRank) && i<users.length; i++){
+              if(users[i].data.name === user.displayName)
+                gotMyRank=true;
+              if(i<8)
+                topUsers.push(users[i].data)
+              else if(users[i].data.name === user.displayName)
+                topUsers.push(users[i].data)
+            }
+            setLeaderBoardData(topUsers);
     })} 
 
   return (
