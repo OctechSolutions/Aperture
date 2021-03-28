@@ -295,7 +295,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     }
     else {
       db.collection("posts").doc(id).onSnapshot((doc) => {
-        if (doc.data().comments !== undefined)
+        if (doc.data() && doc.data().comments !== undefined)
           setCommentList(doc.data().comments.reverse());
       })
     }
