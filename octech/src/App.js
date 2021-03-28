@@ -98,7 +98,7 @@ function App() {
                 collections: []
               });
             }
-            sendVerificationEmail(userAuth)
+            // sendVerificationEmail(userAuth)
             if (userAuth.providerData[0].providerId === "google.com") {
               setShowAvatarEditor(true)
             }
