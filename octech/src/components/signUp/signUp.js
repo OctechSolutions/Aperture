@@ -7,7 +7,7 @@ import { auth } from '../../firebase';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './signUp.css'
 import EditIcon from '@material-ui/icons/Edit';
-import { storage, db } from '../../firebase';
+import { db } from '../../firebase';
 import { useDispatch } from 'react-redux';
 import { login } from '../../features/userSlice';
 import { makeStyles } from '@material-ui/core/styles';
@@ -22,7 +22,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import ConsentForm from '../ConsentForm/ConsentForm'
 import Modal from 'react-bootstrap/Modal';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
@@ -81,20 +80,20 @@ const SignUp = () => {
     };
 
 
-    const handleUpload = async (e) => { // When a file is uploaded this function is called
-        e.preventDefault();
-        var reader = new FileReader();
+    // const handleUpload = async (e) => { // When a file is uploaded this function is called
+    //     e.preventDefault();
+    //     var reader = new FileReader();
 
-        if (e.target.files[0] !== undefined) {
-            reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
-            setFile(e.target.files[0])
-        }
-        reader.onloadend = function () { // Since this is asyncronous on completion of the loading the image is set with the base64 string
-            console.log("RESULT", reader.result);
-            setProfilePic(reader.result);
-            // alert("Image Uploaded Sucessfully!")
-        };
-    }
+    //     if (e.target.files[0] !== undefined) {
+    //         reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
+    //         setFile(e.target.files[0])
+    //     }
+    //     reader.onloadend = function () { // Since this is asyncronous on completion of the loading the image is set with the base64 string
+    //         console.log("RESULT", reader.result);
+    //         setProfilePic(reader.result);
+    //         // alert("Image Uploaded Sucessfully!")
+    //     };
+    // }
 
     // handleSubmit = What to do when the sign up form is submitted?
     const handleSubmit = (async event => {
@@ -105,51 +104,34 @@ const SignUp = () => {
 
                 await auth // Wait until the user has been added to authenticated users list in Firebase.
                     .createUserWithEmailAndPassword(email, confirmPassword)
-                if (file !== undefined) {
-                    const storageRef = storage.ref();
-                    const fileRef = storageRef.child(file.name);
-                    fileRef.put(file).then(() => {
-                        fileRef.getDownloadURL().then((doc) => {
-                            auth.currentUser.updateProfile({
-                                displayName: username,
-                                photoURL: doc
-                            }).then(() => {
-                                console.log(auth.currentUser)
-                                db.collection("users").doc(username).set({
-                                    name: username,
-                                    email: email,
-                                    photoUrl: doc,
-                                    realName: name,
-                                    contactNumber: contactNumber,
-                                    friends: [],
-                                    friendRequestReceived: [],
-                                    friendRequestSent: [],
-                                    followingChannels: [],
-                                    profilePoints: 0,
-                                    blocked: [],
-                                    blockedBy: [],
-                                    league: "No league profile points less than 100",
-                                    collections: []
-                                }, { merge: true });
-                                dispatch(login({
-                                    email: email,
-                                    displayName: username,
-                                    photoUrl: doc
-                                }))
-                            })
-                        })
-                    })
-
-                } else {
-                    return auth.currentUser.updateProfile({
-                        displayName: username
-                    }).then(() => {
-                        dispatch(login({
-                            email: email,
-                            displayName: username,
-                        }))
-                    })
-                }
+                await auth.currentUser.sendEmailVerification()
+                auth.currentUser.updateProfile({
+                    displayName: username,
+                    photoURL: profilePic
+                }).then(() => {
+                    // console.log(auth.currentUser)
+                    // db.collection("users").doc(username).set({
+                    //     name: username,
+                    //     email: email,
+                    //     photoUrl: profilePic,
+                    //     realName: name,
+                    //     contactNumber: contactNumber,
+                    //     friends: [],
+                    //     friendRequestReceived: [],
+                    //     friendRequestSent: [],
+                    //     followingChannels: [],
+                    //     profilePoints: 0,
+                    //     blocked: [],
+                    //     blockedBy: [],
+                    //     league: "No league profile points less than 100",
+                    //     collections: []
+                    // }, { merge: true });
+                    // dispatch(login({
+                    //     email: email,
+                    //     displayName: username,
+                    //     photoUrl: profilePic
+                    // }))
+                })
             }
             else {
                 setError("Please fill in the required fields");
@@ -220,18 +202,18 @@ const SignUp = () => {
     const [skinColor, setSkinColor] = useState("Light")
     const [topType, setTopType] = useState("ShortHairShortWaved")
 
-    
+
     var top = ["NoHair", "Eyepatch", "Hat", "Hijab", "Turban", "WinterHat1", "WinterHat2", "WinterHat3", "WinterHat4", "LongHairBigHair", "LongHairBob", "LongHairBun", "LongHairCurly", "LongHairCurvy", "LongHairDreads", "LongHairFrida", "LongHairFro", "LongHairFroBand", "LongHairNotTooLong", "LongHairShavedSides", "LongHairMiaWallace", "LongHairStraight", "LongHairStraight2", "LongHairStraightStrand", "ShortHairDreads01", "ShortHairDreads02", "ShortHairFrizzle", "ShortHairShaggyMullet", "ShortHairShortCurly", "ShortHairShortFlat", "ShortHairShortRound", "ShortHairShortWaved", "ShortHairSides", "ShortHairTheCaesar", "ShortHairTheCaesarSidePart"];
-    var accessories = ["Blank","Kurt","Prescription01","Prescription02","Round","Sunglasses","Wayfarers"]
-    var hair = ["Auburn","Black","Blonde","BlondeGolden","Brown","BrownDark","PastelPink","Platinum","Red","SilverGray"]
-    var fHairColor = ["Auburn","Black","Blonde","BlondeGolden","Brown","BrownDark","Platinum","Red"]
-    var facialHair = ["Blank","BeardMedium","BeardLight","BeardMajestic","MoustacheFancy","MoustacheMagnum"]
-    var clothe = ["BlazerShirt","BlazerSweater","CollarSweater","GraphicShirt","Hoodie","Overall","ShirtCrewNeck","ShirtScoopNeck","ShirtVNeck"]
-    var eye = ["Close","Cry","Default","Dizzy","EyeRoll","Happy","Hearts","Side","Squint","Surprised","Wink","WinkWacky"]
-    var eyeBrow = ["Angry","AngryNatural","Default","DefaultNatural","FlatNatural","RaisedExcited","RaisedExcitedNatural","SadConcerned","SadConcernedNatural","UnibrowNatural","UpDown","UpDownNatural"]
-    var mouth = ["Concerned","Default","Disbelief","Eating","Grimace","Sad","ScreamOpen","Serious","Smile","Tongue","Twinkle","Vomit"]
-    var skin = ["Tanned","Yellow","Pale","Light","Brown","DarkBrown","Black"]
-    var style = ["Circle","Default"]
+    var accessories = ["Blank", "Kurt", "Prescription01", "Prescription02", "Round", "Sunglasses", "Wayfarers"]
+    var hair = ["Auburn", "Black", "Blonde", "BlondeGolden", "Brown", "BrownDark", "PastelPink", "Platinum", "Red", "SilverGray"]
+    var fHairColor = ["Auburn", "Black", "Blonde", "BlondeGolden", "Brown", "BrownDark", "Platinum", "Red"]
+    var facialHair = ["Blank", "BeardMedium", "BeardLight", "BeardMajestic", "MoustacheFancy", "MoustacheMagnum"]
+    var clothe = ["BlazerShirt", "BlazerSweater", "CollarSweater", "GraphicShirt", "Hoodie", "Overall", "ShirtCrewNeck", "ShirtScoopNeck", "ShirtVNeck"]
+    var eye = ["Close", "Cry", "Default", "Dizzy", "EyeRoll", "Happy", "Hearts", "Side", "Squint", "Surprised", "Wink", "WinkWacky"]
+    var eyeBrow = ["Angry", "AngryNatural", "Default", "DefaultNatural", "FlatNatural", "RaisedExcited", "RaisedExcitedNatural", "SadConcerned", "SadConcernedNatural", "UnibrowNatural", "UpDown", "UpDownNatural"]
+    var mouth = ["Concerned", "Default", "Disbelief", "Eating", "Grimace", "Sad", "ScreamOpen", "Serious", "Smile", "Tongue", "Twinkle", "Vomit"]
+    var skin = ["Tanned", "Yellow", "Pale", "Light", "Brown", "DarkBrown", "Black"]
+    var style = ["Circle", "Default"]
 
     return (
         <>
@@ -577,10 +559,10 @@ const SignUp = () => {
                     </center>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick = {() => {setProfilePic(`https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`); setShowAvatarEditor(false)}}>
+                    <Button onClick={() => { setProfilePic(`https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`); setShowAvatarEditor(false) }}>
                         Done
                     </Button>
-                    <Button onClick={() => {setProfilePic("");setShowAvatarEditor(false)}}>Cancel</Button>
+                    <Button onClick={() => { setProfilePic(""); setShowAvatarEditor(false) }}>Cancel</Button>
                 </Modal.Footer>
             </Modal>
         </>
