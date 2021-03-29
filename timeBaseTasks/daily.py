@@ -86,7 +86,7 @@ for doc in docsC :
 
 #For seasons
 month = datetime.now()
-endMonth = (datetime.now() +timedelta(days= 1)) #After 90 days
+endMonth = (datetime.now() +timedelta(days= 90)) #After 90 days
 season = db.collection(u'seasons').document(u"currentSeason").get().to_dict()
 if(month.date() >= season[u"endMonth"].date()):
     db.collection(u'seasons').document(u"currentSeason").set({
