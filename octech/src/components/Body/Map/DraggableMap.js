@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useEffect } from "react";
+import React, { useRef, useMemo } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
@@ -25,13 +25,7 @@ export default function DraggableMap({
     setCoordinatesSelected,
     setShowEditMap
 }) {
-    const [info, setInfo] = React.useState({
 
-        zoom: 15,
-        draggable: true,
-    })
-
-    useEffect(() => { setLoaded(true) }, [])
     const eventHandlers = useMemo(
         () => ({
             dragend() {
@@ -72,7 +66,6 @@ export default function DraggableMap({
     }
 
     const [value, setValue] = React.useState(null);
-    const [loaded, setLoaded] = React.useState(false);
     const [search, setSearch] = React.useState(false);
     const [space, setSpace] = React.useState(false);
     return (

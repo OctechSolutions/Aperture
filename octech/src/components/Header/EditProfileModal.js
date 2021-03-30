@@ -16,8 +16,32 @@ import Modal from 'react-bootstrap/Modal';
 import { auth, db } from "../../firebase";
 import firebase from "firebase"
 import { useHistory } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { login } from '../../features/userSlice';
+import { makeStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
-const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
+
+const useStyles = makeStyles((theme) => ({
+    large: {
+        width: theme.spacing(15),
+        height: theme.spacing(15),
+    },
+    medium: {
+        width: theme.spacing(5),
+        height: theme.spacing(5),
+    },
+    xl: {
+        width: theme.spacing(30),
+        height: theme.spacing(30),
+    },
+}));
+
+const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
     const user = useSelector(selectUser);
     const history = useHistory();
 
@@ -36,7 +60,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
     const [showOldPassword, setShowOldPassword] = useState(false);
 
     const [newPassword, setNewPassword] = useState("");
-    const [newPasswordNotEnough, setnewPasswordNotEnough] = useState("");
+    const [newPasswordNotEnough, ] = useState("");
     const [showNewPassword, setShowNewPassword] = useState(false);
 
     const [retypePassword, setRetypePassword] = useState("");
@@ -48,14 +72,14 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
     const [showconfirmPassword, setShowconfirmPassword] = useState(false);
 
     const [showConfirmDeleteAccount, setShowConfirmDeleteAccount] = useState(false)
-    
+
 
     const submitHandler = async () => {
         let noError = true
         const useR = firebase.auth().currentUser;
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPassword);
         // Now you can use that to reauthenticate
-        if(auth.currentUser.providerData[0].providerId === "google.com"){
+        if (auth.currentUser.providerData[0].providerId === "google.com") {
             if (editName)
                 await db.collection("users").doc(name).get().then(user => {
                     if (user.data()) {
@@ -72,7 +96,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                 setLoading(false)
             }
         }
-        else{
+        else {
             await useR.reauthenticateWithCredential(credential).then(async function (result) {
 
                 if (editName)
@@ -129,7 +153,8 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
             }).catch(function (error) {
                 console.log(error, "e")
                 setOldPasswordDoesNotMatch(true)
-            });}
+            });
+        }
         firebase.auth().currentUser.reload()
         window.location.reload();
     }
@@ -233,7 +258,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                         let data = doc.data()
                         let participantNames = data.participantNames.filter(n => name !== user.displayName)
                         let participants = data.participants.filter(u => u.name !== user.displayName)
-                        const collectionRef = docRef.collection("messages")
+                        docRef.collection("messages")
                         docRef.update({ participantNames: participantNames, participants: participants })
                     })
                 })
@@ -406,7 +431,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                     let data = doc.data()
                     let participantNames = data.participantNames.filter(n => name !== user.displayName)
                     let participants = data.participants.filter(u => u.name !== user.displayName)
-                    const collectionRef = docRef.collection("messages")
+                    docRef.collection("messages")
                     docRef.update({ participantNames: participantNames, participants: participants })
                 })
             })
@@ -486,7 +511,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
 
         await db.collection("users").doc(user.displayName).get().then(async doc => {
             const data = { ...doc.data(), name: newName }
-            
+
             await db.collection("users").doc(newName).set(data).then(async () => {
                 await db.collection("users").doc(user.displayName).collection("notifications").get().then(docs => {
                     docs.forEach(doc => {
@@ -615,7 +640,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                 let participantNames = data.participantNames.map(n => n !== user.displayName ? n : newName)
                 let participants = data.participants.map(u => u.name !== user.displayName ? u : { ...u, name: newName })
                 docRef.update({ participantNames: participantNames, participants: participants })
-                const collectionRef = docRef.collection("messages")
+                docRef.collection("messages")
             })
         })
 
@@ -668,8 +693,45 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
 
     }
 
+    const [avatarStyle, setAvatarStyle] = useState("Circle")
+    const [accessoriesType, setAccessoriesType] = useState("Blank")
+    const [clotheType, setClotheType] = useState("BlazerShirt")
+    const [eyeType, setEyeType] = useState("Default")
+    const [eyebrowType, setEyebrowType] = useState("Default")
+    const [facialHairColor, setFacialHairColor] = useState("Brown")
+    const [facialHairType, setFacialHairType] = useState("BeardLight")
+    const [hairColor, setHairColor] = useState("Brown")
+    const [mouthType, setMouthType] = useState("Smile")
+    const [skinColor, setSkinColor] = useState("Light")
+    const [topType, setTopType] = useState("ShortHairShortWaved")
+    const [previewAvatar, setPreviewAvatar] = useState(auth.currentUser.photoURL)
+
+
+    var top = ["NoHair", "Eyepatch", "Hat", "Hijab", "Turban", "WinterHat1", "WinterHat2", "WinterHat3", "WinterHat4", "LongHairBigHair", "LongHairBob", "LongHairBun", "LongHairCurly", "LongHairCurvy", "LongHairDreads", "LongHairFrida", "LongHairFro", "LongHairFroBand", "LongHairNotTooLong", "LongHairShavedSides", "LongHairMiaWallace", "LongHairStraight", "LongHairStraight2", "LongHairStraightStrand", "ShortHairDreads01", "ShortHairDreads02", "ShortHairFrizzle", "ShortHairShaggyMullet", "ShortHairShortCurly", "ShortHairShortFlat", "ShortHairShortRound", "ShortHairShortWaved", "ShortHairSides", "ShortHairTheCaesar", "ShortHairTheCaesarSidePart"];
+    var accessories = ["Blank", "Kurt", "Prescription01", "Prescription02", "Round", "Sunglasses", "Wayfarers"]
+    var hair = ["Auburn", "Black", "Blonde", "BlondeGolden", "Brown", "BrownDark", "PastelPink", "Platinum", "Red", "SilverGray"]
+    var fHairColor = ["Auburn", "Black", "Blonde", "BlondeGolden", "Brown", "BrownDark", "Platinum", "Red"]
+    var facialHair = ["Blank", "BeardMedium", "BeardLight", "BeardMajestic", "MoustacheFancy", "MoustacheMagnum"]
+    var clothe = ["BlazerShirt", "BlazerSweater", "CollarSweater", "GraphicShirt", "Hoodie", "Overall", "ShirtCrewNeck", "ShirtScoopNeck", "ShirtVNeck"]
+    var eye = ["Close", "Cry", "Default", "Dizzy", "EyeRoll", "Happy", "Hearts", "Side", "Squint", "Surprised", "Wink", "WinkWacky"]
+    var eyeBrow = ["Angry", "AngryNatural", "Default", "DefaultNatural", "FlatNatural", "RaisedExcited", "RaisedExcitedNatural", "SadConcerned", "SadConcernedNatural", "UnibrowNatural", "UpDown", "UpDownNatural"]
+    var mouth = ["Concerned", "Default", "Disbelief", "Eating", "Grimace", "Sad", "ScreamOpen", "Serious", "Smile", "Tongue", "Twinkle", "Vomit"]
+    var skin = ["Tanned", "Yellow", "Pale", "Light", "Brown", "DarkBrown", "Black"]
+    var style = ["Circle", "Default"]
+    const classes = useStyles();
+    const dispatch = useDispatch(); // Keep track of changes on the user slice
+    const [showAvatarEditor, setShowAvatarEditor] = useState(false)
+
     return (
         <div style={{ margin: "10px" }}>
+            <center>
+                <Avatar
+                    src={previewAvatar}
+                    className={classes.xl}
+                />
+                <br />
+                <Button variant="outlined" endIcon={<EditIcon />} color="primary" onClick={() => { setShowAvatarEditor(true) }}>Edit Avatar</Button>
+            </center>
             <TextField id="userNameField" className="field" variant="outlined" label="Username" placeholder="Enter New Username" helperText={!name ? "Username cannot be empty" : nameNotUnique ? "Username should be unique" : ""} error={!name | nameNotUnique} value={name} onChange={(event) => { setName(event.target.value); if (nameNotUnique) setNameNotUnique(false) }} fullWidth InputLabelProps={{ shrink: true, }}
                 InputProps={{
                     readOnly: !editName,
@@ -852,6 +914,197 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                     <>
                     </>}
             </Box>
+            <Modal
+                show={showAvatarEditor}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                scrollable={true}
+            >
+                <Modal.Header closeButton onClick={() => { setShowAvatarEditor(false) }}>
+                    <div style={{ marginLeft: "auto", marginRight: "-25px" }}>
+                        <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>Edit your Avatar!</h4>
+                        <center>
+                            <Avatar
+                                src={`https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`}
+                                className={classes.xl}
+                            />
+                        </center>
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <center>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={topType}
+                                onChange={(e) => { setTopType(e.target.value) }}
+                            >
+                                {
+                                    top.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Top Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={accessoriesType}
+                                onChange={(e) => { setAccessoriesType(e.target.value) }}
+                            >
+                                {
+                                    accessories.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Accessories Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={hairColor}
+                                onChange={(e) => { setHairColor(e.target.value) }}
+                            >
+                                {
+                                    hair.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Hair Color</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={facialHairType}
+                                onChange={(e) => { setFacialHairType(e.target.value) }}
+                            >
+                                {
+                                    facialHair.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Facial Hair Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={facialHairColor}
+                                onChange={(e) => { setFacialHairColor(e.target.value) }}
+                            >
+                                {
+                                    fHairColor.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Facial Hair Color</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={clotheType}
+                                onChange={(e) => { setClotheType(e.target.value) }}
+                            >
+                                {
+                                    clothe.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Clothe Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={eyeType}
+                                onChange={(e) => { setEyeType(e.target.value) }}
+                            >
+                                {
+                                    eye.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Eye Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={eyebrowType}
+                                onChange={(e) => { setEyebrowType(e.target.value) }}
+                            >
+                                {
+                                    eyeBrow.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Eyebrow Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={mouthType}
+                                onChange={(e) => { setMouthType(e.target.value) }}
+                            >
+                                {
+                                    mouth.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Mouth Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={skinColor}
+                                onChange={(e) => { setSkinColor(e.target.value) }}
+                            >
+                                {
+                                    skin.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Skin Color</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={avatarStyle}
+                                onChange={(e) => { setAvatarStyle(e.target.value) }}
+                            >
+                                {
+                                    style.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Background Style</FormHelperText>
+                        </FormControl>
+                    </center>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => {
+                        auth.currentUser.updateProfile({
+                            photoURL: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`
+                        }); 
+                        if (auth.currentUser.displayName) {
+                            db.collection("users").doc(auth.currentUser.displayName).set({
+                                photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`
+                            }, { merge: true });
+                        };
+                        dispatch(login({
+                            email: auth.currentUser.email,
+                            uid: auth.currentUser.uid,
+                            displayName: auth.currentUser.displayName,
+                            photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`,
+                            emailVerified: auth.currentUser.emailVerified
+                          }));
+                          setPreviewAvatar(`https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`)
+                         setShowAvatarEditor(false)
+                    }}>
+                        Done
+                    </Button>
+                    <Button onClick={() => { setShowAvatarEditor(false) }}>Cancel</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }

@@ -25,7 +25,7 @@ import chatRoom from '../components/ChatRoom/Chatroom'
 import ChallengesPage from './ChallengesPage'
 import ForumIcon from "@material-ui/icons/Forum";
 // import EqualizerIcon from '@material-ui/icons/Equalizer';
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
@@ -221,7 +221,7 @@ export default function NewsfeedPage(props) {
                         </div>
                     ) :
                     (
-                        <Modal show={true}>
+                        <Modal show={auth.currentUser!==null && auth.currentUser.isVerified===false}>
                             <Modal.Body>
                                 <Alert variant='info'>
                                     <div className="verify-email">

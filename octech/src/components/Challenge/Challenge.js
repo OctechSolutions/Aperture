@@ -635,7 +635,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                 locationPosts={challengePostData.locationPosts}
                 id={challengePostData.id}
                 isChallengePost={true}
-                locationPosts={locationPosts}
             />
         )
     }

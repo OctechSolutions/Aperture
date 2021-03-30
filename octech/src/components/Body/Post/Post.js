@@ -300,7 +300,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       })
     }
 
-  }, [])
+  }, [id, isForumPost])
 
   const addToCollection = (event) => {
     setAddToChannelAnchorEl(event.currentTarget);
