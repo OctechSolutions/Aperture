@@ -673,7 +673,7 @@ During the development of the application’s functionality throughout stages 2 
 
 <figure>
 	<center>
-        <img src="./reportImages/CICD.png" alt="CI/CD image" style="width:60%">
+        <img src="./reportImages/CICD.PNG" alt="CI/CD image" style="width:60%">
     </center>
     <figcaption style="text-align:center;">
         Continuous Integration and Continuous Delivery
