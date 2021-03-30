@@ -174,7 +174,7 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 
   
 
-##### 1.2. High level Components
+##### 1.2. <span style="color:red">High level Components</span>
 
 1. **User Account System**
 
