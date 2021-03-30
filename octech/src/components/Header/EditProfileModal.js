@@ -732,6 +732,7 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                 <br />
                 <Button variant="outlined" endIcon={<EditIcon />} color="primary" onClick={() => { setShowAvatarEditor(true) }}>Edit Avatar</Button>
             </center>
+            <br />
             <TextField id="userNameField" className="field" variant="outlined" label="Username" placeholder="Enter New Username" helperText={!name ? "Username cannot be empty" : nameNotUnique ? "Username should be unique" : ""} error={!name | nameNotUnique} value={name} onChange={(event) => { setName(event.target.value); if (nameNotUnique) setNameNotUnique(false) }} fullWidth InputLabelProps={{ shrink: true, }}
                 InputProps={{
                     readOnly: !editName,
