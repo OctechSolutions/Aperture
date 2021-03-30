@@ -64,6 +64,37 @@
 
 <div style="page-break-after: always; break-after: page;"></div>
 
+### Executive Summary
+
+This document is an overview of the journey of the photo sharing application Aperture by Octech Solutions from design through development culminating in the beautiful product it is today.
+
+How better to start the story of development of Aperture than with an opportunity to try it out?!  Try out Aperture at https://aperture-by-octech.herokuapp.com/.
+
+**Aperture can be viewed as comprising of 6 sub-systems.**
+
+1. User Account System
+2. Content Creation System
+3. User Interaction System
+4. Game Mechanics System
+5. Notification System
+6. Application Improvement System
+
+To begin, an overview of the system, technology used and its components shall be provided moving on to various visual representations using Use Case and Sequence diagrams depicting the working of parts of the system can be found. 
+
+Then the layout of the app and steps via which to navigate through it are laid down followed by a description of implementation methodology and testing methods adopted by the development team is made available along with a log of achievements realized at various points of time in development. 
+
+A guide to installing, setting up and maintaining Aperture is provided in addition to a user guide.
+
+Finally, this document features a project evaluation section that covers topics like team organization, implementation schedule / process and the features of the final product with all achievements and failure to achieve mentioned in detail. This section boasts artifacts like the aperture project diary, implementation charts, tables depicting project requirements completion status etc.
+
+The Appendix of this documentation contains supporting documents like a Usability Evaluation document, a list of all Functional and Non-Functional Requirements, etc.
+
+
+
+****
+
+
+
 ### The Vision
 
 **Aperture** is a photo sharing application set in a fun, competitive and educational environment. 
@@ -185,7 +216,7 @@ This section features visual aids that clarify/support design choices made. Sign
 
 **After Stage 3, all 6 sub-systems are completed.** The 1st 3 sub-systems with use case diagrams depicting them along with supporting sequence diagrams have been provided and explained in details in stage 2 report. Use case diagrams related to systems 4, 5 and 6 have also been presented in the stage 1 report. These diagrams shall be revisited here. New sequence diagrams in support of systems 4, 5 and 6 will can be found below.
 
-###### 1. User Account System
+##### 1. User Account System
 
 <figure>
     <center>
@@ -259,7 +290,7 @@ This section features visual aids that clarify/support design choices made. Sign
 
 
 
-###### 2. Content Creation System
+##### 2. Content Creation System
 
 <figure>
     <center>
@@ -415,7 +446,7 @@ This section features visual aids that clarify/support design choices made. Sign
 
 
 
-###### 3. User Interaction System
+##### 3. User Interaction System
 
 <figure>
     <center>
@@ -599,7 +630,7 @@ This section features visual aids that clarify/support design choices made. Sign
 
 
 
-###### 4. Game Mechanics System
+##### 4. Game Mechanics System
 
 <figure>
     <center>
@@ -615,7 +646,7 @@ This section features visual aids that clarify/support design choices made. Sign
 
 
 
-###### 5. Notification System
+##### 5. Notification System
 
 <figure>
     <center>
@@ -631,7 +662,7 @@ This section features visual aids that clarify/support design choices made. Sign
 
 
 
-###### 6. Application Improvement System
+##### 6. Application Improvement System
 
 <figure>
     <center>
@@ -771,6 +802,23 @@ The testing method adopted is of **Continuous Integration & Continuous Delivery*
 Testing was also done across a variety of web browsers, in particular Google Chrome, Edge, Brave and Safari. The app was tested thoroughly at every point of development, for example login and sign-up functionality were very important features of the User Account System which had to be tested for accuracy and technical correctness concerning the new user entries made along with user details verification and user account verification. The firebase database was frequently checked after every new user entry was made to ensure that the data stored was accurate and each user was correctly verified before logging in, and they completed their one-time email verification before they could login for the first time. 
 
 Usability tests conducted via questionnaires ensured that different users tested our app and gave feedback. These opinions and feedback from stage was used to determine possible improvements and identify issues, that would be corrected for the final version.
+
+
+
+**Test Plan in Brief**
+
+The main objective of the test lies in testing the usability and the functionality of our application. Any needed change was made or attempted to be made for final system. 
+
+The given feedback would highlight key areas for corrective action to take place and improve our application and high levels of usability as well as identify features that need to be added to the functionality and possible optimization.
+
+<figure>
+	<center>
+        <img src="./reportImages/TestPlan.png" alt="Test Plan" style="width:95%">
+    </center>
+    <figcaption style="text-align:center;">
+        Test Plan
+    </figcaption>
+</figure>
 
 
 
@@ -960,7 +1008,7 @@ That said, it was observed that collective efforts undertaken by the team led to
 
 
 
-###### 4.1.2. <span style="color:red">Team Work</span> 
+###### 4.1.2. Team Work
 
 <span style="color:magenta">*Was the group organization successful? How well did your group collaborate?*</span> 
 
@@ -970,7 +1018,9 @@ Having members who had fine tuned programming skills as well as those who were p
 
 A team member skilled at a particular task would guide others and draft a plan as to how to approach that task and all members would collaborate and contribute their portions to aid in completion of that task. A notable example of this system in action is the report generation process. One member who was skilled at organizing content, visualizing data and presenting information would be appointed to draft and oversee the report. This member would begin work on the report early on, decide what to put in it and appoint other members to contribute some parts of the report. Every member would submit their parts to the  report in-charge and this person would go on and compile the report, ensure uniformity and get it ready to submit. Since scrum was already used by the team in software implementation, it was decided that we would use scrum to produce documents, plans and the report by identifying their parts and dividing the work and monitoring our daily progress along the way in short sprints.
 
-In all instances where one member had tried to implement a feature but failed/if that needed improvement, either another member would go ahead and complete that task or would act as a guide helping complete it. For example, the functionality of creating/deleting/sharing collections was implemented in stage 2 by a member. Whist functionality was achieved, it was a raw version with very basic CSS and styling. This was later in stage 3, improved by another member to adhere to the theme of the application. Also, by stage 3, the team had gained more experience and a member had implemented a new layout for image upload. Since this was superior to what was already in place, the team decided that this member would go ahead and replace the current mechanism in the app with this better one thus improving the overall quality of the application. 
+In all instances where one member had tried to implement a feature but failed/if it needed improvement, either another member would go ahead and complete that task or would act as a guide helping complete it. For example, the functionality of creating/deleting/sharing collections was implemented in stage 2 by a member. Whist functionality was achieved, it was a raw version with very basic CSS and styling. This was later in stage 3, improved by another member to adhere to the theme of the application. Also, by stage 3, the team had gained more experience and a member had implemented a new layout for image upload. Since this was superior to what was already in place, the team decided that this member would go ahead and replace the current mechanism in the app with this better one thus improving the overall quality of the application. 
+
+<span style="color:blue">*MORE ...*</span>
 
 
 
@@ -1038,7 +1088,7 @@ Following are few problems that the team had faced and methods that were adopted
 
 
 
-###### 4.1.4. <span style="color:red">Sticking To Schedule</span> 
+###### 4.1.4. Sticking To Schedule
 
 <span style="color:magenta">*How successful were the timings in your original plan?*</span>
 
@@ -1169,7 +1219,7 @@ The above comparison chart data was used to extract the Pre Planned Vs Implement
 
 Overall, it is safe to say that our approach was successful in helping keep the team close knit and productive. When problems arose, the team was able to rise to the challenge and brave though it. The milestones we set for ourselves and achieved via sprints, gave us a sense of accomplishment and was a source of motivation in our development journey.
 
-<span style="color:blue">*NEED SPECIFIC EXAMPES & MORE POINTS ARE WELCOME ...*</span>
+<span style="color:blue">*NEED SPECIFIC EXAMPES...*</span>
 
 
 
@@ -1216,7 +1266,7 @@ For project planning and keeping track of progress the following tools were used
 
 In Summary, the vast majority of the Functional Requirements were implemented successfully. The few functionalities that could not be implemented were due to time constraints and upon considering priorities.
 
-*Please refer to the **Requirements Section** of the **Appendix** to view **FR and NFR descriptions** in detail.*
+<span style="color:blue">*Please refer to the Requirements Section of the Appendix to view FR and NFR descriptions in detail.*</span>
 
 
 
@@ -1274,31 +1324,87 @@ To increase the robustness and the overall reliability of the application, most 
 
 
 
-###### 4.3.4. Usability Results
+###### 4.3.4. Usability Test Results
 
 <span style="color:magenta">*How usable did your subjects find the final system? Include a brief summary of results.*</span> 
 
-Overall, most varieties of users **agree** that the app is **easy to use**, and they **had fun** using our application. However, **few** users found it **difficult to navigate** through the app and found the **chatting system** a bit **complicated**. Also, a lot of users **suggested** having **dark mode** to the application as it will be more visually appealing.
+Overall, Aperture received an average usability score of 8.08 out of 10. Most users agree that the app is easy to use, and that they had fun using our application. 
 
-The application was improved from the original mock-ups in stage 1. The color scheme and the layout was also changed with extra features added. 
+Few users found it difficult to navigate through the app and found the chatting system a bit complicated. Also, a lot of users suggested having dark mode in the application as it will be more visually appealing.
 
-User feedback has presented us with few bugs to fix and improvements to make.
-
-**Aperture** will continue to improve the system and make sure that all suggestions from users and clients alike are taken on board and considered for future releases.
+The application was improved from the original mock-ups in stage 1. The color scheme and the layout was also changed with extra features added.  User feedback has presented us with few bugs to fix and improvements to make. Aperture will continue to improve the system and make sure that all suggestions from users and clients alike are taken on board and considered for future releases.
 
 As a result of these findings, we have successfully achieved the vast majority of the Functional and Non- Functional requirements of the final Application. 
 
-*Please refer to the **Usability Evaluation Section** in the **Appendix** for more **data and statistics**.*
+<span style="color:blue">*Please refer to the Usability Evaluation Section in the Appendix for the Usability Test Plan more data and statistics.*</span>
 
 
 
-##### 4.4. Project Evaluation Reflections (Gayathri)
+##### 4.4. Project Evaluation Reflection (Gayathri)
+
+**The experience** of developing an app from scratch was an incredible one. Working in a team consisting of people with whom one has never worked before was a unique experience for every member. The team was familiar with the process of developing code from experience gained through the course of their academic life and otherwise. But handling project and team management was a new experience and thus was the most challenging part of the project.
+
+**What went well?**
+
+- The decision to adopt agile and follow scrum was what ultimately helped account for unexpected outcomes and events and still produce a good, finished product at the end. The power of this approach was truly realized.
+- Group collaboration went well. Every member contributed to almost every area of development. Regular brain storming sessions via chat both bought the team closer and led to great ideas for the application.
+- The choice to use ReactJS whilst resulting in a learning curve, was still a good one. It allowed for members to create a common component that could be reused in the app. Also, availability of great learning material and many ReactJS compliant libraries and APIs made it possible for the team to develop skill in it and helped to avoid scenarios wherein one had to create every component from scratch.
+- The decision was made to use Material UI framework.  A lot of thought was put into the look and feel of the application. This was reflected by positive comments regarding the overall feel of the app in that it was "simple and clear" etc, as can be seen from what users liked most in the Usability Evaluation part in the Appendix.
+
+**What could have gone better?**
+
+- Testing was done after each sprint. All members would simply test their newly implemented code for robustness and correctness. Then each member would do the same after combining the new functionality with the old. Then members would test each others' parts before finally combining them all and testing the whole thing together. This was effective. Few bugs were reported by users during usability tests. But having developed a more elaborate test plan may have helped us to do this testing more efficiently and in lesser time.
+- More thought could have been put into the system architecture. Although a basic high level overview was drafted with sub-systems identified and UML diagrams created to aid in understanding them better. More emphasis could have been made on more specific components of the application and how they interact with each other. Scenarios where in similar components like a post component was implemented twice in different regions of the app (main post & challenge post) while instead they could have shared common features and drawn from the same component could have been avoided. Moreover having a detailed components overview would prove useful for the client or any other third party to understand the application better. 
+- Usability testing for stage 3, could have been done a bit earlier giving more time to implement features that users would like to see. Nonetheless, some requested features like allowing for editing of profile pics after profile relation was still implemented at the end of stage 3.
+- While preventing download of post images was an effort at ensuring no copyright violations, the team realizes that not enough thought was put into the legal aspects of the app like "What would the status of a posted image be in terms of the post creator's copyright regarding it?". 
+
+**Identified means of amendment**
+
+- In the event wherein Aperture would be a continuing project, the team hopes to first create a more detailed overview of its components and their relationships with each other. The organized code structure would be used to reverse engineer a detailed overview that would then be inspected for scope of improvement. Once improvements are made, these may be reflected in code. This overview would then be shared with the client thus allowing him/her/them to fully grasp the underlying structure of Aperture. This would also come in handy whilst trying to pinpoint the location of a bug within the application.
+- Usability tests would be conducted right after a working version is available in order to determine possible upgrades/fixes.
+- After discussion with a legal adviser, a copyright policy that Aperture shall set for its users would drafted. A possible idea could be to allow users to set the copyright license for each post as they create/edit it which would be stored in the database and use of post images would be exercised accordingly.
+- A detailed Test Plan would be drafted and established such that development of all future versions of Aperture would follow this plan.
+
+
 
 ****
 
 
 
-### <span style="color:red">Appendix</span>
+### Conclusion
+
+The aim and objective of this document is to highlight all the functionalities completed within the stage 3 deadline and our implementation of all functionalities thus far. 
+
+In spite of the challenges posed by the COVID-19 Pandemic and the time constraints there in, we at OcTech Solutions have completed all required requirements as specified by the client with regards to all 6 systems comprising Aperture along with supportive additional functionalities. 
+
+Aperture has grown into a successful social media platform where users may both wind down and enjoy sharing photos with each other / showcasing their talents and compete with each other in challenges for a thrilling time!
+
+Visit our company website to find more information about the future of OcTech solutions and the amazing team behind it at https://octech.herokuapp.com/.
+
+Visit our deployed Aperture web application as well which is now also a progressive web application on all mobile phones and tablets at https://aperture-by-octech.herokuapp.com/.
+
+
+
+****
+
+
+
+### References
+
+**Andy. (2020, April 4).** A quick discovery of react-redux-firebase for user authentication. Retrieved from A quick discovery of react-redux-firebase for user authentication Website: https://dev.to/andytq/a-quick-discovery-of-react-redux-firebase-for-user-authentication-11gb
+
+**Contributor, G. (2018).** 4 key benefits of using Firebase for mobile app development. Retrieved Jan 2021, from https://hub.packtpub.com/4-key-benefits-of-using-firebase-for-mobile-app-development/
+Github. (2015, August 29). Redux/ReduxJS. Retrieved from https://github.com/reduxjs/redux/issues/653
+
+**Stevenson, D. (2018).** What is Firebase? The complete story, abridged. Retrieved Jan 2021, from https://medium.com/firebase-developers/what-is-firebase-the-complete-story-abridged-bcc730c5f2c0
+
+
+
+****
+
+
+
+### Appendix
 
 <span style="color:magenta"> *Appendix of Supporting Documentation. Any other supporting documentation that might be relevant (Examples = project diaries/report, original implementation plan, marketing material, etc).*</span>
 
@@ -1340,8 +1446,6 @@ As a result of these findings, we have successfully achieved the vast majority o
 **F-UR1.3d:** Allow user to edit their own account details (M) User can update their profile details like name, password, display picture etc.
 
 **F-UR1.4:** Allow user to logout (M)  
-
-
 
 **F-UR2: Allow users to create and share content on the platform**
 
@@ -1399,8 +1503,6 @@ Users can create channel and will be the channel creator for that channel. Chann
 
 **F-UR2.8:** Enable users to run/organize public events (S) User can start a new tag of events creating a new event and other users can participate by tagging the events in the photos related to the event 
 
-
-
 **F-UR3: Allow users to interact with different features of the platform and other users on the platform** 
 
 **F-UR3.1:** Allow users to chat with other users (M) Users can chat with other users or a group of other users on the platform 
@@ -1437,8 +1539,6 @@ Users can create channel and will be the channel creator for that channel. Chann
 **F-UR3.12:** Have a map view of that will show all the photos near the location of the user (C) Will display a map with all the photos near the location of the user. This is called ‘Photo Map’. 
 
 **F-UR3.13:** Make recommendations to platform users about channels they might be (W) interested in. Have an AI embedded in our system that will give suggestion to the users about the channels they might be interested in based on their likes on their home Image feed. 
-
-
 
 **F-UR4: Allow users to engage and compete in a gaming system of the platform**
 
@@ -1499,8 +1599,6 @@ Challenge creator can delete their challenge anytime and the challenge creator c
 **F-UR4.8:** Allow moderator to create weekly public challenge (C) 
 
 **F-UR4.9:** The App could feature a "my adventures" view where users can share their (W) adventure stories, interesting experiences and thoughts that occurred to them on their photography journey 
-
-
 
 **F-UR5: Allow users to receive notifications from the system**
 
@@ -1567,6 +1665,518 @@ Challenge creator can delete their challenge anytime and the challenge creator c
 
 
 #### <span style="color:blue">Usability Evaluation</span>
+
+<u>**Introduction**</u> 
+
+This document outlines the details for carrying out the usability tests for the Aperture application and the experiment tabulated results.  This document aims to highlight areas of improvement to the development team and flaws in the core functionality and system implemented in the final Application.
+
+**The stakeholders of this document include but are not limited to:** 
+
+1. The client and their representatives who fully understand the need for this experiment carried out to meet an intuitive and high usability system's demands.
+2. The development team who hope to study the feedback provided and correct any design flaws pointed out to create an intuitive and user-friendly system. 
+
+Due to the prevailing COVID-19 pandemic, no test will take place face to face. Instead, an online consent form, questionnaires, and a Link to the Application will be provided to the test subject so that the subjects can answer the questions provided. 
+
+
+
+<u>**Scope**</u> 
+
+There is one software application – Aperture. 
+
+It is vital that the Application is deployed and performs well in all common web browsers such as Google Chrome, Mozilla Firefox, Apple Safari, Microsoft Edge on various operating systems such as IOS and Android. Each user will have their interface and newsfeed tailored to them, which will give the user an immersive and delightful experience. 
+
+Each system relies on an intuitive and a visually appealing yet interactive graphical interface which ensures that: 
+
+1. Each user has an enjoyable experience with the application and will continue to use it for a healthy extended period of time. 
+2. Everything is presented clearly and easily to use for people with various levels of computer literacy.
+
+
+
+<u>**Participants**</u> 
+
+We expect to have 8-13 subjects from various demographics and computer literacy backgrounds. Ideally, subjects would be of legal age with knowledge of social media applications and varying degrees of knowledge in photography. It is expected that subjects who are our target users would provide more in-depth feedback regarding the application. Possible users include photographers, collectors, environmentalists, zoologists, architects, historians, academics, hobbyists, and video gamers. 
+
+
+
+<u>**TEST PLAN**</u> 
+
+A test plan contains all techniques and methodologies used to carry out the usability experiment, the different types of data to collect, how data is to be analyzed, the feedback received to improve our application and participant details like demographic, age, computer literacy etc. 
+
+**Task Scenarios** 
+
+| Questions | Related Requirements                                         |
+| --------- | ------------------------------------------------------------ |
+| Q7        | **FR-3.1:** Allow users to chat with other users **(M)**. Users can chat with other users or a group of users on the platform |
+| Q8        | **F-UR3.2:** Allow  users to rate post of other users **(M)**. Users  can give up to 3 stars to a post of other users. Users can re-rate a post.                                                                             **F-UR3.2a:**  Update user profile points based on ratings of their post **(M)**.When a user receives a rating on their post  that will be added to their total profile points.                     **F-UR3.3:** Allow users to comment on post or delete their comment from a post **(M)**. |
+| Q9        | **F-UR5.1d:** Have a leader board for the challenge(M). Users with highest rated photos will be featured in the challenge leader board.                                                                                  **F-UR5.1d1:** Show user's position compared to the rest of the users in the challenge leader board (S).                                                                                                                                            **F-UR3.1d2:** Update challenge leader board(M). Update leader board when there is a change in the rating of any photo in the challenge. |
+| Q10       | **F-UR3.11:** Have  an image feed for each user(M) Each user will have a news feed that will show  them posts from their friends and posts from the channels they follow.                   **F-UR3.12:** Have  a map view of that will show all the photos near the location of the user (C). Will display a map with all the photos near the location of the user. This is called ‘Photo Map’. |
+| Q11       | **F-UR4:** Allow users to engage and  compete in a gaming system of the platform. |
+
+Task scenarios will receive a rating out of 7, from strongly agree to strongly disagree, on the ease of performing specific tasks and navigating throughout the application. On completing said tasks, the test subject will indicate whether they found the task easy to complete or difficult. This will pinpoint specific areas which need to be fixed and improved in the application. 
+
+Other questions will be a Likert scaling for the overall intuitiveness, ease of use, understanding, and the app's overall rating. Some questions will also prompt the subjects to provide their thoughts and feedback on the application's overall functionality, and they were also asked if they could provide any suggestion on further improving the functionality and overall usability of the app.
+
+**Metrics**
+
+Metrics include subjective quantitative data to be collected in each test subject’s rating of the application using the Likert rating scale on multiple features and functionalities regarding the application. For the overall application, we shall also request subjects to rate the app out of 10 and then provide descriptive qualitative feedback, which will give us targeted feedback about specific features of the application that the subjects liked or disliked. 
+
+***Please refer to the Appendix for documents like pre-test and post-test questionnaires, consent form, complete prototype mock-up etc.*** 
+
+
+
+**<u>TEST PROTOCOL</u>**
+
+The test protocol maps out the flow of events the test subject undertakes to evaluate our application's usability in a real world scenario. The qualitative and quantitative data collected from the questionnaires and how each subject successfully interacted with the application will help the development team improve the application. 
+
+**The following text and questionnaires were presented to users.**
+
+
+
+**Aim** 
+
+The aim of this experiment is for you to try our newly designed Application known as **"Aperture."** The application is a new social media platform to interact and upload photos, create portfolios, create collections, and interact with other users while taking part in an implemented gaming aspect consisting of challenges, leader boards, and awards given for achieving a certain number of points. Your privacy is essential to us, and all data will be kept anonymous and confidential. The feedback you provide will give us critical insights regarding the usability and level of the application's intuitiveness, which will up us create a seamless and enjoyable experience
+
+
+
+**Introduction** 
+
+First, you will be asked to complete a survey form before the test. it is provided to you. You will be asked to navigate through the Application, answer questions based on excerpts from the Application, and complete simple tasks mentioned in the questionnaire. This study is intended to improve our application only, and no data will be shared with any outside or third-party source. Your privacy is important to us, and your responses will remain anonymous and confidential, so they cannot be traced back to you in any way. 
+
+After the test is complete, we will be grateful if you can complete an anonymous questionnaire to collect more feedback for the application. 
+
+There is no correct or incorrect answer in the test. Feedback provided based on your interpretation will help us improve the user experience of the application.
+
+
+
+**Questionnaire**
+
+**Please test the application before attempting the Questions:**
+
+[**https://aperture-by-octech.herokuapp.com/**](https://aperture-by-octech.herokuapp.com/)
+
+
+
+**Q1. The App is easy to use** 
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+
+
+**Q2. The Design and layout of the App were clear and understandable.** 
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+
+
+**Q3. The App layout is logical** 
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+
+
+**Q4. The App is responsive and user friendly** 
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+
+
+**Q5. It is difficult to navigate through the App** 
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+
+
+**Q6. The App visually appealing** 
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+
+
+**Q7. I can easily send and receive messages from my friends**
+
+ **(**[**https://aperture-by-octech.herokuapp.com/**](https://aperture-by-octech.herokuapp.com/)**)** 
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+
+
+**Q8. I can like and comment on uploaded photos** 
+
+**(**[**https://aperture-by-octech.herokuapp.com/**](https://aperture-by-octech.herokuapp.com/)**)**
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+
+
+**Q9. I can easily view the Leaderboards and view my current point status.** 
+
+([**https://aperture-by-octech.herokuapp.com/**](https://aperture-by-octech.herokuapp.com/))
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+
+
+**Q10. I can easily view map location of the photo**
+
+([**https://aperture-by-octech.herokuapp.com/**](https://aperture-by-octech.herokuapp.com/))
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+ 
+
+**Q11. I can easily create and participate in a challenge and invite my friends.**
+
+([**https://aperture-by-octech.herokuapp.com/**](https://aperture-by-octech.herokuapp.com/))
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree 
+
+Please state your level of agreement: https://aperture-by-octech.herokuapp.com/
+
+
+
+**Q12. I can easily create a collection of photos and add an uploaded photo from Different user to my collection.** 
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree
+
+ 
+
+**Q13. I can easily create a portfolio to showcase my best work.**
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree
+
+ 
+
+**Q14. I can report a Bug or inappropriate content in the app easily.**
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree
+
+ 
+
+**Q15. I can easily tag photos**
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree
+
+ 
+
+**Q16. I can easily edit my personal details.**
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree
+
+
+
+**Q17. I can easily delete my account.**
+
+1. Strongly Agree 
+2. Agree 
+3. Somewhat Agree 
+4. Neither agree nor disagree 
+5. Somewhat Disagree 
+6. Disagree 
+7. Strongly disagree
+
+
+
+**<u>USABILITY TEST RESULTS & ANALYSIS</u>**
+
+A comprehensive summary will provided for the consensus on the performance of our system. The summary shall include data collection tools like Likert rating scales to quantize how successful the test subject's interaction was and qualitative feedback excerpts on improvements to be made and flaws pointed out. 
+
+<span style="color:magenta">**Quantitative Analysis** </span>
+
+The subjects were all Heriot-Watt University students with 10 students in Year 3 and 1 student in Year 2 and 2 students from year 1. All subjects were familiar with other photo-sharing applications, and the Mode range of uploading weekly photos is 1-4, with 7 subjects out of 13 choosing the option, so a substantial majority of the subjects are sharp in using technology. We have a gender ratio of Females to Males as 7:6. The age of our test sample is approximately 18 to 24.
+
+**The following results show the demographics and backgrounds of the subjects.** 
+
+<figure>
+    <center>
+        <img src="./reportImages/UsabilityTestResults.png" alt="Usability Test Results" style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">Usability Test Results</figcaption>
+</figure>
+
+**Chat Page Related Results**
+
+<figure>
+    <center>
+        <img src="./reportImages/UsabilityTestResultsChatPage.png" alt="Usability  Test Results - Chat Page" style="width:95%">
+    </center>
+    <figcaption style="text-align:center;">Usability Test Results - Chat Page</figcaption>
+</figure>
+
+Out of 13 responses, 23.1% of the responses strongly agreed that they could easily send and receive messages, 38.5% agreed, and 30.8% somewhat agreed, 7.7% Disagreed. The majority of the users had a good experience with the chat page of the application. The consensus of all testers was that the chat page was easy to use.
+
+**Rate & Comment on Post Related Results**
+
+<figure>
+    <center>
+        <img src="./reportImages/UsabilityTestResultsRateComment.png" alt="Usability  Test Results - Chat Page" style="width:95%">
+    </center>
+    <figcaption style="text-align:center;">Usability Test Results - Rate & Comment on Post</figcaption>
+</figure>
+
+Out of the 13 responses, 30.8% of the responses strongly agreed that they could easily rate and comment on uploaded photos, 46.2% agreed, 23.1% somewhat agreed. The majority of the users had a good experience, and the majority of the testers' consensus was that they could efficiently perform the task.
+
+ **Leaderboards**
+
+<figure>
+    <center>
+        <img src="./reportImages/UsabilityTestResultsLeaderboards.png" alt="Usability  Test Results - Chat Page" style="width:95%">
+    </center>
+    <figcaption style="text-align:center;">Usability Test Results - Leaderboards</figcaption>
+</figure>
+
+Out of the 13 responses, 46.2% of the responses strongly agreed to view the Points of the leader board, and 30.8% agreed, 23.1% Somewhat agreed. The consensus of all the subjects was that they found it relatively intuitive to find and view the leader board's Points.
+
+**Photo Map**
+
+<figure>
+    <center>
+        <img src="./reportImages/UsabilityTestResultsPhotoMap.png" alt="Usability Test Results - Photo Map" style="width:95%">
+    </center>
+    <figcaption style="text-align:center;">Usability Test Results - Photo Map</figcaption>
+</figure>
+
+Out of the 13 responses, 30.8% strongly agreed that they could easily view the photo's map location on our Photo Map. 23.1% agreed, and 23.1% Somewhat agreed, 15.4% Neither agreed nor disagreed, and 7.7% somewhat disagreed. The consensus was that it was easy and intuitive for our subjects to navigate and view the photo's map location.
+
+**Challenges**
+
+<figure>
+    <center>
+        <img src="./reportImages/UsabilityTestResultsChallenges1.png" alt="Usability Test Results - Challenges1" style="width:95%">
+        <img src="./reportImages/UsabilityTestResultsChallenges2.png" alt="Usability Test Results - Challenges2" style="width:95%">
+        <img src="./reportImages/UsabilityTestResultsChallenges3.png" alt="Usability Test Results - Challenges3" style="width:95%">
+    </center>
+    <figcaption style="text-align:center;">Usability Test Results - Challenges</figcaption>
+</figure>
+
+
+
+**Overall Findings**
+
+- Out of the 13 responses, 23.1% Strongly Agreed can create a Collection of photos and add another user photo to their collection. 23.1% Agreed and 38.5% Somewhat agreed 15.4% Neither agree nor Disagree.
+- Out of the 13 responses, 15.4% Strongly Agreed that easily Create Portfolio. 30.8% Agreed and 46.2% Somewhat agreed 7.7% Neither agree nor Disagree.
+- Out of the 13 responses, 23.1% Strongly Agreed can Report Bugs and inappropriate content easily, 38.5% Agreed and 23.1% Somewhat Agreed, 7.7% Somewhat disagree.
+- Out of the 13 responses, 23.1 % Strongly Agreed that they can tag photos easily, 53.8% Agreed and 15.4% Somewhat agreed, 7.7% Neither agree nor Disagree.
+- Out of the 13 responses, 30.8% can easily edit their details, 53.8% agree, and 15.4% Somewhat agree.
+- Out of the 13 responses, 30.8% Strongly agree that they can quickly delete their accounts, 30.8% Agrees, and 23.1 somewhat Agrees, 7.7% Neither agree nor Disagree. 7.7% Somewhat disagree.
+- Out of the 13 responses, 30.8% of the responses strongly agreed to create and participate in a challenge and invite their friends. 30.8 Agreed and 38.5 Somewhat agreed. 
+- The consensus of all the subjects was that they found it relatively intuitive to participate and invite a friend to a challenge. 
+
+- Subjects found the application intuitive and easy to use with high usability.
+- Subjects found the application intuitive and easy to use with high usability.
+
+
+
+The below figure shows the distribution of our Application's rating on a scale from 1-10 with 10. Our Application was highly intuitive with high usability and great interactivity with a straightforward and easy-to-understand layout, while a score of 1 means the exact opposite. 62% of the responses rated our Application in the range of scores from 7-10, which means the average score is 8.08.
+
+<figure>
+    <center>
+        <img src="./reportImages/UsabilityTestResultsQuestion20.png" alt="Usability Test Results - Application High Rating" style="width:30%">
+    </center>
+    <figcaption style="text-align:center;">Usability Test Results - Application High Rating</figcaption>
+</figure>
+
+
+
+<span style="color:magenta">**Qualitative Analysis** </span>
+
+**The following are a few excerpts from the responses of the question “What did you like most about the app?”.**
+
+“The Design”
+
+“The ‘Playification’ feature of the app looks amazing”
+
+“The Feedback forum was nice”
+
+“Everything. All the features worked as expected. The ai caught even small human traces. 
+ The navigation was really impressive. The bug reporting feature is a good touch. “
+
+“Simplicity”
+
+“The UI design and fluidity of animations, and the chat system”
+
+“It's simple and clear”
+
+“Color scheme is really good”
+
+“User friendly”
+
+“Adding GIFs to images and the challenges” 
+
+“That google account can be used to create account easily”
+
+“The leaderboard”
+
+ 
+
+**The following are a few excerpts from the responses of the question “What did you like Least about the app?”.**
+
+“The navigation in few pages were quite difficult.”
+
+“It can be a little confusing initially to navigate.”
+
+“Could use dark mode.”
+
+“Dark mode should be available”
+
+“Channel page and the portfolio page”
+
+“The human image scanning takes a bit time and so does deleting the profile. But that’s not too bad.”
+
+“Feed page”
+
+“The chatting feature. I couldn’t really chat with anyone”
+
+“The chat function was a bit confusing”
+
+“The design.”
+
+
+
+**The following are a few excerpts from the responses of the question “What Would you change in the app?".**
+
+“Probably give a tutorial in the beginning regarding the main features of the app once a person signup for the first time.”
+
+“The chats section”
+
+“Nothing, just a native dark mode support and it's an amazing app”
+
+“Overall, it’s a great app. I would probably change the likes implementation. Home page redirection (as a new user no content is shown), and possibly add dark mode.”
+
+“The orientation automatically becomes landscape make it easier to add friends”
+
+“Would add signup using email as well for those who don’t have a google account”
+
+“The design”
+
+
+
+The participants generally liked some of the features and expressed that the user interface and layout were simple to use and the system itself was easily accessible and easy to understand for them. The changes suggested by the subjects correlate with the features they least liked on the application, the need for a “dark mode,” and making it easier for the users to be able to navigate to a post, making the Chatting system easier, adding more options to sign up beside the google account.
+
+
+
+**Recommended Changes and Conclusions** 
+
+- Add a dark mode feature. 
+- make the navigation to different page easier 
+- improve the human-AI Scanning Feature 
+- Improve the chat system and make it easier.
+- Add more options to log in or signup with, such as     "Email."
+- CSS improvements
+- Add instructions for first-time users.
+
+Throughout the entire usability test, subjects highlighted some issues but generally had an enjoyable experience. They highlighted that the user interface was intuitive and easy to use, especially the introduction of our gaming system. 
+
+The participants were able to complete the tasks with relative ease and grasped the application's ethos along with the concept of "playification."  
+
+The issues highlighted mainly dealt with navigations in the app being hard and the chat page being confusing. Moreover, a dark mode feature should be added to make it a more enjoyable experience.
+
+
+
+**Conclusion**
+
+This section's aims and objectives were a proposed bid for the client, Dr. Richard Freedman, from OcTech Solutions to develop the photo-based social media platform known as Aperture. The section laid out a comprehensive description of each sub-section for the understanding of the client and the software development team. 
+
+We at OcTech Solutions believe that we have met all the requirements as laid out by the client and his associates. A firm conclusion we can draw from the usability report is that the consensus of the sample of people we tested is that the Aperture application has the potential to expand and scale up exponentially. The subjects we tested were very pleased with our Application and rated it extremely high. The standout features were the user interface and the newly implemented game mechanics with the leader board, which our subjects thought of as something new and did not see before.
+
+In the future, we hope to implement many more features via patches and updates and expand operations of maintenance to cope with the heavy traffic flow through our servers and the databases needed to accommodate new users' influx every day. The concept of "playification," as specified by our client, has even more potential than initially thought by our software development and design team, we feel that the meaningful interactions between people because of this feature and this application is the cornerstone of Aperture. 
+
+We at OcTech Solutions are ready to Keep Developing the application, and we have the resources to ensure Aperture becomes a global icon.
 
 
 
