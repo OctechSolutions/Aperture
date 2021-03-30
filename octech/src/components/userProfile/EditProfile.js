@@ -6,24 +6,12 @@ import { db } from "../../firebase";
 import EditIcon from "@material-ui/icons/Edit";
 import { selectUser } from "../../features/userSlice";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 
-const useStyles = makeStyles(theme => ({
-  large: {
-    width: theme.spacing(15),
-    height: theme.spacing(15)
-  },
-  medium: {
-    width: theme.spacing(5),
-    height: theme.spacing(5)
-  }
-}));
 
 function EditProfile() {
   const user = useSelector(selectUser);
-  const [file, setFile] = useState();
-  const classes = useStyles();
+  const [, setFile] = useState();
   const [data, setData] = useState({
     username: user.displayName,
     email: user.email,

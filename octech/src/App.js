@@ -101,6 +101,9 @@ function App() {
             if (userAuth.providerData[0].providerId === "google.com") {
               setShowAvatarEditor(true)
             }
+            else {
+              sendVerificationEmail(userAuth)
+            }
 
             console.log(userAuth.displayName, "Added to the DB")
           }

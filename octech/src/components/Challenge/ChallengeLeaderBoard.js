@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState } from 'react';
 import { db } from '../../firebase';
 import LeaderBoardComponent from '../Body/Feed/LeaderBoards/LeaderBoardComponent';
 import Tabs from "react-bootstrap/Tabs";

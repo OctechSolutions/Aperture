@@ -152,7 +152,7 @@ export default function Map({
                             }
                         </Marker>
 
-                        {locationPosts!==undefined && locationPosts.map((p) => {
+                        {locationPosts !== undefined && locationPosts.map((p) => {
                             if (p.id !== id) {
                                 return (
                                     <Marker position={{ lat: p.data.lat, lng: p.data.lng }} eventHandlers={{
@@ -215,7 +215,10 @@ export default function Map({
                                         </Popup>
                                     </Marker>
                                 )
+
                             }
+                            else
+                                return <></>
 
                         })}
                     </MarkerClusterGroup>

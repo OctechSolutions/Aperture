@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import '../Body/Post/Post.css'
-import Map from '../Body/Map/Map'
 
 import firebase from "firebase"
 import { db } from "../../firebase"
@@ -12,7 +11,6 @@ import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardActions from '@material-ui/core/CardActions'
 import Avatar from '@material-ui/core/Avatar'
-import Modal from 'react-bootstrap/Modal'
 import IconButton from '@material-ui/core/IconButton'
 import { red } from '@material-ui/core/colors'
 import DeleteIcon from '@material-ui/icons/Delete'

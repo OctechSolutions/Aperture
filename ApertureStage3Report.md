@@ -5,7 +5,7 @@
 <img src="./octech/src/components/Header/aperture_logo.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="./octech_logo.png" alt="Octech Logo" style="zoom:20%; float:right" />
 
 
-
+<br />
 
 
 
@@ -83,15 +83,45 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
   - React Bootstrap
   - React-HTML5-Camera-Photo API
   - React-Redux
-  - React Flip-Move
-  
-- Google Firestore (firestore DB, auth, storage) 
-
-- Material UI
-
-- Compress.js
-
+  - Material-ui/core
+    - Material-ui/icons 
+    - Material-ui/lab 
+  - Tenserflow-lite
+      - tensorflow-models/coco-ssd
+      - tensorflow/tfjs-backend-cpu
+      - tensorflow/tfjs-backend-webgl
+      - tensorflow/tfjs-converter
+      - tensorflow/tfjs-core
+  - Autosuggest-highlight
+  - Avataaars
+  - compress.js
+  - filerobot-image-editor
+  - framer-motion
+  - moment
+  - react-bootstrap
+  - react-copy-to-clipboard
+  - react-countdown
+  - react-countup
+  - react-cropper
+  - react-datepicker
+  - react-flip-move
+  - react-giphy-searchbox
+  - react-google-places-autocomplete
+  - react-leaflet
+  - react-map-gl
+  - react-medium-image-zoom
+  - react-router-dom
+  - react-scripts
+  - swiper
+  - web-vitals
+- Google Firestore 
+- Firebase Authentication
+- Firebase Storage
 - Node Package Manager (NPM)
+- Visual Studio Code
+- Github
+- Heroku CLI
+- Ionic/Capacitor
 
 - Visual Studio Code
 
@@ -186,7 +216,7 @@ There are several agile frameworks out there like the Feature Driven Development
     <figcaption style="text-align:center;">Sprint Structure</figcaption>
 </figure>
 
-**Note:** Above image "Sprint Structure" is from a sprint cheat sheet that can be obtained from the description of YouTube Video, "Scrum Overview - [Scrum Basics 2019] + FREE Cheat Sheet" by "Development That Pays". Link = https://www.youtube.com/watch?v=RCJghFbXSPk&list=PLngnoZX8cAn9dlulsZMtqNh-5a1lGGkLS&index=1
+**Note:** Above image "Sprint Structure" is from a sprint cheat sheet that can be obtained from the description of YouTube Video, ["Scrum Overview - [Scrum Basics 2019] + FREE Cheat Sheet" by "Development That Pays".](https://www.youtube.com/watch?v=RCJghFbXSPk&list=PLngnoZX8cAn9dlulsZMtqNh-5a1lGGkLS&index=1)
 
 
 
