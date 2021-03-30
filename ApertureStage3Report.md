@@ -17,6 +17,20 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Formal Team
 
 **Line Manager**
@@ -373,6 +387,34 @@ This section features visual aids that clarify/support design choices made. Sign
 
 
 
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysPublicPrivatePost.png" 
+             alt="Sequence Diagram - Toggle Public/Private Post" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Toggle Public/Private Post
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysAddPostPortfolioCollection.png" 
+             alt="Sequence Diagram - Add a Post to Portfolios/Collections" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Add a Post to Portfolios/Collections
+    </figcaption>
+</figure>
+
+
+
 ###### 3. User Interaction System
 
 <figure>
@@ -529,6 +571,34 @@ This section features visual aids that clarify/support design choices made. Sign
 
 
 
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysExplore.png" 
+             alt="Sequence Diagram - View Explore Page" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - View Explore Page
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysSearch.png" 
+             alt="Sequence Diagram - Search" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Search
+    </figcaption>
+</figure
+
+
+
 ###### 4. Game Mechanics System
 
 <figure>
@@ -574,6 +644,22 @@ This section features visual aids that clarify/support design choices made. Sign
         Use Case Diagram - Application Improvement System
     </figcaption>
 </figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram6AppImprovementSysHumanDetection.png" 
+             alt="Sequence Diagram - Human Detection" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Human Detection
+    </figcaption>
+</figure>
+
+
 
 <span style="color:blue">*MORE ...*</span>
 
@@ -1087,9 +1173,14 @@ Overall, it is safe to say that our approach was successful in helping keep the 
 
 
 
-###### 4.2.3. <span style="color:red">Tools Used</span> (Hasan)
+###### 4.2.3. Tools Used
 
 <span style="color:magenta">*Which languages, tools, and techniques did you use? How suitable were they?*</span>
+
+For project planning and keeping track of progress the following tools were used.
+
+- GitHub was used for version control of all implemented software. It also provides a log of all progress throughout all stages of development.  Follow this link to visit the Aperture GitHub Repository maintained by OcTech Solutions: https://github.com/OctechSolutions/Aperture. Check out branches and forks to view each member's contributions and the main branch history to see the application's development stages.
+- VS Code Editor was used as it can be easily integrated with git and makes pushing to and pulling from GitHub repositories easy.	
 
 <span style="color:blue">*MORE ...*</span>
 
@@ -1097,35 +1188,107 @@ Overall, it is safe to say that our approach was successful in helping keep the 
 
 ##### 4.3. Product (Tasneem)
 
-###### 4.3.1. <span style="color:red">Functionality Achieved</span>
+###### 4.3.1. Functionality Achieved / Failed to Achieve
 
 <span style="color:magenta">*Report achieved functionality. Provide outline summary on functions and then give details. How many of your requirements did you meet? (Example = A table showing to what extent each of the numbered functional requirements have been completed.)* </span>
 
-<span style="color:blue">*MORE ...*</span>
+<figure>
+	<img src="./reportImages/FunctionalityAchieved.png" 
+         alt="Functionality Achieved" 
+         style="width:100%">
+    <figcaption style="text-align:center;">
+        Functionality Achieved
+   	</figcaption>
+</figure>
 
 
 
-###### 4.3.2. <span style="color:red">What's Special?</span>
+<figure>
+	<img src="./reportImages/FunctionalityFailedToAchieve.png" 
+         alt="Functionality Failed to Achieve" 
+         style="width:100%">
+    <figcaption style="text-align:center;">
+        Functionality Failed to Achieve
+   	</figcaption>
+</figure>
+
+
+
+In Summary, the vast majority of the Functional Requirements were implemented successfully. The few functionalities that could not be implemented were due to time constraints and upon considering priorities.
+
+*Please refer to the **Requirements Section** of the **Appendix** to view **FR and NFR descriptions** in detail.*
+
+
+
+###### 4.3.2. What's Special?
 
 <span style="color:magenta">*What is particularly special about your product?  Have you included extra features? How robust is your final system?*</span>
 
-<span style="color:blue">*MORE ...*</span>
+The App contains Set of Special Features which could be interesting for Users such as ones given below.
+
+- **Image Flipping** **animation**. 
+
+  Once Users Upload multiple images to their post they can Flip to the next image smoothly. 
+
+- **Map View**. 
+
+  Users can upload an image and add the GPS Coordinates to it, they will be able to see nearby Posts once they view the Map. 
+
+- **Gaming Forum**
+
+  Game players can share their photos of achievements, glitches, hints etc.
+
+- **Feedback Forum**
+
+  Users can share their photographs/posts to get some feedback possibly from professional photographers.
+
+- **Collections** 
+
+  Users can create a collection of posts of photos to showcase their collections/variety of photographs or challenge other collectors to take photographs of objects/animals around a particular theme. 
+
+- **Portfolio**
+
+  Photographers (both hobbyists and professionals) can create portfolios to exhibit their work. It provides an opportunity for users to advertise their best posts and images and users/clients looking for photographers might recruit talent or get recruited. 
+
+- **Chat System** 
+
+  Users can chat with their Friends and Create Group chats easily.
+
+- **Toggle Public/Private Posts**
+
+  Creator of a post can toggle the public/private icon on it to make it private/public.
 
 
 
-###### 4.3.3. <span style="color:red">Bugs/Constraints</span>
+###### 4.3.3. Bugs/Constraints
 
 <span style="color:magenta">*Are there known bugs or constraints?*</span>
 
-<span style="color:blue">*MORE ...*</span>
+Overall, our application is robust, there are currently no bugs that cause the system to crash.
+
+However, there can be a problem with the Bug Report Functionality as some usability test participants encountered an issue while using our application on their phones where in the submit button went under the navigation bar and they found that the layout was overlapping with text fields. One other participant encountered an issue while logging in via phone as once the user refreshed the page the user got logged out. Also, few participants reported that they were able to upload human pictures **“Partially”**. Finally, a user wished that profile picture could also be edited along with other profile points.
+
+To increase the robustness and the overall reliability of the application, most of the reported issues were fixed and taking into consideration a user's wish to edit the his/her profile pic, this was also made possible. 
+
+<span style="color:blue">*GAURAV, PLEASE REVIEW ...*</span>
 
 
 
-###### 4.3.4. <span style="color:red">Usability Results</span>
+###### 4.3.4. Usability Results
 
 <span style="color:magenta">*How usable did your subjects find the final system? Include a brief summary of results.*</span> 
 
-<span style="color:blue">*MORE ...*</span>
+Overall, most varieties of users **agree** that the app is **easy to use**, and they **had fun** using our application. However, **few** users found it **difficult to navigate** through the app and found the **chatting system** a bit **complicated**. Also, a lot of users **suggested** having **dark mode** to the application as it will be more visually appealing.
+
+The application was improved from the original mock-ups in stage 1. The color scheme and the layout was also changed with extra features added. 
+
+User feedback has presented us with few bugs to fix and improvements to make.
+
+**Aperture** will continue to improve the system and make sure that all suggestions from users and clients alike are taken on board and considered for future releases.
+
+As a result of these findings, we have successfully achieved the vast majority of the Functional and Non- Functional requirements of the final Application. 
+
+*Please refer to the **Usability Evaluation Section** in the **Appendix** for more **data and statistics**.*
 
 
 
@@ -1135,8 +1298,280 @@ Overall, it is safe to say that our approach was successful in helping keep the 
 
 
 
-### <span style="color:red">Appendix</span> (Yoshi)
+### <span style="color:red">Appendix</span>
 
 <span style="color:magenta"> *Appendix of Supporting Documentation. Any other supporting documentation that might be relevant (Examples = project diaries/report, original implementation plan, marketing material, etc).*</span>
+
+#### <span style="color:blue">Requirements</span>
+
+**<u>FUNCTIONAL REQUIREMENTS</u>**
+
+**F-UR1 : Allow users to have an account on the platform** 
+
+**F-UR1.1:** Allow Users to Sign UP (M) Details Required for Sign Up: 
+
+- Name
+- Username
+- Email
+- Password
+- Contact Number 
+- Profile Picture which can be pre-defined avatar picture or their own uploaded photo for which they must give consent to the system 
+
+**F-UR1.1a:** Validate the User Details (M) Verify: 
+
+- Username is unique 
+- Email address 
+- Password meets the minimum requirements 
+
+**F-UR1.1b:** Have pre-defined avatar pictures for users to choose as profile picture (S)
+
+**F-UR1.1c:** Give consent forms to user to allow them to upload photo as their profile (S) picture
+
+**F-UR1.2:** Allow Users to delete their profile (M) Users have the option to permanently delete their profile and erase all their data 
+
+**F-UR1.3:** Allow Users to Login (M) User can login with username/email and password or via their Google account 
+
+**F-UR1.3a:** Validate Login Details (M) Crosscheck input login details with the details in the Database 
+
+**F-UR1.3b:** Allow user to reset password (M) Gives the option for user to reset password, if a user has forgotten their password 
+
+**F-UR1.3c:** Allow user to view their own account details (M)
+
+**F-UR1.3d:** Allow user to edit their own account details (M) User can update their profile details like name, password, display picture etc.
+
+**F-UR1.4:** Allow user to logout (M)  
+
+
+
+**F-UR2: Allow users to create and share content on the platform**
+
+**F-UR2.1:** Allow Users to upload photos of objects or animals on the platform (M)
+
+**F-UR2.1a:** Enable users to upload real-time pictures taken directly from their (M) device camera.
+
+**F-UR2.1a****1:** Access the device camera (M)
+
+**F-UR2.1b:** Enable users to upload photos from their device storage (M) 
+
+**F-UR2.1b1:** Access the device storage (M)
+
+**F-UR2.1c:** Allow users to associate GPS data with photos (S) Users can choose to use GPS to tag the location in their photos while uploading it 
+
+**F-UR2.1d:** Allow users to add caption to their photos (M) Users can add a small description about the photo while uploading it. It can include model and settings of the camera that was used to take the photo 
+
+**F-UR2.1e:** Allow users to tag objects or public events in their photos (M) Users can associate a specific keyword to an object in the photo or an event to start/participate in the event
+
+**F-UR2.1f:** Allow User to modify photo while uploading them (M) While Uploading a photo user can choose to 
+
+- Apply different photo filters 
+- Generate GIFs 
+- Add Stamp Overlays 
+
+**F-UR2.2:** Allow users to share a post of photos (M) A post must contain one photo but can have up-to 10 photos. User can share post on their own 
+
+- Profiles
+- Portfolios
+- Collection
+
+User can share on gaming or feedback forum. Challenge Creator can share a post on their channel Challenge participator can share a post on the challenge.
+
+**F-UR2.3:** Allow users to delete an uploaded post (M) User can delete their post from their own 
+
+- Profiles
+- Portfolios
+- Collection
+
+User can delete their uploaded post from gaming or feedback forum Challenge Creator can remove their post from their channel Challenge participator can remove their post from the challenge.
+
+**F-UR2.4:** Enable users to create channel (M)
+
+Users can create channel and will be the channel creator for that channel. Channel will include the following details 
+
+- Channel Description 
+- Channel Theme 
+- Channel Creator 
+
+**F-UR2.5:** Enable channel creator to delete their channel (M)
+
+**F-UR2.6:** Enable users to build/remove portfolios (M) Photographers (both hobby and professional) can create portfolios to exhibit their work. An opportunities page where users can advertise their best posts and images and users/clients looking for photographers might recruit talent or get recruited through it 
+
+**F-UR2.7:** Allow users to create/delete collections of photographs (M) Create collection of posts of photos to showcase their collections/variety of photographs or challenge other collectors to take photographs of objects/animals around a particular theme 
+
+**F-UR2.8:** Enable users to run/organize public events (S) User can start a new tag of events creating a new event and other users can participate by tagging the events in the photos related to the event 
+
+
+
+**F-UR3: Allow users to interact with different features of the platform and other users on the platform** 
+
+**F-UR3.1:** Allow users to chat with other users (M) Users can chat with other users or a group of other users on the platform 
+
+**F-UR3.2:** Allow users to rate post of other users (M) Users can give up to 3 stars to a post of other users. Users can re-rate a post
+
+**F-UR3.2a:** Update user profile points based on ratings of their post (M) When a user receives a rating on their post that will be added to their total profile points. 
+
+**F-UR3.3:** Allow users to comment on post or delete their comment from a post (M) 
+
+**F-UR3.4:** Allow user to send or cancel friend requests to other users (M) 
+
+**F-UR3.4a:** Allow user to accept or ignore friend requests of other users (M) 
+
+**F-UR3.4b:** Allow user to remove their friends (M)
+
+**F-UR3.5:** Allow user to block or unblock other users (M)
+
+**F-UR3.6:** Enable user to follow or unfollow a channel (M). Users can follow a channel and then can see posts from that channel on their news feed.
+
+**F-UR3.7:** Have a feedback forum (S) A forum for users to get feedback about their posts from other users (mostly professional photographers). Users can give/delete their feedback on posts on feedback forum to help other users improve their photography skills.
+
+**F-UR3.8:** Have a gaming forum where users can post hints and glitch about a game (C) Users can share posts about hints and glitches about any game on the gaming forum. 
+
+**F-UR3.9:** Allow user to search for user/channel/challenge (M)
+
+**F-UR3.10:** Allow Users to checkout user profiles/ channels (M) User can explore a profile of other user to view their profile details and their shared posts or can explore a channel and can view all its posts.
+
+**F-UR3.11**: Have an image feed for each user (M) Each user will have a news feed that will show them: 
+
+- Posts from their friends 
+- Posts from the channels they follow 
+
+**F-UR3.12:** Have a map view of that will show all the photos near the location of the user (C) Will display a map with all the photos near the location of the user. This is called ‘Photo Map’. 
+
+**F-UR3.13:** Make recommendations to platform users about channels they might be (W) interested in. Have an AI embedded in our system that will give suggestion to the users about the channels they might be interested in based on their likes on their home Image feed. 
+
+
+
+**F-UR4: Allow users to engage and compete in a gaming system of the platform**
+
+**F-UR4.1:** Allow users to create and delete challenges (M) Users can create challenges for other users to take photos around a particular theme or a particular location for a fixed amount of time. Challenge creator can add hints about the challenge to help other users complete the challenge.
+
+Challenges can be: 
+
+1. Private: Users can only join through invitation from the challenge creator 
+2. Public: Anyone on the platform can participate. These can be accessed under game section.
+
+Challenge creator can delete their challenge anytime and the challenge creator can delete maximum of 3 challenges in a week.
+
+**F-UR4.1a:** Have a challenge section (M) Challenge section would display the user all the active challenge he/her has participated in and would feature all the public challenges.
+
+**F-UR4.1b:** Allow challenge creator to invite other users to participate in their (M) private challenge 
+
+**F-UR4.1c:** Allow users to take part in challenges (M) Users can take part in a challenge by
+
+- Accepting the invite (Private Challenge) 
+- Joining the challenge from the game section (Public Challenge) 
+
+**F-UR4.1d:** Have a leader board for the challenge (M) Users with highest rated photos will be featured in the challenge leader board 
+
+**F-UR4.1d1:** Show user's position compared to the rest of the users' in the (S) challenge leader board 
+
+**F-UR4.1d2:** Update challenge leader board (M) Update leader board when there is a change in the rating of any photo in the challenge.
+
+**F-UR4.1e:** Give points and achievements to the winners of a challenge (M) Users with the top 3 position in the challenge will receive extra points on their profile and achievement certification as photo so they can share on the platform 
+
+**F-UR4.2:** Have a Global leader board for users (S) Users will be ranked globally based on their profile points 
+
+**F-UR4.2a:** Show user's position compared to rest of users' in global leader board (S) Display the ranking of the user in the global leader board 
+
+**F-UR4.3:** Have a Global leader board for posts (S) The leader board will show top 10 rated posts 
+
+**F-UR4.4:** Update Global leader board daily (S) Update global leader boards daily at 00:00 GMT 
+
+**F-UR4.5:** Give badges to users at the end of the Season (C) Users will receive badges according to their leagues 
+
+-  Diamond = Diamond Badge 
+- Platinum = Platinum Badge 
+-  Legendary = Legendary Badge 
+- Champion will get a Champion Badge 
+
+**F-UR4.5a:** Reset profile points after every season (C) Reset the profile points of all the users after a 3-month long season ends 
+
+**F-UR4.6:** Allocate users into leagues based on their points (C) Users will be placed into a specific league based on their profile points 
+
+-  100 - 500 = Silver League 
+- 500 - 1000 = Gold League 
+- 1000 - 1200 = Diamond League 
+-  1200< = Platinum League 
+- Top 100 = Legendary League 
+- 1st = Champion 
+
+**F-UR4.7:** Announce the fastest growing channel of the month (C)
+
+**F-UR4.8:** Allow moderator to create weekly public challenge (C) 
+
+**F-UR4.9:** The App could feature a "my adventures" view where users can share their (W) adventure stories, interesting experiences and thoughts that occurred to them on their photography journey 
+
+
+
+**F-UR5: Allow users to receive notifications from the system**
+
+**F-UR5.1:** Have a notification section (S). Users could view their notifications in the notification section. 
+
+**F-UR5.1a:** Send notifications to user (S) Notify users on 
+
+- Chat Notifications 
+- Channel managers will get notified when their channel gets followed 
+- Channel which they follow uploaded a photo 
+- Starting of events 
+- Feedback received 
+- Comments 
+- Rating 
+- Update on reports 
+- Profile Points 
+- New Challenge in their area 
+- Invitation received for a challenge 
+- Challenge finished 
+- Badges and achievements 
+
+**F-UR6:  Allow users to report inappropriate content and give general feedback to the system moderators on the platform.**
+
+**F-UR6.1:** Allow users to report a post or comment on a post with inappropriate content (M) Users can report a post if it has a photo which contains a human in it, or they think it is inappropriate for viewership by filling the report form. User can report a comment on a post if they find it inappropriate 
+
+**F-UR6.2:** Allow users to report bugs in the app (M) Users will report if they find any bug in our app by filling the report form 
+
+**F-UR6.3:** Have system moderators to analyze report forms (M) The system moderator will review reported forms and take necessary actions 
+
+**F-UR6.4:** Produce summary report for system moderators concerning overall platform (C) usage. 
+
+**F-UR6.5:** Have an AI system that performs automated photo filtering (C) Have an AI embedded in our system that will remove posts that have photos with humans in it.
+
+
+
+**<u>NON-FUNCTIONAL REQUIREMENTS</u>**
+
+**NFR-1:** The product must have an accessible and diverse design
+
+**NFR-2:** Users must be able to quickly and easily interact with the platform and the relevant information that is presented
+
+**NFR-3:** Keep collected personal sensitive data secure by encrypting it 
+
+**NFR-4:** The product must adhere to GDPR requirements 
+
+**NFR-5:** The product should be fully responsive across all the common web browsers (Google Chrome, Mozilla Firefox, Apple Safari, Microsoft Edge), on all mobile and tablet devices (Android, iOS, Windows), while providing a good user experience.
+
+**NFR-6:** The product development should follow W3C Standards 
+
+**NFR-7:** Maximum Challenge time is 1 season (3 months) 
+
+**NFR-8:** Product should be delivered by 1st of April 2021 
+
+**NFR-9:** The product should be snappy and should not take too long to load assets and different pages. 
+
+**NFR-10:** Compress the photos before storing them to the database
+
+**NFR-11:** The product should be robust and not susceptible to crashes 
+
+
+
+****
+
+
+
+#### <span style="color:blue">Usability Evaluation</span>
+
+
+
+****
+
+
 
 <span style="color:blue">*MORE ...*</span>
