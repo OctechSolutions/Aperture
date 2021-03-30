@@ -176,7 +176,7 @@ This section features visual aids that clarify/support design choices made. Sign
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramUserAccSys.png" 
+             src="./reportImages/UseCaseDiagramUserAccSys.PNG" 
              alt="Use Case Diagram - User Account System" 
              style="width:90%">
     </center>
@@ -250,7 +250,7 @@ This section features visual aids that clarify/support design choices made. Sign
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramContentCreationSys.png" 
+             src="./reportImages/UseCaseDiagramContentCreationSys.PNG" 
              alt="Use Case Diagram - Content Creation System" 
              style="width:90%">
     </center>
@@ -378,7 +378,7 @@ This section features visual aids that clarify/support design choices made. Sign
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramUserInterSys.png" 
+             src="./reportImages/UseCaseDiagramUserInterSys.PNG" 
              alt="Use Case Diagram - User Interaction System" 
              style="width:90%">
     </center>
@@ -534,7 +534,7 @@ This section features visual aids that clarify/support design choices made. Sign
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramGameMechSys.png" 
+             src="./reportImages/UseCaseDiagramGameMechSys.PNG" 
              alt="Use Case Diagram - Game Mechanics System" 
              style="width:90%">
     </center>
@@ -550,7 +550,7 @@ This section features visual aids that clarify/support design choices made. Sign
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramNotificationSys.png" 
+             src="./reportImages/UseCaseDiagramNotificationSys.PNG" 
              alt="Use Case Diagram - Notification System" 
              style="width:90%">
     </center>
@@ -566,7 +566,7 @@ This section features visual aids that clarify/support design choices made. Sign
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramAppImproveSys.png" 
+             src="./reportImages/UseCaseDiagramAppImproveSys.PNG" 
              alt="Use Case Diagram - Application Improvement System" 
              style="width:90%">
     </center>
