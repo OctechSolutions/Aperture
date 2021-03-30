@@ -74,25 +74,30 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 
 
 
-##### 1.1. <span style="color:red">Technology Used</span> 
+##### 1.1. Technology Used
 
 - HTML, CSS, JavaScript
+
 - React JS, JSX
   - React DOM
   - React Bootstrap
   - React-HTML5-Camera-Photo API
   - React-Redux
   - React Flip-Move
-- Google Firestore (database, auth, storage) 
+  
+- Google Firestore (firestore DB, auth, storage) 
+
 - Material UI
+
 - Compress.js
+
 - Node Package Manager (NPM)
+
 - Visual Studio Code
+
 - Github
 
-<span style="color:blue">*FIND OUT REMAINING TECH WE USED AND ADD HERE ...*</span>
-
-
+  
 
 ##### 1.2. High level Components
 
