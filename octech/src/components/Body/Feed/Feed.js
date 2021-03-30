@@ -44,6 +44,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import Chip from '@material-ui/core/Chip'
 import TextField from '@material-ui/core/TextField';
+import {GiphyApiKey} from "./giphy-config"
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -831,7 +832,7 @@ function Feed({ match }, props) {
 
                           {showGifSearch && <center>
                             <ReactGiphySearchbox
-                              apiKey="SL07jZg7zFxxOTBN29YaS4979AUIInJK"
+                              apiKey={GiphyApiKey}
                               onSelect={(item) => handleOverlayClick(item)}
                               masonryConfig={[
                                 { columns: 2, imageWidth: 110, gutter: 5 },

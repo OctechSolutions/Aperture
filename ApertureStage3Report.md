@@ -345,7 +345,7 @@ Our application is developed using React . So the client needs to have a JavaScr
 
    - Create a developer account on GIPHY at https://developers.giphy.com/docs/api.
    - Create an API key for our app by clicking “Create an App” on the developer dashboard.
-   - Copy the API key and paste as the value for key ***apiKey*** of the component ***ReactGiphySearchbox*** at ***line 940*** in file ***/octech/src/components/Body/Feed/Feed.js***.
+   - Copy the API key and paste paste it as the value of ***GiphyApiKey*** constant in ***/octech/src/components/Body/Feed/giphy-config.js*** file.
    - Upgrade the API to production level by clicking on ***Upgrade to Production*** button in the ***Developer Dashboard*** and complete the instruction that follow.
 
 4. **<u>Time Based Job Scheduler</u>**
