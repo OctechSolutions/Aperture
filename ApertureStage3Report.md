@@ -74,9 +74,10 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 
 
 
-##### 1.1. <span style="color:red">Technology Used</span> 
+##### 1.1. Technology Used
 
 - HTML, CSS, JavaScript
+
 - React JS, JSX
   - React DOM
   - React Bootstrap
@@ -122,9 +123,11 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 - Heroku CLI
 - Ionic/Capacitor
 
-<span style="color:blue">*FIND OUT REMAINING TECH WE USED AND ADD HERE ...*</span>
+- Visual Studio Code
 
+- Github
 
+  
 
 ##### 1.2. High level Components
 
@@ -277,11 +280,112 @@ Usability tests conducted via questionnaires ensured that different users tested
 
 
 
-##### 3.5. <span style="color:red">Install - Setup - Maintain</span> (Baber)
+##### 3.5. Install - Setup - Maintain (Baber)
 
 <span style="color:magenta">*Documentation on how to install/setup/maintain the final system.*</span>
 
-<span style="color:blue">*MORE ...*</span>
+###### 3.5.1. Installation
+
+Our application is developed using React . So the client needs to have a JavaScript environment and a Package Manager so that we can download and install libraries including React.
+
+**To install and build our application Aperture the client should follow these steps:**
+
+- Download and install     Node.js. The client can download Node.js from its official website : https://nodejs.org/en/ and follow the given instructions on how to install Node.js on their device.
+
+- Use Node Package Manager to download and install required packages for the app. This is to     be done by :
+
+  Running ***npm install --legacy-peer-deps*** command inside the     project’s ***/octech*** folder . 
+
+- Use Node Package Manager to deploy our app Aperture. This is to be done by :
+
+  Running ***npm run build*** command inside the project’s ***/octech*** folder. This will create a build directory with an optimized     production build of our app.
+
+- Upload the ***build*** folder to the client’s HTTP sever.
+
+- Serve the incoming user requests with ***index.html*** file inside the build folder.
+
+  
+
+###### 3.5.2. Set Up
+
+**The client will have to set up:**
+
+1. <u>**Firebase**</u>
+   - Create a firebase account on https://firebase.google.com/
+   - Create a firebase project and register our app by following Step 1 and Step 2 from [https://firebase.google.com/docs/web/setup#node.js-apps](https://firebase.google.com/docs/web/setup#node.js-apps)
+   - Go to ***Authentication*** from ***Firebase console.***  
+   - Open ***Sign-in Method*** tab and enable ***Email/Password*** and ***Google*** providers.
+   - Go to ***Project Settings*** from the ***Firebase console***.
+   - In the Your apps card, select the nickname of our app.
+   - Select ***Config*** from the ***Firebase SDK*** snippet pane.
+   - Copy the config object snippet and replace it with value of variable 
+      ***firebaseConfig*** in ***/octech/src/firebase.js*** file in our project directory ***Aperture***.
+   - Open ***Cloud Firestore*** from ***Firebase console.**
+   - Go to ***Indexes*** *tab and create following **indexes** for the following* **Collections:**
+
+<figure>
+	<center>
+        <img 
+             src="./reportImages/CloudFirestoreCollectionsIndexes.png" 
+             alt="Cloud Firestore Collections Indexes" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Cloud Firestore Collections Indexes
+    </figcaption>
+</figure>
+
+2. <u>**Google Map API**</u>
+
+   - Sign In to the Google Cloud Platform Console on https://console.cloud.google.com.
+   - Create a new project and enable the Google Maps JavaScript API for the project.
+   - Copy the API key and paste it as the value of ***GoogleMapsAPI*** constant in ***/octech/src/components/Body/Map/client-config.js*** file.
+
+3. **<u>GIPHY API</u>**
+
+   - Create a developer account on GIPHY at https://developers.giphy.com/docs/api.
+   - Create an API key for our app by clicking “Create an App” on the developer dashboard.
+   - Copy the API key and paste as the value for key ***apiKey*** of the component ***ReactGiphySearchbox*** at ***line 940*** in file ***/octech/src/components/Body/Feed/Feed.js***.
+   - Upgrade the API to production level by clicking on ***Upgrade to Production*** button in the ***Developer Dashboard*** and complete the instruction that follow.
+
+4. **<u>Time Based Job Scheduler</u>**
+
+   - Setup a time based task scheduler on their server. The application will be different for different operating system e.g linux uses cron to schedule tasks.
+
+   - Open ***Settings*** in ***Firebase console*** of your account. Then open ***Service Accounts.***
+
+   - To generate a private key for you service account click on ***Generate New Private Key*** and then confirm by clicking ***Generate Key*** button.
+
+   - It will ask you to download the JSON file containing the key. Securely store this JSON file.
+
+   - Set the path of the JSON file as the ***argument*** to ***credentials.Certificate*** method in /timeBaseTasks/daily.py*** and ***/timeBaseTasks/monthly.py*****
+
+   - Setup daily task to run Python script ***/timeBaseTasks/daily.py***.
+
+   - Setup monthly task to run Python script ***/timeBaseTasks/monthly.py***.
+
+     
+
+###### 3.5.3. Maintenance
+
+We have developed the app such that the maintenance of the app will be effortless.
+
+Throughout the development we have followed React’s file structure and naming conventions. So, to add a feature or fix a bug on the feed page we will go to the ***feed.js*** inside the ***/Feed*** folder of our app and do the required changes. All our code is well commented which makes the understanding of the code unchallenging.
+ For general maintenance the client must do the following tasks :
+
+- Check the ***bugReports***  collection of db. This contains information about the bugs or information of posts reported by the users. These bug reports should be analyzed and necessary actions should be taken.
+- Use ***Firbase Analytics*** to track the engagement of the users with the app. This can be accessed by from ***Firebase console.***
+- Use ***Firbase Crashlytics*** to prioritize and fix stability issues. This can be accessed by from ***Firebase console.*** 
+- Use ***Firebase Overview*** to get insights on current read and writes to our database. This can be accessed by from ***Firebase console.***
+- Create weekly global exciting challenges. 
+
+***Octech Solutions* will be providing 3 maintenance packages to the client which include:**
+
+1. <u>Base package</u> (1-year limited support): We will provide the first year of support for the product after its deployment for free. This will include providing security updates for the product. As well as providing patches for any bugs or instabilities that may arise.
+2. <u>Extended package</u> (2-year support): Will provide the same level of support as the base package but, for two years. Will also work on a number of features that users or the client may want added to the product. 50 hours will be allocated throughout the 2 years (not including support and maintenance)     for adding extra features.
+3. <u>Deluxe package</u> (3-year support): Similar to the extended package but, this time for 3 years. And 120 hours will be allocated for adding features to the product throughout the three years (not including support and maintenance).
+
+Other details of these packages such as costing have been already given to client in the Project Costing section of the proposal document for our application “***Aperture***”.
 
 
 
