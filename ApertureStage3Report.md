@@ -167,6 +167,414 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 
 This section features visual aids that clarify/support design choices made. Significant diagrams that were described in detail in stages 1 and 2 of this project shall be revisited here in addition to new ones.
 
+
+
+**After Stage 3, all 6 sub-systems are completed.** The 1st 3 sub-systems with use case diagrams depicting them along with supporting sequence diagrams have been provided and explained in details in stage 2 report. Use case diagrams related to systems 4, 5 and 6 have also been presented in the stage 1 report. These diagrams shall be revisited here. New sequence diagrams in support of systems 4, 5 and 6 will can be found below.
+
+###### 1. User Account System
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/UseCaseDiagramUserAccSys.png" 
+             alt="Use Case Diagram - User Account System" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Use Case Diagram - User Account System
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram1UserAccSysCreateAcc.png" 
+             alt="Sequence Diagram - Create Account" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Create Account
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram1UserAccSysLogin.png" 
+             alt="Sequence Diagram - Login" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Login
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram1UserAccSysLogout.png" 
+             alt="Sequence Diagram - Logout" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Logout
+    </figcaption>
+</figure>
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram1UserAccSysResetPassword.png" 
+             alt="Sequence Diagram - User Reset Password" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Reset Password
+    </figcaption>
+</figure>
+
+
+
+###### 2. Content Creation System
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/UseCaseDiagramContentCreationSys.png" 
+             alt="Use Case Diagram - Content Creation System" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Use Case Diagram - Content Creation System
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysCreateChannel.png" 
+             alt="Sequence Diagram - Create Channel" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Reset Password
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysCreateCollection.png" 
+             alt="Sequence Diagram - CreateCollection" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - CreateCollection
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysCreatePortfolio.png" 
+             alt="Sequence Diagram - Create Portfolio" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Create Portfolio
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysDelChannel.png" 
+             alt="Sequence Diagram - Delete Channel" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Delete Channel
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysDelCollection.png" 
+             alt="Sequence Diagram - Delete Collection" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Delete Collection
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysDelPortfolio.png" 
+             alt="Sequence Diagram - Delete Portfolio" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Delete Portfolio
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysDelPost.png" 
+             alt="Sequence Diagram - Delete Post" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Delete Post
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysShareContent.png" 
+             alt="Sequence Diagram - Share Content" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Share Content
+    </figcaption>
+</figure>
+
+
+
+###### 3. User Interaction System
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/UseCaseDiagramUserInterSys.png" 
+             alt="Use Case Diagram - User Interaction System" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Use Case Diagram - User Interaction System
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysSendFriendReq.png" 
+             alt="Sequence Diagram - Send Friend Request" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Send Friend Request
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysAcceptFriendReq.png" 
+             alt="Sequence Diagram - Accept Friend Request" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Accept Friend Request
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysAddComment.png" 
+             alt="Sequence Diagram - Add Comment" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Add Comment
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysBlockUser.png" 
+             alt="Sequence Diagram - Block User" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Block User
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysChat.png" 
+             alt="Sequence Diagram - Chat" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Chat
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysFollowChannel.png" 
+             alt="Sequence Diagram - Follow Channel" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Follow Channel
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysRatePost.png" 
+             alt="Sequence Diagram - Rate Post" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Rate Post
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysShareContent.png" 
+             alt="Sequence Diagram - Share Content" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Share Content
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysViewImgFeed.png" 
+             alt="Sequence Diagram - Image Feed" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Image Feed
+    </figcaption>
+</figure>
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram3UserInterSysViewPhotoMap.png" 
+             alt="Sequence Diagram - View Photo Map" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - View Photo Map
+    </figcaption>
+</figure>
+
+
+
+###### 4. Game Mechanics System
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/UseCaseDiagramGameMechSys.png" 
+             alt="Use Case Diagram - Game Mechanics System" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Use Case Diagram - Game Mechanics System
+    </figcaption>
+</figure>
+
+
+
+###### 5. Notification System
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/UseCaseDiagramNotificationSys.png" 
+             alt="Use Case Diagram - Notification System" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Use Case Diagram - Notification System
+    </figcaption>
+</figure>
+
+
+
+###### 6. Application Improvement System
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/UseCaseDiagramAppImproveSys.png" 
+             alt="Use Case Diagram - Application Improvement System" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Use Case Diagram - Application Improvement System
+    </figcaption>
+</figure>
+
 <span style="color:blue">*MORE ...*</span>
 
 
