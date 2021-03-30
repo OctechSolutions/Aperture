@@ -196,7 +196,7 @@ This section features visual aids that clarify/support design choices made. Sign
     </center>
     <figcaption style="text-align:center;">
         Sequence Diagram - Create Account
-    </figcaption>
+    </figcaption> 
 </figure>
 
 
