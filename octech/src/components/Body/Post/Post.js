@@ -65,7 +65,7 @@ const useStyles = makeStyles({
 });
 
 
-const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, locationPosts }, ref) => {
+const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, viewingUser, star, totalStar, isPrivate, timestamp, type, isForumPost, locationPosts }, ref) => {
 
   if (comments === undefined) {
     comments = [];
@@ -147,7 +147,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     // })
 
     if (givenStars > 0) {
-      db.collection("users").doc(channelBy?channelBy:name).collection("notifications").doc(channelBy?channelBy:name).set({
+      db.collection("users").doc(channelBy ? channelBy : name).collection("notifications").doc(channelBy ? channelBy : name).set({
         notifications: firebase.firestore.FieldValue.arrayUnion({
           type: "rating",
           sentAt: firebase.firestore.Timestamp.now(),
@@ -551,7 +551,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   caption: message || "My Awesome Post",
                   imageSrc: images[0].src,
                   style: images[0].style,
-                  creator: channelBy ? channelBy :name,
+                  creator: channelBy ? channelBy : name,
                   creatorPhotoUrl: photoUrl || "",
                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                   challengePoints: 0,
@@ -569,7 +569,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   caption: message || "My Awesome Post",
                   imageSrc: images[0].src,
                   style: images[0].style,
-                  creator: channelBy ? channelBy :name,
+                  creator: channelBy ? channelBy : name,
                   creatorPhotoUrl: photoUrl || "",
                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                   challengePoints: 0,
@@ -605,8 +605,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   // Function to handle the report button being clicked
   const handleReportClick = (post_id) => {
     let c = window.confirm("Are you sure you want to report this post?");
-    if (c === true)
-    {
+    if (c === true) {
       console.log(user.email);
       db.collection("postReports")
         .add({
@@ -621,7 +620,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           alert("An error has occurred reporting this post.");
         })
     }
-  }  
+  }
 
   // Update Challenge Chips when component mounted.
   // eslint-disable-next-line
@@ -664,7 +663,28 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
   };
   return (
     <div ref={ref} className="post" key={id}>
-
+      <Modal
+        show={showMap}
+        onHide={() => { setShowMap(false) }}
+        keyboard={false}
+        size="xl"
+        centered
+      >
+        <Modal.Header closeButton onClick={() => { setShowMap(false) }}><h3 style={{ marginLeft: "auto" }}>Map View</h3></Modal.Header>
+        <Modal.Body>
+          <div>
+            <Map
+              center={{ lat: lat, lng: lng }}
+              images={images}
+              message={message}
+              photoUrl={photoUrl}
+              locationPosts={locationPosts}
+              id={id}
+            // isPreview={false}
+            />
+          </div>
+        </Modal.Body>
+      </Modal>
       {!loading ? <div>
         {(channelBy?.length > 0) ? <div className="post_channel">
           <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
@@ -757,80 +777,80 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </>
           { // 3 DOTS MENU.
             ((user.displayName === channelBy) || (user.displayName === name)) ?
-            <>
-              <IconButton
-                aria-label="more"
-                aria-controls="long-menu"
-                aria-haspopup="true"
-                onClick={handleClick}
-              >
-                <MoreVertIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                keepMounted
-                open={open}
-                onClose={handleMenuClose}
-              >
-                <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
-                  <ListItemIcon>
-                    <DeleteIcon />
-                  </ListItemIcon>
+              <>
+                <IconButton
+                  aria-label="more"
+                  aria-controls="long-menu"
+                  aria-haspopup="true"
+                  onClick={handleClick}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={open}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
+                    <ListItemIcon>
+                      <DeleteIcon />
+                    </ListItemIcon>
                   Delete
                 </MenuItem>
-                {(images.length > 0) && !isForumPost &&
-                  <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
-                    <ListItemIcon>
-                      <AddToPhotosIcon />
-                    </ListItemIcon>
+                  {(images.length > 0) && !isForumPost &&
+                    <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
+                      <ListItemIcon>
+                        <AddToPhotosIcon />
+                      </ListItemIcon>
                     Add To Portfolio
                   </MenuItem>
-                }
-                {(images.length > 0) && (collections.length > 0) && !isForumPost &&
-                  <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
-                    <ListItemIcon>
-                      <AddPhotoAlternateIcon />
-                    </ListItemIcon>
+                  }
+                  {(images.length > 0) && (collections.length > 0) && !isForumPost &&
+                    <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
+                      <ListItemIcon>
+                        <AddPhotoAlternateIcon />
+                      </ListItemIcon>
                     Add To Collections
                   </MenuItem>
-                }
+                  }
 
-                {/* To enter a challenge. */}
-                {
-                  (images.length === 1) && !challengeChip && !isForumPost &&
-                  <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
-                    <ListItemIcon>
-                      <AddAlarmRoundedIcon />
-                    </ListItemIcon>
+                  {/* To enter a challenge. */}
+                  {
+                    (images.length === 1) && !challengeChip && !isForumPost &&
+                    <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
+                      <ListItemIcon>
+                        <AddAlarmRoundedIcon />
+                      </ListItemIcon>
                     Enter Challenge
                   </MenuItem>
-                }
+                  }
 
-              </Menu>
-              <Menu
-                anchorEl={addToChannelAnchorEl}
-                keepMounted
-                open={Boolean(addToChannelAnchorEl) && collections}
-                onClose={() => { setAddToChannelAnchorEl(null); }}
-              >
-                {
-                  collections.map((a) => {
-                    return <MenuItem onClick={() => { addImagesToCollection(a); }}>{a}</MenuItem>
-                  })
-                }
-              </Menu>
-            </>
-            : 
-            <IconButton onClick={() => {handleReportClick(id)}}>
+                </Menu>
+                <Menu
+                  anchorEl={addToChannelAnchorEl}
+                  keepMounted
+                  open={Boolean(addToChannelAnchorEl) && collections}
+                  onClose={() => { setAddToChannelAnchorEl(null); }}
+                >
+                  {
+                    collections.map((a) => {
+                      return <MenuItem onClick={() => { addImagesToCollection(a); }}>{a}</MenuItem>
+                    })
+                  }
+                </Menu>
+              </>
+              :
+              <IconButton onClick={() => { handleReportClick(id) }}>
                 <ReportIcon />
-          </IconButton>
+              </IconButton>
           }
         </div>
         <div className="post_body">
           {/* <br /> */}
           <p>{message}</p>
         </div>
-        {!loading && slideshow}
+        {!loading && <div>{slideshow}</div>}
         <div >
 
           <div className="rate" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
@@ -1112,28 +1132,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           </Modal.Body>
         </Modal>
 
-        <Modal
-          show={showMap}
-          onHide={() => { setShowMap(false) }}
-          keyboard={false}
-          size="xl"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header closeButton onClick={() => { setShowMap(false) }}><h3 style={{ marginLeft: "auto" }}>Map View</h3></Modal.Header>
-          <Modal.Body>
-            <Map
-              center={{ lat: lat, lng: lng }}
-              images={images}
-              message={message}
-              photoUrl={photoUrl}
-              locationPosts={locationPosts}
-              id={id}
-              isPreview={false}
-            />
-            {showMap && console.log(id)}
-          </Modal.Body>
-        </Modal>
+
 
         {/*Tags Modal*/}
         <Modal

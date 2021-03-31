@@ -59,11 +59,11 @@ export default function Map({
     const [src, setSrc] = React.useState("")
     const history = useHistory();
     const [singleImage,] = React.useState(zoom!==undefined && images !== undefined ? Boolean(images.length - 1) : true)
-    const bottom =  isPreview?"100px":"0px"
+    const position =  isPreview?"fixed":"relative"
     return (
         <div>
 
-            <div style={{ width: "100%", height: "auto", position: "fixed", bottom: {bottom} }}>
+            <div style={{ width: "100%", height: "auto", position: {position} }}>
                 <MapContainer
                     className="markercluster-map"
                     center={center}
