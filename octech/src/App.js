@@ -48,7 +48,6 @@ function App() {
   const [skinColor, setSkinColor] = useState("Light")
   const [topType, setTopType] = useState("ShortHairShortWaved")
 
-
   var top = ["NoHair", "Eyepatch", "Hat", "Hijab", "Turban", "WinterHat1", "WinterHat2", "WinterHat3", "WinterHat4", "LongHairBigHair", "LongHairBob", "LongHairBun", "LongHairCurly", "LongHairCurvy", "LongHairDreads", "LongHairFrida", "LongHairFro", "LongHairFroBand", "LongHairNotTooLong", "LongHairShavedSides", "LongHairMiaWallace", "LongHairStraight", "LongHairStraight2", "LongHairStraightStrand", "ShortHairDreads01", "ShortHairDreads02", "ShortHairFrizzle", "ShortHairShaggyMullet", "ShortHairShortCurly", "ShortHairShortFlat", "ShortHairShortRound", "ShortHairShortWaved", "ShortHairSides", "ShortHairTheCaesar", "ShortHairTheCaesarSidePart"];
   var accessories = ["Blank", "Kurt", "Prescription01", "Prescription02", "Round", "Sunglasses", "Wayfarers"]
   var hair = ["Auburn", "Black", "Blonde", "BlondeGolden", "Brown", "BrownDark", "PastelPink", "Platinum", "Red", "SilverGray"]
@@ -98,9 +97,12 @@ function App() {
                 collections: []
               });
             }
-            sendVerificationEmail(userAuth)
+            // sendVerificationEmail(userAuth)
             if (userAuth.providerData[0].providerId === "google.com") {
               setShowAvatarEditor(true)
+            }
+            else {
+              sendVerificationEmail(userAuth)
             }
 
             console.log(userAuth.displayName, "Added to the DB")

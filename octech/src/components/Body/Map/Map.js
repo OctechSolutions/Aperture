@@ -45,7 +45,9 @@ export default function Map({
     photoUrl,
     locationPosts,
     id,
-    isChallengePost
+    isChallengePost,
+    zoom,
+    isPreview
 }) {
 
     React.useEffect(() => {
@@ -56,15 +58,16 @@ export default function Map({
     const [showTooltip, setShowTooltip] = React.useState(true)
     const [src, setSrc] = React.useState("")
     const history = useHistory();
-    const [singleImage,] = React.useState(images !== null ? Boolean(images.length - 1) : true)
+    const [singleImage,] = React.useState(zoom!==undefined && images !== undefined ? Boolean(images.length - 1) : true)
+    const bottom =  isPreview?"100px":"0px"
     return (
         <div>
 
-            <div style={{ width: "100%", height: "auto" }}>
+            <div style={{ width: "100%", height: "auto", position: "fixed", bottom: {bottom} }}>
                 <MapContainer
                     className="markercluster-map"
                     center={center}
-                    zoom={18}
+                    zoom={!isPreview?18:zoom}
                     minZoom={3}
                     maxBoundsViscosity={1.0}
                     style={{ width: "100%", height: "80vh" }}
@@ -77,7 +80,7 @@ export default function Map({
                     />
 
                     <MarkerClusterGroup>
-                        <Marker position={center} icon={greenIcon}>
+                        {!isPreview && <Marker position={center} icon={greenIcon}>
                             <Popup direction="top" opacity={1} >
                                 <div style={{ width: "300px" }}>
                                     <div style={{ display: "flex", alignItems: "center", alignSelf: "center" }}>
@@ -90,7 +93,7 @@ export default function Map({
                                         </IconButton>
                                         <h6 style={{ fontWeight: "400" }}>{message}</h6>
                                     </div>
-                                    <Swiper
+                                    {<Swiper
                                         autoHeight={true}
                                         navigation={singleImage}
                                         pagination={singleImage}
@@ -110,7 +113,7 @@ export default function Map({
 
                                             </SwiperSlide>
                                         )}
-                                    </Swiper >
+                                    </Swiper >}
                                 </div>
                             </Popup>
                             {showTooltip &&
@@ -150,9 +153,9 @@ export default function Map({
                                     </div>
                                 </Tooltip>
                             }
-                        </Marker>
+                        </Marker>}
 
-                        {locationPosts!==undefined && locationPosts.map((p) => {
+                        {locationPosts !== undefined && locationPosts.map((p) => {
                             if (p.id !== id) {
                                 return (
                                     <Marker position={{ lat: p.data.lat, lng: p.data.lng }} eventHandlers={{
@@ -215,7 +218,10 @@ export default function Map({
                                         </Popup>
                                     </Marker>
                                 )
+
                             }
+                            else
+                                return <></>
 
                         })}
                     </MarkerClusterGroup>

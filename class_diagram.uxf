@@ -1,0 +1,250 @@
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><help_text>Space for diagram notesileeslePicues(s:stamp</help_text><element><id>UMLClass</id><coordinates><x>730</x><y>350</y><w>590</w><h>860</h></coordinates><panel_attributes>Regular User
+--
+- userName : String
+- firstName : String
+- lastName : String
+- email : String
+- friends : User[*]
+- activeChats : Chat[*]
+- posts : Post[*]
+- followedChannels : Channel[*]
+- collections : Collection[*]
+- portfolio : Portfolio
+- profilePoints : int
+- profilePicture : String
+- blocked : User[*]
+- blockedBy : User[*]
+- friendRequestsSent : String[2][*]
+- friendRequestsReceived : String[2][*]
+- notifications : Notification[*]
+- league : String 
+- sendNotification(notificationDetails : String[*]) : void
+--
++ signUp(type : String) : bool
++ logIn(credentials : String) : bool
++ loginWithGoogle(auth) : bool
++ signOut() : bool 
++ forgotPassword() : bool
++ buildPortfolio(portfolio : Portfolio) : bool 
++ deletePortfolio(portfolioID : String) : bool 
++ createCollection(collection : Collection) : bool 
++ deleteCollection(collectionID : String) : bool 
++ sendFriendRequest(UserID : String) : bool
++ acceptFriendRequest(UserID : String) : bool
++ blockFriend(UserID : String) : bool
++ unblockFriend(UserID : String) : bool
++ followChannel(newFollowedChannels : Channel[*]) : bool 
++ unfollowChannel(channelID : String) : Channel[*] 
++ updateProfilePoints() : bool
++ removeFriend(UserID : String) : bool
++ addPost(post : Post) : void
++ addForumPost(post : Post, type : String) : void
++ deletePost(postID : String) : bool 
++ createChat(type : String , participants : User[*]) : Chat
++ chat(type : String , chatID : String) : void
++ createChannel(channel : Channel) : bool
++ deleteChannel(channelID : String) : bool
++ addComment(comment : Comment, PostID : String) : void
++ deleteComment(comment : Comment, PostID : String) : void
++ searchKeyword(keyword : String) : User[*], Channel[*]
++ showImageFeed() : Post[*]
++ addPostImagesToPortfolio(postID : String) : Bool
++ addPostImagesToCollection(postID : String, collectionID : String) : Bool
++ addPostToChallenge(postID : String, challengeID : String) : Bool
++ reportBug(url : String, details : String , screenshot : String) : bool
++ reportPost(postID : string, reportedBy : String) : void
++ editAccount(newProfilePicture : String , newName : String, newEmail : String , newPassword : String) : Bool
++ dismissAllNotifications() : Bool
++ deleteAccount(myUserID : String) : Bool 
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1230</x><y>230</y><w>210</w><h>100</h></coordinates><panel_attributes>User
+--
+- userID : String
+- password : String
+- loginStatus : String
+--
++ verifyLogin(request) : bool
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1310</x><y>320</y><w>130</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>110;10;110;70;10;70</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1480</x><y>810</y><w>230</w><h>150</h></coordinates><panel_attributes>Message
+--
+- messageID : Long
+- sentAt : Timestamp
+- text : String
+- sender - User
+--
++ Message(text : String)
++ getMessage() : content
++ getUploadTime() : Timestamp
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1460</x><y>1040</y><w>280</w><h>140</h></coordinates><panel_attributes>Chat
+--
+- chatID : Long
+- messages : Message[*] 
+- participants : User[*]
+- createdAt: Timestamp
+--
++ Chat(message : Message[*], participants: user[*])
++ getChatID() : Long
++ setChatID() : void</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1310</x><y>1040</y><w>170</w><h>50</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=2..*
+m2=0..*
+</panel_attributes><additional_attributes>10;20;150;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1580</x><y>950</y><w>60</w><h>110</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes><additional_attributes>18;90;20;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>770</x><y>30</y><w>420</w><h>200</h></coordinates><panel_attributes>Channel
+--
+- channelID : Long
+- channelName : String
+- channelDescription : String
+- channelCreator : User
+- channelFollowers : User[*]
+- channelPosts : Post[*]
+--
++ Channel(cName : String , cDesc : String, cType : String)
++ getChannelInfo() : String
++ getChannelPosts() : Post[*]
++ updateChannelPosts(updatedChannelPosts : Post[*]) : void
++ updateChannelFollowers(newUserList : User[*]) : void
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>870</x><y>220</y><w>50</w><h>150</h></coordinates><panel_attributes>lt=-
+
+m2=0..*
+m1=1..*</panel_attributes><additional_attributes>10;130;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>190</x><y>610</y><w>320</w><h>180</h></coordinates><panel_attributes>Comment
+--
+- commentID : Long
+- commentContent : String
+- commentTime : Timestamp
+- commenter : User
+--
++ Comment(commentContent : String , commenter : User)
++ getComment() : String
++ setComment(comment : String) : void
++ getCommenter() : User
++ setUser(user : User) : void
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>200</y><w>670</w><h>350</h></coordinates><panel_attributes>Post
+--
+- postID : Long
+- type : String
+- description : String
+- photos : Photo[*]
+- uploader : User
+- comments : Comment[*]
+- stars : int[*]
+- challenge : String
+- hasCoordinates : Bool
+- isPrivate : Bool
+- isForumPost : Bool
+- timeStamp : Timestamp
+--
++ Post(type : String , description : String , coordinates : Location , photo : Photo , tags : String[*] , uploader : User)
++ addPhoto(locationType : String, photo : Photo) : bool 
++ editPhoto(photoID : Long) : Photo
++ editTags(newTags : String[*]) : void
++ editDescription(newDescription : String) : void
++ getComments() : Comment[*]
++ updateComments(Comment[*]) : void
++ getPostStars() : int[*]
++ updatePostStars(stars : int[*]) : void</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>90</x><y>540</y><w>120</w><h>180</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*
+</panel_attributes><additional_attributes>10;10;10;150;100;150</additional_attributes></element><element><id>Relation</id><coordinates><x>640</x><y>140</y><w>150</w><h>80</h></coordinates><panel_attributes>lt=-
+m1=0..*
+m2=1</panel_attributes><additional_attributes>10;60;10;10;130;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>10</x><y>1040</y><w>640</w><h>230</h></coordinates><panel_attributes>Photo
+--
+- photoID : String
+- postID: String
+- base64string : String
+- Latitude : Float
+- Longitude : Float
+- orignalDimesions : Int[2]
+- overlayCoordinates : Int[2][*]
+- overlayGifs : String[*]
+- tags : String[*]
+--
++ Photo(b64 : String , orignalDimesions : Int[2], postID: String, gpsCoordinates : Float[2], overlayCoordinates : Int[2][*], 
+overlayGifs : String[*], tags : String[*])
++ setLocation(gpsData : String , Latitude : Float , Longitude : Float)
++ getCoordinates() : Float[2]
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>10</x><y>540</y><w>50</w><h>520</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..*
+</panel_attributes><additional_attributes>10;10;10;500</additional_attributes></element><element><id>Relation</id><coordinates><x>660</x><y>280</y><w>200</w><h>90</h></coordinates><panel_attributes>lt=-&gt;&gt;&gt;&gt;&gt;
+m1=0..*
+m2=1
+</panel_attributes><additional_attributes>10;20;170;20;170;70</additional_attributes></element><element><id>Relation</id><coordinates><x>500</x><y>630</y><w>250</w><h>50</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=0..*
+</panel_attributes><additional_attributes>230;20;10;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>330</x><y>880</y><w>310</w><h>140</h></coordinates><panel_attributes>Portfolio
+--
+- portfolioID : String
+- portfolioTitle : String
+- portfolioImages : Photo[*]
+- owner : User
+--
++ addPortfolioImage(newImage : Image) : Photo[*]
++ deletePortfolioImage(imageID : String) : bool
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>580</x><y>840</y><w>170</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes><additional_attributes>150;10;10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>630</x><y>940</y><w>80</w><h>230</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes><additional_attributes>10;10;60;10;60;200;20;200</additional_attributes></element><element><id>UMLClass</id><coordinates><x>30</x><y>810</y><w>280</w><h>150</h></coordinates><panel_attributes>Collection
+--
+- collectionID : String
+- collectionTitle : String
+- collectionDescription : String
+- collectionImages : Photo[*]
+- owner : User
+--
++ addCollectionImages(postID : String) : Image[*]
++ deleteCollectionImage(image : String) : bool
++ getCollectionInfo() : String
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>300</x><y>810</y><w>450</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes><additional_attributes>430;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>50</x><y>950</y><w>50</w><h>110</h></coordinates><panel_attributes>lt=-&gt;&gt;&gt;&gt;
+m1=0..*
+m2=1</panel_attributes><additional_attributes>10;90;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1202</x><y>74</y><w>290</w><h>140</h></coordinates><panel_attributes>System Admin Server
+--
+- timer : Timestamp
+- generateLeaderboards() : Leaderboard
+- endChallenges(challengeIDArray: String[*]) : void
+- deleteChallengs(challengeIDArray: String[*]) : void
+- sendNotification(notificationInfo: String[*]) : void
+- resetSeason(seasonID: String) : void
+- giveBadges(user : User[*], channel Channel[*])</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1572</x><y>74</y><w>140</w><h>80</h></coordinates><panel_attributes>Leaderboard
+--
+- users : User[*]
+- posts : post[*]
+- channels : channel[*]
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1310</x><y>150</y><w>370</w><h>350</h></coordinates><panel_attributes>lt=-
+
+m2=1
+m1=0..*</panel_attributes><additional_attributes>10;320;340;320;342;10</additional_attributes></element><element><id>Relation</id><coordinates><x>570</x><y>0</y><w>1120</w><h>220</h></coordinates><panel_attributes>lt=-
+m1=0..*
+m2=1</panel_attributes><additional_attributes>10;200;10;10;1090;10;1092;70</additional_attributes></element><element><id>Relation</id><coordinates><x>1180</x><y>20</y><w>440</w><h>70</h></coordinates><panel_attributes>lt=-
+m1=0..*
+m2=1</panel_attributes><additional_attributes>10;10;410;10;412;50</additional_attributes></element><element><id>Relation</id><coordinates><x>1480</x><y>110</y><w>110</w><h>40</h></coordinates><panel_attributes>lt=-
+m1=1
+m2=1</panel_attributes><additional_attributes>10;14;90;14</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1482</x><y>284</y><w>150</w><h>130</h></coordinates><panel_attributes>Season
+--
+- seasonID : String
+- seasonChampion : User
+- seasonLegends : User[*]
+- startMonth : Timestamp
+- endMonth : TimeStamp
+- seasonNumber : Int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1480</x><y>170</y><w>110</w><h>130</h></coordinates><panel_attributes>m1=1
+m2=1</panel_attributes><additional_attributes>10;14;80;10;82;110</additional_attributes></element><element><id>Relation</id><coordinates><x>1310</x><y>210</y><w>180</w><h>230</h></coordinates><panel_attributes>lt=-
+
+m2=1
+m1=1..*</panel_attributes><additional_attributes>10;200;150;200;152;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>982</x><y>264</y><w>150</w><h>70</h></coordinates><panel_attributes>Badges
+--
+- badgeTitle : String
+- seasonNumber : Int
+- monthName : String</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>270</y><w>90</w><h>100</h></coordinates><panel_attributes>lt=-
+
+m2=1
+m1=0..*</panel_attributes><additional_attributes>10;24;60;20;62;80</additional_attributes></element><element><id>Relation</id><coordinates><x>920</x><y>220</y><w>80</w><h>100</h></coordinates><panel_attributes>lt=-
+
+m2=1
+m1=0..*</panel_attributes><additional_attributes>60;74;10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1180</x><y>40</y><w>220</w><h>60</h></coordinates><panel_attributes>lt=-
+m1=0..*
+m2=1</panel_attributes><additional_attributes>10;14;190;20;190;34</additional_attributes></element></diagram>

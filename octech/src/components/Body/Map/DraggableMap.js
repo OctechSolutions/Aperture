@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useEffect } from "react";
+import React, { useRef, useMemo } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
@@ -9,6 +9,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button'
 import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
+import { GoogleMapsAPI } from './client-config'
 
 var greenIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -25,13 +26,7 @@ export default function DraggableMap({
     setCoordinatesSelected,
     setShowEditMap
 }) {
-    const [info, setInfo] = React.useState({
 
-        zoom: 15,
-        draggable: true,
-    })
-
-    useEffect(() => { setLoaded(true) }, [])
     const eventHandlers = useMemo(
         () => ({
             dragend() {
@@ -72,7 +67,6 @@ export default function DraggableMap({
     }
 
     const [value, setValue] = React.useState(null);
-    const [loaded, setLoaded] = React.useState(false);
     const [search, setSearch] = React.useState(false);
     const [space, setSpace] = React.useState(false);
     return (
@@ -139,7 +133,7 @@ export default function DraggableMap({
                 {search &&
                     <div style={{ width: "100%",marginBottom: "15px" }} onClick={() => {setSpace(true)}}>
                     <GooglePlacesAutocomplete
-                        apiKey='AIzaSyC1EfNasAc6J8vIFP3Lephiv4sKQwFmvFQ'
+                        apiKey = {GoogleMapsAPI}
                         selectProps={{
                             value,
                             onChange: setValue,

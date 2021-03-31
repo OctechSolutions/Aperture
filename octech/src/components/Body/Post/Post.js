@@ -35,6 +35,7 @@ import moment from 'moment';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import ReportIcon from '@material-ui/icons/Report';
 import CountUp from 'react-countup';
 import ForumIcon from '@material-ui/icons/Forum';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
@@ -146,7 +147,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     // })
 
     if (givenStars > 0) {
-      db.collection("users").doc(name).collection("notifications").doc(name).set({
+      db.collection("users").doc(channelBy?channelBy:name).collection("notifications").doc(channelBy?channelBy:name).set({
         notifications: firebase.firestore.FieldValue.arrayUnion({
           type: "rating",
           sentAt: firebase.firestore.Timestamp.now(),
@@ -250,33 +251,33 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
             number: comments.length
           })
         })
-      }
-      if (name !== user.displayName) {
-        if (channelBy) {
-          db.collection("users").doc(channelBy).collection("notifications").doc(channelBy).set({
-            notifications: firebase.firestore.FieldValue.arrayUnion({
-              type: "comment",
-              sentAt: firebase.firestore.Timestamp.now(),
-              sender: user.displayName,
-              icon: user.photoUrl,
-              comment: comment,
-              postTitle: message,
-              postId: id
-            })
-          }, { merge: true })
-        }
-        else {
-          db.collection("users").doc(name).collection("notifications").doc(name).set({
-            notifications: firebase.firestore.FieldValue.arrayUnion({
-              type: "comment",
-              sentAt: firebase.firestore.Timestamp.now(),
-              sender: user.displayName,
-              icon: user.photoUrl,
-              comment: comment,
-              postTitle: message,
-              postId: id
-            })
-          }, { merge: true })
+        if (name !== user.displayName) {
+          if (channelBy) {
+            db.collection("users").doc(channelBy).collection("notifications").doc(channelBy).set({
+              notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "comment",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl,
+                comment: comment,
+                postTitle: message,
+                postId: id
+              })
+            }, { merge: true })
+          }
+          else {
+            db.collection("users").doc(name).collection("notifications").doc(name).set({
+              notifications: firebase.firestore.FieldValue.arrayUnion({
+                type: "comment",
+                sentAt: firebase.firestore.Timestamp.now(),
+                sender: user.displayName,
+                icon: user.photoUrl,
+                comment: comment,
+                postTitle: message,
+                postId: id
+              })
+            }, { merge: true })
+          }
         }
       }
       setUpdate(update + 1);
@@ -294,12 +295,12 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     }
     else {
       db.collection("posts").doc(id).onSnapshot((doc) => {
-        if (doc.data().comments !== undefined)
+        if (doc.data() && doc.data().comments !== undefined)
           setCommentList(doc.data().comments.reverse());
       })
     }
 
-  }, [])
+  }, [id, isForumPost])
 
   const addToCollection = (event) => {
     setAddToChannelAnchorEl(event.currentTarget);
@@ -550,7 +551,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   caption: message || "My Awesome Post",
                   imageSrc: images[0].src,
                   style: images[0].style,
-                  creator: name,
+                  creator: channelBy ? channelBy :name,
                   creatorPhotoUrl: photoUrl || "",
                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                   challengePoints: 0,
@@ -568,7 +569,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                   caption: message || "My Awesome Post",
                   imageSrc: images[0].src,
                   style: images[0].style,
-                  creator: name,
+                  creator: channelBy ? channelBy :name,
                   creatorPhotoUrl: photoUrl || "",
                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                   challengePoints: 0,
@@ -601,6 +602,27 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       })
   }
 
+  // Function to handle the report button being clicked
+  const handleReportClick = (post_id) => {
+    let c = window.confirm("Are you sure you want to report this post?");
+    if (c === true)
+    {
+      console.log(user.email);
+      db.collection("postReports")
+        .add({
+          postID: post_id,
+          reportedBy: user.email
+        })
+        .then(() => {
+          alert("You have reported this post successfully.");
+        })
+        .catch(err => {
+          console.log(err);
+          alert("An error has occurred reporting this post.");
+        })
+    }
+  }  
+
   // Update Challenge Chips when component mounted.
   // eslint-disable-next-line
   useEffect(() => { updateChallengeChip() }, []);
@@ -629,7 +651,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       })
     })
 
-    console.log(tags, id);
 
   };
 
@@ -641,7 +662,6 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
       tags: newTags
     }))
   };
-
   return (
     <div ref={ref} className="post" key={id}>
 
@@ -736,7 +756,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
           <>
           </>
           { // 3 DOTS MENU.
-            ((user.displayName === channelBy) || (user.displayName === name)) &&
+            ((user.displayName === channelBy) || (user.displayName === name)) ?
             <>
               <IconButton
                 aria-label="more"
@@ -800,6 +820,10 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
                 }
               </Menu>
             </>
+            : 
+            <IconButton onClick={() => {handleReportClick(id)}}>
+                <ReportIcon />
+          </IconButton>
           }
         </div>
         <div className="post_body">
@@ -1105,6 +1129,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               photoUrl={photoUrl}
               locationPosts={locationPosts}
               id={id}
+              isPreview={false}
             />
             {showMap && console.log(id)}
           </Modal.Body>

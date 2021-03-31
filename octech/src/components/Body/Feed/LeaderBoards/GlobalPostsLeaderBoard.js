@@ -10,11 +10,12 @@ function GlobalPostsLeaderBoard() {
 
   if (dataFetched === false) {
 
-    db.collection('globalLeaderBoards').doc('postLeaderBoard').onSnapshot(data => {
+    db.collection('globalLeaderBoards').doc('postLeaderBoard').get().then(data => {
         setDataFetched(true);
-        setLeaderBoardData(data.data().posts.map(post => {
-          return post.data;
-        }));
+        if(data.data())
+          setLeaderBoardData(data.data().posts.map(post => {
+            return post.data;
+          }));
       })
   }
 

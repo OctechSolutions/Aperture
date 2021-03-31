@@ -1,0 +1,1 @@
+export const GiphyApiKey = "SL07jZg7zFxxOTBN29YaS4979AUIInJK"

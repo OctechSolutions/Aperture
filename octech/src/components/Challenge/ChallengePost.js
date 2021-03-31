@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import '../Body/Post/Post.css'
-import Map from '../Body/Map/Map'
 
 import firebase from "firebase"
 import { db } from "../../firebase"
@@ -12,7 +11,6 @@ import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardActions from '@material-ui/core/CardActions'
 import Avatar from '@material-ui/core/Avatar'
-import Modal from 'react-bootstrap/Modal'
 import IconButton from '@material-ui/core/IconButton'
 import { red } from '@material-ui/core/colors'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -96,7 +94,7 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
       db.runTransaction(transaction => (
         transaction.get(challenge).then(doc => {
           let participants = doc.data().participants;
-          let index = participants.findIndex(u => u.name === creator)
+          let index = participants.findIndex(u => u.displayName === creator)
           let challengePoints = participants[index].challengePoints ? participants[index].challengePoints :0 ;
           participants[index].challengePoints = challengePoints + (givenStars - stars);
           

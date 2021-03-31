@@ -632,10 +632,9 @@ export default function Challenge({ user, name, description, hints, creator, cre
                 images={challengePostData.images}
                 message={challengePostData.message}
                 photoUrl={challengePostData.photoUrl}
-                locationPosts={challengePostData.locationPosts}
+                locationPosts={locationPosts}
                 id={challengePostData.id}
                 isChallengePost={true}
-                locationPosts={locationPosts}
             />
         )
     }

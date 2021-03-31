@@ -4,7 +4,7 @@ import Tab from 'react-bootstrap/Tab';
 import GlobalUsersLeaderBoard from './GlobalUsersLeaderBoard';
 import GlobalPostsLeaderBoard from './GlobalPostsLeaderBoard';
 import ChallengesLeaderBoard from './ChallengesLeaderBoard';
-// import TabContent from 'react-bootstrap/TabContent';
+import ChannelLeaderBoard from './ChannelLeaderBoard';
 
 function Forums({ match, setValue }) {
 
@@ -12,7 +12,6 @@ function Forums({ match, setValue }) {
 
     useEffect(() => {
         setValue('leaderBoards/globalUsersLeaderBoard')
-        console.log(match);
     }, [setValue]);
 
     return (
@@ -32,6 +31,9 @@ function Forums({ match, setValue }) {
                 </Tab>
                 <Tab eventKey="challengesLeaderBoard" title="Challenges" style={{ color: "black", width: "100%" }}>
                     <ChallengesLeaderBoard />
+                </Tab>
+                <Tab eventKey="channelLeaderBoard" title="Fastest Growing Channels" style={{ color: "black", width: "100%" }}>
+                    <ChannelLeaderBoard />
                 </Tab>
             </Tabs>
         </div>
