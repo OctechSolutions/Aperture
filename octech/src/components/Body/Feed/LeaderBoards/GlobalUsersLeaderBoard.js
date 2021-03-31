@@ -13,7 +13,7 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
 
     if (dataFetched===false) {
 
-      db.collection('globalLeaderBoards').doc('userLeaderBoard').onSnapshot(data => {
+      db.collection('globalLeaderBoards').doc('userLeaderBoard').get().then(data => {
           setDataFetched(true);
           if(data.data())
             var users = data.data().users;
