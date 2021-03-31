@@ -147,7 +147,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
     // })
 
     if (givenStars > 0) {
-      db.collection("users").doc(name).collection("notifications").doc(name).set({
+      db.collection("users").doc(channelBy?channelBy:name).collection("notifications").doc(channelBy?channelBy:name).set({
         notifications: firebase.firestore.FieldValue.arrayUnion({
           type: "rating",
           sentAt: firebase.firestore.Timestamp.now(),
