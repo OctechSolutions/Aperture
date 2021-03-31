@@ -1129,6 +1129,7 @@ const Post = forwardRef(({ id, name, description, message, photoUrl, largeGifs, 
               photoUrl={photoUrl}
               locationPosts={locationPosts}
               id={id}
+              isPreview={false}
             />
             {showMap && console.log(id)}
           </Modal.Body>
