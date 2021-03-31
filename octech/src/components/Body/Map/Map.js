@@ -207,7 +207,7 @@ export default function Map({
 
                                                 {(!loading && (isChallengePost !== true)) ? <div style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                                                     <h6>Go to Post</h6>
-                                                    <IconButton onClick={() => { history.push(`post/${p.id}`); }}>
+                                                    <IconButton onClick={() => { history.push(`/post/${p.id}`); }}>
                                                         <OpenInNewIcon fontSize="small" />
                                                     </IconButton>
                                                 </div>
