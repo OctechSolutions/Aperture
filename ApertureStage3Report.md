@@ -58,12 +58,6 @@
 
 <div style="page-break-after: always; break-after: page;"></div>
 
-**Contents**
-
-[TOC]
-
-<div style="page-break-after: always; break-after: page;"></div>
-
 ### Executive Summary
 
 This document is an overview of the journey of the photo sharing application Aperture by Octech Solutions from design through development culminating in the beautiful product it is today.
@@ -88,6 +82,48 @@ A guide to installing, setting up and maintaining Aperture is provided in additi
 Finally, this document features a project evaluation section that covers topics like team organization, implementation schedule / process and the features of the final product with all achievements and failure to achieve mentioned in detail. This section boasts artifacts like the aperture project diary, implementation charts, tables depicting project requirements completion status etc.
 
 The Appendix of this documentation contains supporting documents like a Usability Evaluation document, a list of all Functional and Non-Functional Requirements, etc.
+
+<div style="page-break-after: always; break-after: page;"></div>
+
+**Contents**
+
+[TOC]
+
+<div style="page-break-after: always; break-after: page;"></div>
+
+### Introduction
+
+##### Purpose
+
+This report outlines the developmental progress of the Aperture application. The report will consist of an overall low level and high-level overview of the system and its components, diagrams to visualize the workings of the architecture and details, system testing for technical correctness according to our client’s expectations and a section with project evaluation observations. This will ensure the client Dr. Richard Freedman and his associates fully understand and comprehend the Aperture system functionalities..
+
+This document is intended to be read by but not limited to
+
+1. The client Dr. Richard Freedman and his associates so they are completely aware of the current state of the Aperture application.
+2. The OcTech Solutions development team as a reference. This document will also assist the development team in maintaining the application post deployment.
+
+
+
+##### Scope
+
+There is one system called “Aperture”. The document contains the high-level overview of technologies and components for the 6 sub-systems of Aperture,
+
+1. Content Creation System
+2. User Account System
+3. User Interaction System
+4. Game Mechanics System
+5. Notification System
+6. Application Improvement System
+
+These sub-systems will be developed and operational under the guidelines of GDPR and W3C regulations to maintain a high standard. Comprehensive and in-depth details of each sub-system is provided in the Stage 1 document submitted on the 26th of November 2020.
+
+This document submitted on 1st April 2021 contains the final design of the Aperture system. It provides a comprehensive summary of the development  journey and project management decisions.
+
+
+
+##### Overview
+
+This document provides an in-depth and cohesive breakdown of all the design and project/team management decisions which were made while developing the system. It will provide an overall overview of the final product along with the environment used to develop and deploy it and a high-level overview of the architecture of the system / sub-systems. Explanation of the user interface will also be provided, in addition to a user guide video and installation - setup - management guides. The testing methodologies used to test robustness and technical correctness as per our and our client’s expectations will be followed by an in depth discussion of the implementation schedule, problem solving decisions taken etc related to the development journey. Usability tests carried out and their results shall also be briefly stated with a detailed Usability Evaluation Section available in the Appendix.
 
 
 
@@ -212,9 +248,9 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 
 This section features visual aids that clarify/support design choices made. Significant diagrams that were described in detail in stages 1 and 2 of this project shall be revisited here in addition to new ones.
 
-
-
 **After Stage 3, all 6 sub-systems are completed.** The 1st 3 sub-systems with use case diagrams depicting them along with supporting sequence diagrams have been provided and explained in details in stage 2 report. Use case diagrams related to systems 4, 5 and 6 have also been presented in the stage 1 report. These diagrams shall be revisited here. New sequence diagrams in support of systems 4, 5 and 6 will can be found below.
+
+
 
 ##### 1. User Account System
 
@@ -229,21 +265,25 @@ This section features visual aids that clarify/support design choices made. Sign
         Use Case Diagram - User Account System
     </figcaption>
 </figure>
+Above use case diagram shows all the functionalities of the user account system along with the actors who will be interacting with the system and which actors will work in conjunction, so that an action is completely carried out. The 3 actors which will be interacting are:
 
-
+1. User
+2. User Content Database
+3. Content Creation System
 
 <figure>
     <center>
         <img 
              src="./reportImages/SeqDiagram1UserAccSysCreateAcc.png" 
-             alt="Sequence Diagram - Create Account" 
+             alt="Sequence Diagram - Sign Up" 
              style="width:90%">
     </center>
     <figcaption style="text-align:center;">
-        Sequence Diagram - Create Account
+        Sequence Diagram - Sign Up
     </figcaption>
 </figure>
 
+Above sequence diagram shows the 2 alternate ways on how a user can create an account on Aperture, they can either enter their details, or sign up with a google account. Then our firebase database will create a new entry for the new user.
 
 
 <figure>
@@ -257,7 +297,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Login
     </figcaption>
 </figure>
-
+Above sequence diagram represents how a user can login to their account provided they have one which exists in our Firestore database. Users can enter their email address and password which is verified by the database, can login and are taken to the Image Feed of the application. If a user decides to login with their Google Account, they click on the “Login with Google” button and then choose their google account or enter details for their google account. Firestore database verifies if a user exists with the given google account details, if not then there is a login error, and the user is told to try again, otherwise the login is successful and the user is taken to the Image Feed.
 
 
 <figure>
@@ -271,9 +311,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Logout
     </figcaption>
 </figure>
-
-
-
+Above sequence diagram showcases the processes when a user decides to log out of their account. The user clicks on the “Log out” button which then sends a request to the system to clear the user’s current session. The user is then redirected to the login page after the system refreshes the window the user is currently in.
 
 
 <figure>
@@ -287,6 +325,8 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Reset Password
     </figcaption>
 </figure>
+Above is a sequence diagram for Reset Password, the user clicks on the “Forgot Password” button on the login page, user is then prompted to enter their email address. The database will check if the entered email address has an account, if not then the user has to enter the correct email. If the entered email address has an account, then the system sends the user an email with a link. The user will visit that link which will prompt them to enter their new password. The database will then update the password for that email address for the user and the system informs the user that their password has been reset.
+
 
 
 
@@ -303,106 +343,14 @@ This section features visual aids that clarify/support design choices made. Sign
         Use Case Diagram - Content Creation System
     </figcaption>
 </figure>
+Above is the use case diagram for the Content Creation System along with all the actors working in conjunction to carry out the specific functions so users can create and post content on the Aperture application. The actors involved in this system are:
 
-
-
-<figure>
-    <center>
-        <img 
-             src="./reportImages/SeqDiagram2ContentCreationSysCreateChannel.png" 
-             alt="Sequence Diagram - Create Channel" 
-             style="width:90%">
-    </center>
-    <figcaption style="text-align:center;">
-        Sequence Diagram - Reset Password
-    </figcaption>
-</figure>
-
-
-
-<figure>
-    <center>
-        <img 
-             src="./reportImages/SeqDiagram2ContentCreationSysCreateCollection.png" 
-             alt="Sequence Diagram - CreateCollection" 
-             style="width:90%">
-    </center>
-    <figcaption style="text-align:center;">
-        Sequence Diagram - CreateCollection
-    </figcaption>
-</figure>
-
-
-
-<figure>
-    <center>
-        <img 
-             src="./reportImages/SeqDiagram2ContentCreationSysCreatePortfolio.png" 
-             alt="Sequence Diagram - Create Portfolio" 
-             style="width:90%">
-    </center>
-    <figcaption style="text-align:center;">
-        Sequence Diagram - Create Portfolio
-    </figcaption>
-</figure>
-
-
-
-<figure>
-    <center>
-        <img 
-             src="./reportImages/SeqDiagram2ContentCreationSysDelChannel.png" 
-             alt="Sequence Diagram - Delete Channel" 
-             style="width:90%">
-    </center>
-    <figcaption style="text-align:center;">
-        Sequence Diagram - Delete Channel
-    </figcaption>
-</figure>
-
-
-
-<figure>
-    <center>
-        <img 
-             src="./reportImages/SeqDiagram2ContentCreationSysDelCollection.png" 
-             alt="Sequence Diagram - Delete Collection" 
-             style="width:90%">
-    </center>
-    <figcaption style="text-align:center;">
-        Sequence Diagram - Delete Collection
-    </figcaption>
-</figure>
-
-
-
-<figure>
-    <center>
-        <img 
-             src="./reportImages/SeqDiagram2ContentCreationSysDelPortfolio.png" 
-             alt="Sequence Diagram - Delete Portfolio" 
-             style="width:90%">
-    </center>
-    <figcaption style="text-align:center;">
-        Sequence Diagram - Delete Portfolio
-    </figcaption>
-</figure>
-
-
-
-<figure>
-    <center>
-        <img 
-             src="./reportImages/SeqDiagram2ContentCreationSysDelPost.png" 
-             alt="Sequence Diagram - Delete Post" 
-             style="width:90%">
-    </center>
-    <figcaption style="text-align:center;">
-        Sequence Diagram - Delete Post
-    </figcaption>
-</figure>
-
-
+1. User
+2. Device Camera
+3. Device Storage
+4. Challenge Database
+5. Channel Content Database
+6. User Content Database
 
 <figure>
     <center>
@@ -416,6 +364,105 @@ This section features visual aids that clarify/support design choices made. Sign
     </figcaption>
 </figure>
 
+Above sequence diagram shows the process which takes place when a user shares a post. A user can either choose a photo from their devices storage or take a photograph using their device camera. The system then gives the user options to apply filters, GIFS and Stamp Overlays to each photo, then a user enters a caption and uploads the photo, the images are saved as a base 64 string in the database under the user’s ID and the system renders that post in the Image Feed for the user and other users which follow him/her. The user can share and upload their content either on their profile, their channels, collections, or portfolios.
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysDelPost.png" 
+             alt="Sequence Diagram - Delete Post" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Delete Post
+    </figcaption>
+</figure>
+
+Above sequence diagram shows how a post is deleted, the post entry is removed from the database and as a result that post is removed from the user’s profile, the image feed of the user’s friends, the explore page and the channels if that post is also in a channel. Then the post would no longer be visible in the app as all details have been removed from the database.
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysCreateChannel.png" 
+             alt="Sequence Diagram - Create Channel" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Create Channel
+    </figcaption>
+</figure>
+
+Above is the sequence diagram showing creation of a channel. The user will click on a button which leads them to a form so the users can give the channel a name, a theme and a description for other users. The database will create a new entry for the user being the channel creator for the specific channel.
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysDelChannel.png" 
+             alt="Sequence Diagram - Delete Channel" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Delete Channel
+    </figcaption>
+</figure>
+
+Above is the sequence diagram for deleting a channel. The user would click on the “Delete Channel” button on a channel, the database would then remove the details and all posts in the selected channel. The system’s frontend would no longer show that channel in the User’s profile.
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysCreateCollection.png" 
+             alt="Sequence Diagram - CreateCollection" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - CreateCollection
+    </figcaption>
+</figure>
+Above sequence diagram shows the internal processes of creating a collection. The user will click on the “Create Collection” button, it will display the user a form where they can enter in their collection’s theme and a short description. These details will then be stored in the database under the user’s entry. The system will then display the collection to the user and let the user add photos to their collections.
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysDelCollection.png" 
+             alt="Sequence Diagram - Delete Collection" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Delete Collection
+    </figcaption>
+</figure>
+
+Above is the sequence diagram for deleting a collection. The user would click on the “Delete Collection” button on a collection, the database would then remove the details and all the photographs in the selected collection. The system’s frontend would no longer show that collection in the User’s profile.
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysCreatePortfolio.png" 
+             alt="Sequence Diagram - Create Portfolio" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Create Portfolio
+    </figcaption>
+</figure>
+Above is the sequence diagram which shows the processes on creating a portfolio. Only one portfolio can be created per user and the user can fill in details such as the user’s first name and last name, a description of the portfolio, a quote, and a display picture. The database would create an entry for the user’s portfolio and store the details along with the photos uploaded to the portfolio. The collection once created is then displayed in the user’s profile page.
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram2ContentCreationSysDelPortfolio.png" 
+             alt="Sequence Diagram - Delete Portfolio" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Delete Portfolio
+    </figcaption>
+</figure>
+Above represents the sequence diagram for deleting a portfolio. The user would click on the “Delete Portfolio” button on the portfolio, the database would then remove the details and all the photographs from the portfolio. The system’s frontend would no longer show the portfolio in the User’s profile.
 
 
 <figure>
@@ -429,7 +476,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Toggle Public/Private Post
     </figcaption>
 </figure>
-
+Above is the sequence diagram which represents how is a post kept public or private. A user can choose to keep a post public or private while creating the post and after the photos have posted then the user can toggle the option to keep the post public or private. If the post is public then all users can view the post by going to the user’s profile but if a post is private, then only users added as friend of the user are able to view the private posts.
 
 
 <figure>
@@ -443,6 +490,8 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Add a Post to Portfolios/Collections
     </figcaption>
 </figure>
+Above is the sequence diagram which shows the process in adding an existing post to a user’s portfolio or a collection. Every post has a menu button and when you click it, the option to add the images of the post to the portfolio and collection are given if you have a collection. If a person does not have a collection, then the option for the collection does not show. If a person does not have a portfolio but clicks on the button, then an error message will pop up telling the user to create a portfolio first. If a user has multiple collections, then the user is given the option to choose which collection to add the post images to. Once chosen, the images can be viewed in the portfolio or in that collection.
+
 
 
 
@@ -459,7 +508,15 @@ This section features visual aids that clarify/support design choices made. Sign
         Use Case Diagram - User Interaction System
     </figcaption>
 </figure>
-
+Above is the use case diagram representing the User Interaction System of Aperture. This system is composed of all the functionalities which allow users to interact with each other within Aperture. The actors in this system are:
+1. User
+2. Content Creation System
+3. Notification System (Stage 3)
+4. User Content Database
+5. Game Mechanics System (Stage 3)
+6. Challenge Content Database
+7. Channel Content Database
+8. Device GPS
 
 
 <figure>
@@ -473,7 +530,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Send Friend Request
     </figcaption>
 </figure>
-
+Above is the sequence diagram for the functionality of a user sending a friend request and being able to cancel a friend request. If a user wants to send a friend request, then they must search for a user and visit their profile page. Then they can click a button to send a friend request. The database will update for both users the friend requests, the sender, and the receiver of the request. If the user wants to cancel a friend request, then they must visit a user’s profile whom they have already sent a friend request to. The user can then click on the option to cancel friend request, the database will then clear the friend requests for both users. The user can send the same user another friend request if the user wants to add the other user as a friend.
 
 
 <figure>
@@ -487,7 +544,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Accept Friend Request
     </figcaption>
 </figure>
-
+Above is the sequence diagram for accepting a friend request. In stage 3 the user will be notified when a user receives a friend request. The user will visit the profile page of the user who sent the friend request. The user will then click on the button to accept the friend request, in the background the database will update both the user’s friend lists by adding in the new user as a friend. Both users will now be able to view private posts from each other in their Image Feed and chat with each other.
 
 
 <figure>
@@ -501,7 +558,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Add Comment
     </figcaption>
 </figure>
-
+Above is the sequence diagram for posting comments on a post, the user can click on the comment’s icon on a post and then type in the comment box and click submit. The database will update the comment’s field of the post and other users will be able to see the comments from other users along with their usernames.
 
 
 <figure>
@@ -515,7 +572,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Block User
     </figcaption>
 </figure>
-
+Above is the sequence diagram for how to block and unblock a user. A user will visit another user’s profile page and will click on the “Block user” button. The database will then add the blocked user to the blocked users list. Both users will now not be able to view each other’s profile. To unblock a user, the user must search for that user and click on unblock. The database will remove the unblocked user from the blocked list and now both users can view each other’s profile and send friend requests.
 
 
 <figure>
@@ -529,7 +586,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Chat
     </figcaption>
 </figure>
-
+Above is the sequence diagram for the chat system, the user navigates to the chat section by clicking on the icon on the footer of the page. The chat interface is displayed to the user and they can search for a user who is added as their friend. A new chat room is created in the database and the user can send a message to their friend. Both users can chat with each other now.
 
 
 <figure>
@@ -543,7 +600,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Follow Channel
     </figcaption>
 </figure>
-
+Above is the sequence diagram for following and unfollowing channels, to follow a channel the user can visit the channels tab in the Explore page and then click on any channel they want. The user can select a channel and clicks on follow channel, the database will then update the following list for the user after which the user can view all posts of the channel in the Image Feed. To unfollow a channel the user can go their profile and click on Following Channels, the database will retrieve of all channels being followed by the user. The user can then visit that channel and click the unfollow button. The database will then remove that channel from the user’s following list and the app would no longer show those posts in the user’s Image Feed.
 
 
 <figure>
@@ -557,7 +614,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Rate Post
     </figcaption>
 </figure>
-
+Above sequence diagram outlines how a post is rated. The user can rate a post to a maximum of 3 stars, once a user rates the post, that rating value is stored into the database for that post from a specific user so on the user’s feed, he/she can see what rating was given. In the background, the database adds this new rating for the post and also updates the profile points of the user which is linked with the Game Mechanics System to be completed in stage 3.
 
 
 <figure>
@@ -571,7 +628,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Share Content
     </figcaption>
 </figure>
-
+Above is the sequence diagram for a user searching for other users or channels, the user navigates to the explore page, discussed later with additional functionalities, the user then types the username of the user or the channel name, the database would then retrieve all the search results and display them as a list to the user.
 
 
 <figure>
@@ -585,7 +642,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Image Feed
     </figcaption>
 </figure>
-
+Above is the sequence diagram for viewing the Image Feed of a user. The system makes a request to the database to return all public and private posts of user’s friends along with all posts of all channels the user follows. The system then renders these images in the Image Feed where the user can view all posts and interact with them such as commenting or rating them.
 
 
 <figure>
@@ -599,7 +656,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - View Photo Map
     </figcaption>
 </figure>
-
+Above is the sequence diagram for viewing the “Map View” of a post/photo. The user will click on the map icon of a post which will send a database query which will retrieve the geo location of where the post was taken. That location is shown in a map view using Google Maps API.
 
 
 <figure>
@@ -613,7 +670,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - View Explore Page
     </figcaption>
 </figure>
-
+Above is the sequence diagram for the Explore page which consist of 2 tabs and the search functionality already discussed. The Explore page retrieves a list of channels and public posts from users who are not blocked or have not blocked the user in question. If the user clicks on the Posts tab then all public posts would be visible, if the user clicks on the Channel tab then all the channels would be visible. The user can then click on the usernames to visit the user’s profiles or click on the Channel names to visit the channel.
 
 
 <figure>
@@ -689,7 +746,7 @@ This section features visual aids that clarify/support design choices made. Sign
         Sequence Diagram - Human Detection
     </figcaption>
 </figure>
-
+Above sequence diagram shows the process of how a human is detected in an image a user is trying to upload. The user will click on the “Add Image” icon in the Image Feed and then choose a photo, a compression library then compresses the image which sends the compressed image to the Tensorflow Image Detection Modal. This model will scan the image and displays an error message if a human is detected, otherwise the app will allow the image to be edited and posted.
 
 
 <span style="color:blue">*MORE ...*</span>
@@ -710,13 +767,113 @@ This section in addition to design elements and thoughts behind the final produc
 
 <span style="color:magenta">*Layout and navigation of the application or applications.*</span>
 
+This section boasts screenshots of the application user Interface (UI) with brief explanations about the view and where it lead to.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav1LoginSignup.png" 
+             alt="Application Layout - Login/SignUp" 
+             style="width:70%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Login/SignUp
+    </figcaption>
+</figure>
+
+Here is the login/ sign up page where the user can enter their existing details and login into their account or sign up by pressing the sign-up button that leads to the page. The user can also customize their profile avatar once they press the big edit icon. 
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav2AddPost1.png" 
+             alt="Application Layout - Add Post 1" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Add Post 1
+    </figcaption>
+</figure>
+
+Once the user is logged in they can press the plus icon to redirect them to the post popup. Here the user has options to modify their uploaded pic and add tags.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav3AddPost2.png" 
+             alt="Application Layout - Add Post 2" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Add Post 2
+    </figcaption>
+</figure>
+
+The user can apply different photo filters, add GIFs overlays, tags, and the location where the picture was taken. The user can also write a caption for their post and preview the image they have uploaded and modify. This is the whole process a user goes through to post an image on our application. 
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav4Profile.png" 
+             alt="Application Layout - User Profile" 
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - User Profile
+    </figcaption>
+</figure>
+
+This is the users profile page where the user can see their posts/collections/channels/portfolios they have made. As well as their friends list, which channels they are following/ leaderboard league they are in, and how many profile points they have. The user can view this by clicking on their avatar and then clicking profile.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav5Explore.png" 
+             alt="Application Layout - Explore" 
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Explore
+    </figcaption>
+</figure>
+
+Here is the explore page where users can explore different post from other users. This is accessed by clicking on the search icon on the top of the app.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav6Leaderboards.png" 
+             alt="Application Layout - Leaderboards" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Leaderboards
+    </figcaption>
+</figure>
+
+This is the leaderboard section of the app. This is accessed by clicking on the podium icon. Here the user can view several different types of leaderboards for users, posts, challenges, and fastest growing channels. Each leaderboard displays 1st, 2nd, and 3rd with medals.
+
 <span style="color:blue">*MORE ...*</span>
 
 
 
-##### 3.2. Implementation Methodology (Gayathri)
+##### 3.2. Implementation Methodology 
 
 <span style="color:magenta">*Iterations/Scrum/Other agile techniques?*</span>
+
+(William Malsam, 2018) (Alexandra Altvater, 2017) (Simplilearn, 2020) (Development That Pays, 2019)
 
 For implementation and Project Management, it was decided that **Agile** would be the best approach for the following reasons...
 
@@ -738,7 +895,7 @@ There are several agile frameworks out there like the Feature Driven Development
     <center>
         <img src="./reportImages/Sprint.png" alt="Sprint Structure" style="width:70%">
     </center>
-    <figcaption style="text-align:center;">Sprint Structure</figcaption>
+    <figcaption style="text-align:center;">Sprint Structure (Development That Pays, 2019)</figcaption>
 </figure>
 
 **Note:** Above image "Sprint Structure" is from a sprint cheat sheet that can be obtained from the description of YouTube Video, ["Scrum Overview - [Scrum Basics 2019] + FREE Cheat Sheet" by "Development That Pays".](https://www.youtube.com/watch?v=RCJghFbXSPk&list=PLngnoZX8cAn9dlulsZMtqNh-5a1lGGkLS&index=1)
@@ -758,7 +915,7 @@ This process **repeats** with an MS Teams sprint planning meeting again.
 
 
 
-##### 3.3. Iteration Achievement History (Gayathri)
+##### 3.3. Iteration Achievement History
 
 <span style="color:magenta">*What was achieved in each iteration/sprint?*</span>
 
@@ -779,8 +936,9 @@ Following are 3 tables that summarize all achievements from every sprint for sta
 </figure>
 
 
+##### 3.4. Testing Regimen 
 
-##### 3.4. Testing Regimen (Yoshi)
+(Synopsis, No Date)
 
 <span style="color:magenta">*How was the final system tested for technical correctness?*</span>
 
@@ -793,9 +951,11 @@ During the development of the application’s functionality throughout stages 2 
         <img src="./reportImages/CICD.png" alt="CI/CD image" style="width:60%">
     </center>
     <figcaption style="text-align:center;">
-        Continuous Integration and Continuous Delivery
+        Continuous Integration and Continuous Delivery (Synopsis)
     </figcaption>
 </figure>
+
+
 
 The testing method adopted is of **Continuous Integration & Continuous Delivery** (CI/CD) as per which, features are released by periodically integrating code changes into the main software branch, testing them as early and as frequently as possible, and incorporating feedback/fixing bugs and relaunching them. This continuous cycle of automating the product delivery pipeline ensures that features are made available to users quickly, efficiently, and sustainably. CI/CD makes for an un-compromising practice in the Agile software development and project management lifecycle.
 
@@ -803,9 +963,7 @@ Testing was also done across a variety of web browsers, in particular Google Chr
 
 Usability tests conducted via questionnaires ensured that different users tested our app and gave feedback. These opinions and feedback from stage was used to determine possible improvements and identify issues, that would be corrected for the final version.
 
-
-
-**Test Plan in Brief**
+<u>**Test Plan in Brief**</u>
 
 The main objective of the test lies in testing the usability and the functionality of our application. Any needed change was made or attempted to be made for final system. 
 
@@ -822,7 +980,7 @@ The given feedback would highlight key areas for corrective action to take place
 
 
 
-##### 3.5. Install - Setup - Maintain (Baber)
+##### 3.5. Install - Setup - Maintain
 
 <span style="color:magenta">*Documentation on how to install/setup/maintain the final system.*</span>
 
@@ -832,15 +990,15 @@ Our application is developed using React . So the client needs to have a JavaScr
 
 **To install and build our application Aperture the client should follow these steps:**
 
-- Download and install     Node.js. The client can download Node.js from its official website : https://nodejs.org/en/ and follow the given instructions on how to install Node.js on their device.
+- Download and install Node.js. The client can download Node.js from its official website : https://nodejs.org/en/ and follow the given instructions on how to install Node.js on their device.
 
 - Use Node Package Manager to download and install required packages for the app. This is to     be done by :
 
-  Running ***npm install --legacy-peer-deps*** command inside the     project’s ***/octech*** folder . 
+  Running ***npm install --legacy-peer-deps*** command inside the project’s ***/octech*** folder . 
 
 - Use Node Package Manager to deploy our app Aperture. This is to be done by :
 
-  Running ***npm run build*** command inside the project’s ***/octech*** folder. This will create a build directory with an optimized     production build of our app.
+  Running ***npm run build*** command inside the project’s ***/octech*** folder. This will create a build directory with an optimized production build of our app.
 
 - Upload the ***build*** folder to the client’s HTTP sever.
 
@@ -862,7 +1020,7 @@ Our application is developed using React . So the client needs to have a JavaScr
    - Select ***Config*** from the ***Firebase SDK*** snippet pane.
    - Copy the config object snippet and replace it with value of variable 
       ***firebaseConfig*** in ***/octech/src/firebase.js*** file in our project directory ***Aperture***.
-   - Open ***Cloud Firestore*** from ***Firebase console.**
+   - Open ***Cloud Firestore*** from ***Firebase console***.
    - Go to ***Indexes*** *tab and create following **indexes** for the following* **Collections:**
 
 <figure>
@@ -900,7 +1058,7 @@ Our application is developed using React . So the client needs to have a JavaScr
 
    - It will ask you to download the JSON file containing the key. Securely store this JSON file.
 
-   - Set the path of the JSON file as the ***argument*** to ***credentials.Certificate*** method in /timeBaseTasks/daily.py*** and ***/timeBaseTasks/monthly.py*****
+   - Set the path of the JSON file as the ***argument*** to ***credentials.Certificate*** method in ***/timeBaseTasks/daily.py*** and ***/timeBaseTasks/monthly.py***
 
    - Setup daily task to run Python script ***/timeBaseTasks/daily.py***.
 
@@ -951,7 +1109,7 @@ This section, after an overall analysis of the the production process and final 
 
 
 
-##### 4.1. Organization (Gayathri)
+##### 4.1. Organization
 
 ###### 4.1.1. Organizational Structure
 
@@ -965,8 +1123,6 @@ Some possible languages/technical skills which would potentially be needed in th
 	<img src="./reportImages/ConfidencePoints.png" alt="Confidence Points" style="width:100%">
     <figcaption style="text-align:center;">Confidence Points</figcaption>
 </figure>
-
-
 In order to ensure optimum deployment of team members, a **SWOT analysis** was carried out.
 
 <figure>
@@ -986,8 +1142,6 @@ Based on observations and after discussion, following roles were initially decid
 - Muhammad Assad Khan - Programmer & Report In Charge
 - Tasneem Hussein - Graphic Design Lead & Programmer
 - Yoshi Jasmin - Application Testing In Charge & Programmer
-
-
 
 Towards the end of stage1, it was a collective decision to appoint Muhammad Assad Khan as the new leader as the previous leader was unable to fully commit to oversee the team due to personal issues. Later during stage 3, Baber Jan who is our scrum master, was appointed as the project manager/acting team lead since Assad was unable to contribute on account of having to stick to a recovery regimen following medical eye procedures. As we worked together, each members' true strengths surfaced and it became clearer where each member's primary capabilities were. 
 
@@ -1121,7 +1275,7 @@ Opportunities for learning and completion that agile provided and the team's com
 
 ##### 4.2. Implementation
 
-###### 4.2.1. Implementation Schedule (Gayathri)
+###### 4.2.1. Implementation Schedule
 
 <span style="color:magenta">*What was your implementation schedule? How did the implementation schedule differ from the original plan?*</span>
 
@@ -1172,7 +1326,7 @@ The above comparison chart data was used to extract the Pre Planned Vs Implement
 
 
 
-###### 4.2.2. Path to Success (Gayathri)
+###### 4.2.2. Path to Success
 
 <span style="color:red">*provide examples*</span>
 
@@ -1236,7 +1390,7 @@ For project planning and keeping track of progress the following tools were used
 
 
 
-##### 4.3. Product (Tasneem)
+##### 4.3. Product
 
 ###### 4.3.1. Functionality Achieved / Failed to Achieve
 
@@ -1340,7 +1494,7 @@ As a result of these findings, we have successfully achieved the vast majority o
 
 
 
-##### 4.4. Project Evaluation Reflection (Gayathri)
+##### 4.4. Project Evaluation Reflection
 
 **The experience** of developing an app from scratch was an incredible one. Working in a team consisting of people with whom one has never worked before was a unique experience for every member. The team was familiar with the process of developing code from experience gained through the course of their academic life and otherwise. But handling project and team management was a new experience and thus was the most challenging part of the project.
 
@@ -1373,11 +1527,15 @@ As a result of these findings, we have successfully achieved the vast majority o
 
 ### Conclusion
 
-The aim and objective of this document is to highlight all the functionalities completed within the stage 3 deadline and our implementation of all functionalities thus far. 
+The aim and objective of this document was to highlight all the functionalities completed within the stage 3 deadline and our implementation of all functionalities thus far. 
 
 In spite of the challenges posed by the COVID-19 Pandemic and the time constraints there in, we at OcTech Solutions have completed all required requirements as specified by the client with regards to all 6 systems comprising Aperture along with supportive additional functionalities. 
 
-Aperture has grown into a successful social media platform where users may both wind down and enjoy sharing photos with each other / showcasing their talents and compete with each other in challenges for a thrilling time!
+Aperture has grown into a successful social media platform where users may both wind down and enjoy sharing photos with each other/showcase their talents and compete with each other in challenges for a thrilling time!
+
+We believe that all the requirements as laid out by the client and his associates have been met. In the future, we hope to upgrade and expand operations of maintenance to cope with the heavy traffic flow through our servers and the databases needed to accommodate new influx of users every day. The concept of "gamification", as specified by our client, has more potential than initially thought by our software development and design team, we feel that the meaningful interactions between people because of this feature and this application is the cornerstone of Aperture!
+
+We at Octech Solutions are ready to Keep Developing the application, and we have the resources to ensure Aperture becomes a global icon.
 
 Visit our company website to find more information about the future of OcTech solutions and the amazing team behind it at https://octech.herokuapp.com/.
 
@@ -1397,6 +1555,18 @@ Visit our deployed Aperture web application as well which is now also a progress
 Github. (2015, August 29). Redux/ReduxJS. Retrieved from https://github.com/reduxjs/redux/issues/653
 
 **Stevenson, D. (2018).** What is Firebase? The complete story, abridged. Retrieved Jan 2021, from https://medium.com/firebase-developers/what-is-firebase-the-complete-story-abridged-bcc730c5f2c0
+
+**Synopsys. (No Date).** CI/CD from https://www.synopsys.com/glossary/what-is-cicd.html.
+
+**William Malsam. (2018, Sep 18).** What Is a Scrum Master? Here’s Everything You Need to Know from https://www.projectmanager.com/blog/what-is-a-scrum-master-everything-you-need.
+
+**Alexandra Altvater. (2017, Sep 17).** "What is Agile Methodology? How It Works, Best Practices, Tools" from https://stackify.com/agile-methodology/#:~:text=Examples%20of%20Agile%20Methodology,pick%20one%20or%20two%20methods.
+
+**Organize Agile. (2016, Jul 11).** YouTube Video, "Scrum in under 5 minutes" visit at https://www.youtube.com/watch?v=2Vt7Ik8Ublw
+
+**Simplilearn. (2020, Feb 27).** YouTube Video, "Agile Project Management Tutorial | What Is Agile Project Management? | Simplilearn" visit at https://www.youtube.com/watch?v=thsFsPnUHRA
+
+**Development That Pays. (2019, Jan 24).** "Scrum Overview - [Scrum Basics 2019] + FREE Cheat Sheet" and 7 more videos in playlist. Visit at https://www.youtube.com/watch?v=RCJghFbXSPk&list=PLngnoZX8cAn9dlulsZMtqNh-5a1lGGkLS&index=1
 
 
 
@@ -2146,7 +2316,7 @@ The below figure shows the distribution of our Application's rating on a scale f
 
 
 
-The participants generally liked some of the features and expressed that the user interface and layout were simple to use and the system itself was easily accessible and easy to understand for them. The changes suggested by the subjects correlate with the features they least liked on the application, the need for a “dark mode,” and making it easier for the users to be able to navigate to a post, making the Chatting system easier, adding more options to sign up beside the google account.
+In general, the participants liked some of the features and expressed that the user interface and layout were simple to use and the system itself was easily accessible and easy to understand for them. The changes suggested by the subjects correlate with the features they least liked on the application, the need for a “dark mode,” and making it easier for the users to be able to navigate to a post, making the Chatting system easier, adding more options to sign up beside the google account.
 
 
 
@@ -2162,7 +2332,7 @@ The participants generally liked some of the features and expressed that the use
 
 Throughout the entire usability test, subjects highlighted some issues but generally had an enjoyable experience. They highlighted that the user interface was intuitive and easy to use, especially the introduction of our gaming system. 
 
-The participants were able to complete the tasks with relative ease and grasped the application's ethos along with the concept of "playification."  
+The participants were able to complete the tasks with relative ease and grasped the application's ethos along with the concept of "gamification."  
 
 The issues highlighted mainly dealt with navigations in the app being hard and the chat page being confusing. Moreover, a dark mode feature should be added to make it a more enjoyable experience.
 
@@ -2170,18 +2340,9 @@ The issues highlighted mainly dealt with navigations in the app being hard and t
 
 **Conclusion**
 
-This section's aims and objectives were a proposed bid for the client, Dr. Richard Freedman, from OcTech Solutions to develop the photo-based social media platform known as Aperture. The section laid out a comprehensive description of each sub-section for the understanding of the client and the software development team. 
+This section's aims and objectives were a proposed bid for the client, Dr. Richard Freedman, from OcTech Solutions to develop the photo-based social media platform known as Aperture. The section laid out a comprehensive description of each sub-section for the understanding of the client and the software development team.  
 
-We at OcTech Solutions believe that we have met all the requirements as laid out by the client and his associates. A firm conclusion we can draw from the usability report is that the consensus of the sample of people we tested is that the Aperture application has the potential to expand and scale up exponentially. The subjects we tested were very pleased with our Application and rated it extremely high. The standout features were the user interface and the newly implemented game mechanics with the leader board, which our subjects thought of as something new and did not see before.
+A firm conclusion we can draw from the usability study based off of the consensus of test participants is that the Aperture application is well received and has the potential to expand and scale up further.
 
-In the future, we hope to implement many more features via patches and updates and expand operations of maintenance to cope with the heavy traffic flow through our servers and the databases needed to accommodate new users' influx every day. The concept of "playification," as specified by our client, has even more potential than initially thought by our software development and design team, we feel that the meaningful interactions between people because of this feature and this application is the cornerstone of Aperture. 
+The subjects we tested were very pleased with our Application and rated it high. The most liked features included the clear and simple UI, feedback forum, AI model that scans for humans in images, fluidity of animations, chat system, adding GIFs to images, challenges feature, account creation via google, game mechanics, and leaderboards.
 
-We at OcTech Solutions are ready to Keep Developing the application, and we have the resources to ensure Aperture becomes a global icon.
-
-
-
-****
-
-
-
-<span style="color:blue">*MORE ...*</span>
