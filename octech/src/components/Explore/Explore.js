@@ -91,7 +91,7 @@ export default function Explore() {
             data: doc.data(),
           }))
         )
-      }).then(() => {setTimeout(() => {setMapLoad(true)},2000) })
+      }).then(() => {setTimeout(() => {setMapLoad(true)},500) })
 
   }, [])
   const getPosts = (k) => {
@@ -396,6 +396,7 @@ export default function Explore() {
               overflow: "hidden",
               postion : "fixed"
             }}
+            mountOnEnter={true}
           >
             {mapLoad && <Map
               locationPosts={locationPosts}
