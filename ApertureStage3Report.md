@@ -257,7 +257,7 @@ This section features visual aids that clarify/support design choices made. Sign
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramUserAccSys.png" 
+             src="./reportImages/UseCaseDiagramUserAccSys.PNG" 
              alt="Use Case Diagram - User Account System" 
              style="width:90%">
     </center>
@@ -335,7 +335,7 @@ Above is a sequence diagram for Reset Password, the user clicks on the “Forgot
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramContentCreationSys.png" 
+             src="./reportImages/UseCaseDiagramContentCreationSys.PNG" 
              alt="Use Case Diagram - Content Creation System" 
              style="width:90%">
     </center>
@@ -500,7 +500,7 @@ Above is the sequence diagram which shows the process in adding an existing post
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramUserInterSys.png" 
+             src="./reportImages/UseCaseDiagramUserInterSys.PNG" 
              alt="Use Case Diagram - User Interaction System" 
              style="width:90%">
     </center>
@@ -692,7 +692,7 @@ Above is the sequence diagram for the Explore page which consist of 2 tabs and t
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramGameMechSys.png" 
+             src="./reportImages/UseCaseDiagramGameMechSys.PNG" 
              alt="Use Case Diagram - Game Mechanics System" 
              style="width:90%">
     </center>
@@ -708,7 +708,7 @@ Above is the sequence diagram for the Explore page which consist of 2 tabs and t
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramNotificationSys.png" 
+             src="./reportImages/UseCaseDiagramNotificationSys.PNG" 
              alt="Use Case Diagram - Notification System" 
              style="width:90%">
     </center>
@@ -724,7 +724,7 @@ Above is the sequence diagram for the Explore page which consist of 2 tabs and t
 <figure>
     <center>
         <img 
-             src="./reportImages/UseCaseDiagramAppImproveSys.png" 
+             src="./reportImages/UseCaseDiagramAppImproveSys.PNG" 
              alt="Use Case Diagram - Application Improvement System" 
              style="width:90%">
     </center>
@@ -948,7 +948,7 @@ During the development of the application’s functionality throughout stages 2 
 
 <figure>
 	<center>
-        <img src="./reportImages/CICD.png" alt="CI/CD image" style="width:60%">
+        <img src="./reportImages/CICD.PNG" alt="CI/CD image" style="width:60%">
     </center>
     <figcaption style="text-align:center;">
         Continuous Integration and Continuous Delivery (Synopsis)
@@ -1045,7 +1045,7 @@ Our application is developed using React . So the client needs to have a JavaScr
 
    - Create a developer account on GIPHY at https://developers.giphy.com/docs/api.
    - Create an API key for our app by clicking “Create an App” on the developer dashboard.
-   - Copy the API key and paste as the value for key ***apiKey*** of the component ***ReactGiphySearchbox*** at ***line 940*** in file ***/octech/src/components/Body/Feed/Feed.js***.
+   - Copy the API key and paste paste it as the value of ***GiphyApiKey*** constant in ***/octech/src/components/Body/Feed/giphy-config.js*** file.
    - Upgrade the API to production level by clicking on ***Upgrade to Production*** button in the ***Developer Dashboard*** and complete the instruction that follow.
 
 4. **<u>Time Based Job Scheduler</u>**

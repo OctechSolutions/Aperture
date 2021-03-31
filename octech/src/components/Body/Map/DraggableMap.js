@@ -9,6 +9,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button'
 import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
+import { GoogleMapsAPI } from './client-config'
 
 var greenIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -132,7 +133,7 @@ export default function DraggableMap({
                 {search &&
                     <div style={{ width: "100%",marginBottom: "15px" }} onClick={() => {setSpace(true)}}>
                     <GooglePlacesAutocomplete
-                        apiKey='AIzaSyC1EfNasAc6J8vIFP3Lephiv4sKQwFmvFQ'
+                        apiKey = {GoogleMapsAPI}
                         selectProps={{
                             value,
                             onChange: setValue,

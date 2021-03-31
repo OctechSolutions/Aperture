@@ -10,7 +10,7 @@ function ChannelLeaderBoard({ match, setValue }) {
 
     if (dataFetched===false) {
 
-      db.collection('globalLeaderBoards').doc('channelLeaderBoard').onSnapshot(data => {
+      db.collection('globalLeaderBoards').doc('channelLeaderBoard').get().then(data => {
           setDataFetched(true);
           if(data.data())
             var channels = data.data().channels;

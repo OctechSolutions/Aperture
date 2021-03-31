@@ -49,14 +49,12 @@ const SignUp = () => {
 
     const classes = useStyles();
     const [profilePic, setProfilePic] = useState("");
-    const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const [, setProfilePicConsent] = useState(true);
     const [error, setError] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [, setContactNumber] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [showConsentForm, setShowConsentForm] = useState(false)
@@ -80,7 +78,7 @@ const SignUp = () => {
         event.preventDefault() // Prevent default behavior of re-loading etc.
 
         const updateUserProfile = async () => {
-            if (name && username && email && password) {
+            if (username && email && password) {
 
                 await auth // Wait until the user has been added to authenticated users list in Firebase.
                     .createUserWithEmailAndPassword(email, confirmPassword)
@@ -196,7 +194,7 @@ const SignUp = () => {
                 </div>
 
                 {/* Name Input */}
-                <TextField
+                {/* <TextField
                     variant="outlined"
                     margin="normal"
                     required
@@ -207,7 +205,7 @@ const SignUp = () => {
                     autoComplete="name"
                     autoFocus
                     onChange={(e) => setName(e.target.value)}
-                />
+                /> */}
 
                 {/* Username Input */}
                 <TextField
@@ -303,7 +301,7 @@ const SignUp = () => {
                 />
 
                 {/* Contact Number Input */}
-                <TextField
+                {/* <TextField
                     variant="outlined"
                     margin="normal"
                     fullWidth
@@ -313,7 +311,7 @@ const SignUp = () => {
                     autoComplete="contactNumber"
                     autoFocus
                     onChange={(e) => setContactNumber(e.target.value)}
-                />
+                /> */}
 
                 {/* Submit Button Input */}
                 <Button

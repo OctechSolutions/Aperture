@@ -44,6 +44,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import Chip from '@material-ui/core/Chip'
 import TextField from '@material-ui/core/TextField';
+import {GiphyApiKey} from "./giphy-config"
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -101,6 +102,7 @@ function Feed({ match }, props) {
   const [showPostComponent, setShowPostComponent] = useState(false);
   const [showTags, setShowTags] = useState(false);
   const [tags, setTags] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
 
   const [channelInfo, setChannelInfo] = useState("")
@@ -196,6 +198,7 @@ function Feed({ match }, props) {
                 setOpen(false)
               })
           }
+          setTimeout(() => {setLoaded(true)},500)
         } else {
           console.log("No such document!");
         }
@@ -831,7 +834,7 @@ function Feed({ match }, props) {
 
                           {showGifSearch && <center>
                             <ReactGiphySearchbox
-                              apiKey="SL07jZg7zFxxOTBN29YaS4979AUIInJK"
+                              apiKey={GiphyApiKey}
                               onSelect={(item) => handleOverlayClick(item)}
                               masonryConfig={[
                                 { columns: 2, imageWidth: 110, gutter: 5 },
@@ -931,9 +934,9 @@ function Feed({ match }, props) {
         <Backdrop className={classes.backdrop} open={open}>
           <CircularProgress color="inherit" />
         </Backdrop>
-        <FlipMove>
+        {loaded && <FlipMove>
           {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+          {posts.length===0 && !match.params.channel ? history.push('/search') : posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
               data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type, challenges },
@@ -964,7 +967,7 @@ function Feed({ match }, props) {
               </Post>
             )
           )}
-        </FlipMove>
+        </FlipMove>}
       </div>
       {(((match.params.channel) && (match.params.id === user.displayName)) || (match.path === "/")) &&
         <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
