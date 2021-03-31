@@ -102,6 +102,7 @@ function Feed({ match }, props) {
   const [showPostComponent, setShowPostComponent] = useState(false);
   const [showTags, setShowTags] = useState(false);
   const [tags, setTags] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
 
   const [channelInfo, setChannelInfo] = useState("")
@@ -197,6 +198,7 @@ function Feed({ match }, props) {
                 setOpen(false)
               })
           }
+          setTimeout(() => {setLoaded(true)},500)
         } else {
           console.log("No such document!");
         }
@@ -932,7 +934,7 @@ function Feed({ match }, props) {
         <Backdrop className={classes.backdrop} open={open}>
           <CircularProgress color="inherit" />
         </Backdrop>
-        <FlipMove>
+        {loaded && <FlipMove>
           {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
           {posts.length===0 && !match.params.channel ? history.push('/search') : posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
@@ -965,7 +967,7 @@ function Feed({ match }, props) {
               </Post>
             )
           )}
-        </FlipMove>
+        </FlipMove>}
       </div>
       {(((match.params.channel) && (match.params.id === user.displayName)) || (match.path === "/")) &&
         <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
