@@ -147,7 +147,7 @@ Every user's user experience, suggestions and privacy is important to us. Apertu
 
 
 
-### 1. Overview of the System (Gayathri)
+### 1. Overview of the System
 
 <span style="color:magenta">*High-level overview of technologies and components.*</span>
 
@@ -242,7 +242,7 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 
 
 
-### 2. <span style="color:red">Detailed Design</span> (Elfarash, Hasan, Assad, Gaurav(Class Diagram))
+### 2. <span style="color:red">Detailed Design</span>
 
 <span style="color:magenta">*Dataflow diagrams, UML diagrams, Class diagrams, etc.*</span>
 
@@ -251,6 +251,8 @@ This section features visual aids that clarify/support design choices made. Sign
 **After Stage 3, all 6 sub-systems are completed.** The 1st 3 sub-systems with use case diagrams depicting them along with supporting sequence diagrams have been provided and explained in details in stage 2 report. Use case diagrams related to systems 4, 5 and 6 have also been presented in the stage 1 report. These diagrams shall be revisited here. New sequence diagrams in support of systems 4, 5 and 6 will can be found below.
 
 
+
+#### Use Case and Sequence Diagrams
 
 ##### 1. User Account System
 
@@ -747,6 +749,45 @@ Above is the sequence diagram for the Explore page which consist of 2 tabs and t
     </figcaption>
 </figure>
 Above sequence diagram shows the process of how a human is detected in an image a user is trying to upload. The user will click on the “Add Image” icon in the Image Feed and then choose a photo, a compression library then compresses the image which sends the compressed image to the Tensorflow Image Detection Modal. This model will scan the image and displays an error message if a human is detected, otherwise the app will allow the image to be edited and posted.
+
+
+
+#### Class Diagram
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/class_diagram.png" 
+             alt="Class Diagram" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Class Diagram
+    </figcaption>
+</figure>
+
+
+
+**<u>Note</u>:** Class Diagram relations are read like shown below.
+
+**For Example,** the below part of the class diagram is read as, "a Regular User can have 0 to many Badges, and 0 to many Badges can be earned by 1 Regular User".
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/ReadClassDiagramExample.png" 
+             alt="ReadClassDiagramExample" 
+             style="width:50%">
+    </center>
+    <figcaption style="text-align:center;">
+        Read Class Diagram Example
+    </figcaption>
+</figure>
+
+
+
+**Please visit [link] for a high-resolution file of the class diagram.**
+
 
 
 <span style="color:blue">*MORE ...*</span>
@@ -1278,7 +1319,7 @@ Other details of these packages such as costing have been already given to clien
 
 
 
-##### 3.6. <span style="color:red">User Guide</span> (Baber)
+##### 3.6. <span style="color:red">User Guide</span>
 
 <span style="color:magenta">*Short user guide.*</span>
 
@@ -1572,7 +1613,7 @@ Overall, it is safe to say that our approach was successful in helping keep the 
 
 For project planning and keeping track of progress the following tools were used.
 
-- GitHub was used for version control of all implemented software. It also provides a log of all progress throughout all stages of development.  Follow this link to visit the Aperture GitHub Repository maintained by OcTech Solutions: https://github.com/OctechSolutions/Aperture. Check out branches and forks to view each member's contributions and the main branch history to see the application's development stages.
+- GitHub was used for version control of all implemented software. It also provides a log of all progress throughout all stages of development.  Follow this link to visit the Aperture GitHub Repository maintained by Octech Solutions: https://github.com/OctechSolutions/Aperture. Check out branches and forks to view each member's contributions and the main branch history to see the application's development stages.
 - VS Code Editor was used as it can be easily integrated with git and makes pushing to and pulling from GitHub repositories easy.	
 
 <span style="color:blue">*MORE ...*</span>
