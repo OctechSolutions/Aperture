@@ -151,14 +151,26 @@ Every user's user experience, suggestions and privacy is important to us. Apertu
 
 <span style="color:magenta">*High-level overview of technologies and components.*</span>
 
-Aperture is a responsive, cross-browser compatible, web-based application developed primarily using ReactJS and supporting services.
+This section provides a complete detail of the Aperture system’s design and implemented functionalities. The product scope will be provided along with supporting diagrams to help visualize the intricacies of the applications and help ease the understanding of the technical complexities of the system. The technologies and components used in the applications development and hosting will also be outlined.
 
 
 
-##### 1.1. Technology Used
+##### 1.1. Product Scope
+
+The scope of the product known as Aperture is a photo-based social media application with in integrated “playification” system as requested by our client Dr. Richard Freedman.
+The application has been designed to have a trendy and sleek looking user interface which is highly responsive such that the user experience is intuitive for all age groups and demographics. A strict socially responsible policy and a non-tolerance policy towards any shared content featuring humans or partially visible humans or human body parts helps ensure that Aperture remains a safe and secure place where people from all backgrounds are able to interact. Users will be able to create Channels, Portfolios and Collections to showcase their photography. The best photographs will earn the creator of the post points as other users rate them high. The live firestore database will contain all the necessary information and posts from each user to seamlessly render each section of the application without any delay to ensure good user experience.
+
+
+
+##### 1.2. Environment
+
+The web application will be hosted using a cloud platform application called Heroku which is a platform using a service (PaaS) which will be used to deploy and scale our Aperture system in its infancy. The web-application will be supported on mainstream browsers such as Google Chrome, Mozilla Firefox, Apple Safari, Microsoft Edge, and DuckDuckGo. 
+
+
+
+##### 1.3. Technology Used
 
 - HTML, CSS, JavaScript
-
 - React JS, JSX
   - React DOM
   - React Bootstrap
@@ -203,14 +215,13 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 - Github
 - Heroku CLI
 - Ionic/Capacitor
-
 - Visual Studio Code
-
 - Github
 
-  
 
-##### 1.2. <span style="color:red">High level Components</span>
+
+
+##### 1.4.  Broad Sub-Systems
 
 1. **User Account System**
 
@@ -235,6 +246,224 @@ Aperture is a responsive, cross-browser compatible, web-based application develo
 6. **Application Improvement System**
 
    This component is the means through which users can contribute to improving the app by reporting bugs or inappropriate content. This system ensures that all user reports will be displayed to application managers so that they may monitor user satisfaction and take necessary action to ensure that the app remains safe and fun for all.
+
+   
+
+##### 1.5. System Architecture - MVC
+
+Aperture was developed using ReactJS in conjuncture with Google Firestore's firebase. It was decided to  view the system from a **Model View Controller (MVC)** perspective.
+
+**MVC was chosen due to the following reasons.** (John Prabhu, 2019)
+
+- Since it divides the application into 3 parts, different members would be able to work on code related to different parts simultaneously thus making the overall development process faster.
+- Our application would have many asynchronous calls related to getting, setting and updating collections in the firebase DB. MVC supports asynchronous techniques.
+- It demarcates Model View and Controller parts of the system well such that modifying one part would not necessarily change other parts. This is convenient as our development plan using scrum would mean that systems would frequently be changed and improved in later iterations.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/HighLevelOverviewMVC.png" 
+             alt="MVC Perspective" 
+             style="width:80%">
+    </center>
+    <figcaption style="text-align:center;">
+        MVC Perspective
+    </figcaption>
+</figure>
+
+The above diagram represents our application using MVC concepts. Here, the **model** is represented by firebase, the data being stored and the data being transferred between the model and the controller. The **view** is represented by the components with which the user interacts in the UI. Here, redux together with react-dom acts like the **controller**. Any changes/events triggered using the components/child components trigger a state change which is handled by the controller.
+
+
+
+React interacts with firebase servers with request calls and receives firebase responses in the form of JSON objects which are used to fetch stored data from firestore storage. The components render the photos, comments, profile information in the application. If there is a state change in the component due to a UI triggered event, then a dispatch call would be made to the Controller which results in an action and a new state which updates the current state.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/HighLevelOverviewReactRedux.png" 
+             alt="React Redux Working" 
+             style="width:70%">
+    </center>
+    <figcaption style="text-align:center;">
+        React Redux Working
+    </figcaption>
+</figure>
+
+Above figure represents the workings of React Redux which is a state management tool and acts as a wrapper around the React JS library.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/HighLevelOverviewReduxComponentsFirebaseDBInteraction.png" 
+             alt="Redux - React Components - FirebaseDB Interaction" 
+             style="width:80%">
+    </center>
+    <figcaption style="text-align:center;">
+        Redux - React Components - FirebaseDB Interaction
+    </figcaption>
+</figure>
+
+Above figure shows how Redux interacts with react components and the Firebase database. React redux wraps around the parent and child components of react and allows state changes among child components and send queries and receive responses from firebase through React Redux.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/HighLevelOverviewUserAppFirebaseInteraction.png" 
+             alt="User Application Firebase Interaction" 
+             style="width:80%">
+    </center>
+    <figcaption style="text-align:center;">
+        User Application Firebase Interaction
+    </figcaption>
+</figure>
+
+Above figure represents the interaction of the user with the app and the app working in tandem with Firebase. The user accesses the app through their browser and has multiple sections where they can interact such as their Profile, Explore Page, Image Feed and the Chats, these sections read and write data to the database such as the user posting an image or viewing their friends post to rate and comment on them. The user’s profile can be split into Collections, Channels, Portfolios and Posts where the user can upload photos from their device storage or take a photo using their device’s camera. These photos are saved as base 64 strings after being edited and posted.
+
+
+
+##### 1.6. Database Design and Usage
+
+Aperture has been constructed using firebase as our main DB. Firebase provides us with many key features for developing web or mobile apps. 
+
+**Some of the functionalities provided by firebase are as follows.**
+
+- **Storage:** Firebase storage feature is powered by Google Cloud Storage and allows users to easily download media files and visual contents. This feature is also helpful in making use of user-generated content.
+- **Crash Analytics:** Firebase is capable of monitoring and keeping a watch out for any fatal errors, performance errors, crash reports, etc.
+- **Authentication:** Firebase backend service offers a powerful authentication feature. It comes equipped with simple SDKs and easy to use libraries to integrate authentication feature with any mobile app (Contributor, 2018) 
+
+In our app we have used all these features to provide users with the most seamless and best experience in using Aperture. 
+
+###### 1.6.1 Database Design
+
+As stated, above firebase is used as our backend database tool as it provides us with many features, easy to integrate systems and the tools it provides us developers with. We decided to use firebase because generally all these features would have to be built from scratch and implemented but with them being given to us by firebase it enables to focus more on the app experience. (Stevenson, 2018)
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/DatabaseDesignFirebaseBackendServices.png" 
+             alt="Firebase Backend Services" 
+             style="width:70%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firebase Backend Services
+    </figcaption>
+</figure>
+
+As shown above, traditionally we would be writing both frontend and backend code. The frontend code just invokes API endpoints exposed by the backend, and the backend code does the work. However, with Firebase products, the traditional backend is bypassed, and all of this is kept secure by enforcing administrative access which is provided by firebase console.
+
+Overall firebase provides us with great functional tools making the entire backend process easier to implement and allowing us to further improve on the usability, functionalities, and features of the app.
+
+
+
+###### 1.6.2. Firebase Authentication System
+
+As explained above firebase is a very feature rich database tool, but it also has its own upsides and downsides to it. Firebase provides an authentication feature making it easier for us to know the identity of a user and allow them to access the app securely with the user data being stored securely over the cloud. The authentication system provides us with a secure system while supporting email and password accounts, phone auth, and Google, etc. integrations. The diagram below gives an in-depth look on how firebase handles authentication.
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/DatabaseDesignFirebaseAuthSys.png" 
+             alt="Firebase Authentication System" 
+             style="width:80%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firebase Authentication System
+    </figcaption>
+</figure>
+
+
+
+###### 1.6.3 Firebase Security Rules
+
+Even with all the upsides in functionality firebase is a very vulnerable software developing platform as it provides no prior security features to use. 
+
+Firebase security rules helps in enforcing security and validate all requests made to the app. These rules work in conjunction with the real-time database checking every request being put if the request is by an authenticated user are not and/or is the user violating the constraints/limitations put into place, if there are any requests found to violate the security rules, they are either blocked or deleted. 
+
+<span style="color:blue">*HASSAN ADD FIREBASE RULES...*</span>
+
+
+
+###### 1.6.4 Firebase Database Structure
+
+The firebase database consists of collections which have documents and can have further sub-collections within to data. The following are collection tree diagrams to show each collection and its contents.
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureChannels.png" 
+             alt="Channels Collection" 
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        Channels Collection
+    </figcaption>
+</figure>
+
+The above tree diagram shows the fields of the channels collection stored in firebase when a user creates a new channel on their profile.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureChatRooms.png" 
+             alt="ChatRooms Collection" 
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        ChatRooms Collection
+    </figcaption>
+</figure>
+
+The above tree diagram depicts the chat system implemented which also has another sub-collection within, which contains the messages of the user.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureCollections.png" 
+             alt="Collections Collection" 
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        Collections Collection
+    </figcaption>
+</figure>
+
+The above tree diagram represents the fields stored for each collection of photos a user creates in their profile.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructurePortfolios.png" 
+             alt="Portfolios Collection" 
+             style="width:70%">
+    </center>
+    <figcaption style="text-align:center;">
+        Portfolios Collection
+    </figcaption>
+</figure>
+
+The above tree diagram represents the fields stored in firebase when a user creates their portfolio.
+
+
+
+<span style="color:blue">*ADD REMAINING COLLECTIONS...*</span>
+
+
+
+In total 13 collections are currently in our firebase database which makes it possible to achieve all functionalities of the application possible and provides a quick, smooth response during queries to/responses from from the database.
 
 
 
@@ -675,6 +904,7 @@ Above is the sequence diagram for viewing the “Map View” of a post/photo. Th
 Above is the sequence diagram for the Explore page which consist of 2 tabs and the search functionality already discussed. The Explore page retrieves a list of channels and public posts from users who are not blocked or have not blocked the user in question. If the user clicks on the Posts tab then all public posts would be visible, if the user clicks on the Channel tab then all the channels would be visible. The user can then click on the usernames to visit the user’s profiles or click on the Channel names to visit the channel.
 
 
+
 <figure>
     <center>
         <img 
@@ -685,7 +915,10 @@ Above is the sequence diagram for the Explore page which consist of 2 tabs and t
     <figcaption style="text-align:center;">
         Sequence Diagram - Search
     </figcaption>
-</figure
+</figure>
+
+Above is the sequence diagram for a user searching for other users or channels, the user navigates to the explore page, discussed later with additional functionalities, the user then types the username of the user or the channel name, the database would then retrieve all the search results and display them as a list to the user.
+
 
 
 
@@ -720,6 +953,34 @@ Above is the sequence diagram for the Explore page which consist of 2 tabs and t
 </figure>
 
 
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram5NotificationSysView.png" 
+             alt="Sequence Diagram - View Notification" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - View Notification
+    </figcaption>
+</figure>
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram5NotificationSysRecieve.png" 
+             alt="Sequence Diagram - Recieve Notification" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Recieve Notification
+    </figcaption>
+</figure>
+
+The above sequence diagrams show how the user can view notifications and how the user receives notification. The user will click on the bell icon to view any notifications that the user receives. The user will receive friend request notifications, chat notifications, post rating notifications, league placement notification and more. The system displays the notifications to the user on the notification page. A notification is registered in the database when an event is triggered by the user. 
+
+
+
 
 ##### 6. Application Improvement System
 
@@ -749,6 +1010,22 @@ Above is the sequence diagram for the Explore page which consist of 2 tabs and t
     </figcaption>
 </figure>
 Above sequence diagram shows the process of how a human is detected in an image a user is trying to upload. The user will click on the “Add Image” icon in the Image Feed and then choose a photo, a compression library then compresses the image which sends the compressed image to the Tensorflow Image Detection Modal. This model will scan the image and displays an error message if a human is detected, otherwise the app will allow the image to be edited and posted.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram6AppImprovementSysReportBugsPosts.png" 
+             alt="Sequence Diagram - Report Bugs/Posts" 
+             style="width:90%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Report Bugs/Posts
+    </figcaption>
+</figure>
+
+Above is the Sequence Diagram for Application Improvement System. The User will click on the Report Post/Report Bug button, and it will display a Form where they can enter their Report Details, such as Bugs/inappropriate content. These details will then be stored in the database and thus the Report will be created in the system. Moderators will review the Report and act upon it.
 
 
 
@@ -785,8 +1062,7 @@ Above sequence diagram shows the process of how a human is detected in an image 
 </figure>
 
 
-
-**Please visit [link] for a high-resolution file of the class diagram.**
+**Please visit** https://drive.google.com/file/d/1hvsSd88ecfXLpiUZcFmVc79bkw00U_ZN/view for a high-resolution file of the class diagram.
 
 
 
@@ -1763,7 +2039,7 @@ In spite of the challenges posed by the COVID-19 Pandemic and the time constrain
 
 Aperture has grown into a successful social media platform where users may both wind down and enjoy sharing photos with each other/showcase their talents and compete with each other in challenges for a thrilling time!
 
-We believe that all the requirements as laid out by the client and his associates have been met. In the future, we hope to upgrade and expand operations of maintenance to cope with the heavy traffic flow through our servers and the databases needed to accommodate new influx of users every day. The concept of "gamification", as specified by our client, has more potential than initially thought by our software development and design team, we feel that the meaningful interactions between people because of this feature and this application is the cornerstone of Aperture!
+We believe that all the requirements as laid out by the client and his associates have been met. In the future, we hope to upgrade and expand operations of maintenance to cope with the heavy traffic flow through our servers and the databases needed to accommodate new influx of users every day. The concept of "playification", as specified by our client, has more potential than initially thought by our software development and design team, we feel that the meaningful interactions between people because of this feature and this application is the cornerstone of Aperture!
 
 We at Octech Solutions are ready to Keep Developing the application, and we have the resources to ensure Aperture becomes a global icon.
 
@@ -1782,7 +2058,8 @@ Visit our deployed Aperture web application as well which is now also a progress
 **Andy. (2020, April 4).** A quick discovery of react-redux-firebase for user authentication. Retrieved from A quick discovery of react-redux-firebase for user authentication Website: https://dev.to/andytq/a-quick-discovery-of-react-redux-firebase-for-user-authentication-11gb
 
 **Contributor, G. (2018).** 4 key benefits of using Firebase for mobile app development. Retrieved Jan 2021, from https://hub.packtpub.com/4-key-benefits-of-using-firebase-for-mobile-app-development/
-Github. (2015, August 29). Redux/ReduxJS. Retrieved from https://github.com/reduxjs/redux/issues/653
+
+**Github. (2015, August 29).** Redux/ReduxJS. Retrieved from https://github.com/reduxjs/redux/issues/653
 
 **Stevenson, D. (2018).** What is Firebase? The complete story, abridged. Retrieved Jan 2021, from https://medium.com/firebase-developers/what-is-firebase-the-complete-story-abridged-bcc730c5f2c0
 
@@ -1797,6 +2074,8 @@ Github. (2015, August 29). Redux/ReduxJS. Retrieved from https://github.com/redu
 **Simplilearn. (2020, Feb 27).** YouTube Video, "Agile Project Management Tutorial | What Is Agile Project Management? | Simplilearn" visit at https://www.youtube.com/watch?v=thsFsPnUHRA
 
 **Development That Pays. (2019, Jan 24).** "Scrum Overview - [Scrum Basics 2019] + FREE Cheat Sheet" and 7 more videos in playlist. Visit at https://www.youtube.com/watch?v=RCJghFbXSPk&list=PLngnoZX8cAn9dlulsZMtqNh-5a1lGGkLS&index=1
+
+**John Prabhu. (2019, Jul 18).** "MVC Architecture & Its Benefits in Web Application Development". Visit at https://techaffinity.com/blog/mvc-architecture-benefits-of-mvc/
 
 
 
@@ -2562,7 +2841,7 @@ In general, the participants liked some of the features and expressed that the u
 
 Throughout the entire usability test, subjects highlighted some issues but generally had an enjoyable experience. They highlighted that the user interface was intuitive and easy to use, especially the introduction of our gaming system. 
 
-The participants were able to complete the tasks with relative ease and grasped the application's ethos along with the concept of "gamification."  
+The participants were able to complete the tasks with relative ease and grasped the application's ethos along with the concept of "playification."  
 
 The issues highlighted mainly dealt with navigations in the app being hard and the chat page being confusing. Moreover, a dark mode feature should be added to make it a more enjoyable experience.
 
