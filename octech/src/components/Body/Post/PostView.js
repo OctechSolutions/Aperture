@@ -333,7 +333,7 @@ const Post = ({ match }) => {
                 console.log(`Error post info delete ${error}`);
             });
 
-            history.push("/")
+        history.push("/")
     };
 
     var slideshow;
@@ -537,371 +537,374 @@ const Post = ({ match }) => {
         }))
     };
     return (
-        <div style={{ width: "95%", marginBottom: "60px" }} key={id}>
-            <IconButton onClick ={() => {history.goBack()}}>
-                <ArrowBackIcon />
-            </IconButton>
-            <Modal
-                show={showMap}
-                onHide={() => { setShowMap(false) }}
-                keyboard={false}
-                size="xl"
-                centered
-            >
-                <Modal.Header closeButton onClick={() => { setShowMap(false) }}><h3 style={{ marginLeft: "auto" }}>Map View</h3></Modal.Header>
-                <Modal.Body>
-                    <div>
-                        <Map
-                            center={{ lat: lat, lng: lng }}
-                            images={images}
-                            message={message}
-                            photoUrl={photoUrl}
-                            locationPosts={locationPosts}
-                            id={id}
-                        // isPreview={false}
-                        />
+        <>
+            <div className="post" style={{ width: "95%", marginBottom: "60px" }} key={id}>
+                <IconButton onClick={() => { history.goBack() }}>
+                    <ArrowBackIcon />
+                </IconButton>
+                <Modal
+                    show={showMap}
+                    onHide={() => { setShowMap(false) }}
+                    keyboard={false}
+                    size="xl"
+                    centered
+                >
+                    <Modal.Header closeButton onClick={() => { setShowMap(false) }}><h3 style={{ marginLeft: "auto" }}>Map View</h3></Modal.Header>
+                    <Modal.Body>
+                        <div>
+                            <Map
+                                center={{ lat: lat, lng: lng }}
+                                images={images}
+                                message={message}
+                                photoUrl={photoUrl}
+                                locationPosts={locationPosts}
+                                id={id}
+                            // isPreview={false}
+                            />
+                        </div>
+                    </Modal.Body>
+                </Modal>
+                {!loading ? <div>
+                    {(channelBy?.length > 0) ? <div className="post_channel">
+                        <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
+                        <hr />
                     </div>
-                </Modal.Body>
-            </Modal>
-            {!loading ? <div>
-                {(channelBy?.length > 0) ? <div className="post_channel">
-                    <p className="h4">Posted in <b><Link to={`/user/${channelBy + "/channel/" + name}`}>{name}</Link></b></p>
-                    <hr />
-                </div>
-                    : ''}
-                <div className="post_title">
-                    <div className="post_header">
-                        <IconButton
-                            aria-label="more"
-                            aria-controls="long-menu"
-                            aria-haspopup="true"
-                            onClick={() => { history.push(`/user/${channelBy ? channelBy : name}`) }}
-                        >
-                            <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
-                        </IconButton>
-                        <div className="postInfo">
-                            <div style={{ marginLeft: "-12px" }}>
-                                <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
+                        : ''}
+                    <div className="post_title">
+                        <div className="post_header">
+                            <IconButton
+                                aria-label="more"
+                                aria-controls="long-menu"
+                                aria-haspopup="true"
+                                onClick={() => { history.push(`/user/${channelBy ? channelBy : name}`) }}
+                            >
+                                <Avatar src={photoUrl}></Avatar> {/* Material ui component for avatar */}
+                            </IconButton>
+                            <div className="postInfo">
+                                <div style={{ marginLeft: "-12px" }}>
+                                    <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${channelBy ? channelBy : name}`}>
 
-                                    {channelBy ? channelBy : name}</Link>
-                                <>
-                                    {
-                                        ((channelBy?.length === 0)) ?
+                                        {channelBy ? channelBy : name}</Link>
+                                    <>
+                                        {
+                                            ((channelBy?.length === 0)) ?
+                                                <IconButton
+                                                    aria-label="more"
+                                                    aria-controls="long-menu"
+                                                    aria-haspopup="true"
+                                                    onClick={() => {
+                                                        if (name === user.displayName)
+                                                            db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
+                                                    }}
+                                                >
+                                                    {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
+                                                </IconButton>
+                                                :
+                                                <>
+                                                    {
+                                                        (channelBy?.length > 0) ?
+                                                            <IconButton
+                                                                aria-label="more"
+                                                                aria-controls="long-menu"
+                                                                aria-haspopup="true"
+                                                            >
+                                                                <PhotoLibraryIcon />
+                                                            </IconButton>
+                                                            :
+                                                            <IconButton
+                                                                aria-label="more"
+                                                                aria-controls="long-menu"
+                                                                aria-haspopup="true"
+                                                            >
+                                                                <ForumIcon />
+                                                            </IconButton>}
+                                                </>
+                                        }
+                                        {hasCoordinates &&
                                             <IconButton
-                                                aria-label="more"
+                                                aria-label="map"
                                                 aria-controls="long-menu"
                                                 aria-haspopup="true"
                                                 onClick={() => {
-                                                    if (name === user.displayName)
-                                                        db.collection("posts").doc(id).update({ isPrivate: !isPrivate })
+
+                                                    setShowMap(true)
+
                                                 }}
                                             >
-                                                {isPrivate ? <LockIcon fontSize="small" /> : <PublicIcon fontSize="small" />}
+                                                <MapIcon />
                                             </IconButton>
-                                            :
-                                            <>
-                                                {
-                                                    (channelBy?.length > 0) ?
-                                                        <IconButton
-                                                            aria-label="more"
-                                                            aria-controls="long-menu"
-                                                            aria-haspopup="true"
-                                                        >
-                                                            <PhotoLibraryIcon />
-                                                        </IconButton>
-                                                        :
-                                                        <IconButton
-                                                            aria-label="more"
-                                                            aria-controls="long-menu"
-                                                            aria-haspopup="true"
-                                                        >
-                                                            <ForumIcon />
-                                                        </IconButton>}
-                                            </>
-                                    }
-                                    {hasCoordinates &&
-                                        <IconButton
-                                            aria-label="map"
-                                            aria-controls="long-menu"
-                                            aria-haspopup="true"
-                                            onClick={() => {
-
-                                                setShowMap(true)
-
-                                            }}
-                                        >
-                                            <MapIcon />
-                                        </IconButton>
-                                    }
-                                    {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-12px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
-                                        a few seconds ago
+                                        }
+                                        {timestamp ? <div style={{ fontSize: "13px", color: "gray", marginTop: "-12px" }}>{moment(timestamp.toDate()).fromNow()}</div> : <div style={{ fontSize: "13px", color: "gray", marginTop: "-10px" }}>
+                                            a few seconds ago
                       </div>}
-                                </>  {/* Link is a component from react router that redirects to a particular route on click */}
-                                {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
+                                    </>  {/* Link is a component from react router that redirects to a particular route on click */}
+                                    {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
+
+                                </div>
+
+                                {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
 
                             </div>
-
-                            {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
 
                         </div>
 
-                    </div>
-
-                    { // 3 DOTS MENU.
-                        ((user.displayName === channelBy) || (user.displayName === name)) ?
-                            <>
-                                <IconButton
-                                    aria-label="more"
-                                    aria-controls="long-menu"
-                                    aria-haspopup="true"
-                                    onClick={handleClick}
-                                >
-                                    <MoreVertIcon />
-                                </IconButton>
-                                <Menu
-                                    anchorEl={anchorEl}
-                                    keepMounted
-                                    open={open}
-                                    onClose={handleMenuClose}
-                                >
-                                    <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
-                                        <ListItemIcon>
-                                            <DeleteIcon />
-                                        </ListItemIcon>
+                        { // 3 DOTS MENU.
+                            ((user.displayName === channelBy) || (user.displayName === name)) ?
+                                <>
+                                    <IconButton
+                                        aria-label="more"
+                                        aria-controls="long-menu"
+                                        aria-haspopup="true"
+                                        onClick={handleClick}
+                                    >
+                                        <MoreVertIcon />
+                                    </IconButton>
+                                    <Menu
+                                        anchorEl={anchorEl}
+                                        keepMounted
+                                        open={open}
+                                        onClose={handleMenuClose}
+                                    >
+                                        <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
+                                            <ListItemIcon>
+                                                <DeleteIcon />
+                                            </ListItemIcon>
                   Delete
                 </MenuItem>
-                                    {(images.length > 0) &&
-                                        <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
-                                            <ListItemIcon>
-                                                <AddToPhotosIcon />
-                                            </ListItemIcon>
+                                        {(images.length > 0) &&
+                                            <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
+                                                <ListItemIcon>
+                                                    <AddToPhotosIcon />
+                                                </ListItemIcon>
                     Add To Portfolio
                   </MenuItem>
-                                    }
-                                    {(images.length > 0) && (collections.length > 0) &&
-                                        <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
-                                            <ListItemIcon>
-                                                <AddPhotoAlternateIcon />
-                                            </ListItemIcon>
+                                        }
+                                        {(images.length > 0) && (collections.length > 0) &&
+                                            <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
+                                                <ListItemIcon>
+                                                    <AddPhotoAlternateIcon />
+                                                </ListItemIcon>
                     Add To Collections
                   </MenuItem>
-                                    }
+                                        }
 
-                                    {/* To enter a challenge. */}
-                                    {
-                                        (images.length === 1) && !challengeChip &&
-                                        <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
-                                            <ListItemIcon>
-                                                <AddAlarmRoundedIcon />
-                                            </ListItemIcon>
+                                        {/* To enter a challenge. */}
+                                        {
+                                            (images.length === 1) && !challengeChip &&
+                                            <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
+                                                <ListItemIcon>
+                                                    <AddAlarmRoundedIcon />
+                                                </ListItemIcon>
                     Enter Challenge
                   </MenuItem>
-                                    }
+                                        }
 
-                                </Menu>
-                                <Menu
-                                    anchorEl={addToChannelAnchorEl}
-                                    keepMounted
-                                    open={Boolean(addToChannelAnchorEl) && collections}
-                                    onClose={() => { setAddToChannelAnchorEl(null); }}
-                                >
-                                    {
-                                        collections.map((a) => {
-                                            return <MenuItem onClick={() => { addImagesToCollection(a); }}>{a}</MenuItem>
-                                        })
-                                    }
-                                </Menu>
-                            </>
-                            :
-                            <IconButton onClick={() => { handleReportClick(id) }}>
-                                <ReportIcon />
-                            </IconButton>
-                    }
-                </div>
-                <div className="post_body">
-                    {/* <br /> */}
-                    <p>{message}</p>
-                </div>
-                {!loading && <div>{slideshow}</div>}
-                <div >
+                                    </Menu>
+                                    <Menu
+                                        anchorEl={addToChannelAnchorEl}
+                                        keepMounted
+                                        open={Boolean(addToChannelAnchorEl) && collections}
+                                        onClose={() => { setAddToChannelAnchorEl(null); }}
+                                    >
+                                        {
+                                            collections.map((a) => {
+                                                return <MenuItem onClick={() => { addImagesToCollection(a); }}>{a}</MenuItem>
+                                            })
+                                        }
+                                    </Menu>
+                                </>
+                                :
+                                <IconButton onClick={() => { handleReportClick(id) }}>
+                                    <ReportIcon />
+                                </IconButton>
+                        }
+                    </div>
+                    <div className="post_body">
+                        {/* <br /> */}
+                        <p>{message}</p>
+                    </div>
+                    {!loading && <div>{slideshow}</div>}
+                    <div >
 
-                    <center>
+                        <center>
 
-                        <>
-                            {showStars ?
-                                <IconButton
-                                    aria-label="stars"
-                                    aria-controls="long-menu"
-                                    aria-haspopup="true"
-                                    className={classes.root}
-                                    disableRipple={true}
-                                    disableFocusRipple={true}
-                                >
+                            <>
+                                {showStars ?
+                                    <IconButton
+                                        aria-label="stars"
+                                        aria-controls="long-menu"
+                                        aria-haspopup="true"
+                                        className={classes.root}
+                                        disableRipple={true}
+                                        disableFocusRipple={true}
+                                    >
 
-                                    <StyledRating
-                                        max={3}
-                                        value={stars}
-                                        onChange={updateStars}
-                                        icon={<GradeIcon fontSize="inherit" />}
-                                    />
+                                        <StyledRating
+                                            max={3}
+                                            value={stars}
+                                            onChange={updateStars}
+                                            icon={<GradeIcon fontSize="inherit" />}
+                                        />
                   &nbsp;
                   <CountUp end={totalStars} style={{ marginTop: "-8px" }} />
-                                </IconButton>
-                                :
-                                <IconButton
-                                    aria-label="rating"
-                                    aria-controls="long-menu"
-                                    aria-haspopup="true"
-                                    className={classes.root}
-                                    disableRipple={true}
-                                    disableFocusRipple={true}
-                                >
-                                    Rating : &nbsp;<CountUp end={totalStars} style={{ marginTop: "5px" }} />
-                                </IconButton>
-                            }
-                        </>
-
-                        {/* Form to input Challenge Code. */}
-                        <Dialog open={challengeNameForm} onClose={handleChallengeNameFormClose} aria-labelledby="form-dialog-title">
-                            <DialogTitle id="form-dialog-title">Enter Challenge Title</DialogTitle>
-                            <DialogContentText style={{ padding: "3%" }}>
-                                To participate in a challenge, please enter a challenge title.
-              </DialogContentText>
-                            <DialogContent>
-                                {/* Challenge Code */}
-                                <TextField
-                                    autoFocus
-                                    margin="dense"
-                                    id="name"
-                                    label="Challenge Title"
-                                    type="text"
-                                    fullWidth
-                                    required
-                                    onChange={(event) => {
-                                        setChallengeNameTextField(event.target);
-                                        setChallengeName(event.target.value);
-                                    }}
-                                />
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={handleChallengeNameFormClose} color="primary"> Cancel </Button>
-                                <Button onClick={handleChallengeCodeFormSubmit} color="primary"> Add </Button>
-                            </DialogActions>
-                        </Dialog>
-                    </center>
-                    <center>
-                        <h3>Comments</h3>
-                    </center>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        multiline
-                        rowsMax={4}
-                        fullWidth
-                        value={comment}
-                        name="commentBox"
-                        label="Comment"
-                        id="commentBox"
-                        onKeyPress={(ev) => {
-                            if (ev.key === 'Enter') {
-                                // Do code here
-                                ev.preventDefault();
-                                postComment();
-                            }
-                        }}
-                        InputProps=
-                        {{
-                            endAdornment:
-                                <InputAdornment position="end">
+                                    </IconButton>
+                                    :
                                     <IconButton
-                                        aria-label="comment"
-                                        onClick={postComment}
+                                        aria-label="rating"
+                                        aria-controls="long-menu"
+                                        aria-haspopup="true"
+                                        className={classes.root}
+                                        disableRipple={true}
+                                        disableFocusRipple={true}
+                                    >
+                                        Rating : &nbsp;<CountUp end={totalStars} style={{ marginTop: "5px" }} />
+                                    </IconButton>
+                                }
+                            </>
+
+                            {/* Form to input Challenge Code. */}
+                            <Dialog open={challengeNameForm} onClose={handleChallengeNameFormClose} aria-labelledby="form-dialog-title">
+                                <DialogTitle id="form-dialog-title">Enter Challenge Title</DialogTitle>
+                                <DialogContentText style={{ padding: "3%" }}>
+                                    To participate in a challenge, please enter a challenge title.
+              </DialogContentText>
+                                <DialogContent>
+                                    {/* Challenge Code */}
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        id="name"
+                                        label="Challenge Title"
+                                        type="text"
+                                        fullWidth
+                                        required
+                                        onChange={(event) => {
+                                            setChallengeNameTextField(event.target);
+                                            setChallengeName(event.target.value);
+                                        }}
+                                    />
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleChallengeNameFormClose} color="primary"> Cancel </Button>
+                                    <Button onClick={handleChallengeCodeFormSubmit} color="primary"> Add </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </center>
+                        <center>
+                            <h3>Comments</h3>
+                        </center>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            multiline
+                            rowsMax={4}
+                            fullWidth
+                            value={comment}
+                            name="commentBox"
+                            label="Comment"
+                            id="commentBox"
+                            onKeyPress={(ev) => {
+                                if (ev.key === 'Enter') {
+                                    // Do code here
+                                    ev.preventDefault();
+                                    postComment();
+                                }
+                            }}
+                            InputProps=
+                            {{
+                                endAdornment:
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="comment"
+                                            onClick={postComment}
+                                            edge="end"
+                                        >
+                                            <SendIcon />
+                                        </IconButton>
+                                    </InputAdornment>
+
+                            }}
+                            onChange={(e) => setComment(e.target.value)}
+
+                        />
+                        <br />
+                        {comments &&
+                            comments.map((c) => {
+                                return <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <div style={{ padding: "10px" }}>
+                                        <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}>
+                                            <b>{c.name}</b>
+                                        </Link>   {c.comment}
+                                    </div>
+                                    {c.name === user.displayName && <IconButton
+                                        aria-label="toggle confirm password visibility"
+                                        onClick={() => {
+                                            if (comments !== undefined) {
+                                                db.collection("posts").doc(id).update({
+                                                    comments: firebase.firestore.FieldValue.arrayRemove(c)
+                                                })
+
+                                            }
+                                        }}
                                         edge="end"
                                     >
-                                        <SendIcon />
-                                    </IconButton>
-                                </InputAdornment>
-
-                        }}
-                        onChange={(e) => setComment(e.target.value)}
-
-                    />
-                    <br />
-                    {comments &&
-                        comments.map((c) => {
-                            return <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <div style={{ padding: "10px" }}>
-                                    <Link style={{ textDecoration: 'none', fontSize: '20px', color: "black" }} to={`/user/${c.name}`}>
-                                        <b>{c.name}</b>
-                                    </Link>   {c.comment}
+                                        <DeleteIcon />
+                                    </IconButton>}
                                 </div>
-                                {c.name === user.displayName && <IconButton
-                                    aria-label="toggle confirm password visibility"
-                                    onClick={() => {
-                                        if (comments !== undefined) {
-                                            db.collection("posts").doc(id).update({
-                                                comments: firebase.firestore.FieldValue.arrayRemove(c)
-                                            })
+                            })
 
-                                        }
-                                    }}
-                                    edge="end"
-                                >
-                                    <DeleteIcon />
-                                </IconButton>}
-                            </div>
-                        })
+                        }
+                    </div>
 
-                    }
+                    {/*Tags Modal*/}
+                    <Modal
+                        show={showTags}
+                        onHide={() => { setShowTags(false) }}
+                        keyboard={false}
+                        size="l"
+                        aria-labelledby="contained-modal-title-vcenter"
+                        scrollable={true}
+                        centered
+                    >
+                        <Modal.Header closeButton onClick={() => { setShowTags(false) }}>
+                            <Modal.Title> Tags </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <TextField className="tag-container" label="Add tags" margin="normal" variant="outlined"
+                                onKeyUp={addTag} />
+                            <br />
+                            {tags && tags.map(m =>
+                                <Chip
+                                    className={classes.root}
+                                    label={m}
+                                    color="primary"
+                                    onDelete={() => removeTag(m)}
+                                />)}
+                        </Modal.Body>
+                    </Modal>
+
+                    <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
+                        <Alert onClose={() => { setSnackbarOpen(false) }} severity={snackbarType}>
+                            {snackbarMessage}
+                        </Alert>
+                    </Snackbar>
+
+                    {challengeChip} {/* Display all challenges that this post is participating in. */}
+
+                </div> : <center><div style={{ width: "85vw" }}>
+                    <div style={{ display: "flex", marginBottom: "20px" }}>
+                        <Skeleton variant="circle" width={"40px"} height={"40px"} animation="wave" />
+                        <Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" style={{ marginLeft: "20px" }} />
+                    </div>
+                    <center><Skeleton variant="text" className="post__imageWrapper" height={"20px"} animation="wave" style={{ marginBottom: "20px" }} /></center>
+                    <center><Skeleton variant="rect" className="post__imageWrapper" height={"30vh"} animation="wave" style={{ borderRadius: "40px", marginBottom: "20px" }} /></center>
+                    <center><Skeleton variant="text" className="post__imageWrapper" height={"50px"} animation="wave" /></center>
                 </div>
-                
-                {/*Tags Modal*/}
-                <Modal
-                    show={showTags}
-                    onHide={() => { setShowTags(false) }}
-                    keyboard={false}
-                    size="l"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    scrollable={true}
-                    centered
-                >
-                    <Modal.Header closeButton onClick={() => {setShowTags(false)}}>
-                        <Modal.Title> Tags </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <TextField className="tag-container" label="Add tags" margin="normal" variant="outlined"
-                            onKeyUp={addTag} />
-                        <br />
-                        {tags && tags.map(m =>
-                            <Chip
-                                className={classes.root}
-                                label={m}
-                                color="primary"
-                                onDelete={() => removeTag(m)}
-                            />)}
-                    </Modal.Body>
-                </Modal>
-
-                <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => { setSnackbarOpen(false) }}>
-                    <Alert onClose={() => { setSnackbarOpen(false) }} severity={snackbarType}>
-                        {snackbarMessage}
-                    </Alert>
-                </Snackbar>
-
-                {challengeChip} {/* Display all challenges that this post is participating in. */}
-
-            </div> : <center><div style={{ width: "85vw" }}>
-                <div style={{ display: "flex", marginBottom: "20px" }}>
-                    <Skeleton variant="circle" width={"40px"} height={"40px"} animation="wave" />
-                    <Skeleton variant="text" width={"80%"} height={"40px"} animation="wave" style={{ marginLeft: "20px" }} />
-                </div>
-                <center><Skeleton variant="text" className="post__imageWrapper" height={"20px"} animation="wave" style={{ marginBottom: "20px" }} /></center>
-                <center><Skeleton variant="rect" className="post__imageWrapper" height={"30vh"} animation="wave" style={{ borderRadius: "40px", marginBottom: "20px" }} /></center>
-                <center><Skeleton variant="text" className="post__imageWrapper" height={"50px"} animation="wave" /></center>
+                </center>
+                }
             </div>
-            </center>
-            }
-        </div>
+            <br />
+        </>
     );
 };
 

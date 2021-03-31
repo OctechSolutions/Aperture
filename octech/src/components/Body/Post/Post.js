@@ -51,6 +51,8 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import Carousel from 'react-bootstrap/Carousel';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import ShareIcon from '@material-ui/icons/Share';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -921,6 +923,15 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
             </Dialog>
 
             <div>
+              {!isForumPost &&
+                <CopyToClipboard text={`${window.location.origin}/post/${id}`} onCopy={() => {
+                  console.log(window.location.origin)
+                  setSnackbarOpen(true);
+                  setSnackbarMessage(`Copied Link to Post to your Clipboard!`);
+                  setSnackbarType("success");}}>
+                  <IconButton aria-label="share"> <ShareIcon /> </IconButton>
+                </CopyToClipboard>
+              }
               <IconButton
                 aria-label="comments"
                 aria-controls="long-menu"
