@@ -625,12 +625,12 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
             })
         })
 
-        //Update Bug report
-        await db.collection("BugReports").where("name", "==", user.displayName).get().then(docs => {
-            docs.forEach(doc => {
-                db.collection("BugReports").doc(doc.id).update({ name: newName })
-            })
-        })
+        // //Update Bug report
+        // await db.collection("BugReports").where("name", "==", user.displayName).get().then(docs => {
+        //     docs.forEach(doc => {
+        //         db.collection("BugReports").doc(doc.id).update({ name: newName })
+        //     })
+        // })
 
         //Update from Chat rooms
         await db.collection("chatRooms").where("participantNames", "array-contains", user.displayName).get().then(docs => {
@@ -691,6 +691,104 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
             })
         })
 
+    }
+    
+    const editAvatar = async () => {
+        setLoading(true)
+        setShowAvatarEditor(false)
+        auth.currentUser.updateProfile({
+            photoURL: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`
+        }); 
+        if (auth.currentUser.displayName) {
+            db.collection("users").doc(auth.currentUser.displayName).set({
+                photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`
+            }, { merge: true });
+        };
+
+        //Update from friends and friends requested and blocked and all
+        await db.collection("users").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if (data.friends.some(u => u.name === user.displayName)){
+                    const friends = data.friends.map(u => u.name !== user.displayName ? u : { ...u, photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+                    db.collection("users").doc(data.name).update({friends: friends })
+                }
+            })
+        })
+
+        // Update posts
+        await db.collection("posts").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if (data.channelBy === user.displayName || data.name === user.displayName)
+                    db.collection("posts").doc(doc.id).update({ photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`  })
+            })
+        })
+
+        // Update forumposts
+        await db.collection("forumPosts").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if (data.channelBy === user.displayName || data.name === user.displayName)
+                    db.collection("forumPosts").doc(doc.id).update({ photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`  })
+            })
+        })
+
+        //Update from Chat rooms
+        await db.collection("chatRooms").where("participantNames", "array-contains", user.displayName).get().then(docs => {
+            docs.forEach(doc => {
+                const docRef = db.collection("chatRooms").doc(doc.id)
+                let data = doc.data()
+                let participants = data.participants.map(u => u.name !== user.displayName ? u : { ...u, photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+                docRef.update({ participants: participants })
+            })
+        })
+        
+        //Update follower from the channel
+        await db.collection("channels").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if (data.followers && data.followers.some(c => c.name === user.displayName)) {
+                    const followers = data.followers.map(u => u.name !== user.displayName ? u : { ...u, photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`  })
+                    db.collection("channels").doc(doc.id).update({ followers: followers })
+                }
+            })
+        })
+
+        //Update Challenge and its posts
+        await db.collection("challenges").where("creator", "==", user.displayName).get().then(docs => {
+            docs.forEach(doc => {
+                db.collection("challenges").doc(doc.data().name).update({creatorPhotoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+            })
+        })
+        await db.collection("challengePosts").where("creator", "==", user.displayName).get().then(docs => {
+            docs.forEach(doc => {
+                db.collection("challengePosts").doc(doc.id).update({creatorPhotoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+            })
+        })
+        //Challenge Participants
+        await db.collection("challenges").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if ((data.participants && data.participants.some(u => u.displayName === user.displayName))) {
+                    const participants = data.participants.map(u => u.displayName !== user.displayName ? u : { ...u, photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+                    db.collection("challenges").doc(doc.id).update({
+                        participants: participants
+                    })
+                }
+            })
+        })
+
+        setLoading(false)
+        dispatch(login({
+            email: auth.currentUser.email,
+            uid: auth.currentUser.uid,
+            displayName: auth.currentUser.displayName,
+            photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`,
+            emailVerified: auth.currentUser.emailVerified
+          }));
+          setPreviewAvatar(`https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`)
+         
     }
 
     const [avatarStyle, setAvatarStyle] = useState("Circle")
@@ -1082,25 +1180,7 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                     </center>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {
-                        auth.currentUser.updateProfile({
-                            photoURL: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`
-                        }); 
-                        if (auth.currentUser.displayName) {
-                            db.collection("users").doc(auth.currentUser.displayName).set({
-                                photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`
-                            }, { merge: true });
-                        };
-                        dispatch(login({
-                            email: auth.currentUser.email,
-                            uid: auth.currentUser.uid,
-                            displayName: auth.currentUser.displayName,
-                            photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`,
-                            emailVerified: auth.currentUser.emailVerified
-                          }));
-                          setPreviewAvatar(`https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`)
-                         setShowAvatarEditor(false)
-                    }}>
+                    <Button onClick={editAvatar} >
                         Done
                     </Button>
                     <Button onClick={() => { setShowAvatarEditor(false) }}>Cancel</Button>
