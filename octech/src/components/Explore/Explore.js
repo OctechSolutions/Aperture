@@ -23,6 +23,7 @@ import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Map from '../Body/Map/Map.js';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -71,8 +72,28 @@ export default function Explore() {
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
   const [channels, setChannels] = useState([]);
-  const [key, setKey] = useState("");
+  const [key, setKey] = useState("map");
+  const [locationPosts, setLocationPosts] = useState([])
+  const [center, setCenter] = useState({ lat: 25.1972, lng: 55.2744 })
+  const [mapLoad, setMapLoad] = useState(false)
+  useEffect(() => {
+    db.collection("posts")
+      .where("hasCoordinates", "==", true)
+      .where("isPrivate", "==", false)
+      .get().then((a) => {
+        if (a.docs[0] !== undefined) {
+          setCenter({ lat: a.docs[0].data().lat, lng: a.docs[0].data().lng })
+        }
+        setLocationPosts(
 
+          a.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+          }))
+        )
+      }).then(() => { setTimeout(() => { setMapLoad(true) }, 500) })
+
+  }, [])
   const getPosts = (k) => {
     if (k === "posts") {
       db.collection("posts")
@@ -213,23 +234,9 @@ export default function Explore() {
               )}
             />
           </div>
-          {/* <Tabs
-                        value={tabValue}
-                        onChange={handleChange}
-                        indicatorColor="primary"
-                        textColor="primary"
-                        variant="fullWidth"
-                        aria-label="full width tabs example"
-                    >
-                        <Tab label="Posts" {...a11yProps(0)} />
-                        <Tab label="Channels" {...a11yProps(1)} />
-                    </Tabs> */}
+
         </div>
-        {/* <SwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                    index={tabValue}
-                    onChangeIndex={handleChangeIndex}
-                > */}
+
         <Tabs
           id="controlled-tab-example"
           activeKey={key ? key : getPosts("posts")}
@@ -244,6 +251,26 @@ export default function Explore() {
           }}
           fill
         >
+          <Tab
+            eventKey="map"
+            title="Map"
+            style={{
+              color: "black",
+              width: "100%",
+              backgroundColor: "whitesmoke",
+              bottom: "500px",
+              overflow: "hidden",
+              postion: "fixed"
+            }}
+            mountOnEnter={true}
+          >
+            {mapLoad && <Map
+              locationPosts={locationPosts}
+              zoom={6}
+              isPreview={true}
+              center={center}
+            />}
+          </Tab>
           <Tab
             eventKey="posts"
             title="Posts"
@@ -280,7 +307,7 @@ export default function Explore() {
                       type
                     },
                   }) => (
-                    <div style = {{paddingLeft: "3%", paddingRight: "3%"}}>
+                    <div style={{ paddingLeft: "3%", paddingRight: "3%" }}>
                       {(
                         <Post
                           key={id}
@@ -301,7 +328,8 @@ export default function Explore() {
                           isPrivate={isPrivate}
                           timestamp={timestamp}
                           type={type}
-                          isForumPost = {Boolean(type)}
+                          isForumPost={Boolean(type)}
+                          locationPosts={locationPosts}
                         />
                       )}
                     </div>

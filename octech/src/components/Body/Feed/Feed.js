@@ -16,7 +16,6 @@ import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
 import EditLocationIcon from '@material-ui/icons/EditLocation';
-import Map from "../Map/Map";
 import DraggableMap from "../Map/DraggableMap";
 import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
@@ -31,20 +30,11 @@ import SendIcon from '@material-ui/icons/Send';
 import InputBase from '@material-ui/core/InputBase';
 import LockIcon from '@material-ui/icons/Lock';
 import PublicIcon from '@material-ui/icons/Public';
-import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import Menu from '@material-ui/core/Menu';
-import Slider from '@material-ui/core/Slider';
-import MenuItem from '@material-ui/core/MenuItem';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { motion } from "framer-motion";
 import CloseIcon from '@material-ui/icons/Close';
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
 import ReactGiphySearchbox from "react-giphy-searchbox";
 import FilerobotImageEditor from "filerobot-image-editor";
 import TuneIcon from '@material-ui/icons/Tune';
@@ -54,6 +44,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import Chip from '@material-ui/core/Chip'
 import TextField from '@material-ui/core/TextField';
+import {GiphyApiKey} from "./giphy-config"
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -76,9 +67,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'fixed',
     zIndex: 100
   },
-  extendedIcon: {
-    // marginRight: theme.spacing(1),
-  },
   input: {
     marginLeft: theme.spacing(2),
     flex: 1,
@@ -88,44 +76,6 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
   },
 }));
-
-const DEFAULT_EDIT_OPTIONS = [
-  {
-    name: 'Brightness',
-    property: 'brightness',
-    value: 100,
-    range: { min: 0, max: 200 },
-    unit: '%'
-  },
-  {
-    name: 'Contrast',
-    property: 'contrast',
-    value: 100,
-    range: { min: 0, max: 200 },
-    unit: '%'
-  },
-  {
-    name: 'Saturation',
-    property: 'saturate',
-    value: 100,
-    range: { min: 0, max: 200 },
-    unit: '%'
-  },
-  {
-    name: 'Grayscale',
-    property: 'grayscale',
-    value: 0,
-    range: { min: 0, max: 100 },
-    unit: '%'
-  },
-  {
-    name: 'Hue',
-    property: 'hue-rotate',
-    value: 0,
-    range: { min: 0, max: 360 },
-    unit: 'deg'
-  }
-]
 
 function Feed({ match }, props) {
   const user = useSelector(selectUser);
@@ -138,9 +88,6 @@ function Feed({ match }, props) {
   // const [inputImgs, setInputImgs] = useState([]);
   const [posts, setPosts] = useState([]);
   const [cameraActive, setCameraActive] = useState("");
-  const [editOptions, setEditOptions] = useState(DEFAULT_EDIT_OPTIONS);
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
-  const selectedOption = editOptions[selectedOptionIndex];
   const [sliderImages, setSliderImages] = useState([]);
   const [largeImages, setLargeImages] = useState([]);
   const [, setNohuman] = useState(false);
@@ -155,6 +102,7 @@ function Feed({ match }, props) {
   const [showPostComponent, setShowPostComponent] = useState(false);
   const [showTags, setShowTags] = useState(false);
   const [tags, setTags] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
 
   const [channelInfo, setChannelInfo] = useState("")
@@ -162,58 +110,13 @@ function Feed({ match }, props) {
   const cocoSsd = require('@tensorflow-models/coco-ssd');
 
   const classes = useStyles();
-  const [cropper, setCropper] = useState("");
-  const [cropping, setCropping] = useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(true);
   const [showGifSearch, setShowGifSearch] = useState(false)
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   function getImageStyle() {
-    const filters = editOptions.map(option => {
-      return `${option.property}(${option.value}${option.unit})`
-    })
-    return { filter: filters.join(` `) }
+    return { filter: "" }
   }
-
-  // const fixDB =()=>{
-  //   db.collection("users").get().then(result => {
-  //     result.forEach(element => {
-  //       db.collection("users").doc(element.id).update({
-  //         // followingChannels:[],
-  //         // friendRequestReceived:[],
-  //         // friendRequestSent : [],
-  //         // friends:[],
-  //         // profilePoints:0,
-  //         // blocked:[],
-  //         // blockedBy:[],
-  //         collections :[]
-  //       })
-  //     });
-  //   })
-
-  //   // db.collection("channels").get().then(result => {
-  //   //   result.forEach(element => {
-  //   //     db.collection("channels").doc(element.id).update({
-  //   //       followers:[]
-  //   //     })
-  //   //   })
-  //   // })
-
-  //   // db.collection("posts").get().then(result => {
-  //   //   result.forEach(element => {
-  //   //     db.collection("posts").doc(element.id).update({
-  //   //       stars:{},
-  //   //       totalStars:0
-  //   //     })
-  //   //   })
-  //   // });  
-
-  // }
-  // fixDB()
 
   useEffect(() => {
     db.collection("users").doc(user.displayName).get().then(doc => {
@@ -295,6 +198,7 @@ function Feed({ match }, props) {
                 setOpen(false)
               })
           }
+          setTimeout(() => {setLoaded(true)},500)
         } else {
           console.log("No such document!");
         }
@@ -381,14 +285,12 @@ function Feed({ match }, props) {
 
   const resetVals = () => {
     setInputImg(""); // When the post is submitted the input image is set to an empty string removing the preview of the image and providing a fresh canvas for the next post
-    setEditOptions(DEFAULT_EDIT_OPTIONS); // This sets the slider values for editing the image to its default once the post is submitted which avoids applying old filters to the next image that is uploaded
     setSliderImages([]);
     setLargeImages([]);
     setInput(""); // On posting the input value is set to an empty string
     setCameraActive("");
     setIsPrivatePost(false);
     setShowPostComponent(false);
-    setCropping("false");
     setCameraActive("");
     setImgOverlays([])
     setImgOverlayCoordinates([])
@@ -397,7 +299,6 @@ function Feed({ match }, props) {
 
   const editingCancelled = async () => {
     setInputImg("");
-    setEditOptions(DEFAULT_EDIT_OPTIONS);
     setIsPrivatePost(false);
     setImgOverlays([])
     setImgOverlayCoordinates([])
@@ -423,8 +324,6 @@ function Feed({ match }, props) {
       setTags([])
       setImgOverlayCoordinates([])
       setInputImg("");
-      setEditOptions(DEFAULT_EDIT_OPTIONS);
-      console.log(sliderImages)
       setShowPostComponent(true);
 
     }
@@ -450,7 +349,6 @@ function Feed({ match }, props) {
 
     e.preventDefault();
     console.log(e.target.files[0]);
-    setEditOptions(DEFAULT_EDIT_OPTIONS);
     setShowPostComponent(false)
     setViewSlider(false)
     {
@@ -650,11 +548,9 @@ function Feed({ match }, props) {
     if (e.key === "Enter") {
       if (e.target.value.length > 0) {
         setTags([...tags, e.target.value.toLowerCase()]);
-        e.target.value = "";
       }
+      e.target.value= ""
     }
-    if (e.target.value !== e.target.value)
-      setTags(null)
   };
 
   //Remove tags
@@ -938,7 +834,7 @@ function Feed({ match }, props) {
 
                           {showGifSearch && <center>
                             <ReactGiphySearchbox
-                              apiKey="SL07jZg7zFxxOTBN29YaS4979AUIInJK"
+                              apiKey={GiphyApiKey}
                               onSelect={(item) => handleOverlayClick(item)}
                               masonryConfig={[
                                 { columns: 2, imageWidth: 110, gutter: 5 },
@@ -1015,7 +911,7 @@ function Feed({ match }, props) {
           scrollable={true}
           centered
         >
-          <Modal.Header closeButton onClick={handleClose}>
+          <Modal.Header closeButton onClick={() => {setShowTags(false)}}>
             <Modal.Title> Tags </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -1038,9 +934,9 @@ function Feed({ match }, props) {
         <Backdrop className={classes.backdrop} open={open}>
           <CircularProgress color="inherit" />
         </Backdrop>
-        <FlipMove>
+        {loaded && <FlipMove>
           {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-          {posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+          {posts.length===0 && !match.params.channel ? history.push('/search') : posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
               data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type, challenges },
@@ -1071,7 +967,7 @@ function Feed({ match }, props) {
               </Post>
             )
           )}
-        </FlipMove>
+        </FlipMove>}
       </div>
       {(((match.params.channel) && (match.params.id === user.displayName)) || (match.path === "/")) &&
         <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>

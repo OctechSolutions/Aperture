@@ -38,7 +38,6 @@ import { blue, green, red } from '@material-ui/core/colors';
 import moment from 'moment';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-import EditProfile from '../components/userProfile/EditProfile';
 import BugReportForm from '../components/Body/Feed/Reports/BugReportForm';
 import PostView from '../components/Body/Post/PostView';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -206,7 +205,6 @@ export default function NewsfeedPage(props) {
                             <Route path="/challengeLeaderboard/:name" exact component ={ChallengeLeaderBoard} />
                             <Route path="/bugReportForm" render={props => <BugReportForm setValue={setValue} />} />
                             <Route path="/notifications" exact render={props => <Notifications notifications={notifications} />} />
-                            <Route path="/editprofile"><EditProfile/></Route>
                             <Route path="/post/:id" exact component={PostView} />
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
@@ -221,7 +219,7 @@ export default function NewsfeedPage(props) {
                         </div>
                     ) :
                     (
-                        <Modal show={true}>
+                        <Modal show={!props.isVerified}>
                             <Modal.Body>
                                 <Alert variant='info'>
                                     <div className="verify-email">

@@ -48,7 +48,9 @@ function ChallengesLeaderBoard() {
   return (
     leaderboardData.map((data, i) => {
       if (data.postData.length !== 0)
-        return <LeaderBoardComponent key={i} title={data.challengeName + " LeaderBoard"} headers={['Post Caption', 'Submitted By', 'Total Stars']} columns={['caption', 'creator', 'totalStars']} limit={100} data={data.postData} highlightColumn={'creator'} highlightColumnData={user.displayName} />;
+        return <LeaderBoardComponent key={i} title={data.challengeName + " LeaderBoard"} headers={['Post Caption', 'Submitted By', 'Total Stars']} columns={['caption', 'creator', 'totalStars']} limit={100} data={data.postData} highlightColumn={'creator'} highlightColumnData={user.displayName} />
+      else 
+        return <></>
     })
     
   )

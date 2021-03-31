@@ -8,8 +8,6 @@ import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './signUp.css'
 import EditIcon from '@material-ui/icons/Edit';
 import { db } from '../../firebase';
-import { useDispatch } from 'react-redux';
-import { login } from '../../features/userSlice';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
@@ -51,20 +49,16 @@ const SignUp = () => {
 
     const classes = useStyles();
     const [profilePic, setProfilePic] = useState("");
-    const [file, setFile] = useState();
-    const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-    const [profilePicConsent, setProfilePicConsent] = useState(true);
+    const [, setProfilePicConsent] = useState(true);
     const [error, setError] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [contactNumber, setContactNumber] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [showConsentForm, setShowConsentForm] = useState(false)
     const [open, setOpen] = React.useState(false);
-    const dispatch = useDispatch(); // Keep track of changes on the user slice
     const [showAvatarEditor, setShowAvatarEditor] = useState(false)
 
     const handleClickShowConfirmPassword = () => {
@@ -79,28 +73,12 @@ const SignUp = () => {
         event.preventDefault();
     };
 
-
-    // const handleUpload = async (e) => { // When a file is uploaded this function is called
-    //     e.preventDefault();
-    //     var reader = new FileReader();
-
-    //     if (e.target.files[0] !== undefined) {
-    //         reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
-    //         setFile(e.target.files[0])
-    //     }
-    //     reader.onloadend = function () { // Since this is asyncronous on completion of the loading the image is set with the base64 string
-    //         console.log("RESULT", reader.result);
-    //         setProfilePic(reader.result);
-    //         // alert("Image Uploaded Sucessfully!")
-    //     };
-    // }
-
     // handleSubmit = What to do when the sign up form is submitted?
     const handleSubmit = (async event => {
         event.preventDefault() // Prevent default behavior of re-loading etc.
 
         const updateUserProfile = async () => {
-            if (name && username && email && password) {
+            if (username && email && password) {
 
                 await auth // Wait until the user has been added to authenticated users list in Firebase.
                     .createUserWithEmailAndPassword(email, confirmPassword)
@@ -108,29 +86,6 @@ const SignUp = () => {
                 auth.currentUser.updateProfile({
                     displayName: username,
                     photoURL: profilePic
-                }).then(() => {
-                    // console.log(auth.currentUser)
-                    // db.collection("users").doc(username).set({
-                    //     name: username,
-                    //     email: email,
-                    //     photoUrl: profilePic,
-                    //     realName: name,
-                    //     contactNumber: contactNumber,
-                    //     friends: [],
-                    //     friendRequestReceived: [],
-                    //     friendRequestSent: [],
-                    //     followingChannels: [],
-                    //     profilePoints: 0,
-                    //     blocked: [],
-                    //     blockedBy: [],
-                    //     league: "No league profile points less than 100",
-                    //     collections: []
-                    // }, { merge: true });
-                    // dispatch(login({
-                    //     email: email,
-                    //     displayName: username,
-                    //     photoUrl: profilePic
-                    // }))
                 })
             }
             else {
@@ -234,22 +189,12 @@ const SignUp = () => {
                                 {!profilePic && <EditIcon className={classes.medium} />}
                             </Avatar>
                         </div>
-                        {/* </label> */}
-                        {/* {
-                                profilePicConsent && 
-                                <input 
-                                    hidden 
-                                    id="fileUpload" 
-                                    type="file" 
-                                    accept="image/*" 
-                                    onChange={handleUpload} 
-                                />
-                           } */}
+
                     </div>
                 </div>
 
                 {/* Name Input */}
-                <TextField
+                {/* <TextField
                     variant="outlined"
                     margin="normal"
                     required
@@ -260,7 +205,7 @@ const SignUp = () => {
                     autoComplete="name"
                     autoFocus
                     onChange={(e) => setName(e.target.value)}
-                />
+                /> */}
 
                 {/* Username Input */}
                 <TextField
@@ -356,7 +301,7 @@ const SignUp = () => {
                 />
 
                 {/* Contact Number Input */}
-                <TextField
+                {/* <TextField
                     variant="outlined"
                     margin="normal"
                     fullWidth
@@ -366,7 +311,7 @@ const SignUp = () => {
                     autoComplete="contactNumber"
                     autoFocus
                     onChange={(e) => setContactNumber(e.target.value)}
-                />
+                /> */}
 
                 {/* Submit Button Input */}
                 <Button
@@ -395,7 +340,7 @@ const SignUp = () => {
             <Modal
                 show={showAvatarEditor}
                 keyboard={false}
-                size="s"
+                size="xl"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
                 scrollable={true}

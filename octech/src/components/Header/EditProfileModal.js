@@ -9,15 +9,38 @@ import InputBase from '@material-ui/core/InputBase';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
-import "./EditProfileModal.css"
 import Box from '@material-ui/core/Box';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from 'react-bootstrap/Modal';
 import { auth, db } from "../../firebase";
 import firebase from "firebase"
 import { useHistory } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { login } from '../../features/userSlice';
+import { makeStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
-const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
+
+const useStyles = makeStyles((theme) => ({
+    large: {
+        width: theme.spacing(15),
+        height: theme.spacing(15),
+    },
+    medium: {
+        width: theme.spacing(5),
+        height: theme.spacing(5),
+    },
+    xl: {
+        width: theme.spacing(30),
+        height: theme.spacing(30),
+    },
+}));
+
+const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
     const user = useSelector(selectUser);
     const history = useHistory();
 
@@ -36,7 +59,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
     const [showOldPassword, setShowOldPassword] = useState(false);
 
     const [newPassword, setNewPassword] = useState("");
-    const [newPasswordNotEnough, setnewPasswordNotEnough] = useState("");
+    const [newPasswordNotEnough,] = useState("");
     const [showNewPassword, setShowNewPassword] = useState(false);
 
     const [retypePassword, setRetypePassword] = useState("");
@@ -48,14 +71,14 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
     const [showconfirmPassword, setShowconfirmPassword] = useState(false);
 
     const [showConfirmDeleteAccount, setShowConfirmDeleteAccount] = useState(false)
-    
+
 
     const submitHandler = async () => {
         let noError = true
         const useR = firebase.auth().currentUser;
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPassword);
         // Now you can use that to reauthenticate
-        if(auth.currentUser.providerData[0].providerId === "google.com"){
+        if (auth.currentUser.providerData[0].providerId === "google.com") {
             if (editName)
                 await db.collection("users").doc(name).get().then(user => {
                     if (user.data()) {
@@ -72,7 +95,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                 setLoading(false)
             }
         }
-        else{
+        else {
             await useR.reauthenticateWithCredential(credential).then(async function (result) {
 
                 if (editName)
@@ -129,7 +152,8 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
             }).catch(function (error) {
                 console.log(error, "e")
                 setOldPasswordDoesNotMatch(true)
-            });}
+            });
+        }
         firebase.auth().currentUser.reload()
         window.location.reload();
     }
@@ -233,7 +257,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                         let data = doc.data()
                         let participantNames = data.participantNames.filter(n => name !== user.displayName)
                         let participants = data.participants.filter(u => u.name !== user.displayName)
-                        const collectionRef = docRef.collection("messages")
+                        docRef.collection("messages")
                         docRef.update({ participantNames: participantNames, participants: participants })
                     })
                 })
@@ -406,7 +430,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                     let data = doc.data()
                     let participantNames = data.participantNames.filter(n => name !== user.displayName)
                     let participants = data.participants.filter(u => u.name !== user.displayName)
-                    const collectionRef = docRef.collection("messages")
+                    docRef.collection("messages")
                     docRef.update({ participantNames: participantNames, participants: participants })
                 })
             })
@@ -486,7 +510,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
 
         await db.collection("users").doc(user.displayName).get().then(async doc => {
             const data = { ...doc.data(), name: newName }
-            
+
             await db.collection("users").doc(newName).set(data).then(async () => {
                 await db.collection("users").doc(user.displayName).collection("notifications").get().then(docs => {
                     docs.forEach(doc => {
@@ -600,12 +624,12 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
             })
         })
 
-        //Update Bug report
-        await db.collection("BugReports").where("name", "==", user.displayName).get().then(docs => {
-            docs.forEach(doc => {
-                db.collection("BugReports").doc(doc.id).update({ name: newName })
-            })
-        })
+        // //Update Bug report
+        // await db.collection("BugReports").where("name", "==", user.displayName).get().then(docs => {
+        //     docs.forEach(doc => {
+        //         db.collection("BugReports").doc(doc.id).update({ name: newName })
+        //     })
+        // })
 
         //Update from Chat rooms
         await db.collection("chatRooms").where("participantNames", "array-contains", user.displayName).get().then(docs => {
@@ -615,7 +639,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                 let participantNames = data.participantNames.map(n => n !== user.displayName ? n : newName)
                 let participants = data.participants.map(u => u.name !== user.displayName ? u : { ...u, name: newName })
                 docRef.update({ participantNames: participantNames, participants: participants })
-                const collectionRef = docRef.collection("messages")
+                docRef.collection("messages")
             })
         })
 
@@ -668,9 +692,145 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
 
     }
 
+    const editAvatar = async () => {
+        setLoading(true)
+        setShowAvatarEditor(false)
+        auth.currentUser.updateProfile({
+            photoURL: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`
+        });
+        if (auth.currentUser.displayName) {
+            db.collection("users").doc(auth.currentUser.displayName).set({
+                photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`
+            }, { merge: true });
+        };
+
+        //Update from friends and friends requested and blocked and all
+        await db.collection("users").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if (data.friends.some(u => u.name === user.displayName)) {
+                    const friends = data.friends.map(u => u.name !== user.displayName ? u : { ...u, photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+                    db.collection("users").doc(data.name).update({ friends: friends })
+                }
+            })
+        })
+
+        // Update posts
+        await db.collection("posts").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if (data.channelBy === user.displayName || data.name === user.displayName)
+                    db.collection("posts").doc(doc.id).update({ photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+            })
+        })
+
+        // Update forumposts
+        await db.collection("forumPosts").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if (data.channelBy === user.displayName || data.name === user.displayName)
+                    db.collection("forumPosts").doc(doc.id).update({ photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+            })
+        })
+
+        //Update from Chat rooms
+        await db.collection("chatRooms").where("participantNames", "array-contains", user.displayName).get().then(docs => {
+            docs.forEach(doc => {
+                const docRef = db.collection("chatRooms").doc(doc.id)
+                let data = doc.data()
+                let participants = data.participants.map(u => u.name !== user.displayName ? u : { ...u, photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+                docRef.update({ participants: participants })
+            })
+        })
+
+        //Update follower from the channel
+        await db.collection("channels").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if (data.followers && data.followers.some(c => c.name === user.displayName)) {
+                    const followers = data.followers.map(u => u.name !== user.displayName ? u : { ...u, photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+                    db.collection("channels").doc(doc.id).update({ followers: followers })
+                }
+            })
+        })
+
+        //Update Challenge and its posts
+        await db.collection("challenges").where("creator", "==", user.displayName).get().then(docs => {
+            docs.forEach(doc => {
+                db.collection("challenges").doc(doc.data().name).update({ creatorPhotoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+            })
+        })
+        await db.collection("challengePosts").where("creator", "==", user.displayName).get().then(docs => {
+            docs.forEach(doc => {
+                db.collection("challengePosts").doc(doc.id).update({ creatorPhotoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+            })
+        })
+        //Challenge Participants
+        await db.collection("challenges").get().then(docs => {
+            docs.forEach(doc => {
+                let data = doc.data()
+                if ((data.participants && data.participants.some(u => u.displayName === user.displayName))) {
+                    const participants = data.participants.map(u => u.displayName !== user.displayName ? u : { ...u, photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}` })
+                    db.collection("challenges").doc(doc.id).update({
+                        participants: participants
+                    })
+                }
+            })
+        })
+
+        setLoading(false)
+        dispatch(login({
+            email: auth.currentUser.email,
+            uid: auth.currentUser.uid,
+            displayName: auth.currentUser.displayName,
+            photoUrl: `https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`,
+            emailVerified: auth.currentUser.emailVerified
+        }));
+        setPreviewAvatar(`https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`)
+
+    }
+
+    const [avatarStyle, setAvatarStyle] = useState("Circle")
+    const [accessoriesType, setAccessoriesType] = useState("Blank")
+    const [clotheType, setClotheType] = useState("BlazerShirt")
+    const [eyeType, setEyeType] = useState("Default")
+    const [eyebrowType, setEyebrowType] = useState("Default")
+    const [facialHairColor, setFacialHairColor] = useState("Brown")
+    const [facialHairType, setFacialHairType] = useState("BeardLight")
+    const [hairColor, setHairColor] = useState("Brown")
+    const [mouthType, setMouthType] = useState("Smile")
+    const [skinColor, setSkinColor] = useState("Light")
+    const [topType, setTopType] = useState("ShortHairShortWaved")
+    const [previewAvatar, setPreviewAvatar] = useState(auth.currentUser.photoURL)
+
+
+    var top = ["NoHair", "Eyepatch", "Hat", "Hijab", "Turban", "WinterHat1", "WinterHat2", "WinterHat3", "WinterHat4", "LongHairBigHair", "LongHairBob", "LongHairBun", "LongHairCurly", "LongHairCurvy", "LongHairDreads", "LongHairFrida", "LongHairFro", "LongHairFroBand", "LongHairNotTooLong", "LongHairShavedSides", "LongHairMiaWallace", "LongHairStraight", "LongHairStraight2", "LongHairStraightStrand", "ShortHairDreads01", "ShortHairDreads02", "ShortHairFrizzle", "ShortHairShaggyMullet", "ShortHairShortCurly", "ShortHairShortFlat", "ShortHairShortRound", "ShortHairShortWaved", "ShortHairSides", "ShortHairTheCaesar", "ShortHairTheCaesarSidePart"];
+    var accessories = ["Blank", "Kurt", "Prescription01", "Prescription02", "Round", "Sunglasses", "Wayfarers"]
+    var hair = ["Auburn", "Black", "Blonde", "BlondeGolden", "Brown", "BrownDark", "PastelPink", "Platinum", "Red", "SilverGray"]
+    var fHairColor = ["Auburn", "Black", "Blonde", "BlondeGolden", "Brown", "BrownDark", "Platinum", "Red"]
+    var facialHair = ["Blank", "BeardMedium", "BeardLight", "BeardMajestic", "MoustacheFancy", "MoustacheMagnum"]
+    var clothe = ["BlazerShirt", "BlazerSweater", "CollarSweater", "GraphicShirt", "Hoodie", "Overall", "ShirtCrewNeck", "ShirtScoopNeck", "ShirtVNeck"]
+    var eye = ["Close", "Cry", "Default", "Dizzy", "EyeRoll", "Happy", "Hearts", "Side", "Squint", "Surprised", "Wink", "WinkWacky"]
+    var eyeBrow = ["Angry", "AngryNatural", "Default", "DefaultNatural", "FlatNatural", "RaisedExcited", "RaisedExcitedNatural", "SadConcerned", "SadConcernedNatural", "UnibrowNatural", "UpDown", "UpDownNatural"]
+    var mouth = ["Concerned", "Default", "Disbelief", "Eating", "Grimace", "Sad", "ScreamOpen", "Serious", "Smile", "Tongue", "Twinkle", "Vomit"]
+    var skin = ["Tanned", "Yellow", "Pale", "Light", "Brown", "DarkBrown", "Black"]
+    var style = ["Circle", "Default"]
+    const classes = useStyles();
+    const dispatch = useDispatch(); // Keep track of changes on the user slice
+    const [showAvatarEditor, setShowAvatarEditor] = useState(false)
+
     return (
-        <div style={{ margin: "10px" }}>
-            <TextField id="userNameField" className="field" variant="outlined" label="Username" placeholder="Enter New Username" helperText={!name ? "Username cannot be empty" : nameNotUnique ? "Username should be unique" : ""} error={!name | nameNotUnique} value={name} onChange={(event) => { setName(event.target.value); if (nameNotUnique) setNameNotUnique(false) }} fullWidth InputLabelProps={{ shrink: true, }}
+        <div>
+            <center>
+                <Avatar
+                    src={previewAvatar}
+                    className={classes.xl}
+                />
+                <br />
+                <Button variant="outlined" endIcon={<EditIcon />} color="primary" onClick={() => { setShowAvatarEditor(true) }}>Edit Avatar</Button>
+            </center>
+            <br />
+            <TextField variant="outlined" label="Username" placeholder="Enter New Username" helperText={!name ? "Username cannot be empty" : nameNotUnique ? "Username should be unique" : ""} error={!name | nameNotUnique} value={name} onChange={(event) => { setName(event.target.value); if (nameNotUnique) setNameNotUnique(false) }} fullWidth
                 InputProps={{
                     readOnly: !editName,
                     endAdornment:
@@ -686,56 +846,66 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                             </IconButton>)
                 }}
             />
-
-            {auth.currentUser.providerData[0].providerId !== "google.com" && <TextField id="emailField" className="field" variant="outlined" label="Email" placeholder="Enter New Email" helperText={!email ? "Email cannot be empty" : emailAlreadyInUse ? "Email already in use" : ""} error={!email | emailAlreadyInUse} value={email} onChange={(event) => { setEmail(event.target.value); if (emailAlreadyInUse) setEmailAlreadyInUse(false) }} fullWidth InputLabelProps={{ shrink: true, }}
-                InputProps={{
-                    readOnly: !editEmail,
-                    type: "email",
-                    validate: true,
-                    endAdornment:
-                        (editEmail ?
+            <br />
+            <br />
+            {auth.currentUser.providerData[0].providerId !== "google.com" &&
+                <><TextField id="emailField" className="field" variant="outlined" label="Email" placeholder="Enter New Email" helperText={!email ? "Email cannot be empty" : emailAlreadyInUse ? "Email already in use" : ""} error={!email | emailAlreadyInUse} value={email} onChange={(event) => { setEmail(event.target.value); if (emailAlreadyInUse) setEmailAlreadyInUse(false) }} fullWidth InputLabelProps={{ shrink: true, }}
+                    InputProps={{
+                        readOnly: !editEmail,
+                        type: "email",
+                        validate: true,
+                        endAdornment:
+                            (editEmail ?
+                                <>
+                                    <IconButton aria-label="cancel edit email" onClick={() => { setEditEmail(false); setEmail(user.email) }}>
+                                        <ClearIcon />
+                                    </IconButton>
+                                </>
+                                :
+                                <IconButton aria-label="edit email" onClick={() => { setEditEmail(true); setEmail("") }}>
+                                    <EditIcon />
+                                </IconButton>)
+                    }}
+                />
+                    <br />
+                    <br />
+                </>
+            }
+            {auth.currentUser.providerData[0].providerId !== "google.com" &&
+                <><TextField variant="outlined" label="Current Password" placeholder="Enter Your Current Password" helperText={!oldPassword ? "Current Password cannot be empty" : oldPasswordDoesNotMatch ? "Current Password incorrect" : ""} error={!oldPassword | oldPasswordDoesNotMatch} value={oldPassword} onChange={(event) => { setOldPassword(event.target.value); if (oldPasswordDoesNotMatch) setOldPasswordDoesNotMatch(false) }} fullWidth
+                    InputProps={{
+                        type: showOldPassword ? 'text' : 'password',
+                        endAdornment:
+                            <IconButton
+                                aria-label="toggle oldPassword visibility"
+                                onClick={() => { setShowOldPassword(!showOldPassword) }}
+                                onMouseDown={(e) => { e.preventDefault() }}
+                                edge="end"
+                            >
+                                {showOldPassword ? <Visibility /> : <VisibilityOff />}
+                            </IconButton>
+                    }}
+                /><br />
+                    <br /></>}
+            {auth.currentUser.providerData[0].providerId !== "google.com" &&
+                <><InputBase
+                    defaultValue="Change Password"
+                    readOnly
+                    fullWidth
+                    className="pass"
+                    endAdornment={
+                        (editPassword ?
                             <>
-                                <IconButton aria-label="cancel edit email" onClick={() => { setEditEmail(false); setEmail(user.email) }}>
+                                <IconButton aria-label="cancel edit Password" onClick={() => { setEditPassword(false) }}>
                                     <ClearIcon />
                                 </IconButton>
                             </>
                             :
-                            <IconButton aria-label="edit email" onClick={() => { setEditEmail(true); setEmail("") }}>
+                            <IconButton aria-label="edit password" onClick={() => { setEditPassword(true) }}>
                                 <EditIcon />
-                            </IconButton>)
-                }}
-            />}
-            {auth.currentUser.providerData[0].providerId !== "google.com" && <TextField id="currentPassword" className="field" variant="outlined" label="Current Password" placeholder="Enter Your Current Password" helperText={!oldPassword ? "Current Password cannot be empty" : oldPasswordDoesNotMatch ? "Current Password incorrect" : ""} error={!oldPassword | oldPasswordDoesNotMatch} value={oldPassword} onChange={(event) => { setOldPassword(event.target.value); if (oldPasswordDoesNotMatch) setOldPasswordDoesNotMatch(false) }} fullWidth InputLabelProps={{ shrink: true, }}
-                InputProps={{
-                    type: showOldPassword ? 'text' : 'password',
-                    endAdornment:
-                        <IconButton
-                            aria-label="toggle oldPassword visibility"
-                            onClick={() => { setShowOldPassword(!showOldPassword) }}
-                            onMouseDown={(e) => { e.preventDefault() }}
-                            edge="end"
-                        >
-                            {showOldPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                }}
-            />}
-            {auth.currentUser.providerData[0].providerId !== "google.com" && <InputBase
-                defaultValue="Change Password"
-                readOnly
-                fullWidth
-                className="pass"
-                endAdornment={
-                    (editPassword ?
-                        <>
-                            <IconButton aria-label="cancel edit Password" onClick={() => { setEditPassword(false) }}>
-                                <ClearIcon />
-                            </IconButton>
-                        </>
-                        :
-                        <IconButton aria-label="edit password" onClick={() => { setEditPassword(true) }}>
-                            <EditIcon />
-                        </IconButton>)}
-            />}
+                            </IconButton>)}
+                /><br />
+                    <br /></>}
 
             {editPassword ?
                 <>
@@ -753,6 +923,8 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                                 </IconButton>
                         }}
                     />
+                    <br />
+                    <br />
                     <TextField id="retypePassword" className="field" variant="outlined" label="Retype Password" placeholder="Enter Retype Password" helperText={!retypePassword ? "Retype Password cannot be empty" : retypePasswordDoesNotMatch ? "New Password and Retype Password do no match" : ""} error={!retypePassword | retypePasswordDoesNotMatch} value={retypePassword} onChange={(event) => { setRetypePassword(event.target.value); if (retypePasswordDoesNotMatch) setRetypePasswordDoesNotMatch(false) }} fullWidth InputLabelProps={{ shrink: true, }}
                         InputProps={{
                             type: showRetypePassword ? 'text' : 'password',
@@ -817,7 +989,7 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                     </Box>
                 </Modal.Body>
             </Modal>
-            <Box component="span" m={1} className="buttonContainer">
+            <Box style={{ display: "flex" }} >
                 <Button
                     variant="contained"
                     color="secondary"
@@ -836,22 +1008,196 @@ const EditProfileModal = ({ setShowEditProfile,setLoading }) => {
                 >
                     <b>Cancel</b>
                 </Button>
-                {(editName | editPassword | editEmail) ?
-                    <>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            className="buttons"
-                            endIcon={<EditIcon />}
-                            onClick={submitHandler}
-                        >
-                            <b>Submit</b>
-                        </Button>
-                    </>
-                    :
-                    <>
-                    </>}
             </Box>
+            {(editName | editPassword | editEmail) ?
+                <center>
+                    <br />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        endIcon={<EditIcon />}
+                        onClick={submitHandler}
+                    >
+                        <b>Submit</b>
+                    </Button>
+                </center>
+                :
+                <>
+                </>}
+
+            <Modal
+                show={showAvatarEditor}
+                keyboard={false}
+                size="xl"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                scrollable={true}
+            >
+                <Modal.Header closeButton onClick={() => { setShowAvatarEditor(false) }}>
+                    <div style={{ marginLeft: "auto", marginRight: "-25px" }}>
+                        <h4 style={{ marginLeft: "auto", marginRight: "-25px" }}>Edit your Avatar!</h4>
+                        <center>
+                            <Avatar
+                                src={`https://avataaars.io/?accessoriesType=${accessoriesType}&avatarStyle=${avatarStyle}&clotheType=${clotheType}&eyeType=${eyeType}&eyebrowType=${eyebrowType}&facialHairColor=${facialHairColor}&facialHairType=${facialHairType}&hairColor=${hairColor}&mouthType=${mouthType}&skinColor=${skinColor}&topType=${topType}`}
+                                className={classes.xl}
+                            />
+                        </center>
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <center>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={topType}
+                                onChange={(e) => { setTopType(e.target.value) }}
+                            >
+                                {
+                                    top.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Top Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={accessoriesType}
+                                onChange={(e) => { setAccessoriesType(e.target.value) }}
+                            >
+                                {
+                                    accessories.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Accessories Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={hairColor}
+                                onChange={(e) => { setHairColor(e.target.value) }}
+                            >
+                                {
+                                    hair.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Hair Color</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={facialHairType}
+                                onChange={(e) => { setFacialHairType(e.target.value) }}
+                            >
+                                {
+                                    facialHair.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Facial Hair Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={facialHairColor}
+                                onChange={(e) => { setFacialHairColor(e.target.value) }}
+                            >
+                                {
+                                    fHairColor.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Facial Hair Color</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={clotheType}
+                                onChange={(e) => { setClotheType(e.target.value) }}
+                            >
+                                {
+                                    clothe.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Clothe Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={eyeType}
+                                onChange={(e) => { setEyeType(e.target.value) }}
+                            >
+                                {
+                                    eye.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Eye Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={eyebrowType}
+                                onChange={(e) => { setEyebrowType(e.target.value) }}
+                            >
+                                {
+                                    eyeBrow.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Eyebrow Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={mouthType}
+                                onChange={(e) => { setMouthType(e.target.value) }}
+                            >
+                                {
+                                    mouth.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Mouth Type</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={skinColor}
+                                onChange={(e) => { setSkinColor(e.target.value) }}
+                            >
+                                {
+                                    skin.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Skin Color</FormHelperText>
+                        </FormControl>
+                        <FormControl variant="outlined" style={{ width: "80%", padding: "10px" }}>
+                            <Select
+                                value={avatarStyle}
+                                onChange={(e) => { setAvatarStyle(e.target.value) }}
+                            >
+                                {
+                                    style.map((t) => {
+                                        return <MenuItem value={t}>{t}</MenuItem>
+                                    })
+                                }
+                            </Select>
+                            <FormHelperText>Background Style</FormHelperText>
+                        </FormControl>
+                    </center>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={editAvatar} >
+                        Done
+                    </Button>
+                    <Button onClick={() => { setShowAvatarEditor(false) }}>Cancel</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }

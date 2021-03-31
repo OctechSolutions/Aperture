@@ -5,7 +5,6 @@ import GlobalUsersLeaderBoard from './GlobalUsersLeaderBoard';
 import GlobalPostsLeaderBoard from './GlobalPostsLeaderBoard';
 import ChallengesLeaderBoard from './ChallengesLeaderBoard';
 import ChannelLeaderBoard from './ChannelLeaderBoard';
-// import TabContent from 'react-bootstrap/TabContent';
 
 function Forums({ match, setValue }) {
 
@@ -13,7 +12,6 @@ function Forums({ match, setValue }) {
 
     useEffect(() => {
         setValue('leaderBoards/globalUsersLeaderBoard')
-        console.log(match);
     }, [setValue]);
 
     return (

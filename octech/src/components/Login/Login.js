@@ -96,7 +96,7 @@ export default function Login() {
   
   return (
     <div>
-      {!show &&
+      {!show && auth.currentUser===null &&
         <div className="logInContainer" style={{ marginTop: "10vh", marginLeft: "auto", marginRight: "auto" }}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon className={classes.icon} />

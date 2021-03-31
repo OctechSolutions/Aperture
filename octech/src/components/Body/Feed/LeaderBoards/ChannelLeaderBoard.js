@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import {db} from '../../../../firebase';
 import LeaderBoardComponent from './LeaderBoardComponent';
-import { selectUser } from "../../../../features/userSlice";
-import { useSelector } from "react-redux";
 
 
 function ChannelLeaderBoard({ match, setValue }) {
 
   const [leaderboardData, setLeaderBoardData] = useState([]);
   const [dataFetched, setDataFetched] = useState(false);
-  const user = useSelector(selectUser);
 
     if (dataFetched===false) {
 
-      db.collection('globalLeaderBoards').doc('channelLeaderBoard').onSnapshot(data => {
+      db.collection('globalLeaderBoards').doc('channelLeaderBoard').get().then(data => {
           setDataFetched(true);
           if(data.data())
             var channels = data.data().channels;
