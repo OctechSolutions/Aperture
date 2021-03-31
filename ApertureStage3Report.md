@@ -763,7 +763,7 @@ This section in addition to design elements and thoughts behind the final produc
 
 
 
-##### 3.1. <span style="color:red">Application Layout & Navigation</span> (Elfarash, Yoshi)
+##### 3.1. Application Layout & Navigation
 
 <span style="color:magenta">*Layout and navigation of the application or applications.*</span>
 
@@ -787,6 +787,8 @@ Here is the login/ sign up page where the user can enter their existing details 
 
 
 
+
+
 <figure>
     <center>
         <img 
@@ -799,7 +801,9 @@ Here is the login/ sign up page where the user can enter their existing details 
     </figcaption>
 </figure>
 
-Once the user is logged in they can press the plus icon to redirect them to the post popup. Here the user has options to modify their uploaded pic and add tags.
+Here the user has options to modify their uploaded pic and add tags. Once the user is logged-in they can press the plus icon to redirect them to the post popup.
+
+
 
 
 
@@ -815,7 +819,9 @@ Once the user is logged in they can press the plus icon to redirect them to the 
     </figcaption>
 </figure>
 
-The user can apply different photo filters, add GIFs overlays, tags, and the location where the picture was taken. The user can also write a caption for their post and preview the image they have uploaded and modify. This is the whole process a user goes through to post an image on our application. 
+The user can apply different photo filters, add GIFs overlays, tags, and the location where the picture was taken. The user can also write a caption for their post and preview the image they have uploaded and modify. This is the whole process a user goes through to post an image on our application
+
+
 
 
 
@@ -824,14 +830,17 @@ The user can apply different photo filters, add GIFs overlays, tags, and the loc
         <img 
              src="./reportImages/LayoutNav4Profile.png" 
              alt="Application Layout - User Profile" 
-             style="width:60%">
+             style="width:50%">
     </center>
     <figcaption style="text-align:center;">
         Application Layout - User Profile
     </figcaption>
 </figure>
 
+
 This is the users profile page where the user can see their posts/collections/channels/portfolios they have made. As well as their friends list, which channels they are following/ leaderboard league they are in, and how many profile points they have. The user can view this by clicking on their avatar and then clicking profile.
+
+
 
 
 
@@ -840,14 +849,17 @@ This is the users profile page where the user can see their posts/collections/ch
         <img 
              src="./reportImages/LayoutNav5Explore.png" 
              alt="Application Layout - Explore" 
-             style="width:60%">
+             style="width:70%">
     </center>
     <figcaption style="text-align:center;">
         Application Layout - Explore
     </figcaption>
 </figure>
 
+
 Here is the explore page where users can explore different post from other users. This is accessed by clicking on the search icon on the top of the app.
+
+
 
 
 
@@ -862,10 +874,187 @@ Here is the explore page where users can explore different post from other users
         Application Layout - Leaderboards
     </figcaption>
 </figure>
-
 This is the leaderboard section of the app. This is accessed by clicking on the podium icon. Here the user can view several different types of leaderboards for users, posts, challenges, and fastest growing channels. Each leaderboard displays 1st, 2nd, and 3rd with medals.
 
-<span style="color:blue">*MORE ...*</span>
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav7Forums.png" 
+             alt="Application Layout - Forums" 
+             style="width:50%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Forums
+    </figcaption>
+</figure>
+
+This is the forums page. It is separated into two sections which are “Feedback Forum” and “Gaming Forum”. In the feedback forum, the user is able to post any of his/her images and ask questions or receive feedback on them from other users who may have more knowledge. In the “Gaming Forum” on the other hand, the user is able to post images of a game they play and other users can comment on their posts with tips and tricks or fun Easter eggs about the game. 
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav8Challenges.png" 
+             alt="Application Layout - Challenges" 
+             style="width:70%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Challenges
+    </figcaption>
+</figure>
+
+Moving on to the “Challenge page”. The user is presented with other people’s challenges and he/she is able to participate, view entries to the challenge as well as look at the leader board for that challenge. The user can also view the participants of the challenge if the challenge is public. The user is also able to edit the details of the challenge and send invites to the challenge. They can also delete the challenge if they wish to.
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav9RateComment.png" 
+             alt="Application Layout - Rate and Comment" 
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Rate and Comment
+    </figcaption>
+</figure>
+
+Users are able to rate posts from 1 to 3 stars which are located at the bottom left of the post. Users are also able to leave a comment on posts. There is a comments button that is located at the bottom right corner of a post where users can leave a comment on a post.
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav10Friends.png" 
+             alt="Application Layout - Friends" 
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Friends
+    </figcaption>
+</figure>
+
+Users are also able to search for friends to add in the explore page. Once a friend is sent a friend request the request will pop up on their notifications page and they can accept or reject. Later on, a user can also remove that friend as well as block that person if they wish to.
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav11Notifications.png" 
+             alt="Application Layout - Notifications" 
+             style="width:20%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Notifications
+    </figcaption>
+</figure>
+
+Users can receive all kinds of notifications such as friend request notifications, chat notifications, post rating notifications, league placement notification and more. These notifications can be cleared once read by the user.
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav12Chat.png" 
+             alt="Application Layout - Chat" 
+             style="width:45%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Chat
+    </figcaption>
+</figure>
+
+Users can also chat with their friends through the app’s chat functionality. Once two users are friends, they can start a chat with one another. If a user wishes he/she can chat with multiple friends at once using the group chat. They simply invite any additional friends they would like to chat to or create a new chat with more than one user.
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav14ReportPost.png" 
+             alt="Application Layout - Report Posts" 
+             style="width:20%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Report Posts
+    </figcaption>
+</figure>
+
+Users can reports posts that may contain content that contains inappropriate content by clicking the report post button at the top right corner of a post. 
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav13ReportBugs.png" 
+             alt="Application Layout - Report Bugs" 
+             style="width:50%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Report Bugs
+    </figcaption>
+</figure>
+
+If a user discovers a bug with the app, they are able to easily report that bug so that it may be brought to the attention of the development team and fixed. They do so by clicking on their avatar at the top right of the screen and navigating to the “Report a Bug” Page. A user can then attach the URL of the page where the bug occurred. They are also able to attach a screenshot of the bug to better illustrate it as well as provide a description of it.
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav16EditAvatar.png" 
+             alt="Application Layout - Edit Avatar" 
+             style="width:50%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Edit Avatar
+    </figcaption>
+</figure>
+
+If a user is not happy with the way their avatar looks. They can easily edit the look of the avatar by clicking on their avatar at the top right of the screen and navigating to the “Edit profile” Page. They can then click on the Edit Avatar button which pops up and they are presented with the avatar customization screen again. They can re-customize their avatar and then click done once they are happy with the way it looks.
+
+
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav15DeleteProfile.png" 
+             alt="Application Layout - Delete Profile" 
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Delete Profile
+    </figcaption>
+</figure>
+
+If a user decides that they would like to delete their account. They can do so by clicking on their avatar at the top right of the screen and navigating to the “Edit Profile” Page. This will ensure to delete all posts, comments and any content the user had on the app.
 
 
 
