@@ -12,7 +12,7 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
   const user = useSelector(selectUser);
 
     if (dataFetched===false) {
-
+      ////Fetching the data for the users from firebase
       db.collection('globalLeaderBoards').doc('userLeaderBoard').get().then(data => {
           setDataFetched(true);
           if(data.data())
@@ -31,9 +31,8 @@ function GlobalUsersLeaderBoard({ match, setValue }) {
     })} 
 
   return (
-
+  //Assigning the columns of data to diplay
     <LeaderBoardComponent title="Global Users LeaderBoard" headers={['Name','Profile Points']} columns={['name', 'profilePoints']} limit={8} data={leaderboardData} highlightColumn={'name'} highlightColumnData={user.name} />
-    
   )
 }
 

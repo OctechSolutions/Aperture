@@ -8,12 +8,11 @@ import Tab from 'react-bootstrap/Tab';
 function ChallengeLeaderBoard({match}) {
 
   const [key, setKey] = useState("");
-  // const [challengeData,]= useState(getChallengeData())
   const [userLeaderboardData, setUserLeaderBoardData] = useState("");
   const [postLeaderboardData, setPostLeaderBoardData] = useState("");
-
   const getData = (key) =>{
     if(key === "postLeaderBoard") {
+      //Fetching the data from firebase
       db.collection('challengePosts')
       .where('challenge', '==', match.params.name)
       .orderBy('totalStars', 'desc')

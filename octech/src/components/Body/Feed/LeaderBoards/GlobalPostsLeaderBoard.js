@@ -9,7 +9,7 @@ function GlobalPostsLeaderBoard() {
   const [dataFetched, setDataFetched] = useState(false);
 
   if (dataFetched === false) {
-
+    //Fetching the data for the posts from firebase
     db.collection('globalLeaderBoards').doc('postLeaderBoard').get().then(data => {
         setDataFetched(true);
         if(data.data())
@@ -20,7 +20,7 @@ function GlobalPostsLeaderBoard() {
   }
 
   return (
-
+    //Assigning the columns of data to be displayed
     <LeaderBoardComponent title="Global Posts LeaderBoard" headers={['Post Caption', 'Posted By', 'Total Stars']} columns={['message', 'name', 'totalStars']} data={leaderboardData} />
 
   )

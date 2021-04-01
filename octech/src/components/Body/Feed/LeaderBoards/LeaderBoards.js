@@ -13,7 +13,7 @@ function Forums({ match, setValue }) {
     useEffect(() => {
         setValue('leaderBoards/globalUsersLeaderBoard')
     }, [setValue]);
-
+//Displaying the main buttons for each leader board
     return (
         <div className="container-fluid" style= {{marginBottom: "60px"}}>
             <Tabs

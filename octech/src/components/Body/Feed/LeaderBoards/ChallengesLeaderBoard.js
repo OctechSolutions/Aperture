@@ -11,7 +11,7 @@ function ChallengesLeaderBoard() {
   const user = useSelector(selectUser);
 
   if (dataFetched === false) {
-
+    //Fetching the data for the challenges from firebase
     db.collection('challenges')
       .onSnapshot(async data => {
         let challenges = data.docs.map(chal => {
@@ -46,6 +46,7 @@ function ChallengesLeaderBoard() {
   }
 
   return (
+    //Assigning the columns of data to diplay
     leaderboardData.map((data, i) => {
       if (data.postData.length !== 0)
         return <LeaderBoardComponent key={i} title={data.challengeName + " LeaderBoard"} headers={['Post Caption', 'Submitted By', 'Total Stars']} columns={['caption', 'creator', 'totalStars']} limit={100} data={data.postData} highlightColumn={'creator'} highlightColumnData={user.displayName} />
