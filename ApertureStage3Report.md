@@ -153,8 +153,6 @@ Every user's user experience, suggestions and privacy is important to us. Apertu
 
 ### 1. Overview of the System
 
-<span style="color:magenta">*High-level overview of technologies and components.*</span>
-
 This section provides a complete detail of the Aperture system’s design and implemented functionalities. The product scope will be provided along with supporting diagrams to help visualize the intricacies of the applications and help ease the understanding of the technical complexities of the system. The technologies and components used in the applications development and hosting will also be outlined.
 
 
@@ -226,50 +224,104 @@ The web application will be hosted using a cloud platform application called Her
 
 ##### 1.4.  Aperture Components
 
+
+
+**Common Components Shared by all Sub-Systems**
+
+Some components of the application were reused in conjucture to most other components. Provided are the list of components that were identified to be the most reusable.
+
+- **React Component:** This component provides React JSX handling and React Hooks.
+
+- **NPM Component:** This component provides node package manager libraries, packages and services.
+
+- **Material UI Component:** This component provides UI elements from the Material UI framework.
+
+- **Firebase Component:** This component corresponds to the Firestore Database and provides services that Firestore provides like authentication. This component requires the provided interface of an Entity called Firebase Rules which are all the rules that are needed in order to configure Firestore Database features.
+
+- **Redux Component:** This component corresponds to React Redux that provides state management services.
+
+- **Router Component:** This component corresponds to React Router Dom that provides routing services and functions like useDispatcher and useSelectors.
+
+- **React Bootstrap:** This component provides UI elements from the Material UI framework.
+
+- **Server Component:** This component represents a leased server on which cron jobs was set up on.
+
+- **Timely Component:** This component encapsulates the process of checking the DB periodically for updates. It requires the Server Component.
+
+  
+
 **Following are the six sub-system components of Aperture.**
 
 1. **User Account System**
 
-   This component handles user signup/login, profile creation/deletion/management and validation of user details. This component ensures that users submit consent forms in order to upload a photo of themselves as their profile picture or alternatively choose from pre-defined avatar pictures instead. 
+   This component handles user signup/login, profile creation/deletion/management and validation of user details. This component also enables users to choose a customizable avatar as their profile picture. 
 
-   This component is made up of 3 components,
+   **Apart from above mentioned common components, components specific to this system is as follows.**
 
-   - **Sign Up** component.
+   - **Sign-up Component**: This component provides an interface where in a new user account is created. This component requires the EditProfileModal component.
+   - **Login Component:** This component provides an interface enabling users to get logged in. This component may require the sign up component.
+   - **Header Component:** This component provides services like logout, edit or delete profile.
 
-     This component allows users to create an account.  It requires/may require provided interfaces of the following components.
+   
 
-     - *React* component for use of JSX.
-     - *Firebase* component for its database and authentication services.
-     - *Material UI* component for the UI elements it provides.
-     - *User* Entity to provide sign up details.
+2. **Content Creation System**
 
-     It's provided component is the creation of a new account.
+   This component focusses on enabling users to create/destroy content on the application. Users may create posts (comprising of images - via image upload/taken using camera, associated GPS data and text), channels, collections, challenges and a portfolio. Users may delete any content that they have created. Features supported include modification of images during upload, tagging of objects/public events in images and sharing of content (on feedback/gaming forums, profile, collections, channels, challenges and portfolio).
 
-   - **Login** component
+   **Apart from above mentioned common components, components specific to this system is as follows.**
 
-     This component allows users to login to their account. It requires/may require provided interfaces of the following components.
+   - **Feed Component:** It provides a scrollable view of posts and a UI with which users may interact with it. It requires many of the common components like React, Firebase, UserSlice, Material UI. This component also requires the post component, map component which in itself requires the Google Maps API component and the Image manipulation component. The Image Manipulation Component requires the Giphy App component to provide Image Editing services and tools. Feed component may also require components like Leaderboards from other sub-systems like the Game Mechanics Subsystem.
+   - **Post Component:** This component provides a Post object that Feed Component shall use. This components like the Image Gallery Component that provides a view of a set of images, Moment Component that requires npm component.
+   - Other View components include **Channels Component**, **Collections Component**, and **Portfolio Component** that require feed components in addition to common shared components which collect elements like text, images etc and provide a unique view. They also provide interactable components that allow users to edit them, add to them etc.
 
-     - *React* component for use of JSX.
-     - *Firebase* component for its authentication services.
-     - *Material UI* component for the UI elements it provides.
-     - *User* Entity to provide login details.
-     - *React Router* for its routing service.
-     - *React Bootstrap* for its UI elements.
-     - *User Slice* component for its login action.
+   
 
-   - **Header** component
+3. **User Interaction System**
 
-     This component allows users to edit profile details, delete their profile or logout. It requires/may require provided interfaces of the following components.
+   This component enables interaction among users and/or application managers. Facilitated features include a chat between users, rating of posts, point (profile/challenge points) tracking, adding/deletion of comments, sending/accepting/ignoring friend requests, blocking/unblocking of users, following/unfollowing of channels, a feedback forum, a gaming forum, search/explore facility, news feed fetching, leaderboard management, participation in challenges, notification handling, user content/bug/help reporting management and making recommendations.
 
-     - *React* component for use of JSX.
-     - *Firebase* component for its authentication services.
-     - *Material UI* component for the UI elements it provides.
-     - *User* Entity to trigger edit profile, delete profile or logout event.
-     - *React Router* for its routing service.
-     - *Redux* component for its useDispatcher and useSelector features.
-     - *User Slice* component for its login action.
+   **Apart from above mentioned common components, components specific to this system is as follows.**
 
-   **Following is a component diagram depicting this this sub-system**
+   - **Chat Component :** This component requires many common components like React and provides the chat among users service.
+   - **Forums Component:** This component would provide common services to Components like Feedback Forum Component and Game Forum Component. This component also requires no specific components
+   - **Comments Component:** This component
+   - **Explore Component:** This component provides search services and a UI via which users may view app content. It requires additional components like the Map Component and NPM Component.
+
+   
+
+4. **Game Mechanics System**
+
+   This component handles the game aspect of the application and deals with allowing users to create and participate in challenges and earn points and badges via user ratings on profile and challenge posts. Display of point status summary on leaderboards, announcing of winners and providing rewards are also managed by this system.
+
+   **Apart from above mentioned common components, components specific to this system is as follows.**
+
+   - **Leaderboards Component:** This component would provide services to components like Global Posts Leader Board, Challenges Leader Board, Channel Leader Board and Global Users Leader Board in common.
+
+   - **Challenges Component:** This component provides a platform for users to add Challenge Objects. It requires no specific component than the common ones.
+
+     
+
+5. **Notification System**
+
+   This system ensures that users are aware of all major events that they may be interested/involved in by sending notifications if and when they occur. Notifications will be sent when a user sends a friend request, likes a post, leaves a comment, accepts a friend request and deletes a challenge to name a few events.
+
+   **Apart from above mentioned common components, components specific to this system is as follows.**
+
+   - **Notifications Component:** This component provides generation and display of notifications. It requires no additional component.
+
+   
+
+6. **Application Improvement System**
+
+   This component is the means through which users can contribute to improving the app by reporting bugs or inappropriate content. This system ensures that all user reports will be displayed to application managers so that they may monitor user satisfaction and take necessary action to ensure that the app remains safe and fun for all.
+
+   **Apart from above mentioned common components, components specific to this system is as follows.**
+
+   - **Reports Component:** This component provides a UI that allows users to report posts / bugs. This component requires no special component.
+
+   
+
+   **The following is an example of a component diagram that would be made in order to visualize the system before implementing it.**
 
    <figure>
        <center>
@@ -282,68 +334,6 @@ The web application will be hosted using a cloud platform application called Her
            Component Diagram - User Account System
        </figcaption>
    </figure>
-
-   
-2. **Content Creation System**
-
-   This component focusses on enabling users to create/destroy content on the application. Users may create posts (comprising of images - via image upload/taken using camera, associated GPS data and text), channels, collections, challenges and a portfolio. Users may delete any content that they have created. Features supported include modification of images during upload, tagging of objects/public events in images and sharing of content (on feedback/gaming forums, profile, collections, channels, challenges and portfolio).
-
-   This component is made up of 3 components,
-
-   - **Sign Up** component.
-
-     This component allows users to create an account.  It requires/may require provided interfaces of the following components.
-
-     - *React* component for use of JSX.
-     - *Firebase* component for its database and authentication services.
-     - *Material UI* component for the UI elements it provides.
-     - *User* Entity to provide sign up details.
-
-     It's provided component is the creation of a new account.
-
-   - **Login** component
-
-     This component allows users to login to their account. It requires/may require provided interfaces of the following components.
-
-     - *React* component for use of JSX.
-     - *Firebase* component for its authentication services.
-     - *Material UI* component for the UI elements it provides.
-     - *User* Entity to provide login details.
-     - *React Router* for its routing service.
-     - *React Bootstrap* for its UI elements.
-     - *User Slice* component for its login action.
-
-   - **Header** component
-
-     This component allows users to edit profile details, delete their profile or logout. It requires/may require provided interfaces of the following components.
-
-     - *React* component for use of JSX.
-     - *Firebase* component for its authentication services.
-     - *Material UI* component for the UI elements it provides.
-     - *User* Entity to trigger edit profile, delete profile or logout event.
-     - *React Router* for its routing service.
-     - *Redux* component for its useDispatcher and useSelector features.
-     - *User Slice* component for its login action.
-
-   **Following is a component diagram depicting this this sub-system**
-
-   
-
-3. **User Interaction System**
-
-   This component enables interaction among users and/or application managers. Facilitated features include a chat between users, rating of posts, point (profile/challenge points) tracking, adding/deletion of comments, sending/accepting/ignoring friend requests, blocking/unblocking of users, following/unfollowing of channels, a feedback forum, a gaming forum, search/explore facility, news feed fetching, leaderboard management, participation in challenges, notification handling, user content/bug/help reporting management and making recommendations.
-
-4. **Game Mechanics System**
-
-   This component handles the game aspect of the application and deals with allowing users to create and participate in challenges and earn points and badges via user ratings on profile and challenge posts. Display of point status summary on leaderboards, announcing of winners and providing rewards are also managed by this system.
-
-5. **Notification System**
-
-   This system ensures that users are aware of all major events that they may be interested/involved in by sending notifications if and when they occur. Notifications will be sent when a user sends a friend request, likes a post, leaves a comment, accepts a friend request and deletes a challenge to name a few events.
-
-6. **Application Improvement System**
-
-   This component is the means through which users can contribute to improving the app by reporting bugs or inappropriate content. This system ensures that all user reports will be displayed to application managers so that they may monitor user satisfaction and take necessary action to ensure that the app remains safe and fun for all.
 
    
 
@@ -740,9 +730,7 @@ In total 13 collections are currently in our Firestore database which makes it p
 
 
 
-### 2. <span style="color:red">Detailed Design</span>
-
-<span style="color:magenta">*Dataflow diagrams, UML diagrams, Class diagrams, etc.*</span>
+### 2. Detailed Design
 
 This section features visual aids that clarify/support design choices made. Significant diagrams that were described in detail in stages 1 and 2 of this project shall be revisited here in addition to new ones.
 
@@ -1249,9 +1237,37 @@ Users can also make their own public or private challenges where they can invite
         Sequence Diagram - View Leaderboards
     </figcaption>
 </figure>
+The above sequence diagram describes how the user is able to use the leader boards functionality.
+
+The user will click on the leader boards icon. The user will then be presented with four different leader boards. For “Users” leader board, the user will click on the “Users” button. The Users leader board data is then fetched from the database and displayed by the system. The user is now able to see their ranking along with other top users in the app.
+
+The first alternate flow is for viewing the “Posts” leader board. Similarly, the user will click on the leader boards icon. The user will then be presented with four different leader boards. For “Posts” leader board, the user will click on the “Posts” button. The Posts leader board data is then fetched from the database and displayed by the system. The user is now able to see the highest rated posts in the app.
+
+The second alternate flow is for viewing the “Challenges” leader board. Again, the user will click on the leader boards icon. The user will then be presented with four different leader boards. For “Challenges” leader board, the user will click on the “Challenges” button. The Challenges leader board data is then fetched from the database and displayed by the system. The user is now able to see their ranking in any challenges they took part in as well as other users’ rank in public challenges.
+
+The third alternate flow is for viewing the “Fastest Growing Channels” leader board. Once again, the user will click on the leader boards icon. The user will then be presented with four different leader boards. For “Fastest Growing Channels” leader board, the user will click on the “Fastest Growing Channels” button. The Fastest Growing Channels leader board data is then fetched from the database and displayed by the system. The user is now able to see the highest ranked channels in the app.
 
 
 
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram4GameMechSysLeaguesBadges.png" 
+             alt="Sequence Diagram - Allocate Leagues & Badges" 
+             style="width:98%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Allocate Leagues & Badges
+    </figcaption>
+</figure>
+
+The above sequence diagram describes the process of a user being allocated a league and receiving badges depending on the ranking of the league they are in.
+
+Once a user achieves a gain in profile points, those profile points will be stored in the database. The user is then assigned a league ID based on the profile points they have. The system then fetches that league ID from the database and allocates the user into a league based on their league ID. The user can then see their updated league on their profile.
+
+An additional flow to that, would be when the user’s number of profile points change, those profile points will be updated in the database. The user is then assigned a new league ID based on the new profile points. The system then fetches the new league ID from the database and allocates the user into a new league based on their new league ID. The user can then see their new league on their profile.
+
+When a season ends the system will fetch users’ league rankings from the database. The system will then allocate respective badges to each user according to their league ranking. The user can then see the badge they have been awarded on their profile page. After that, the system resets the profile points of all users. Finally, the system updates the database with new badges and profile points for all users.
 
 
 
@@ -1383,10 +1399,6 @@ Above is the Sequence Diagram for Application Improvement System. The User will 
 
 
 
-<span style="color:blue">*MORE ...*</span>
-
-
-
 ****
 
 
@@ -1398,8 +1410,6 @@ This section in addition to design elements and thoughts behind the final produc
 
 
 ##### 3.1. Application Layout & Navigation
-
-<span style="color:magenta">*Layout and navigation of the application or applications.*</span>
 
 This section boasts screenshots of the application user Interface (UI) with brief explanations about the view and where it lead to.
 
@@ -1708,8 +1718,6 @@ Here is the tutorial page, where a new user can learn how to navigate through th
 
 ##### 3.2. Implementation Methodology 
 
-<span style="color:magenta">*Iterations/Scrum/Other agile techniques?*</span>
-
 (William Malsam, 2018) (Alexandra Altvater, 2017) (Simplilearn, 2020) (Development That Pays, 2019)
 
 For implementation and Project Management, it was decided that **Agile** would be the best approach for the following reasons...
@@ -1734,7 +1742,6 @@ There are several agile frameworks out there like the Feature Driven Development
     </center>
     <figcaption style="text-align:center;">Sprint Structure (Development That Pays, 2019)</figcaption>
 </figure>
-
 **Note:** Above image "Sprint Structure" is from a sprint cheat sheet that can be obtained from the description of YouTube Video, ["Scrum Overview - [Scrum Basics 2019] + FREE Cheat Sheet" by "Development That Pays".](https://www.youtube.com/watch?v=RCJghFbXSPk&list=PLngnoZX8cAn9dlulsZMtqNh-5a1lGGkLS&index=1)
 
 
@@ -1753,8 +1760,6 @@ This process **repeats** with an MS Teams sprint planning meeting again.
 
 
 ##### 3.3. Iteration Achievement History
-
-<span style="color:magenta">*What was achieved in each iteration/sprint?*</span>
 
 Following are 3 tables that summarize all achievements from every sprint for stages 1, 2 and 3 respectively.
 
@@ -1776,8 +1781,6 @@ Following are 3 tables that summarize all achievements from every sprint for sta
 ##### 3.4. Testing Regimen 
 
 (Synopsis, No Date)
-
-<span style="color:magenta">*How was the final system tested for technical correctness?*</span>
 
 During the development of the application’s functionality throughout stages 2 and 3, every functionality was tested each time a new functionality was added into the application. Using firebase console, it would be possible to see the collections and documents in the database and check if the data entered was correctly stored and later, correctly retrieved from firebase as JSON objects.
 
@@ -1818,8 +1821,6 @@ The given feedback would highlight key areas for corrective action to take place
 
 
 ##### 3.5. Install - Setup - Maintain
-
-<span style="color:magenta">*Documentation on how to install/setup/maintain the final system.*</span>
 
 ###### 3.5.1. Installation
 
@@ -1928,8 +1929,6 @@ Other details of these packages such as costing have been already given to clien
 
 ##### 3.6. User Guide
 
-<span style="color:magenta">*Short user guide.*</span>
-
 A **playlist** of videos that shall guide users in interfacing with the app can be found at
 
 https://www.youtube.com/watch?v=C_h5see_bmc&list=PLs9qIZvqLy07Z7S6l1bo7AAasd52wBHyV
@@ -1964,21 +1963,30 @@ The playlist  guides users on regarding followings features.
 
 (Addy Osmani ,2015)
 
-<span style="color:blue">What is a PWA?</span>
-
-Progressive Web Apps use modern web capabilities to deliver an app-like user experience. These apps evolve from pages in browser tabs to immersive, top-level apps, maintaining the web's low friction at every moment.
+**Progressive Web Apps** use modern web capabilities to deliver an app-like user experience. These apps evolve from pages in browser tabs to immersive, top-level apps, maintaining the web's low friction at every moment.
 
 Progressive Web Apps are:
 - Progressive - Work for every user, regardless of browser choice because they’re built with progressive enhancement as a core tenant.
+
 - Responsive - Fit any form factor, desktop, mobile, tablet, or whatever is next.
+
 - Connectivity independent - Enhanced with service workers to work offline or on low quality networks.
+
 - App-like - Use the app shell model to provide app-style navigations and interactions.
+
 - Fresh - Always up-to-date thanks to the service worker update process.
+
 - Safe - Served via TLS to prevent snooping and ensure content hasn’t been tampered with.
+
 - Discoverable - Are identifiable as “applications” thanks to W3C manifests and service worker registration scope allowing search engines to find them.
+
 - Re-engageable - Make re-engagement easy through features like push notifications.
+
 - Installable - Allow users to “keep” apps they find most useful on their home screen without the hassle of an app store.
+
 - Linkable - Easily share via URL and not require complex installation.
+
+  
 
 <figure>
 	<center>
@@ -2002,8 +2010,6 @@ Progressive Web Apps are:
 
 ### 4. Project Evaluation
 
-<span style="color:magenta">*Assess project as a whole.* </span> 
-
 This section, after an overall analysis of the the production process and final product, lays out organizational approaches taken, the development journey and value of the final product (includes descriptions of functionality achieved, limitations, unique elements and usability test results). 
 
 
@@ -2011,8 +2017,6 @@ This section, after an overall analysis of the the production process and final 
 ##### 4.1. Organization
 
 ###### 4.1.1. Organizational Structure
-
-<span style="color:magenta">*How was your group organized?*</span>
 
 The group was organized such that every member would contribute to all parts of design and development. 
 
@@ -2063,8 +2067,6 @@ That said, it was observed that collective efforts undertaken by the team led to
 
 ###### 4.1.2. Team Work
 
-<span style="color:magenta">*Was the group organization successful? How well did your group collaborate?*</span> 
-
 Throughout development, all members were willing to collaborate and have always tried to produce good work. Even though members were allocated primary roles(see section 4.1.1), the group shared responsibility fairly equally. Challenging situations like when the leader was re-appointed and when the leader got sick was thus, less damaging and the team was still able to produce good work during these situations. 
 
 Having members who had fine tuned programming skills as well as those who were proficient at organizing work, making plans, producing documentation, creating diagrams, critical analysis, coming up with designs and presenting content meant that the team was well balanced. This mix of skills allowed for members to compliment each other well.
@@ -2073,13 +2075,9 @@ A team member skilled at a particular task would guide others and draft a plan a
 
 In all instances where one member had tried to implement a feature but failed/if it needed improvement, either another member would go ahead and complete that task or would act as a guide helping complete it. For example, the functionality of creating/deleting/sharing collections was implemented in stage 2 by a member. Whist functionality was achieved, it was a raw version with very basic CSS and styling. This was later in stage 3, improved by another member to adhere to the theme of the application. Also, by stage 3, the team had gained more experience and a member had implemented a new layout for image upload. Since this was superior to what was already in place, the team decided that this member would go ahead and replace the current mechanism in the app with this better one thus improving the overall quality of the application. 
 
-<span style="color:blue">*MORE ...*</span>
-
 
 
 ###### 4.1.3. Overcoming Problems
-
-<span style="color:magenta">*How did you handle any problems which arose?*</span>
 
 Following are few problems that the team had faced and methods that were adopted to combat them.
 
@@ -2141,8 +2139,6 @@ Following are few problems that the team had faced and methods that were adopted
 
 ###### 4.1.4. Sticking To Schedule
 
-<span style="color:magenta">*How successful were the timings in your original plan?*</span>
-
 The initial schedule drafted in Stage 1 was based off of speculated dates and approximations as to when we would have our demo, how long it would take to learn ReactJS, how successful we would be at implementing a particular core system within the application would be. These dates were not expected to be hit precisely as it was expected that not every iteration would result in a functional increment. Thus, there was quite a bit of deviation from the original plan as if a sprint resulted in partially implemented features then those would be pushed to next sprints and this would deviate from the original plan even more. 
 
 <figure>
@@ -2173,8 +2169,6 @@ Opportunities for learning and completion that agile provided and the team's com
 ##### 4.2. Implementation
 
 ###### 4.2.1. Implementation Schedule
-
-<span style="color:magenta">*What was your implementation schedule? How did the implementation schedule differ from the original plan?*</span>
 
 
 The implementation schedule drawn from the "**Aperture Project Diary**" can be viewed below in 3 tables. One for stage1, stage2 and stage3 respectively. The "Success Measure" column ranging from 1 to 3 stars depict how successful/effective at getting work done, each sprint was.
@@ -2225,10 +2219,6 @@ The above comparison chart data was used to extract the Pre Planned Vs Implement
 
 ###### 4.2.2. Path to Success
 
-<span style="color:red">*provide examples*</span>
-
-<span style="color:magenta">*Was your implementation approach successful (scrum, other, etc)? Why or why not? Use specific examples from your experiences to support your discussion.*</span> 
-
 <span style="color:green"><u>Pros</u></span>
 
 - Initially the team was very lost and awestruck at the massive task that lay ahead. This is when the decision to sit down and **identify systems** that would make up our application proved helpful. Initially 11 systems where identified which was then narrowed down to 6 ...
@@ -2270,28 +2260,20 @@ The above comparison chart data was used to extract the Pre Planned Vs Implement
 
 Overall, it is safe to say that our approach was successful in helping keep the team close knit and productive. When problems arose, the team was able to rise to the challenge and brave though it. The milestones we set for ourselves and achieved via sprints, gave us a sense of accomplishment and was a source of motivation in our development journey.
 
-<span style="color:blue">*NEED SPECIFIC EXAMPES...*</span>
-
 
 
 ###### 4.2.3. Tools Used
-
-<span style="color:magenta">*Which languages, tools, and techniques did you use? How suitable were they?*</span>
 
 For project planning and keeping track of progress the following tools were used.
 
 - GitHub was used for version control of all implemented software. It also provides a log of all progress throughout all stages of development.
 - VS Code Editor was used as it can be easily integrated with git and makes pushing to and pulling from GitHub repositories easy.	
 
-<span style="color:blue">*MORE ...*</span>
-
 
 
 ##### 4.3. Product
 
 ###### 4.3.1. Functionality Achieved / Failed to Achieve
-
-<span style="color:magenta">*Report achieved functionality. Provide outline summary on functions and then give details. How many of your requirements did you meet? (Example = A table showing to what extent each of the numbered functional requirements have been completed.)* </span>
 
 <figure>
 	<img src="./reportImages/FunctionalityAchieved.png" 
@@ -2317,13 +2299,9 @@ For project planning and keeping track of progress the following tools were used
 
 In Summary, the vast majority of the Functional Requirements were implemented successfully. The few functionalities that could not be implemented were due to time constraints and upon considering priorities.
 
-<span style="color:blue">*Please refer to the Requirements Section of the Appendix to view FR and NFR descriptions in detail.*</span>
-
 
 
 ###### 4.3.2. What's Special?
-
-<span style="color:magenta">*What is particularly special about your product?  Have you included extra features? How robust is your final system?*</span>
 
 The App contains Set of Special Features which could be interesting for Users such as ones given below.
 
@@ -2363,8 +2341,6 @@ The App contains Set of Special Features which could be interesting for Users su
 
 ###### 4.3.3. Bugs/Constraints
 
-<span style="color:magenta">*Are there known bugs or constraints?*</span>
-
 Overall, our application is robust, there are currently no bugs that cause the system to crash.
 
 The usability feedback bought forth a minor bug with the Bug Report Functionality as some participants encountered an issue while using our application on their phones where in the submit button went under the navigation bar and they found that the layout was overlapping with text fields. This was a basic css bug which was easily fixed by adding a "z-index" constraint for the css which allows one component to be drawn over the other.
@@ -2381,8 +2357,6 @@ To increase the robustness and the overall reliability of the application, most 
 
 ###### 4.3.4. Usability Test Results
 
-<span style="color:magenta">*How usable did your subjects find the final system? Include a brief summary of results.*</span> 
-
 Overall, Aperture received an average usability score of 8.08 out of 10. Most users agree that the app is easy to use, and that they had fun using our application. 
 
 Few users found it difficult to navigate through the app and found the chatting system a bit complicated. Also, a lot of users suggested having dark mode in the application as it will be more visually appealing.
@@ -2390,6 +2364,13 @@ Few users found it difficult to navigate through the app and found the chatting 
 The application was improved from the original mock-ups in stage 1. The color scheme and the layout was also changed with extra features added.  User feedback has presented us with few bugs to fix and improvements to make. Aperture will continue to improve the system and make sure that all suggestions from users and clients alike are taken on board and considered for future releases.
 
 As a result of these findings, we have successfully achieved the vast majority of the Functional and Non- Functional requirements of the final Application. 
+
+**After stage 3 usability study, the team did take heed of all comments and implemented the following extra features/changes.**
+
+- A tutorials button was added under report bugs that would provide the user with a user guides as one usability test participant had desired.
+- The profile picture can now be edited.
+- Some CSS fixes were so that the bug report form would look better on mobile.
+- A share button that allows users to share a link to posts on other media platforms like WhatsApp was also added.
 
 <span style="color:blue">*Please refer to the Usability Evaluation Section in the Appendix for the Usability Test Plan more data and statistics.*</span>
 
@@ -2479,8 +2460,6 @@ Visit our deployed Aperture web application as well which is now also a progress
 
 
 ### Appendix
-
-<span style="color:magenta"> *Appendix of Supporting Documentation. Any other supporting documentation that might be relevant (Examples = project diaries/report, original implementation plan, marketing material, etc).*</span>
 
 #### <span style="color:blue">Requirements</span>
 
