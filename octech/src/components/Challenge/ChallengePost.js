@@ -16,7 +16,7 @@ import { red } from '@material-ui/core/colors'
 import DeleteIcon from '@material-ui/icons/Delete'
 import MapIcon from '@material-ui/icons/Map'
 
-//Rating Sttuff
+//Rating Stuff
 import Rating from '@material-ui/lab/Rating';
 import GradeIcon from '@material-ui/icons/Grade';
 import CountUp from 'react-countup';
@@ -141,12 +141,6 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
   }
 
   const StyledRating = withStyles({
-    // iconFilled: {
-    //   color: '#ff6d75',
-    // },
-    // iconHover: {
-    //   color: '#ff3d47',
-    // },
   })(Rating);
   
   return (
@@ -175,16 +169,10 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
         />
 
         {/* Post image. */}
-        {/* <CardMedia className={classes.media} image={imageSrc} style={style} title={caption} /> */}
         <div><center><Zoom><img src={imageSrc} style={style} alt="User Post" className="post__image"/></Zoom></center></div>
         
         {/* Rating. */}
         <CardActions disableSpacing>
-          {/* <IconButton aria-label="add to favorites" style={{color:"red"}} onClick={likeUnlike}>
-                      <Badge badgeContent={postChallengePoints} color="primary">
-                        <FavoriteIcon />
-                      </Badge>
-                    </IconButton> */}
           <>
             {showStars ?
               <IconButton

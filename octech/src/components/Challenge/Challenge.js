@@ -74,7 +74,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const [locationPosts, setLocationPosts] = useState([])
 
     useEffect(() => {
-        // helper.current.scrollIntoView({ behavior: 'smooth' });
 
         db.collection("users").doc(user.displayName).get().then(doc => {
             if (doc.exists) {
@@ -85,7 +84,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
         }).catch(function (error) {
             console.log("Error getting user data:", error)
         });
-        // eslint-disable-next-line
     }, [])
 
     const useStyles = makeStyles(
@@ -182,7 +180,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                     let postChallenge = postDoc.data().challenge
                     if (postChallenge) {
                         if (postChallenge === name) {
-                            //console.log("postDoc.data() = " + postDoc.data().ref)
                             if (postDoc.data().lat) {
                                 setEntries((prev) => [
                                     ...prev,
@@ -398,7 +395,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const handleImageInputChange = (e) => { // When a file is uploaded this function is called
 
         e.preventDefault()
-        // console.log(e.target.files[0])
         setEditOptions(DEFAULT_EDIT_OPTIONS)
 
         setFile(e.target.files[0])
@@ -463,7 +459,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
     // Handle taking photo with camera.
     async function handleTakePhoto(dataUri) {
-        // console.log(dataUri);
         setInputImg(dataUri)
         setCameraActive("");
         setLoading(true);
@@ -532,7 +527,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const editingDone = async () => {
         setNohuman(false)
         if (inputImg) {
-            // setInputImgs(inputImgs.concat(inputImg))
             setSelectedInputImg({
                 src: inputImg,
                 style: getImageStyle()
@@ -643,12 +637,10 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
     useEffect(() => {
         if (loadEntries) { loadChallengeEntries(); setLoadEntries(false); resetVals() }
-        // eslint-disable-next-line
     }, [loadEntries])
 
     return (
         <div className="challenge" >
-            {/* CHALLENGE HEADER = CREATOR, PUBLIC/PRIVATE, DELETE, EDIT, SEND INVITES. */}
             <div className="challenge_header">
 
                 <div className="challenge_info">

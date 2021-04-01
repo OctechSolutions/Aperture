@@ -352,7 +352,6 @@ function Profile({ match }) {
                                         <ListItemText secondary={<center>Profile Points</center>} primary={<center>{profileInfo.profilePoints}</center>} />
                                     </ListItem>
                                 </List>}
-                                {/* <p onClick={() => setShowFriendList(true)}>Friends: {profileInfo.friends && profileInfo.friends.length}</p> <p onClick={() => setShowFollowingList(true)}>Channels Following: {profileInfo.followingChannels && profileInfo.followingChannels.length}</p> */}
                                 {(profileInfo.friends && ((profileInfo.friends.some(u => u.name === user.displayName)) || (profileInfo.name === user.displayName))) &&
                                     <>
                                         <Modal
@@ -382,8 +381,6 @@ function Profile({ match }) {
                                     </>
                                 }
 
-                                {/* <h1>Profile Points : {profileInfo.profilePoints}</h1>
-                                {(profileInfo.league ? <h1>League : {profileInfo.league}</h1> : <> </>)} */}
                             </div>}
                         <Tabs
                             id="controlled-tab-example"

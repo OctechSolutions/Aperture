@@ -130,7 +130,6 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                     }
                     if (editEmail) {
                         useR.updateEmail(email).then(function () {
-                            // useR.reload()
                             useR.sendEmailVerification().then(function () {
                             }).catch(function (error) {
                                 console.log(error)
@@ -623,13 +622,6 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                 db.collection("challengePosts").doc(doc.id).update({ creator: newName })
             })
         })
-
-        // //Update Bug report
-        // await db.collection("BugReports").where("name", "==", user.displayName).get().then(docs => {
-        //     docs.forEach(doc => {
-        //         db.collection("BugReports").doc(doc.id).update({ name: newName })
-        //     })
-        // })
 
         //Update from Chat rooms
         await db.collection("chatRooms").where("participantNames", "array-contains", user.displayName).get().then(docs => {

@@ -78,7 +78,6 @@ export default function Notifications({ match, notifications }) {
     }
 
     var displayFunction = (notificationInfo) => {
-        // const time = moment(notificationInfo.sentAt.toDate()).fromNow()
         if (notificationInfo.type === "friendRequestSent") {
             return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
 
@@ -241,8 +240,6 @@ export default function Notifications({ match, notifications }) {
             </Card>
         }
         else if (notificationInfo.type === "comment") {
-            // setLastNotification(<><b>{notificationInfo.sender}</b> commented <b>{notificationInfo.comment}</b> on your post titled <b>{notificationInfo.postTitle}</b></>)
-            // setIcon(<Avatar className={classes.green}><CommentIcon fontSize="small" /></Avatar>)
             return <Card style={{ marginBottom: "20px", cursor: "pointer" }} >
 
                 <CardHeader
@@ -507,8 +504,6 @@ export default function Notifications({ match, notifications }) {
             {<FlipMove style={{ marginBottom: "70px" }}
                 staggerDurationBy="50"
                 duration={500}
-            // enterAnimation={this.state.enterLeaveAnimation}
-            // leaveAnimation={this.state.enterLeaveAnimation}
             >
                 {
                     notifications.length ?

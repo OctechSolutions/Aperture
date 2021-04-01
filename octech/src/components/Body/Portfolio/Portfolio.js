@@ -92,15 +92,12 @@ function Portfolio({ match, user }) {
             resize: true, // defaults to true, set false if you do not want to resize the image width and height
         }).then((data) => {
             // returns an array of compressed images
-            // console.log(data);
             const temp = [];
             data.forEach((a) => {
                 var compressedb64 = a.prefix + a.data;
                 temp.push(compressedb64);
             })
-            console.log(temp)
             setSliderImages(sliderImages.concat(temp));
-            // setProfilePic(compressedb64)
         })
 
     }

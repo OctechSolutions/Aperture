@@ -77,9 +77,7 @@ function Collection({ match, user }) {
     const [description, setDescription] = useState("");
     const [open, setOpen] = useState(false);
     const [sliderImages, setSliderImages] = useState([]);
-    // const [images, setImages] = useState([]);
     const [CollectionExists, setCollectionExists] = useState(false);
-    //const [Collection, setCollection] = useState([]);
     const [Collections, setCollections] = useState([]);
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -135,7 +133,6 @@ function Collection({ match, user }) {
             resize: true, // defaults to true, set false if you do not want to resize the image width and height
         }).then((data) => {
             // returns an array of compressed images
-            // console.log(data);
             const temp = [];
             data.forEach((a) => {
                 var compressedb64 = a.prefix + a.data;
@@ -143,7 +140,6 @@ function Collection({ match, user }) {
             })
             console.log(temp)
             setSliderImages(sliderImages.concat(temp));
-            // setProfilePic(compressedb64)
         })
 
     }
@@ -260,15 +256,6 @@ function Collection({ match, user }) {
                             label="Name Your Collection!"
                             onChange={(e) => setName(e.target.value)}
                         />
-
-                        {/* theme Input */}
-                        {/* <TextField
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                            label="A theme by you!"
-                            onChange={(e) => settheme(e.target.value)}
-                        /> */}
 
                         {/* Description Input */}
                         <TextField

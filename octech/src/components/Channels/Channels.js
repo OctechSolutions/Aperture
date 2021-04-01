@@ -57,7 +57,6 @@ function Channels({ profileName }) {
                 theme: channelTheme,
                 followers: []
             }).then(() => {
-                // window.location.reload();
             });
         db.collection("users").doc(user.displayName).update({
             followingChannels: firebase.firestore.FieldValue.arrayUnion({ name: channelName, creator: user.displayName })
@@ -85,7 +84,6 @@ function Channels({ profileName }) {
             .doc(channel.id)
             .delete()
             .then(() => {
-                // window.location.reload();
             });
         db.collection("posts").where("name", "==", channel.data().name).get().then((a) => {
             a.forEach((b) => {
@@ -114,7 +112,6 @@ function Channels({ profileName }) {
             <div className="row py-5" id="channelList">
                 <div className="col">
                     {(hasNoChannels) ?
-                        // <p className="text-muted">Looks like you have no channels. How about creating one?</p>
                         <></>
                         : channels.map(channel => {
                             let info = channel.data();
@@ -155,13 +152,8 @@ function Channels({ profileName }) {
                         </div>
                         <button type="submit" className="btn btn-primary" disabled={!clearToSubmit} onClick={createChannel}>Create!</button>
                     </form>
-                    {/* <Fab variant="extended" className={classes.fab} color='primary' onClick={() => { }}>
-                        <EditIcon className={classes.extendedIcon} />
-                        <b>New Channel</b>
-                    </Fab> */}
                 </div>}
             </div>
-
         </div>
     )
 }

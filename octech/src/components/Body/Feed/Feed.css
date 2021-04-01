@@ -7,9 +7,7 @@
 }
 .feed_inputContainer {
   background-color: white;
-  /* border-radius: 10px; */
   padding: 10px;
-  /* margin-top: 10px; */
   margin-bottom: auto;
 }
 
@@ -40,16 +38,6 @@
   width: 100%;
   flex-direction: column;
 }
-
-/* .feed_input > form > input {
-  border: none;
-  flex: 1;
-  margin-left: 10px;
-  outline-width: 0;
-  font-weight: 600;
-  font-size: 15px;
-  width:50vw; 
-} */
 
 .buttons {
   display: flex;
@@ -133,10 +121,4 @@
 
 html,body {
   background-color: whitesmoke;
-}
-
-.swiper-pagination {
-  /* text-align: right !important; */
-  /* top: 0 !important; */
-  /* left: -40px !important */
 }

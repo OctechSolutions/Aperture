@@ -14,7 +14,6 @@ import SendIcon from '@material-ui/icons/Send';
 import MapIcon from '@material-ui/icons/Map';
 import Map from '../Map/Map';
 import Rating from '@material-ui/lab/Rating';
-// import FavoriteIcon from '@material-ui/icons/Favorite';
 import GradeIcon from '@material-ui/icons/Grade';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -194,7 +193,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
           tags: doc.data().tags
         });
         tempRefs.push(doc.id);
-        // console.log(doc.data(), doc.id)
       });
       setTimeout(() => { setLoading(false); }, 100)
       setImages(tempImages);
@@ -205,13 +203,11 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
 
   useEffect(() => {
     db.collection("users").doc(user.displayName).get().then((doc) => {
-      // console.log(snapshot);
       setCollections(doc.data().collections);
       if (timestamp) {
         moment(timestamp.toDate()).fromNow();
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const postComment = () => {
@@ -358,10 +354,7 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
 
   var slideshow;
   if (images.length >= 1)
-    // slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
-    // } else if (images.length > 1) {
     slideshow = <ImageGallery sliderImages={images} />
-  // }
   else {
     slideshow = <></>
   }
@@ -393,7 +386,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
             id="commentBox"
             onKeyPress={(ev) => {
               if (ev.key === 'Enter') {
-                // Do code here
                 ev.preventDefault();
                 postComment();
               }
@@ -606,7 +598,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
   }
 
   // Update Challenge Chips when component mounted.
-  // eslint-disable-next-line
   useEffect(() => { updateChallengeChip() }, []);
 
   // ------------------------------------------------------------------------------------------------------------
@@ -663,7 +654,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
               photoUrl={photoUrl}
               locationPosts={locationPosts}
               id={id}
-            // isPreview={false}
             />
           </div>
         </Modal.Body>
@@ -750,11 +740,7 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
                 {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
 
               </div>
-
-              {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
-
             </div>
-
           </div>
           <>
           </>
@@ -999,10 +985,7 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
                   {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
 
                 </div>
-
-                {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
               </div>
-
             </div>
 
           </Modal.Header>
@@ -1058,14 +1041,12 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
               margin="normal"
               multiline
               rowsMax={4}
-              // fullWidth
               name="commentBox"
               label={isForumPost ? "Feedback" : "Comment"}
               id="commentBox"
               value={comment}
               onKeyPress={(ev) => {
                 if (ev.key === 'Enter') {
-                  // Do code here
                   ev.preventDefault();
                   postComment();
                 }

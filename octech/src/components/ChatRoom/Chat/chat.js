@@ -118,7 +118,6 @@ const Chat = (props) => {
                         {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} /> : "")}
                     </AvatarGroup>
                     : <>
-                        {/* <ListItemIcon> */ }
                         <IconButton disableRipple={true} disableFocusRipple={true} disableTouchRipple={true} style={{ backgroundColor: "transparent" }} >
                             <AvatarGroup max={3} style={{marginRight: "5px"}}>
                                 {props.participants.map(user => (user.photoUrl) ? <Avatar alt={user.name} src={user.photoUrl} onClick= {()=>{
@@ -126,10 +125,7 @@ const Chat = (props) => {
                                }}/> : "")}
                             </AvatarGroup>
                             <div >{props.participants.map(user => user.name)}</div>
-                            {/* <ListItemText primary={props.participants.map(user => user.name)} primaryTypographyProps={{ noWrap: true }}></ListItemText> */}
                         </IconButton>
-
-                        {/* </ListItemIcon> */}
 
                     </>
                 }
@@ -272,7 +268,6 @@ const Chat = (props) => {
                                                             <Avatar src={message.sender.photoUrl} alt={message.sender.name} />
                                                         </Link>
                                                     </Tooltip>
-                                                    {/* <ListItemText secondary={(message.sender.name === props.user.name) ? "You" : message.sender.name} /> */}
                                                 </ListItemAvatar>
                                                 <div div style={{ display: "flex" }}>
                                                     <ListItemText primary={message.text} secondary={(message.sentAt) ? moment(message.sentAt.toMillis()).fromNow().toString() : ""} />
@@ -287,7 +282,6 @@ const Chat = (props) => {
                                             </div>
                                         </div>
                                     </ListItem>
-                                    {/* <Divider /> */}
                                 </Grid>
                             </Grid>
                         )
@@ -306,7 +300,6 @@ const Chat = (props) => {
                 value={message}
                 onKeyPress={(ev) => {
                     if (ev.key === 'Enter') {
-                        // Do code here
                         sendMessage();
                     }
                 }}

@@ -17,14 +17,12 @@ import { useHistory } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { selectUser } from "../features/userSlice"
 import HomeIcon from '@material-ui/icons/Home'
-// import PersonIcon from '@material-ui/icons/Person'
 import WhatshotIcon from '@material-ui/icons/Whatshot'
 import Explore from '../components/Explore/Explore'
 import ChatIcon from '@material-ui/icons/Chat'
 import chatRoom from '../components/ChatRoom/Chatroom'
 import ChallengesPage from './ChallengesPage'
 import ForumIcon from "@material-ui/icons/Forum";
-// import EqualizerIcon from '@material-ui/icons/Equalizer';
 import { db } from "../firebase";
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -40,7 +38,6 @@ import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import TrendingDownIcon from '@material-ui/icons/TrendingDown';
 import BugReportForm from '../components/Body/Feed/Reports/BugReportForm';
 import PostView from '../components/Body/Post/PostView';
-// import NotificationsIcon from '@material-ui/icons/Notifications';
 import ChallengeLeaderBoard from '../components/Challenge/ChallengeLeaderBoard';
 import Tutorial from './tutorial'
 
@@ -50,7 +47,6 @@ const useStyles = makeStyles({
         height: "60px",
         position: "fixed",
         bottom: 0,
-        // display: "flex",
         borderTop: "0.1px solid lightgray",
         zIndex: 99,
         borderTopLeftRadius: "30px",
@@ -175,9 +171,6 @@ export default function NewsfeedPage(props) {
                             setOpenNotification(false)
                         }
                     }
-                    // else {
-                    //     setOpenNotification(false)
-                    // }
                 }
                 else {
                     setOpenNotification(false)
@@ -211,12 +204,8 @@ export default function NewsfeedPage(props) {
 
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
-                                {/* <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} /> */}
                                 <BottomNavigationAction label="Chat" value='chatRoom' icon={<ChatIcon />} />
                                 <BottomNavigationAction label="Forums" value="forums/feedbackForum" icon={<ForumIcon />} />
-                                {/* <BottomNavigationAction label="Leaderboards" value="leaderboards/globalUsersLeaderBoard" icon={<EqualizerIcon />} /> */}
-                                {/* <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} /> */}
-                                {/* <BottomNavigationAction label="Profile" value={'user/' + user.displayName} icon={<PersonIcon />} /> */}
                                 <BottomNavigationAction label="Challenges" value={'challenges/' + user.displayName} icon={<WhatshotIcon />} />
                             </BottomNavigation>
                         </div>

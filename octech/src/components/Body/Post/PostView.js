@@ -159,12 +159,6 @@ const Post = ({ match }) => {
 
 
     const StyledRating = withStyles({
-        // iconFilled: {
-        //   color: '#ff6d75',
-        // },
-        // iconHover: {
-        //   color: '#ff3d47',
-        // },
     })(Rating);
 
 
@@ -237,13 +231,11 @@ const Post = ({ match }) => {
 
     useEffect(() => {
         db.collection("users").doc(user.displayName).get().then((doc) => {
-            // console.log(snapshot);
             setCollections(doc.data().collections);
             if (timestamp) {
                 moment(timestamp.toDate()).fromNow();
             }
         })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const postComment = () => {
@@ -497,10 +489,6 @@ const Post = ({ match }) => {
         }
     }
 
-    // Update Challenge Chips when component mounted.
-    // eslint-disable-next-line
-    // useEffect(() => { updateChallengeChip() }, []);
-
     // ------------------------------------------------------------------------------------------------------------
 
     //Add tags 
@@ -559,7 +547,6 @@ const Post = ({ match }) => {
                                 photoUrl={photoUrl}
                                 locationPosts={locationPosts}
                                 id={id}
-                            // isPreview={false}
                             />
                         </div>
                     </Modal.Body>
@@ -719,7 +706,6 @@ const Post = ({ match }) => {
                         }
                     </div>
                     <div className="post_body">
-                        {/* <br /> */}
                         <p>{message}</p>
                     </div>
                     {!loading && <div>{slideshow}</div>}
@@ -804,7 +790,6 @@ const Post = ({ match }) => {
                             id="commentBox"
                             onKeyPress={(ev) => {
                                 if (ev.key === 'Enter') {
-                                    // Do code here
                                     ev.preventDefault();
                                     postComment();
                                 }
