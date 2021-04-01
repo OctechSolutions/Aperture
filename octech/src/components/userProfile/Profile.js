@@ -108,7 +108,7 @@ function Profile({ match }) {
                 if (snapshot.exists) {
                     setViewingUserInfo(snapshot.data());
                 }
-                else
+                else {}
             })
     }, [match, user.displayName]);
 
