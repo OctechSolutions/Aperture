@@ -3,11 +3,9 @@ import { useSelector } from "react-redux" // Related to routing.
 import { selectUser } from "../features/userSlice" // Related to routing.
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-
 import firebase from "firebase"
 import { db } from "../firebase"
 import Challenge from '../components/Challenge/Challenge'
-
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
 import Dialog from '@material-ui/core/Dialog'
@@ -71,8 +69,6 @@ export default function ChallengesPage() {
         var end = new Date()
         start.setDate(start.getDate() - todayDay)
         end.setDate(end.getDate() + (6 - todayDay))
-        // console.log("weekStart = " + start.toString())
-        // console.log("weekEnd = " + end.toString())
         
         var numChallengesThisWeek = 0
         setCanCreateNewChallenge(true)
@@ -85,7 +81,6 @@ export default function ChallengesPage() {
                 // If yes, then this user cannot create another challenge this week.
                 if(numChallengesThisWeek >= 3) { 
                     setCanCreateNewChallenge(false) 
-                    console.log(user.displayName + " has already created 3 challenges.")
                 }
             })
         })
@@ -238,7 +233,6 @@ export default function ChallengesPage() {
                                     setLoadChallenges(true)
                                 })
                                 .catch((error) => {
-                                    console.error("Error adding document: ", error)
                                 })
                             }
                         })
@@ -284,7 +278,6 @@ export default function ChallengesPage() {
                                 setLoadChallenges(true)
                             })
                             .catch((error) => {
-                                console.error("Error adding document: ", error);
                             });
                         }
                     })

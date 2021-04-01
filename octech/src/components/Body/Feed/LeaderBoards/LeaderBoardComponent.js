@@ -55,7 +55,7 @@ function LeaderBoardComponent(props) {
         }
 
         return (
-            <div className="container">
+            <div>
                 <h1 className="text-center py-3">{props.title}</h1>
                 <Table striped bordered hover responsive>
                     <thead>

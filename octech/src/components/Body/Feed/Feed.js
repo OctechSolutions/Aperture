@@ -85,7 +85,6 @@ function Feed({ match }, props) {
   const [profileInfo, setProfileInfo] = useState("");
   const [, setFile] = useState(null)
   const [inputImg, setInputImg] = useState("");
-  // const [inputImgs, setInputImgs] = useState([]);
   const [posts, setPosts] = useState([]);
   const [cameraActive, setCameraActive] = useState("");
   const [sliderImages, setSliderImages] = useState([]);
@@ -120,7 +119,6 @@ function Feed({ match }, props) {
 
   useEffect(() => {
     db.collection("users").doc(user.displayName).get().then(doc => {
-      console.log(doc.data())
       if (doc.data() && doc.data().notifyLeague) {
         //Sending Notification About league change
         if (doc.data().leagueStatus === "p") {
@@ -200,10 +198,9 @@ function Feed({ match }, props) {
           }
           setTimeout(() => { setLoaded(true) }, 500)
         } else {
-          console.log("No such document!");
         }
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps  
+      // eslint-disable-next-line
   }, [user.displayName, match.params]);
 
   const [locationPosts, setLocationPosts] = useState([])
@@ -225,7 +222,6 @@ function Feed({ match }, props) {
 
   const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
-    console.log(sliderImages);
 
     if (sliderImages.length) {
 
@@ -267,7 +263,6 @@ function Feed({ match }, props) {
 
 
       sliderImages.forEach((image) => {
-        console.log(image, "added to db");
         db.collection('postImages').doc().set({
           url: image.src,
           styleModification: image.style,
@@ -340,7 +335,6 @@ function Feed({ match }, props) {
 
   const getData = (val) => {
     // do not forget to bind getData in constructor
-    console.log(val);
     setLat(val.lat);
     setLng(val.lng);
   }
@@ -348,13 +342,10 @@ function Feed({ match }, props) {
   const handleChange = (e) => { // When a file is uploaded this function is called
 
     e.preventDefault();
-    console.log(e.target.files[0]);
     setShowPostComponent(false)
     setViewSlider(false)
     {
-      // reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
       setFile(e.target.files[0]);
-      // cocoSsd.load();
       const compress = new Compress();
       compress.compress([e.target.files[0]], {
         size: 0.7, // the max size in MB, defaults to 2MB
@@ -364,7 +355,6 @@ function Feed({ match }, props) {
         resize: true, // defaults to true, set false if you do not want to resize the image width and height
       }).then((data) => {
         // returns an array of compressed images
-        console.log(data);
         var compressedb64 = data[0].prefix + data[0].data;
         setInputImg(compressedb64);
         setTimeout(() => {
@@ -380,12 +370,10 @@ function Feed({ match }, props) {
             const img = document.getElementById("img");
             model.detect(img).then((predictions) => {
 
-              console.log("Predictions: ", predictions);
               if (predictions.length) {
                 predictions.forEach((prediction) => {
                   if (prediction.class === "person") {
                     setInputImg("");
-                    console.log("HUMAN DETECTED!!!")
                     setShow(true);
                     setTimeout(() => { setShowPostComponent(true); }, 100)
                   }
@@ -398,7 +386,6 @@ function Feed({ match }, props) {
                 setNohuman(true);
               }
               setLoading(false);
-              // setCropping(true);
             })
           });
         });
@@ -408,7 +395,6 @@ function Feed({ match }, props) {
   };
 
   async function handleTakePhoto(dataUri) { // This function is called when the photo using the camera is taken
-    // console.log(dataUri);
     setInputImg(dataUri)
     setCameraActive("");
     setLoading(true);
@@ -424,12 +410,10 @@ function Feed({ match }, props) {
       const img = document.getElementById("img");
       model.detect(img).then((predictions) => {
 
-        console.log("Predictions: ", predictions);
         if (predictions.length) {
           predictions.forEach((prediction) => {
             if (prediction.class === "person") {
               setInputImg("");
-              console.log("HUMAN DETECTED!!!")
               setShow(true);
               setTimeout(() => { setShowPostComponent(true); }, 100)
             }
@@ -442,7 +426,6 @@ function Feed({ match }, props) {
           setNohuman(true);
         }
         setLoading(false);
-        // setCropping(true);
       })
     });
   }
@@ -491,7 +474,6 @@ function Feed({ match }, props) {
   function handleOverlayClick(overlay) {
     /* When am overlay is clicked, it is added to the list of overlays
        causing it to be rendered on screen. */
-    console.log(overlay)
     setImgOverlayCoordinates(imgOverlayCoordinates.concat({ x: 0, y: 0 }));
     setImgOverlays(imgOverlays.concat(overlay.images.original));
     /* Add new overlay url to the list of overlays. */
@@ -503,13 +485,10 @@ function Feed({ match }, props) {
   }
 
   function getCoordinates(gif, index) {
-    console.log(overlayParentRef.current.getBoundingClientRect())
     let x = document.getElementById(gif.url).getBoundingClientRect().x - overlayParentRef.current.getBoundingClientRect().left
     let y = document.getElementById(gif.url).getBoundingClientRect().y - overlayParentRef.current.getBoundingClientRect().top
-    console.log(x, y)
     imgOverlayCoordinates[index] = { x: x, y: y }
     setImgOverlayCoordinates(imgOverlayCoordinates)
-    console.log(imgOverlays, imgOverlayCoordinates)
   }
 
   const [, setDimensions] = useState({
@@ -571,7 +550,6 @@ function Feed({ match }, props) {
           src={inputImg}
           onComplete={onComplete}
           onBeforeComplete={props => {
-            console.log(props);
             closeImageEditor();
             return false;
           }}
@@ -584,7 +562,6 @@ function Feed({ match }, props) {
 
       <div className="feed">
 
-        {/* {console.log(match,user,((match.params.id === user.displayName) || (match.path === "/feed")))} */}
         {(profileInfo && (match.params.channel)) ?
           <>
             <center>
@@ -751,7 +728,6 @@ function Feed({ match }, props) {
         {!showEditor && !showTags &&
           <Modal
             show={Boolean(inputImg)}
-            // onHide={() => { setShowPostComponent(false); resetVals(); }}
             keyboard={false}
             size="xl"
             aria-labelledby="contained-modal-title-vcenter"
@@ -772,7 +748,6 @@ function Feed({ match }, props) {
                   }]} ref={overlayParentRef} />}
 
                   <br />
-                  {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
                   {inputImg && !showEditor &&
                     <div className="photoEditor">
                       {/* Div in which to view the photo. */}
@@ -977,7 +952,6 @@ function Feed({ match }, props) {
       {(((match.params.channel) && (match.params.id === user.displayName)) || (match.path === "/")) &&
         <Fab className={classes.fab} color='primary' onClick={() => { setShowPostComponent(true) }}>
           <AddIcon className={classes.extendedIcon} />
-          {/* <b>New Post</b> */}
         </Fab>
       }
       <Modal

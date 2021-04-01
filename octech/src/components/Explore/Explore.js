@@ -6,8 +6,6 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userSlice";
 import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
-// import Tabs from '@material-ui/core/Tabs';
-// import Tab from '@material-ui/core/Tab';
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Typography from "@material-ui/core/Typography";

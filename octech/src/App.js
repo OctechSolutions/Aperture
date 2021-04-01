@@ -63,7 +63,6 @@ function App() {
   // User must verify his/her email.
   const sendVerificationEmail = (curUser) => {
     curUser.sendEmailVerification().then(function () {
-      console.log('Verification mail sent to ' + curUser.email)
     }
     ).catch(function (error) {
       alert("Error : " + error)
@@ -76,7 +75,6 @@ function App() {
 
   useEffect(() => { // useEffect keeps listening to the variables passed in the array at the end
     auth.onAuthStateChanged(userAuth => { // When the state of the user changes this function is called that is if the user logs in or out this function gets called
-      console.log(auth, userAuth)
       if (userAuth) { // If user logs in, userAuth becomes true as it holds some value
         db.collection("users").where("email", "==", userAuth.email).get().then((querySnapshot) => { //This is a firebase query to get all users in the db with the name of the current user
           if (querySnapshot.size === 0) { // If there is none in the db, it means its the first time the user is logging in and he is added to the db
@@ -105,14 +103,11 @@ function App() {
               sendVerificationEmail(userAuth)
             }
 
-            console.log(userAuth.displayName, "Added to the DB")
           }
           else {
             // If already in db do nothing
-            console.log("Already in DB")
           }
         })
-        console.log(userAuth.providerData[0].providerId)
         //The dispatch function sets the user in the redux slice so that we know which user is logged in, all this info is stored in the login state
         dispatch(login({
           email: userAuth.email,

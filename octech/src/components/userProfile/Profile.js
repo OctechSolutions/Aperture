@@ -69,7 +69,6 @@ function Profile({ match }) {
     const [viewingUserInfo, setViewingUserInfo] = useState({});
 
     useEffect(() => {
-        console.log(match); // match returns a lot of properties from the react router dom including the id we set for the urls of the router to be dynamic
         db.collection("users").doc(match.params.id) // We get the user from the db whose id matches the name of the user
             .onSnapshot(doc => {
                 if (doc.exists) {
@@ -102,7 +101,6 @@ function Profile({ match }) {
                             );
                     }
                 } else {
-                    console.log("No such document!");
                 }
             });
         db.collection("users").doc(user.displayName)
@@ -110,8 +108,7 @@ function Profile({ match }) {
                 if (snapshot.exists) {
                     setViewingUserInfo(snapshot.data());
                 }
-                else
-                    console.log("No Such Document!")
+                else {}
             })
     }, [match, user.displayName]);
 
@@ -352,7 +349,6 @@ function Profile({ match }) {
                                         <ListItemText secondary={<center>Profile Points</center>} primary={<center>{profileInfo.profilePoints}</center>} />
                                     </ListItem>
                                 </List>}
-                                {/* <p onClick={() => setShowFriendList(true)}>Friends: {profileInfo.friends && profileInfo.friends.length}</p> <p onClick={() => setShowFollowingList(true)}>Channels Following: {profileInfo.followingChannels && profileInfo.followingChannels.length}</p> */}
                                 {(profileInfo.friends && ((profileInfo.friends.some(u => u.name === user.displayName)) || (profileInfo.name === user.displayName))) &&
                                     <>
                                         <Modal
@@ -382,8 +378,6 @@ function Profile({ match }) {
                                     </>
                                 }
 
-                                {/* <h1>Profile Points : {profileInfo.profilePoints}</h1>
-                                {(profileInfo.league ? <h1>League : {profileInfo.league}</h1> : <> </>)} */}
                             </div>}
                         <Tabs
                             id="controlled-tab-example"

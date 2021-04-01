@@ -13,7 +13,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-// import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Tooltip from '@material-ui/core/Tooltip';
 import SearchIcon from '@material-ui/icons/Search';
@@ -62,25 +61,9 @@ function Header({ setValue, hasNotifications }) {
           <img className="apertureLogo" src={logo} style={{ marginTop: "2px" }} alt="Aperture" />
         </IconButton>
       </Link>
-      {/* <div className="searchBar" style={{ width: "30vw" }}>
-        <ReactSearchAutocomplete
-          items={users}
-          onFocus={openSearchHandler}
-          useOptions={{ keys: ["name", "email"] }}
-          resultStringKeyName="name"
-          // onSearch={(string,result)=>{console.log(string,result)}}
-          onSelect={selectedUser => openUser(selectedUser)}
-          placeholder="Search"
-          styling={
-            {
-              border: "2px grey solid",
-            }
-          }
-        />
-      </div> */}
-      {/* <Button onClick={logoutOfApp}>Logout</Button> */}
-      {/* <Link style={{ textDecoration: 'none', color: "black" }} onClick={() => { setValue(`user/${user?.displayName}`) }} to={`/user/${user?.displayName}`}> */}
+
       {/* This link takes the user to their profile */}
+
       <div>
         <IconButton
           aria-label="search"
@@ -111,15 +94,6 @@ function Header({ setValue, hasNotifications }) {
           </Tooltip>
         </IconButton>
 
-        {/* <IconButton
-          aria-label="BugReportForm"
-          onClick={() => { history.push("/bugReportForm"); setValue("BugReportForm") }}
-          >
-          <Tooltip title={"Report a Bug"} aria-label="BugReportForm">
-            <BugReportIcon />
-          </Tooltip>
-        </IconButton> */}
-
         <IconButton
           aria-label="avatar"
           onClick={handleMenu}
@@ -128,15 +102,9 @@ function Header({ setValue, hasNotifications }) {
             <Avatar src={user?.photoUrl} />
           </Tooltip>
         </IconButton>
-        {/* <IconButton
-          aria-label="signout"
-          onClick={logoutOfApp}
-        >
-          <Tooltip title={"Sign Out"} aria-label="signout">
-            <ExitToAppIcon />
-          </Tooltip>
-        </IconButton> */}
+
       </div>
+      
       <Menu
         id="menu-appbar"
         anchorEl={anchorEl}

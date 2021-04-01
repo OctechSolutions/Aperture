@@ -130,13 +130,10 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                     }
                     if (editEmail) {
                         useR.updateEmail(email).then(function () {
-                            // useR.reload()
                             useR.sendEmailVerification().then(function () {
                             }).catch(function (error) {
-                                console.log(error)
                             });
                         }).catch(function (error) {
-                            console.log(error)
                         });
                         await db.collection("users").doc(useR.displayName).update({ email: email })
                     }
@@ -144,13 +141,11 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                         useR.updatePassword(newPassword).then(function () {
                             // Update successful.
                         }).catch(function (error) {
-                            console.log(error)
                         });
                     }
                     setLoading(false)
                 }
             }).catch(function (error) {
-                console.log(error, "e")
                 setOldPasswordDoesNotMatch(true)
             });
         }
@@ -332,7 +327,6 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                 history.push('/');
                 window.location.reload();
             }).catch(function (error) {
-                console.log(error, "e")
                 setconfirmPasswordDoesNotMatch(true)
             });
         }
@@ -525,7 +519,6 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
             // Profile updated successfully!
             // firebase.auth().currentUser.reload()
         }, function (error) {
-            console.log(error)
         });
         // Update posts and post images
         await db.collection("posts").get().then(docs => {
@@ -623,13 +616,6 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                 db.collection("challengePosts").doc(doc.id).update({ creator: newName })
             })
         })
-
-        // //Update Bug report
-        // await db.collection("BugReports").where("name", "==", user.displayName).get().then(docs => {
-        //     docs.forEach(doc => {
-        //         db.collection("BugReports").doc(doc.id).update({ name: newName })
-        //     })
-        // })
 
         //Update from Chat rooms
         await db.collection("chatRooms").where("participantNames", "array-contains", user.displayName).get().then(docs => {
