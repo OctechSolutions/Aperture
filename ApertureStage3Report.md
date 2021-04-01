@@ -1803,7 +1803,23 @@ The playlist  guides users on regarding followings features.
 
 **Aperture is a Progressive Web Application (PWA) !** 
 
-<span style="color:blue">***About PWA...***</span>
+(Addy Osmani ,2015)
+
+<span style="color:blue">What is a PWA?</span>
+
+Progressive Web Apps use modern web capabilities to deliver an app-like user experience. These apps evolve from pages in browser tabs to immersive, top-level apps, maintaining the web's low friction at every moment.
+
+Progressive Web Apps are:
+- Progressive - Work for every user, regardless of browser choice because they’re built with progressive enhancement as a core tenant.
+- Responsive - Fit any form factor, desktop, mobile, tablet, or whatever is next.
+- Connectivity independent - Enhanced with service workers to work offline or on low quality networks.
+- App-like - Use the app shell model to provide app-style navigations and interactions.
+- Fresh - Always up-to-date thanks to the service worker update process.
+- Safe - Served via TLS to prevent snooping and ensure content hasn’t been tampered with.
+- Discoverable - Are identifiable as “applications” thanks to W3C manifests and service worker registration scope allowing search engines to find them.
+- Re-engageable - Make re-engagement easy through features like push notifications.
+- Installable - Allow users to “keep” apps they find most useful on their home screen without the hassle of an app store.
+- Linkable - Easily share via URL and not require complex installation.
 
 <figure>
 	<center>
@@ -2194,11 +2210,15 @@ The App contains Set of Special Features which could be interesting for Users su
 
 Overall, our application is robust, there are currently no bugs that cause the system to crash.
 
-However, there can be a problem with the Bug Report Functionality as some usability test participants encountered an issue while using our application on their phones where in the submit button went under the navigation bar and they found that the layout was overlapping with text fields. One other participant encountered an issue while logging in via phone as once the user refreshed the page the user got logged out. Also, few participants reported that they were able to upload human pictures **“Partially”**. Finally, a user wished that profile picture could also be edited along with other profile points.
+The usability feedback bought forth a minor bug with the Bug Report Functionality as some participants encountered an issue while using our application on their phones where in the submit button went under the navigation bar and they found that the layout was overlapping with text fields. This was a basic css bug which was easily fixed by adding a "z-index" constraint for the css which allows one component to be drawn over the other.
 
-To increase the robustness and the overall reliability of the application, most of the reported issues were fixed and taking into consideration a user's wish to edit the his/her profile pic, this was also made possible. 
+One other participant encountered an issue while logging in via phone as once the user refreshed the page the user got logged out. This is not a bug, rather it is the way firebase authentication works, firebase sends back a valid Promise on successful authentication so if a user attempts to refresh midway this authentication process, the Application that is waiting listening for the old promise fails and the user has to login again. We can fix this by storing the auth variable in the local storage of the browser but then that makes our app vulnerable to attacks as the firebase indexed db becomes private and the auth variable and its functions get accessible to everyone.
 
-<span style="color:blue">*GAURAV, PLEASE REVIEW ...*</span>
+Also, few participants reported that they were able to upload human pictures **“Partially”**. We use a Tensorflow Lite pre-trained model for image classification and human detection. No AI is perfect and so is ours. The scanning process, like the rest of the app is done on client side and is heavily dependent on the clients device. And for those edge cases of Human images which pass through the auto filering AI scanner, we have kept a report post button which sends the information to our Database from where a Human Moderator can review the image and take appropriate action.
+
+Finally, a user wished that profile picture could also be edited along with other profile details. We achieved this in the remaining time preiod after the usability analysis and added the full avatar editor to our edit profile section in our App which enables the users to edit their Profile Picture (Avatar) as well as they can edit other details in their profile like their Username, email (if the account is a non-google account) and their password. All these changes on editing are reflected accross the app and work as expected.
+
+To increase the robustness and the overall reliability of the application, most of the reported issues were fixed and the feedback process was a great exercise to make us realise what the app was missing and what could be improved.
 
 
 
@@ -2295,7 +2315,7 @@ Visit our deployed Aperture web application as well which is now also a progress
 
 **John Prabhu. (2019, Jul 18).** "MVC Architecture & Its Benefits in Web Application Development". Visit at https://techaffinity.com/blog/mvc-architecture-benefits-of-mvc/
 
-
+**Addy Osmani. (2015, Dec).** "https://developers.google.com/web/updates/2015/12/getting-started-pwa".
 
 ****
 
