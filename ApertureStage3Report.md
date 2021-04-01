@@ -284,7 +284,6 @@ The web application will be hosted using a cloud platform application called Her
    </figure>
 
    
-
 2. **Content Creation System**
 
    This component focusses on enabling users to create/destroy content on the application. Users may create posts (comprising of images - via image upload/taken using camera, associated GPS data and text), channels, collections, challenges and a portfolio. Users may delete any content that they have created. Features supported include modification of images during upload, tagging of objects/public events in images and sharing of content (on feedback/gaming forums, profile, collections, channels, challenges and portfolio).
@@ -1694,13 +1693,14 @@ avatar at the top right of the screen and navigating to the “Edit Profile” P
     <center>
         <img 
              src="./reportImages/LayoutNav17Tutorial.png" 
-             alt="Application Layout - Tutorial
-             style="width:60%">
+             alt="Application Layout - Tutorial"
+             style="width:80%">
     </center>
     <figcaption style="text-align:center;">
         Application Layout - Tutorial
     </figcaption>
 </figure>
+
 
 Here is the tutorial page, where a new user can learn how to navigate through the app and learn how to use the functionalities our app offers. There are 5 sets of videos showcasing the sign-up process, how to navigate the explore/home page, how the user can post, how to check their profile, how to chat with other users, creating challenges, and as well as how the leaderboards function. 
 
