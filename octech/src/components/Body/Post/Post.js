@@ -128,25 +128,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
     let newTotalStars = totalStars + (givenStars - stars);
     const post = db.collection("posts").doc(id);
     star[viewingUser.uid] = givenStars;
-    // await db.collection("users").doc(name).collection("notifications").doc(name).get().then((doc) => {
-    //   db.collection("users").doc(name).collection("notifications").doc(name).set({
-    //     notifications: doc.data().notifications.filter(a => (a.sender === viewingUser.displayName) && (a.type === "rating") && (a.postId === id) ? false : true)
-    //   }, { merge: true })
-    // }).then(() => {
-    //   if (givenStars > 0) {
-    //     db.collection("users").doc(name).collection("notifications").doc(name).set({
-    //       notifications: firebase.firestore.FieldValue.arrayUnion({
-    //         type: "rating",
-    //         sentAt: firebase.firestore.Timestamp.now(),
-    //         sender: viewingUser.displayName,
-    //         icon: viewingUser.photoUrl,
-    //         stars: givenStars,
-    //         postTitle: message,
-    //         postId: id
-    //       })
-    //     }, { merge: true })
-    //   }
-    // })
 
     if (givenStars > 0) {
       db.collection("users").doc(channelBy ? channelBy : name).collection("notifications").doc(channelBy ? channelBy : name).set({
@@ -608,11 +589,11 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
   const handleReportClick = (post_id) => {
     let c = window.confirm("Are you sure you want to report this post?");
     if (c === true) {
-      console.log(user.email);
       db.collection("postReports")
         .add({
           postID: post_id,
-          reportedBy: user.email
+          reportedBy: user.email,
+          isForumPost : isForumPost
         })
         .then(() => {
           alert("You have reported this post successfully.");
