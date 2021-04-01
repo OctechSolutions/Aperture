@@ -64,6 +64,10 @@ This document is an overview of the journey of the photo sharing application Ape
 
 How better to start the story of development of Aperture than with an opportunity to try it out?!  Try out Aperture at https://aperture-by-octech.herokuapp.com/.
 
+Visit our company website to find more information about Octech solutions and the amazing team behind it at https://octech.herokuapp.com/.
+
+
+
 **Aperture can be viewed as comprising of 6 sub-systems.**
 
 1. User Account System
@@ -423,7 +427,7 @@ The above tree diagram shows the fields of the channels collection stored in fir
     </figcaption>
 </figure>
 
-The above tree diagram depicts the chat system implemented which also has another sub-collection within, which contains the messages of the user.
+The above tree diagram depicts the chat collection stored in firebase which also has another sub-collection within, which contains the messages of the user.
 
 
 
@@ -456,6 +460,38 @@ The above tree diagram represents the fields stored for each collection of photo
 </figure>
 
 The above tree diagram represents the fields stored in firebase when a user creates their portfolio.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureUsers.jpeg" 
+             alt="Users Collection" 
+             style="width:98%">
+    </center>
+    <figcaption style="text-align:center;">
+        Users Collection
+    </figcaption>
+</figure>
+
+The above tree diagram depicts the Users collection which also has another sub-collection within, which contains the notifications of the user.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureSeasons.jpg" 
+             alt="Users Seasons" 
+             style="width:80%">
+    </center>
+    <figcaption style="text-align:center;">
+        Users Seasons
+    </figcaption>
+</figure>
+
+The above tree diagram shows the seasons collection stored in firebase where all data regarding a season is stored.
 
 
 
@@ -1889,7 +1925,7 @@ Overall, it is safe to say that our approach was successful in helping keep the 
 
 For project planning and keeping track of progress the following tools were used.
 
-- GitHub was used for version control of all implemented software. It also provides a log of all progress throughout all stages of development.  Follow this link to visit the Aperture GitHub Repository maintained by Octech Solutions: https://github.com/OctechSolutions/Aperture. Check out branches and forks to view each member's contributions and the main branch history to see the application's development stages.
+- GitHub was used for version control of all implemented software. It also provides a log of all progress throughout all stages of development.
 - VS Code Editor was used as it can be easily integrated with git and makes pushing to and pulling from GitHub repositories easy.	
 
 <span style="color:blue">*MORE ...*</span>
@@ -2043,7 +2079,7 @@ We believe that all the requirements as laid out by the client and his associate
 
 We at Octech Solutions are ready to Keep Developing the application, and we have the resources to ensure Aperture becomes a global icon.
 
-Visit our company website to find more information about the future of OcTech solutions and the amazing team behind it at https://octech.herokuapp.com/.
+Visit our company website to find more information about the future of Octech solutions and the amazing team behind it at https://octech.herokuapp.com/.
 
 Visit our deployed Aperture web application as well which is now also a progressive web application on all mobile phones and tablets at https://aperture-by-octech.herokuapp.com/.
 
