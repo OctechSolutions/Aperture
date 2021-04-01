@@ -26,6 +26,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import BugReportIcon from '@material-ui/icons/BugReport';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import InfoIcon from '@material-ui/icons/Info';
 
 function Header({ setValue, hasNotifications }) {
   const dispatch = useDispatch();
@@ -174,6 +175,12 @@ function Header({ setValue, hasNotifications }) {
             <BugReportIcon/>
           </ListItemIcon>
             Report a Bug
+        </MenuItem>
+        <MenuItem onClick={e => {history.push("/tutorial");handleClose()}}>
+          <ListItemIcon>
+            <InfoIcon />
+          </ListItemIcon>
+            Tutorial
         </MenuItem>
       </Menu>
       <Modal
