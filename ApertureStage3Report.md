@@ -4,7 +4,6 @@
 
 <img src="./octech/src/components/Header/aperture_logo.png" alt="Aperture Logo" style="zoom:25%; float:left" /><img src="./octech_logo.png" alt="Octech Logo" style="zoom:20%; float:right" />
 
-
 <br />
 
 
@@ -222,7 +221,7 @@ The web application will be hosted using a cloud platform application called Her
 
 
 
-##### 1.4.  Aperture Components
+##### 1.4. Aperture Components
 
 
 
