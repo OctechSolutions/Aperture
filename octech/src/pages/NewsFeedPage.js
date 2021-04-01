@@ -205,7 +205,8 @@ export default function NewsfeedPage(props) {
                             <Route path="/challengeLeaderboard/:name" exact component ={ChallengeLeaderBoard} />
                             <Route path="/bugReportForm" render={props => <BugReportForm setValue={setValue} />} />
                             <Route path="/notifications" exact render={props => <Notifications notifications={notifications} />} />
-                            <Route path="/post/:id" exact component={PostView} />
+                            <Route path="/post/:id" exact component={PostView} />  
+
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 {/* <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} /> */}
@@ -219,7 +220,7 @@ export default function NewsfeedPage(props) {
                         </div>
                     ) :
                     (
-                        <Modal show={!props.isVerified}>
+                        <Modal show={!props.isVerified && user!==null}>
                             <Modal.Body>
                                 <Alert variant='info'>
                                     <div className="verify-email">

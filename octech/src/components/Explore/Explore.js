@@ -266,7 +266,7 @@ export default function Explore() {
           >
             {mapLoad && <Map
               locationPosts={locationPosts}
-              zoom={6}
+              zoom={1}
               isPreview={true}
               center={center}
             />}

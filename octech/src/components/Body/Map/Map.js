@@ -59,11 +59,11 @@ export default function Map({
     const [src, setSrc] = React.useState("")
     const history = useHistory();
     const [singleImage,] = React.useState(zoom!==undefined && images !== undefined ? Boolean(images.length - 1) : true)
-    const bottom =  isPreview?"100px":"0px"
+    const [position,] =  React.useState(isPreview?"fixed":"relative")
     return (
         <div>
 
-            <div style={{ width: "100%", height: "auto", position: "fixed", bottom: {bottom} }}>
+            <div style={{ width: "100%", height: "auto", position: position }}>
                 <MapContainer
                     className="markercluster-map"
                     center={center}
@@ -207,7 +207,7 @@ export default function Map({
 
                                                 {(!loading && (isChallengePost !== true)) ? <div style={{ display: "flex", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
                                                     <h6>Go to Post</h6>
-                                                    <IconButton onClick={() => { history.push(`post/${p.id}`); }}>
+                                                    <IconButton onClick={() => { history.push(`/post/${p.id}`); }}>
                                                         <OpenInNewIcon fontSize="small" />
                                                     </IconButton>
                                                 </div>
