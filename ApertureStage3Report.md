@@ -224,16 +224,111 @@ The web application will be hosted using a cloud platform application called Her
 
 
 
+##### 1.4.  Aperture Components
 
-##### 1.4.  Broad Sub-Systems
+**Following are the six sub-system components of Aperture.**
 
 1. **User Account System**
 
    This component handles user signup/login, profile creation/deletion/management and validation of user details. This component ensures that users submit consent forms in order to upload a photo of themselves as their profile picture or alternatively choose from pre-defined avatar pictures instead. 
 
+   This component is made up of 3 components,
+
+   - **Sign Up** component.
+
+     This component allows users to create an account.  It requires/may require provided interfaces of the following components.
+
+     - *React* component for use of JSX.
+     - *Firebase* component for its database and authentication services.
+     - *Material UI* component for the UI elements it provides.
+     - *User* Entity to provide sign up details.
+
+     It's provided component is the creation of a new account.
+
+   - **Login** component
+
+     This component allows users to login to their account. It requires/may require provided interfaces of the following components.
+
+     - *React* component for use of JSX.
+     - *Firebase* component for its authentication services.
+     - *Material UI* component for the UI elements it provides.
+     - *User* Entity to provide login details.
+     - *React Router* for its routing service.
+     - *React Bootstrap* for its UI elements.
+     - *User Slice* component for its login action.
+
+   - **Header** component
+
+     This component allows users to edit profile details, delete their profile or logout. It requires/may require provided interfaces of the following components.
+
+     - *React* component for use of JSX.
+     - *Firebase* component for its authentication services.
+     - *Material UI* component for the UI elements it provides.
+     - *User* Entity to trigger edit profile, delete profile or logout event.
+     - *React Router* for its routing service.
+     - *Redux* component for its useDispatcher and useSelector features.
+     - *User Slice* component for its login action.
+
+   **Following is a component diagram depicting this this sub-system**
+
+   <figure>
+       <center>
+           <img 
+                src="./reportImages/ComponentDiagram1UserAccSys.png" 
+                alt="Component Diagram - User Account System" 
+                style="width:98%">
+       </center>
+       <figcaption style="text-align:center;">
+           Component Diagram - User Account System
+       </figcaption>
+   </figure>
+
+   
+
 2. **Content Creation System**
 
    This component focusses on enabling users to create/destroy content on the application. Users may create posts (comprising of images - via image upload/taken using camera, associated GPS data and text), channels, collections, challenges and a portfolio. Users may delete any content that they have created. Features supported include modification of images during upload, tagging of objects/public events in images and sharing of content (on feedback/gaming forums, profile, collections, channels, challenges and portfolio).
+
+   This component is made up of 3 components,
+
+   - **Sign Up** component.
+
+     This component allows users to create an account.  It requires/may require provided interfaces of the following components.
+
+     - *React* component for use of JSX.
+     - *Firebase* component for its database and authentication services.
+     - *Material UI* component for the UI elements it provides.
+     - *User* Entity to provide sign up details.
+
+     It's provided component is the creation of a new account.
+
+   - **Login** component
+
+     This component allows users to login to their account. It requires/may require provided interfaces of the following components.
+
+     - *React* component for use of JSX.
+     - *Firebase* component for its authentication services.
+     - *Material UI* component for the UI elements it provides.
+     - *User* Entity to provide login details.
+     - *React Router* for its routing service.
+     - *React Bootstrap* for its UI elements.
+     - *User Slice* component for its login action.
+
+   - **Header** component
+
+     This component allows users to edit profile details, delete their profile or logout. It requires/may require provided interfaces of the following components.
+
+     - *React* component for use of JSX.
+     - *Firebase* component for its authentication services.
+     - *Material UI* component for the UI elements it provides.
+     - *User* Entity to trigger edit profile, delete profile or logout event.
+     - *React Router* for its routing service.
+     - *Redux* component for its useDispatcher and useSelector features.
+     - *User Slice* component for its login action.
+
+   **Following is a component diagram depicting this this sub-system**
+
+   
 
 3. **User Interaction System**
 
@@ -1112,6 +1207,54 @@ Above is the sequence diagram for a user searching for other users or channels, 
 </figure>
 
 
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram4GameMechSysCreateChallenge.png" 
+             alt="Sequence Diagram - Create Challenge" 
+             style="width:98%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Create Challenge
+    </figcaption>
+</figure>
+
+The sequence diagram above denotes the sequence of events when a user creates a challenge.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram4GameMechSysChallengeInvite.png" 
+             alt="Sequence Diagram - Invite Friends to Challenge" 
+             style="width:98%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - Invite Friends to Challenge
+    </figcaption>
+</figure>
+
+Users can also make their own public or private challenges where they can invite their friends and “Challenge” and compete against them to get the highest score. If the user invited accepts the challenge they are added into the challenge and if they decline the notification is ignored.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/SeqDiagram4GameMechSysViewLeaderboards.png" 
+             alt="Sequence Diagram - View Leaderboards" 
+             style="width:98%">
+    </center>
+    <figcaption style="text-align:center;">
+        Sequence Diagram - View Leaderboards
+    </figcaption>
+</figure>
+
+
+
+
+
 
 ##### 5. Notification System
 
@@ -1542,8 +1685,24 @@ If a user is not happy with the way their avatar looks. They can easily edit the
         Application Layout - Delete Profile
     </figcaption>
 </figure>
+If a user decides that they would like to delete their account. They can do so by clicking on their
+avatar at the top right of the screen and navigating to the “Edit Profile” Page. They can then click on the "Delete Account" button and they will then be prompted with a confirmation message. Once confirmed, this will ensure to delete all posts, comments and any content the user had on the app.
 
-If a user decides that they would like to delete their account. They can do so by clicking on their avatar at the top right of the screen and navigating to the “Edit Profile” Page. This will ensure to delete all posts, comments and any content the user had on the app.
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/LayoutNav17Tutorial.png" 
+             alt="Application Layout - Tutorial
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        Application Layout - Tutorial
+    </figcaption>
+</figure>
+
+Here is the tutorial page, where a new user can learn how to navigate through the app and learn how to use the functionalities our app offers. There are 5 sets of videos showcasing the sign-up process, how to navigate the explore/home page, how the user can post, how to check their profile, how to chat with other users, creating challenges, and as well as how the leaderboards function. 
 
 
 
@@ -1956,13 +2115,11 @@ Following are few problems that the team had faced and methods that were adopted
 
    <span style="color:red"><u>Problem</u></span>
 
-   For some parts of the app like challenges, there was a need to check after regular intervals say 24 hours, if whether a challenge was still open or not. In such scenarios an action such as loading of the challenges was what was used to trigger the checking. This is not the best was since if a challenge closed after 24 hours while a user was viewing already loaded challenges, then this change would not show up.
+   As our app only does client side rendering, to schedule time dependent tasks like updating the global leaderboards daily or ending a challenge a user would have needed to use the app at that moment of time so as to trigger that task, which was not a good solution.
 
    <span style="color:green"><u>Solution</u></span>
 
-   To combat this issue as well as to implement all other periodic testing like checking for user content / bug report regularly, an ubuntu server was leased and programmed to regularly do this.
-
-<span style="color:blue">*GIVE MORE DETAIL IN SERVER PART ...*</span>
+   To schedule time based daily and monthly tasks we set up cron jobs on an leased ubuntu server. Cron schedules the "daily.py" python script everyday and the "monthly.py" python script every month. These python scripts use Firebase admin python sdk to do read and writes to our database.
 
 
 
