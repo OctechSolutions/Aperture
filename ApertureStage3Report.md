@@ -1274,10 +1274,7 @@ This section boasts screenshots of the application user Interface (UI) with brie
         Application Layout - Login/SignUp
     </figcaption>
 </figure>
-
 Here is the login/ sign up page where the user can enter their existing details and login into their account or sign up by pressing the sign-up button that leads to the page. The user can also customize their profile avatar once they press the big edit icon. 
-
-
 
 
 
@@ -1774,7 +1771,53 @@ Other details of these packages such as costing have been already given to clien
 
 <span style="color:magenta">*Short user guide.*</span>
 
-A playlist of videos that shall guide users in interfacing with the app can be found at https://www.youtube.com/watch?v=C_h5see_bmc&list=PLs9qIZvqLy07Z7S6l1bo7AAasd52wBHyV&index=1.
+A **playlist** of videos that shall guide users in interfacing with the app can be found at
+
+https://www.youtube.com/watch?v=C_h5see_bmc&list=PLs9qIZvqLy07Z7S6l1bo7AAasd52wBHyV
+
+
+
+The playlist  guides users on regarding followings features.
+
+1. **Sign Up**
+
+   Visit https://www.youtube.com/watch?v=C_h5see_bmc&list=PLs9qIZvqLy07Z7S6l1bo7AAasd52wBHyV
+
+2. **Explore Page & Home Page**
+
+   Visit https://www.youtube.com/watch?v=utBg82Krgk8&list=PLs9qIZvqLy07Z7S6l1bo7AAasd52wBHyV&index=2
+
+3. **How to Post?**
+
+   Visit https://www.youtube.com/watch?v=wXLnlBf7xXY&list=PLs9qIZvqLy07Z7S6l1bo7AAasd52wBHyV&index=3
+
+4. **User Profiles & Chat**
+
+   Visit https://www.youtube.com/watch?v=Bg5KjL0KWUw&list=PLs9qIZvqLy07Z7S6l1bo7AAasd52wBHyV&index=4
+
+5. **Challenges & Leaderboards**
+
+   Visit https://www.youtube.com/watch?v=aUW4xZzgmwU&list=PLs9qIZvqLy07Z7S6l1bo7AAasd52wBHyV&index=5
+
+
+
+**Aperture is a Progressive Web Application (PWA) !** 
+
+<span style="color:blue">***About PWA...***</span>
+
+<figure>
+	<center>
+        <img 
+             src="./reportImages/UserGuideInstallPwa.png" 
+             alt="Install PWA" 
+             style="width:50%">
+    </center>
+    <figcaption style="text-align:center;">
+        Install Aperture PWA
+    </figcaption>
+</figure>
+
+
 
 
 
@@ -2307,7 +2350,7 @@ Visit our deployed Aperture web application as well which is now also a progress
 
 **F-UR2.1a:** Enable users to upload real-time pictures taken directly from their (M) device camera.
 
-**F-UR2.1a****1:** Access the device camera (M)
+**F-UR2.1a:** Access the device camera (M)
 
 **F-UR2.1b:** Enable users to upload photos from their device storage (M) 
 
