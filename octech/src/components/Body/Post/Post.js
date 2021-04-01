@@ -608,11 +608,11 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
   const handleReportClick = (post_id) => {
     let c = window.confirm("Are you sure you want to report this post?");
     if (c === true) {
-      console.log(user.email);
       db.collection("postReports")
         .add({
           postID: post_id,
-          reportedBy: user.email
+          reportedBy: user.email,
+          isForumPost : isForumPost
         })
         .then(() => {
           alert("You have reported this post successfully.");
