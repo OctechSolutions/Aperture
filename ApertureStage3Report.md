@@ -211,7 +211,7 @@ The web application will be hosted using a cloud platform application called Her
   - react-scripts
   - swiper
   - web-vitals
-- Google Firestore 
+- Google Firestore
 - Firebase Authentication
 - Firebase Storage
 - Node Package Manager (NPM)
@@ -260,7 +260,7 @@ Aperture was developed using ReactJS in conjuncture with Google Firestore's fire
 **MVC was chosen due to the following reasons.** (John Prabhu, 2019)
 
 - Since it divides the application into 3 parts, different members would be able to work on code related to different parts simultaneously thus making the overall development process faster.
-- Our application would have many asynchronous calls related to getting, setting and updating collections in the firebase DB. MVC supports asynchronous techniques.
+- Our application would have many asynchronous calls related to getting, setting and updating collections in the Firestore DB. MVC supports asynchronous techniques.
 - It demarcates Model View and Controller parts of the system well such that modifying one part would not necessarily change other parts. This is convenient as our development plan using scrum would mean that systems would frequently be changed and improved in later iterations.
 
 
@@ -313,7 +313,7 @@ Above figure represents the workings of React Redux which is a state management 
     </figcaption>
 </figure>
 
-Above figure shows how Redux interacts with react components and the Firebase database. React redux wraps around the parent and child components of react and allows state changes among child components and send queries and receive responses from firebase through React Redux.
+Above figure shows how Redux interacts with react components and the Firestore database. React redux wraps around the parent and child components of react and allows state changes among child components and send queries and receive responses from firebase through React Redux.
 
 
 
@@ -369,7 +369,13 @@ Overall firebase provides us with great functional tools making the entire backe
 
 ###### 1.6.2. Firebase Authentication System
 
-As explained above firebase is a very feature rich database tool, but it also has its own upsides and downsides to it. Firebase provides an authentication feature making it easier for us to know the identity of a user and allow them to access the app securely with the user data being stored securely over the cloud. The authentication system provides us with a secure system while supporting email and password accounts, phone auth, and Google, etc. integrations. The diagram below gives an in-depth look on how firebase handles authentication.
+As explained above firebase is a very feature rich database tool, but it also has its own upsides and downsides to it. Firebase provides an authentication feature making it easier for us to know the identity of a user and allow them to access the app securely with the user data being stored securely over the cloud. 
+
+The Authentication system which boasts a highly secure system that improves the user experience while they sign-up and sign-in:
+
+- It allows sign-in using email & password, phone authentication, Google, Facebook, Twitter, GitHub, and much more.
+- It is also easy to implement with no more than 10 lines of code to build it.
+- and Firebase Authentication is super secure as it has been developed by none other than Google’s sign-in team.
 
 <figure>
     <center>
@@ -382,22 +388,44 @@ As explained above firebase is a very feature rich database tool, but it also ha
         Firebase Authentication System
     </figcaption>
 </figure>
+The above diagram gives an in-depth look on how firebase handles authentication.
+
 
 
 
 ###### 1.6.3 Firebase Security Rules
 
-Even with all the upsides in functionality firebase is a very vulnerable software developing platform as it provides no prior security features to use. 
+The one major flaw of firebase was the security which also went against the GDPR Data privacy regulations. This was countered by adding Security rules that only allow authenticated users to use our app, 
 
-Firebase security rules helps in enforcing security and validate all requests made to the app. These rules work in conjunction with the real-time database checking every request being put if the request is by an authenticated user are not and/or is the user violating the constraints/limitations put into place, if there are any requests found to violate the security rules, they are either blocked or deleted. 
+The rules work by checking across our FirestoreDB to ensure that the user signing into our app are authenticated by our system, and by checking for any user who is trying to breach our app whom if found shall be blocked from accessing our DB.
 
-<span style="color:blue">*HASSAN ADD FIREBASE RULES...*</span>
+The Firestore rules work by cross referencing each user’s unique authentication id with their name and our database to check that each user trying to access the specific collection is an actual user of our app.
+
+Firebase security rules help in enforcing security and validating all requests made to the app. These rules work in conjunction with the real-time database by checking and ensuring that every request being is by an authenticated user who is not violating the constraints/limitations placed. If any requests were found to violate the security rules, they are either blocked or deleted. 
 
 
 
-###### 1.6.4 Firebase Database Structure
+###### 1.6.4 Firestore Database Structure
 
-The firebase database consists of collections which have documents and can have further sub-collections within to data. The following are collection tree diagrams to show each collection and its contents.
+The Firestore database consists of collections which have documents and can have further sub-collections within to data. The following are collection tree diagrams to show each collection and its contents.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureUsers.png" 
+             alt="Users Collection" 
+             style="width:98%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firestore DB Collection - users
+    </figcaption>
+</figure>
+
+The above tree diagram depicts the **users** collection which also has another sub-collection within, which contains the notifications of the user.
+
+
 
 <figure>
     <center>
@@ -411,7 +439,7 @@ The firebase database consists of collections which have documents and can have 
     </figcaption>
 </figure>
 
-The above tree diagram shows the fields of the channels collection stored in firebase when a user creates a new channel on their profile.
+The above tree diagram shows the fields of the **channels** collection stored in firebase with fields corresponding to attributes of a channel.
 
 
 
@@ -423,11 +451,12 @@ The above tree diagram shows the fields of the channels collection stored in fir
              style="width:60%">
     </center>
     <figcaption style="text-align:center;">
-        ChatRooms Collection
+        Firestore DB Collection - chatRooms
     </figcaption>
 </figure>
 
-The above tree diagram depicts the chat collection stored in firebase which also has another sub-collection within, which contains the messages of the user.
+
+The above tree diagram depicts the **chatRooms** collection stored in firebase which also has another sub-collection within, which contains the messages of the user.
 
 
 
@@ -439,11 +468,12 @@ The above tree diagram depicts the chat collection stored in firebase which also
              style="width:60%">
     </center>
     <figcaption style="text-align:center;">
-        Collections Collection
+        Firestore DB Collection - collections
     </figcaption>
 </figure>
 
-The above tree diagram represents the fields stored for each collection of photos a user creates in their profile.
+
+The above tree diagram represents the **collections** collection with fields storing attributes of a collection.
 
 
 
@@ -455,51 +485,160 @@ The above tree diagram represents the fields stored for each collection of photo
              style="width:70%">
     </center>
     <figcaption style="text-align:center;">
-        Portfolios Collection
+        Firestore DB Collection - portfolios
     </figcaption>
 </figure>
 
-The above tree diagram represents the fields stored in firebase when a user creates their portfolio.
+
+The above tree diagram represents the **portfolios** collection stored in firebase which contain a user's portfolio details.
 
 
 
 <figure>
     <center>
         <img 
-             src="./reportImages/FirebaseDbStructureUsers.jpeg" 
-             alt="Users Collection" 
+             src="./reportImages/FirebaseDbStructureSeasons.png" 
+             alt="Users Seasons" 
+             style="width:70%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firestore DB Collection - seasons
+    </figcaption>
+</figure>
+
+The above tree diagram shows the **seasons** collection stored in firebase where all data regarding a season is stored.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureChallenges.png" 
+             alt="Challenges" 
              style="width:98%">
     </center>
     <figcaption style="text-align:center;">
-        Users Collection
+        Firestore DB Collection - challenges
     </figcaption>
 </figure>
 
-The above tree diagram depicts the Users collection which also has another sub-collection within, which contains the notifications of the user.
+The above tree diagram shows the **challenges** collection stored in firebase.
 
 
 
 <figure>
     <center>
         <img 
-             src="./reportImages/FirebaseDbStructureSeasons.jpg" 
-             alt="Users Seasons" 
-             style="width:80%">
+             src="./reportImages/FirebaseDbStructureChallengePosts.png" 
+             alt="Challenge Posts" 
+             style="width:98%">
     </center>
     <figcaption style="text-align:center;">
-        Users Seasons
+        Firestore DB Collection - challengePosts
     </figcaption>
 </figure>
 
-The above tree diagram shows the seasons collection stored in firebase where all data regarding a season is stored.
+The above tree diagram shows the **challengePosts** collection stored in firebase where attributes of a challenge post are stored.
 
 
 
-<span style="color:blue">*ADD REMAINING COLLECTIONS...*</span>
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureForumPosts.png" 
+             alt="Forum Posts" 
+             style="width:98%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firestore DB Collection - forumPosts
+    </figcaption>
+</figure>
+
+The above tree diagram shows the **forumPosts** collection stored in firebase where all attributes of a forum post are stored.
 
 
 
-In total 13 collections are currently in our firebase database which makes it possible to achieve all functionalities of the application possible and provides a quick, smooth response during queries to/responses from from the database.
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureGlobalLeaderBoard.png" 
+             alt="Global LeaderBoards" 
+             style="width:50%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firestore DB Collection - globalLeaderBoards 
+    </figcaption>
+</figure>
+
+The above tree diagram shows the **globalLeaderBoards** collection stored in firebase.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructurePostImages.png" 
+             alt="Post Images" 
+             style="width:70%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firestore DB Collection - postImages
+    </figcaption>
+</figure>
+
+The above tree diagram shows the **postImages** collection stored in firebase where all attributes of an image within a post are stored.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructurePostReports.png" 
+             alt="Post Reports" 
+             style="width:60%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firestore DB Collection - postReports
+    </figcaption>
+</figure>
+
+The above tree diagram shows the **postReports** collection stored in firebase where all data regarding reported posts are stored.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructureBugReports.png" 
+             alt="Bug Reports" 
+             style="width:70%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firestore DB Collection - bugReports
+    </figcaption>
+</figure>
+
+The above tree diagram shows the **bugReports** collection stored in firebase where all data regarding a reported bugs are stored.
+
+
+
+<figure>
+    <center>
+        <img 
+             src="./reportImages/FirebaseDbStructurePosts.png" 
+             alt="Posts" 
+             style="width:98%">
+    </center>
+    <figcaption style="text-align:center;">
+        Firestore DB Collection - posts
+    </figcaption>
+</figure>
+
+The above tree diagram shows the **posts** collection stored in firebase where all attributes of a post are stored.
+
+
+
+In total 13 collections are currently in our Firestore database which makes it possible to achieve all functionalities of the application possible and provides a quick, smooth response during queries to/responses from from the database.
 
 
 
@@ -550,7 +689,7 @@ Above use case diagram shows all the functionalities of the user account system 
     </figcaption>
 </figure>
 
-Above sequence diagram shows the 2 alternate ways on how a user can create an account on Aperture, they can either enter their details, or sign up with a google account. Then our firebase database will create a new entry for the new user.
+Above sequence diagram shows the 2 alternate ways on how a user can create an account on Aperture, they can either enter their details, or sign up with a google account. Then our Firestore database will create a new entry for the new user.
 
 
 <figure>
@@ -1501,7 +1640,7 @@ During the development of the application’s functionality throughout stages 2 
 
 The testing method adopted is of **Continuous Integration & Continuous Delivery** (CI/CD) as per which, features are released by periodically integrating code changes into the main software branch, testing them as early and as frequently as possible, and incorporating feedback/fixing bugs and relaunching them. This continuous cycle of automating the product delivery pipeline ensures that features are made available to users quickly, efficiently, and sustainably. CI/CD makes for an un-compromising practice in the Agile software development and project management lifecycle.
 
-Testing was also done across a variety of web browsers, in particular Google Chrome, Edge, Brave and Safari. The app was tested thoroughly at every point of development, for example login and sign-up functionality were very important features of the User Account System which had to be tested for accuracy and technical correctness concerning the new user entries made along with user details verification and user account verification. The firebase database was frequently checked after every new user entry was made to ensure that the data stored was accurate and each user was correctly verified before logging in, and they completed their one-time email verification before they could login for the first time. 
+Testing was also done across a variety of web browsers, in particular Google Chrome, Edge, Brave and Safari. The app was tested thoroughly at every point of development, for example login and sign-up functionality were very important features of the User Account System which had to be tested for accuracy and technical correctness concerning the new user entries made along with user details verification and user account verification. The Firestore database was frequently checked after every new user entry was made to ensure that the data stored was accurate and each user was correctly verified before logging in, and they completed their one-time email verification before they could login for the first time. 
 
 Usability tests conducted via questionnaires ensured that different users tested our app and gave feedback. These opinions and feedback from stage was used to determine possible improvements and identify issues, that would be corrected for the final version.
 
@@ -1631,11 +1770,11 @@ Other details of these packages such as costing have been already given to clien
 
 
 
-##### 3.6. <span style="color:red">User Guide</span>
+##### 3.6. User Guide
 
 <span style="color:magenta">*Short user guide.*</span>
 
-<span style="color:blue">*MORE ...*</span>
+A playlist of videos that shall guide users in interfacing with the app can be found at https://www.youtube.com/watch?v=C_h5see_bmc&list=PLs9qIZvqLy07Z7S6l1bo7AAasd52wBHyV&index=1.
 
 
 
