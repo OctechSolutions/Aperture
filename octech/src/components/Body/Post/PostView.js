@@ -642,7 +642,6 @@ const Post = ({ match }) => {
 
                                 </div>
 
-                                {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
 
                             </div>
 

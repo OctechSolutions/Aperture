@@ -220,7 +220,7 @@ export default function NewsfeedPage(props) {
                         </div>
                     ) :
                     (
-                        <Modal show={!props.isVerified}>
+                        <Modal show={!props.isVerified && user!==null}>
                             <Modal.Body>
                                 <Alert variant='info'>
                                     <div className="verify-email">
