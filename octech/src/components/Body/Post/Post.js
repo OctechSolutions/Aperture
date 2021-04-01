@@ -208,7 +208,9 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
         moment(timestamp.toDate()).fromNow();
       }
     })
-  }, []);
+  }, 
+  // eslint-disable-next-line
+  []);
 
   const postComment = () => {
     if (comment.replace(/\s/g, '').length) {
@@ -584,6 +586,7 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
   }
 
   // Update Challenge Chips when component mounted.
+  // eslint-disable-next-line
   useEffect(() => { updateChallengeChip() }, []);
 
   // ------------------------------------------------------------------------------------------------------------

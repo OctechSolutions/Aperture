@@ -200,6 +200,7 @@ function Feed({ match }, props) {
         } else {
         }
       });
+      // eslint-disable-next-line
   }, [user.displayName, match.params]);
 
   const [locationPosts, setLocationPosts] = useState([])

@@ -234,6 +234,7 @@ const Post = ({ match }) => {
                 moment(timestamp.toDate()).fromNow();
             }
         })
+    // eslint-disable-next-line
     }, []);
 
     const postComment = () => {
@@ -643,23 +644,23 @@ const Post = ({ match }) => {
                                             <ListItemIcon>
                                                 <DeleteIcon />
                                             </ListItemIcon>
-                  Delete
-                </MenuItem>
+                                            Delete
+                                        </MenuItem>
                                         {(images.length > 0) &&
                                             <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { handleMenuClose(); addToPortfolio() }}>
                                                 <ListItemIcon>
                                                     <AddToPhotosIcon />
                                                 </ListItemIcon>
-                    Add To Portfolio
-                  </MenuItem>
+                                                Add To Portfolio
+                                            </MenuItem>
                                         }
                                         {(images.length > 0) && (collections.length > 0) &&
                                             <MenuItem key={"addToCollections"} selected={false} onClick={addToCollection}>
                                                 <ListItemIcon>
                                                     <AddPhotoAlternateIcon />
                                                 </ListItemIcon>
-                    Add To Collections
-                  </MenuItem>
+                                                Add To Collections
+                                            </MenuItem>
                                         }
 
                                         {/* To enter a challenge. */}
@@ -669,8 +670,8 @@ const Post = ({ match }) => {
                                                 <ListItemIcon>
                                                     <AddAlarmRoundedIcon />
                                                 </ListItemIcon>
-                    Enter Challenge
-                  </MenuItem>
+                                                Enter Challenge
+                                            </MenuItem>
                                         }
 
                                     </Menu>

@@ -82,6 +82,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
             }
         }).catch(function (error) {
         });
+    // eslint-disable-next-line
     }, [])
 
     const useStyles = makeStyles(
@@ -627,6 +628,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
 
     useEffect(() => {
         if (loadEntries) { loadChallengeEntries(); setLoadEntries(false); resetVals() }
+    // eslint-disable-next-line
     }, [loadEntries])
 
     return (
