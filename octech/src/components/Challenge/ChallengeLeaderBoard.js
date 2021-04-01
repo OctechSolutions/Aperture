@@ -8,7 +8,6 @@ import Tab from 'react-bootstrap/Tab';
 function ChallengeLeaderBoard({match}) {
 
   const [key, setKey] = useState("");
-  // const [challengeData,]= useState(getChallengeData())
   const [userLeaderboardData, setUserLeaderBoardData] = useState("");
   const [postLeaderboardData, setPostLeaderBoardData] = useState("");
 

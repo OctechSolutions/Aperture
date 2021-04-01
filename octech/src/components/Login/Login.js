@@ -18,7 +18,7 @@ import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import SvgIcon from '@material-ui/core/SvgIcon';
-// import ConsentForm from '../ConsentForm/ConsentForm'
+
 
 
 
@@ -64,7 +64,6 @@ export default function Login() {
     auth.signInWithEmailAndPassword(email, password)
       .then(function (result) {
         history.push("/")
-        console.log(result)
         dispatch(login({
           email: result.user.email,
           uid: result.user.uid,
@@ -72,13 +71,11 @@ export default function Login() {
           photoUrl: result.user.photoURL,
         }))
       }).catch(function (error) {
-        console.log(error)
         setError("Failed to log in")
       });
   }
 
   const forgotPassword = () => {
-    console.log("Forgot Password Clicked");
     setForgotPasswordClicked(true);
   }
 
@@ -142,7 +139,7 @@ export default function Login() {
                     </InputAdornment>
 
                 }}
-                // autoComplete="current-password"
+
                 onChange={(e) => setPassword(e.target.value)}
 
               />
@@ -201,21 +198,9 @@ export default function Login() {
 
         </Modal.Header>
         <Modal.Body>
-          {/* <SignUp onPicUpload={() => {setShowConsentForm(true)}}/> */}
           <SignUp />
         </Modal.Body>
       </Modal>
-
-      {/* <ConsentForm 
-          show={showConsentForm}
-          heading={"Dear User,"}
-          message={"We at Aperture would like to inform you that if you choose to upload an image of yourself as your profile picture, it will stored in our db. Please comply to continue."}
-          btnLabel={"You Have My Consent"}
-          closeFun={() => {setShowConsentForm(false)}}
-          onBtnClickFun={() => {
-            console.log("consent form btn clicked.")
-          }}
-      /> */}
 
       <Modal
         show={forgotPasswordClicked}

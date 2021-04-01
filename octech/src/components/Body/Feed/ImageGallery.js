@@ -1,16 +1,11 @@
 import React, {useState} from 'react';
-
-
 import 'bootstrap/dist/css/bootstrap.min.css';
-// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Navigation, Pagination, EffectFlip, Keyboard } from 'swiper';
 import Zoom from 'react-medium-image-zoom'
 import Chip from '@material-ui/core/Chip'
 import Avatar from '@material-ui/core/Avatar'
 import 'react-medium-image-zoom/dist/styles.css'
-
-// Import Swiper styles 
 import 'swiper/swiper-bundle.css';
 
 SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);
@@ -25,7 +20,6 @@ function ImageGallery({ sliderImages }) {
                 autoHeight={true}
                 navigation={singleImage}
                 pagination={singleImage}
-                // loop={singleImage}
                 effect='flip'
                 keyboard={singleImage}
                 className="post__imageWrapper"
@@ -33,7 +27,6 @@ function ImageGallery({ sliderImages }) {
                 onSlideChangeTransitionStart={() => {setLoaded(false)}}
                 onSlideChangeTransitionEnd={() => {setLoaded(true)}}
                 updateOnWindowResize={true}
-                // width={300}
             >
                 {sliderImages.map((a, index) =>
                     <SwiperSlide style={{ textAlign: "center" }} key={index}>

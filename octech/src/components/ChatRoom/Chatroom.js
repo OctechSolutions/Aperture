@@ -23,7 +23,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChatIcon from '@material-ui/icons/Chat';
-// import InputAdornment from '@material-ui/core/InputAdornment';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
 
 const useStyles = makeStyles({
@@ -59,7 +58,6 @@ const Chatroom = (match) => {
     //For scroll effect
     const helper = useRef();
     useEffect(() => {
-        // helper.current.scrollIntoView({ behavior: 'smooth' });
 
         db.collection("users").doc(user.displayName).get().then(doc => {
             if (doc.exists) {
@@ -68,10 +66,8 @@ const Chatroom = (match) => {
                     data: doc.data()
                 })
             } else {
-                console.log("No such document!");
             }
         }).catch(function (error) {
-            console.log("Error getting user data:", error)
         });
 
         db.collection("chatRooms")
@@ -90,10 +86,8 @@ const Chatroom = (match) => {
                     });
                     setChatList(userChats);
                 } else {
-                    console.log("No chats for the user");
                 }
             }, function (error) {
-                console.log("Error getting chats:", error);
             })
     }, [user.displayName]);
 
@@ -106,7 +100,6 @@ const Chatroom = (match) => {
         }).then(function (docRef) {
             id = docRef.id
         }).catch(function (error) {
-            console.error("Error adding document: ", error);
         });
         return id
     }
@@ -132,8 +125,6 @@ const Chatroom = (match) => {
             })}
             role="presentation"
             style={{ margin: "20px" }}
-        // onClick={toggleDrawer(anchor, false)}
-        // onKeyDown={toggleDrawer(anchor, false)}
         >
             <Grid container className="headingContainer">
                 <Grid item xs={12}>
@@ -181,38 +172,6 @@ const Chatroom = (match) => {
                                     backgroundColor: "white",
                                     marginBottom: "20px"
                                 }}
-                            // InputProps=
-                            // {{
-                            //     ...params.InputProps,
-                            //     endAdornment:
-                            //         <InputAdornment position="end">
-                            //             <IconButton
-                            //                 aria-label="start chat"
-                            //                 onClick={(event,value)=>{
-                            //                     if (selectedUsers.length>0) {
-                            //                         let chat = chatList ? chatList.find(chat => ((chat.participantNames.length === selectedUsers.length) & (selectedUsers.every(user => chat.participantNames.includes(user.name))))) : false//Already Started a chat with the friend
-
-                            //                         if (chat) {
-                            //                             setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={chat.participants} id={chat.id} clear={() => { setChatWindow("");setState({ left: true }) }} friends={userData.data.friends} />)
-                            //                         } else {
-                            //                             if(selectedUsers.length>0){
-                            //                                 creatChat({ name: userData.data.name, photoUrl: userData.data.photoUrl }, selectedUsers).then(id => {
-                            //                                     setChatWindow(<Chat user={{ name: userData.data.name, photoUrl: userData.data.photoUrl }} participants={selectedUsers} id={id} clear={() => { setChatWindow("") ;setState({ left: true }) }} friends={userData.data.friends}/>)
-                            //                                 })}
-                            //                         }
-                            //                         setState({
-                            //                             left: false
-                            //                         });
-                            //                     }
-                            //                 }}
-                            //                 onMouseDown={() => { }}
-                            //                 edge="end"
-                            //             >
-                            //                 <ChatIcon />
-                            //             </IconButton>
-                            //         </InputAdornment>
-
-                            // }}
                             />
                         )}
                     />
@@ -272,11 +231,6 @@ const Chatroom = (match) => {
     return (
         (
             <div className="chatroom" style={{ height: "85vh" }}>
-
-
-                {/* Flexbox from material Ui
-                First Grid for the heading
-            */}
 
                 {['left'].map((anchor) => (
                     <React.Fragment key={anchor}>

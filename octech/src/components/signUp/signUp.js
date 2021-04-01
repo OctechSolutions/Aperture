@@ -107,7 +107,6 @@ const SignUp = () => {
                     });
                 })
                 .catch(function (error) {
-                    console.log("Error getting documents: ", error);
                 });
             return toReturn
         }
@@ -116,7 +115,6 @@ const SignUp = () => {
             let usernameExists = false
 
             await doesUsernameExists().then((res) => {
-                console.log(res)
                 usernameExists = res
             })
 
@@ -128,7 +126,6 @@ const SignUp = () => {
                     await updateUserProfile()
                 } catch (error) {
                     setError(error.message);
-                    console.log(error);
                     setOpen(true);
                 }
             }
@@ -193,20 +190,6 @@ const SignUp = () => {
                     </div>
                 </div>
 
-                {/* Name Input */}
-                {/* <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="name"
-                    label="Name"
-                    name="name"
-                    autoComplete="name"
-                    autoFocus
-                    onChange={(e) => setName(e.target.value)}
-                /> */}
-
                 {/* Username Input */}
                 <TextField
                     variant="outlined"
@@ -263,7 +246,6 @@ const SignUp = () => {
                     }}
 
                     labelWidth={60}
-                    // autoComplete="current-password"
                     onChange={(e) => setPassword(e.target.value)}
 
                 />
@@ -295,23 +277,9 @@ const SignUp = () => {
                     }}
 
                     labelWidth={60}
-                    // autoComplete="current-password"
                     onChange={(e) => setConfirmPassword(e.target.value)}
 
                 />
-
-                {/* Contact Number Input */}
-                {/* <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="contactNumber"
-                    label="Contact Number"
-                    name="contactNumber"
-                    autoComplete="contactNumber"
-                    autoFocus
-                    onChange={(e) => setContactNumber(e.target.value)}
-                /> */}
 
                 {/* Submit Button Input */}
                 <Button

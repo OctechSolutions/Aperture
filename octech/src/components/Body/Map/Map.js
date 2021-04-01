@@ -12,7 +12,6 @@ import { useHistory } from "react-router-dom";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Navigation, Pagination, EffectFlip, Keyboard } from 'swiper';
 import Zoom from 'react-medium-image-zoom'
-// Import Swiper styles
 import 'swiper/swiper-bundle.css';
 
 SwiperCore.use([Navigation, Pagination, EffectFlip, Keyboard]);

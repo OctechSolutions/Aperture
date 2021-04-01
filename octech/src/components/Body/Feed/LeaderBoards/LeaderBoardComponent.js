@@ -72,7 +72,6 @@ function LeaderBoardComponent(props) {
                         {tableData.map((info, index) => {
                             return (
                                 <tr>
-                                    {/* {(index == 0) && <td>{index+1}</td>} */}
                                     <td style={{ verticalAlign: "middle" }}>{(info.rank < 4) ? ['🥇','🥈','🥉'][info.rank-1] : (info.rank)}</td>
                                     {props.columns.map(col => {
 

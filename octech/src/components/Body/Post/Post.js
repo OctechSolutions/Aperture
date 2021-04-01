@@ -14,7 +14,6 @@ import SendIcon from '@material-ui/icons/Send';
 import MapIcon from '@material-ui/icons/Map';
 import Map from '../Map/Map';
 import Rating from '@material-ui/lab/Rating';
-// import FavoriteIcon from '@material-ui/icons/Favorite';
 import GradeIcon from '@material-ui/icons/Grade';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -194,7 +193,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
           tags: doc.data().tags
         });
         tempRefs.push(doc.id);
-        // console.log(doc.data(), doc.id)
       });
       setTimeout(() => { setLoading(false); }, 100)
       setImages(tempImages);
@@ -205,17 +203,14 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
 
   useEffect(() => {
     db.collection("users").doc(user.displayName).get().then((doc) => {
-      // console.log(snapshot);
       setCollections(doc.data().collections);
       if (timestamp) {
         moment(timestamp.toDate()).fromNow();
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const postComment = () => {
-    console.log(comment, id);
     if (comment.replace(/\s/g, '').length) {
       if (isForumPost) {
         db.collection("forumPosts").doc(id).update({
@@ -290,7 +285,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
   }
 
   const addImagesToCollection = (a) => {
-    console.log(a);
     db.collection("collections").doc(user.displayName + a).update({
       imageRef: firebase.firestore.FieldValue.arrayUnion(...refs)
     });
@@ -308,11 +302,8 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
       posts: firebase.firestore.FieldValue.arrayRemove(id) // The post is removed from the users array of posts
     })
 
-    console.log(refs)
     refs.forEach((ids) => {
-      console.log(ids);
       db.collection('postImages').doc(ids).delete();
-      console.log("Post image deleted!")
     });
 
     if (largeGifs) {
@@ -323,7 +314,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
         // Delete the file
         ref.delete().then(function () {
           // File deleted successfully
-          console.log(name, " deleted from storage!")
         })
       })
     }
@@ -333,11 +323,8 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
         .doc(id)
         .delete()
         .then(function () {
-          console.log("deleted post successfully!");
-          console.log(id);
         })
         .catch(function (error) {
-          console.log(`Error post info delete ${error}`);
         });
     }
     else {
@@ -345,11 +332,8 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
         .doc(id)
         .delete()
         .then(function () {
-          console.log("deleted post successfully!");
-          console.log(id);
         })
         .catch(function (error) {
-          console.log(`Error post info delete ${error}`);
         });
     }
 
@@ -358,10 +342,7 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
 
   var slideshow;
   if (images.length >= 1)
-    // slideshow = <center><Zoom><img src={images[0].src} style={images[0].style} alt="User Post" className="post__image" /></Zoom></center>;
-    // } else if (images.length > 1) {
     slideshow = <ImageGallery sliderImages={images} />
-  // }
   else {
     slideshow = <></>
   }
@@ -393,7 +374,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
             id="commentBox"
             onKeyPress={(ev) => {
               if (ev.key === 'Enter') {
-                // Do code here
                 ev.preventDefault();
                 postComment();
               }
@@ -524,7 +504,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
               db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
                 .update({ challenge: challengeName })
                 .then(() => {
-                  console.log("Added Challenge = " + challengeName)
                   updateChallengeChip() // Update the challenge chips that are displayed on the post.
                   handleChallengeNameFormClose()
                 })
@@ -599,14 +578,12 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
           alert("You have reported this post successfully.");
         })
         .catch(err => {
-          console.log(err);
           alert("An error has occurred reporting this post.");
         })
     }
   }
 
   // Update Challenge Chips when component mounted.
-  // eslint-disable-next-line
   useEffect(() => { updateChallengeChip() }, []);
 
   // ------------------------------------------------------------------------------------------------------------
@@ -663,7 +640,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
               photoUrl={photoUrl}
               locationPosts={locationPosts}
               id={id}
-            // isPreview={false}
             />
           </div>
         </Modal.Body>
@@ -750,11 +726,7 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
                 {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
 
               </div>
-
-              {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
-
             </div>
-
           </div>
           <>
           </>
@@ -775,14 +747,14 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
                   open={open}
                   onClose={handleMenuClose}
                 >
-                  <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
+                  <MenuItem key={"delete"} selected={false} onClick={() => { deletePost(); handleMenuClose() }}>
                     <ListItemIcon>
                       <DeleteIcon />
                     </ListItemIcon>
                   Delete
                 </MenuItem>
                   {(images.length > 0) && !isForumPost &&
-                    <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
+                    <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { handleMenuClose(); addToPortfolio() }}>
                       <ListItemIcon>
                         <AddToPhotosIcon />
                       </ListItemIcon>
@@ -801,7 +773,7 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
                   {/* To enter a challenge. */}
                   {
                     (images.length === 1) && !challengeChip && !isForumPost &&
-                    <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
+                    <MenuItem key={"enterChallenge"} selected={false} onClick={() => { handleChallengeNameFormOpen(); handleMenuClose() }}>
                       <ListItemIcon>
                         <AddAlarmRoundedIcon />
                       </ListItemIcon>
@@ -906,7 +878,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
             <div>
               {!isForumPost &&
                 <CopyToClipboard text={`${window.location.origin}/post/${id}`} onCopy={() => {
-                  console.log(window.location.origin)
                   setSnackbarOpen(true);
                   setSnackbarMessage(`Copied Link to Post to your Clipboard!`);
                   setSnackbarType("success");}}>
@@ -999,10 +970,7 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
                   {/* This dynamically creates a new page with /user/{username} and sends the user to that page */}
 
                 </div>
-
-                {/* <p>{isPrivate ? "Private" : "Public"}Post</p> */}
               </div>
-
             </div>
 
           </Modal.Header>
@@ -1058,14 +1026,12 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
               margin="normal"
               multiline
               rowsMax={4}
-              // fullWidth
               name="commentBox"
               label={isForumPost ? "Feedback" : "Comment"}
               id="commentBox"
               value={comment}
               onKeyPress={(ev) => {
                 if (ev.key === 'Enter') {
-                  // Do code here
                   ev.preventDefault();
                   postComment();
                 }

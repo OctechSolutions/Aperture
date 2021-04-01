@@ -40,7 +40,6 @@ const BugReportForm = () => {
                 alert("Your message has been submitted successfully");
             })
             .catch((error) => {
-                console.log(error);
                 alert(error.bugReport);
                 setLoader(false);
             });

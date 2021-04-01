@@ -46,7 +46,6 @@ export default function DraggableMap({
     const mapRef = useRef();
     const searchPlace = (a) => {
         if (a) {
-            console.log(a)
             setSearch(false);
             setSpace(false)
             setValue(null)

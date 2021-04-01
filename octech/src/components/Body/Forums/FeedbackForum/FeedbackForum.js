@@ -167,7 +167,6 @@ function FeedbackForum({ match }, props) {
 
   const sendPost = async (e) => { // When the new post is submitted this function is called
     e.preventDefault(); // This is to prevent the default behaviour of submitting a form
-    console.log(sliderImages);
 
     if (sliderImages.length) {
 
@@ -187,7 +186,6 @@ function FeedbackForum({ match }, props) {
         type: "feedbackForum"
       })
       sliderImages.forEach((image) => {
-        console.log(image, "added to db");
         db.collection('postImages').doc().set({
           url: image.src,
           styleModification: image.style,
@@ -233,13 +231,10 @@ function FeedbackForum({ match }, props) {
   const handleChange = (e) => { // When a file is uploaded this function is called
 
     e.preventDefault();
-    console.log(e.target.files[0]);
     setEditOptions(DEFAULT_EDIT_OPTIONS);
 
     {
-      // reader.readAsDataURL(e.target.files[0]); // The image file is converted to its base64 equivalent string and is stored in reader as reader.result
       setFile(e.target.files[0]);
-      // cocoSsd.load();
       const compress = new Compress();
       compress.compress([e.target.files[0]], {
         size: 0.7, // the max size in MB, defaults to 2MB
@@ -249,7 +244,6 @@ function FeedbackForum({ match }, props) {
         resize: true, // defaults to true, set false if you do not want to resize the image width and height
       }).then((data) => {
         // returns an array of compressed images
-        console.log(data);
         var compressedb64 = data[0].prefix + data[0].data;
         setInputImg(compressedb64);
 
@@ -262,12 +256,10 @@ function FeedbackForum({ match }, props) {
           const img = document.getElementById("img");
           model.detect(img).then((predictions) => {
 
-            console.log("Predictions: ", predictions);
             if (predictions.length) {
               predictions.forEach((prediction) => {
                 if (prediction.class === "person") {
                   setInputImg("");
-                  console.log("HUMAN DETECTED!!!")
                   setShow(true);
                 }
                 else {
@@ -388,7 +380,6 @@ function FeedbackForum({ match }, props) {
                           </div>
                         </div>}
                       <br />
-                      {/* <img src={inputImg} alt="Preview" className="previewImage" /> */}
                       {inputImg &&
                         <div className="photoEditor">
                           {/* Div in which to view the photo. */}
