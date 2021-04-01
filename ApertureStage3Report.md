@@ -243,7 +243,7 @@ Some components of the application were reused in conjucture to most other compo
 
 - **React Bootstrap:** This component provides UI elements from the Material UI framework.
 
-- **Server Component:** This component represents a leased server on which cron jobs was set up on.
+- **Server Component:** This component represents a leased server on which cron jobs was set up.
 
 - **Timely Component:** This component encapsulates the process of checking the DB periodically for updates. It requires the Server Component.
 
@@ -270,33 +270,32 @@ Some components of the application were reused in conjucture to most other compo
    **Apart from above mentioned common components, components specific to this system is as follows.**
 
    - **Feed Component:** It provides a scrollable view of posts and a UI with which users may interact with it. It requires many of the common components like React, Firebase, UserSlice, Material UI. This component also requires the post component, map component which in itself requires the Google Maps API component and the Image manipulation component. The Image Manipulation Component requires the Giphy App component to provide Image Editing services and tools. Feed component may also require components like Leaderboards from other sub-systems like the Game Mechanics Subsystem.
-   - **Post Component:** This component provides a Post object that Feed Component shall use. This components like the Image Gallery Component that provides a view of a set of images, Moment Component that requires npm component.
-   - Other View components include **Channels Component**, **Collections Component**, and **Portfolio Component** that require feed components in addition to common shared components which collect elements like text, images etc and provide a unique view. They also provide interactable components that allow users to edit them, add to them etc.
+   - **Post Component:** This component provides a Post object that the Feed Component shall use. This component requires the Image Gallery Component that provides a view of a set of images.
+   - Other View components include **Channels Component**, **Collections Component**, and **Portfolio Component** that require feed components in addition to common shared components in order to collect elements like text, images etc, and provide a unique view. They also provide interactable components that allow users to edit, add, delete etc.
 
    
 
 3. **User Interaction System**
 
-   This component enables interaction among users and/or application managers. Facilitated features include a chat between users, rating of posts, point (profile/challenge points) tracking, adding/deletion of comments, sending/accepting/ignoring friend requests, blocking/unblocking of users, following/unfollowing of channels, a feedback forum, a gaming forum, search/explore facility, news feed fetching, leaderboard management, participation in challenges, notification handling, user content/bug/help reporting management and making recommendations.
+   This component enables interaction among users and/or application managers. Facilitated features include a chat between users, rating of posts, point (profile/challenge points) tracking, adding/deletion of comments, sending/accepting/ignoring friend requests, blocking/unblocking of users, following/unfollowing of channels, a feedback forum, a gaming forum and a search/explore facility.
 
    **Apart from above mentioned common components, components specific to this system is as follows.**
 
-   - **Chat Component :** This component requires many common components like React and provides the chat among users service.
-   - **Forums Component:** This component would provide common services to Components like Feedback Forum Component and Game Forum Component. This component also requires no specific components
-   - **Comments Component:** This component
-   - **Explore Component:** This component provides search services and a UI via which users may view app content. It requires additional components like the Map Component and NPM Component.
-
+   - **Chat Component :** This component requires many common components like React and provides the chat service.
+   - **Forums Component:** This component would provide common services to Components like Feedback Forum Component and Game Forum Component. This component also requires no additional components.
+   - **Explore Component:** This component provides search services and a UI via which users may view app content. Aditionally, it requires the Map Component.
    
 
+   
 4. **Game Mechanics System**
 
    This component handles the game aspect of the application and deals with allowing users to create and participate in challenges and earn points and badges via user ratings on profile and challenge posts. Display of point status summary on leaderboards, announcing of winners and providing rewards are also managed by this system.
 
    **Apart from above mentioned common components, components specific to this system is as follows.**
 
-   - **Leaderboards Component:** This component would provide services to components like Global Posts Leader Board, Challenges Leader Board, Channel Leader Board and Global Users Leader Board in common.
+   - **Leaderboards Component:** This component would provide common services like fething and displaying content with highest points to components like Global Posts Leader Board, Challenges Leader Board, Channel Leader Board and Global Users Leader Board.
 
-   - **Challenges Component:** This component provides a platform for users to add Challenge Objects. It requires no specific component than the common ones.
+   - **Challenges Component:** This component provides a platform for users to add Challenge Objects. It requires no specific component other than the common ones.
 
      
 
@@ -316,11 +315,11 @@ Some components of the application were reused in conjucture to most other compo
 
    **Apart from above mentioned common components, components specific to this system is as follows.**
 
-   - **Reports Component:** This component provides a UI that allows users to report posts / bugs. This component requires no special component.
+   - **Reports Component:** This component provides a UI that allows users to report posts/bugs. This component requires no additional components.
 
    
 
-   **The following is an example of a component diagram that would be made in order to visualize the system before implementing it.**
+   **The following is an example of a component diagram that would be made in order to visualize a sub-system before implementing it.**
 
    <figure>
        <center>
