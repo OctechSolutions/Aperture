@@ -42,6 +42,7 @@ import BugReportForm from '../components/Body/Feed/Reports/BugReportForm';
 import PostView from '../components/Body/Post/PostView';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
 import ChallengeLeaderBoard from '../components/Challenge/ChallengeLeaderBoard';
+import Tutorial from './tutorial'
 
 const useStyles = makeStyles({
     root: {
@@ -205,7 +206,9 @@ export default function NewsfeedPage(props) {
                             <Route path="/challengeLeaderboard/:name" exact component ={ChallengeLeaderBoard} />
                             <Route path="/bugReportForm" render={props => <BugReportForm setValue={setValue} />} />
                             <Route path="/notifications" exact render={props => <Notifications notifications={notifications} />} />
-                            <Route path="/post/:id" exact component={PostView} />
+                            <Route path="/post/:id" exact component={PostView} />  
+                            <Route path="/tutorial" exact component={Tutorial} />  
+
                             <BottomNavigation value={value} onChange={handleChange} className={classes.root}>
                                 <BottomNavigationAction label="Home" value="" icon={<HomeIcon />} />
                                 {/* <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} /> */}
@@ -219,7 +222,7 @@ export default function NewsfeedPage(props) {
                         </div>
                     ) :
                     (
-                        <Modal show={!props.isVerified}>
+                        <Modal show={!props.isVerified && user!==null}>
                             <Modal.Body>
                                 <Alert variant='info'>
                                     <div className="verify-email">

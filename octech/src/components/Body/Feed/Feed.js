@@ -44,7 +44,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import Chip from '@material-ui/core/Chip'
 import TextField from '@material-ui/core/TextField';
-import {GiphyApiKey} from "./giphy-config"
+import { GiphyApiKey } from "./giphy-config"
 require('@tensorflow/tfjs-backend-cpu');
 require('@tensorflow/tfjs-backend-webgl');
 
@@ -149,7 +149,7 @@ function Feed({ match }, props) {
       }
     })
   }, [user.displayName])
-  
+
   useEffect(() => { // This useEffect is called on the component mounting, it fetches all the posts from the db and stores them into the posts array
     db.collection("users").doc(user.displayName) // We get the user from the db whose id matches the name of the current user
       .onSnapshot(doc => {
@@ -198,7 +198,7 @@ function Feed({ match }, props) {
                 setOpen(false)
               })
           }
-          setTimeout(() => {setLoaded(true)},500)
+          setTimeout(() => { setLoaded(true) }, 500)
         } else {
           console.log("No such document!");
         }
@@ -549,7 +549,7 @@ function Feed({ match }, props) {
       if (e.target.value.length > 0) {
         setTags([...tags, e.target.value.toLowerCase()]);
       }
-      e.target.value= ""
+      e.target.value = ""
     }
   };
 
@@ -911,7 +911,7 @@ function Feed({ match }, props) {
           scrollable={true}
           centered
         >
-          <Modal.Header closeButton onClick={() => {setShowTags(false)}}>
+          <Modal.Header closeButton onClick={() => { setShowTags(false) }}>
             <Modal.Title> Tags </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -936,7 +936,12 @@ function Feed({ match }, props) {
         </Backdrop>
         {loaded && <FlipMove>
           {/* Flipmove is a library for the smooth animation that animated the new post being added to the DOM */}
-          {posts.length===0 && !match.params.channel ? history.push('/search') : posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
+          {posts.length === 0 && !match.params.channel ? <center style= {{marginTop: "20vh"}}><h3>
+            <br />
+            No posts to show! <p />
+            <h6>Add friends or follow channels to view Posts...<p /></h6>
+            <h2>Go to the <b onClick={() => { history.push('/search') }} style={{ cursor: "pointer" }}>Explore Page</b></h2>
+          </h3></center> : posts.map( // The posts from the useEffect hook that were saved are iterated over and a new Post component is created corresponding to the posts it is iterating over
             ({
               id,
               data: { name, description, message, photoUrl, largeGifs, comments, channelBy, hasCoordinates, lat, lng, stars, totalStars, isPrivate, timestamp, type, challenges },
