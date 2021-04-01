@@ -132,10 +132,8 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                         useR.updateEmail(email).then(function () {
                             useR.sendEmailVerification().then(function () {
                             }).catch(function (error) {
-                                console.log(error)
                             });
                         }).catch(function (error) {
-                            console.log(error)
                         });
                         await db.collection("users").doc(useR.displayName).update({ email: email })
                     }
@@ -143,13 +141,11 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                         useR.updatePassword(newPassword).then(function () {
                             // Update successful.
                         }).catch(function (error) {
-                            console.log(error)
                         });
                     }
                     setLoading(false)
                 }
             }).catch(function (error) {
-                console.log(error, "e")
                 setOldPasswordDoesNotMatch(true)
             });
         }
@@ -331,7 +327,6 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
                 history.push('/');
                 window.location.reload();
             }).catch(function (error) {
-                console.log(error, "e")
                 setconfirmPasswordDoesNotMatch(true)
             });
         }
@@ -524,7 +519,6 @@ const EditProfileModal = ({ setShowEditProfile, setLoading }) => {
             // Profile updated successfully!
             // firebase.auth().currentUser.reload()
         }, function (error) {
-            console.log(error)
         });
         // Update posts and post images
         await db.collection("posts").get().then(docs => {

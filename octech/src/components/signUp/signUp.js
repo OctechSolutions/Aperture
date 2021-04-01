@@ -107,7 +107,6 @@ const SignUp = () => {
                     });
                 })
                 .catch(function (error) {
-                    console.log("Error getting documents: ", error);
                 });
             return toReturn
         }
@@ -116,7 +115,6 @@ const SignUp = () => {
             let usernameExists = false
 
             await doesUsernameExists().then((res) => {
-                console.log(res)
                 usernameExists = res
             })
 
@@ -128,7 +126,6 @@ const SignUp = () => {
                     await updateUserProfile()
                 } catch (error) {
                     setError(error.message);
-                    console.log(error);
                     setOpen(true);
                 }
             }

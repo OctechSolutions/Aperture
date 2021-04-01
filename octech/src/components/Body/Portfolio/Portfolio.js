@@ -42,7 +42,6 @@ function Portfolio({ match, user }) {
 
     useEffect(() => {
         db.collection("portfolios").doc(match.params.id).onSnapshot((doc) => {
-            console.log(doc.data())
             if (!doc.data()) {
                 setPortfolioExists(false);
             }
@@ -74,7 +73,6 @@ function Portfolio({ match, user }) {
             resize: true, // defaults to true, set false if you do not want to resize the image width and height
         }).then((data) => {
             // returns an array of compressed images
-            console.log(data);
             var compressedb64 = data[0].prefix + data[0].data;
             setProfilePic(compressedb64)
         })

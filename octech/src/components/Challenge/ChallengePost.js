@@ -56,7 +56,6 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
       }, { merge: true })
     }
 
-    console.log(star)
     post.set({ totalStars: newTotalStars, stars: star }, { merge: true });
 
     const uploader = db.collection("users").doc(creator);
@@ -211,7 +210,7 @@ export default function ChallengePost({ user, caption, star, totalStar, creator,
                 aria-label="map"
                 aria-controls="long-menu"
                 aria-haspopup="true"
-                onClick={() => { console.log("view maps clicked."); 
+                onClick={() => { 
                 setMapComponent(
                   {
                     center:{lat: lat, lng: lng},

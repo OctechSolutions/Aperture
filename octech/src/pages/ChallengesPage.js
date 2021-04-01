@@ -81,7 +81,6 @@ export default function ChallengesPage() {
                 // If yes, then this user cannot create another challenge this week.
                 if(numChallengesThisWeek >= 3) { 
                     setCanCreateNewChallenge(false) 
-                    console.log(user.displayName + " has already created 3 challenges.")
                 }
             })
         })
@@ -234,7 +233,6 @@ export default function ChallengesPage() {
                                     setLoadChallenges(true)
                                 })
                                 .catch((error) => {
-                                    console.error("Error adding document: ", error)
                                 })
                             }
                         })
@@ -280,7 +278,6 @@ export default function ChallengesPage() {
                                 setLoadChallenges(true)
                             })
                             .catch((error) => {
-                                console.error("Error adding document: ", error);
                             });
                         }
                     })

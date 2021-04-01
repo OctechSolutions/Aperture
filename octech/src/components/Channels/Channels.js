@@ -87,7 +87,6 @@ function Channels({ profileName }) {
             });
         db.collection("posts").where("name", "==", channel.data().name).get().then((a) => {
             a.forEach((b) => {
-                console.log(b.id)
                 db.collection("postImages").where("ref", "==", b.id).get().then(function (querySnapshot) {
                     querySnapshot.forEach(function (doc) {
                         doc.ref.delete();
@@ -97,7 +96,6 @@ function Channels({ profileName }) {
             })
         })
         channel.data().followers.forEach((follower) => {
-            console.log(follower, channelName)
             db.collection("users").doc(follower).update({
                 followingChannels: firebase.firestore.FieldValue.arrayRemove({ name: channel.data().name, creator: user.displayName })
             });

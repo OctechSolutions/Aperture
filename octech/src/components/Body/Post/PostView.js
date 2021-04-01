@@ -84,7 +84,6 @@ const Post = ({ match }) => {
     useEffect(() => {
         db.collection("posts").doc(match.params.id) // We get the user from the db whose id matches the name of the current user
             .get().then(doc => {
-                // console.log(doc.data())
                 setID(doc.id)
                 setName(doc.data().name)
                 setMessage(doc.data().message)
@@ -115,7 +114,6 @@ const Post = ({ match }) => {
                             tags: doc.data().tags
                         });
                         tempRefs.push(doc.id);
-                        // console.log(doc.data(), doc.id)
                     });
                     setTimeout(() => { setLoading(false); }, 500)
                     setImages(tempImages);
@@ -239,7 +237,6 @@ const Post = ({ match }) => {
     }, []);
 
     const postComment = () => {
-        console.log(comment, id);
         if (comment.replace(/\s/g, '').length) {
             db.collection("posts").doc(id).update({
                 comments: firebase.firestore.FieldValue.arrayUnion({
@@ -288,7 +285,6 @@ const Post = ({ match }) => {
     }
 
     const addImagesToCollection = (a) => {
-        console.log(a);
         db.collection("collections").doc(user.displayName + a).update({
             imageRef: firebase.firestore.FieldValue.arrayUnion(...refs)
         });
@@ -306,11 +302,8 @@ const Post = ({ match }) => {
             posts: firebase.firestore.FieldValue.arrayRemove(id) // The post is removed from the users array of posts
         })
 
-        console.log(refs)
         refs.forEach((ids) => {
-            console.log(ids);
             db.collection('postImages').doc(ids).delete();
-            console.log("Post image deleted!")
         });
 
 
@@ -318,11 +311,8 @@ const Post = ({ match }) => {
             .doc(id)
             .delete()
             .then(function () {
-                console.log("deleted post successfully!");
-                console.log(id);
             })
             .catch(function (error) {
-                console.log(`Error post info delete ${error}`);
             });
 
         history.push("/")
@@ -408,7 +398,6 @@ const Post = ({ match }) => {
                             db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
                                 .update({ challenge: challengeName })
                                 .then(() => {
-                                    console.log("Added Challenge = " + challengeName)
                                     updateChallengeChip() // Update the challenge chips that are displayed on the post.
                                     handleChallengeNameFormClose()
                                 })
@@ -473,7 +462,7 @@ const Post = ({ match }) => {
     const handleReportClick = (post_id) => {
         let c = window.confirm("Are you sure you want to report this post?");
         if (c === true) {
-            console.log(user.email);
+
             db.collection("postReports")
                 .add({
                     postID: post_id,
@@ -483,7 +472,6 @@ const Post = ({ match }) => {
                     alert("You have reported this post successfully.");
                 })
                 .catch(err => {
-                    console.log(err);
                     alert("An error has occurred reporting this post.");
                 })
         }
@@ -651,14 +639,14 @@ const Post = ({ match }) => {
                                         open={open}
                                         onClose={handleMenuClose}
                                     >
-                                        <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
+                                        <MenuItem key={"delete"} selected={false} onClick={() => { deletePost(); handleMenuClose() }}>
                                             <ListItemIcon>
                                                 <DeleteIcon />
                                             </ListItemIcon>
                   Delete
                 </MenuItem>
                                         {(images.length > 0) &&
-                                            <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
+                                            <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { handleMenuClose(); addToPortfolio() }}>
                                                 <ListItemIcon>
                                                     <AddToPhotosIcon />
                                                 </ListItemIcon>
@@ -677,7 +665,7 @@ const Post = ({ match }) => {
                                         {/* To enter a challenge. */}
                                         {
                                             (images.length === 1) && !challengeChip &&
-                                            <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
+                                            <MenuItem key={"enterChallenge"} selected={false} onClick={() => { handleChallengeNameFormOpen(); handleMenuClose() }}>
                                                 <ListItemIcon>
                                                     <AddAlarmRoundedIcon />
                                                 </ListItemIcon>

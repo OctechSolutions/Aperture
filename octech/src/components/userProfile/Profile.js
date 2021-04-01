@@ -69,7 +69,6 @@ function Profile({ match }) {
     const [viewingUserInfo, setViewingUserInfo] = useState({});
 
     useEffect(() => {
-        console.log(match); // match returns a lot of properties from the react router dom including the id we set for the urls of the router to be dynamic
         db.collection("users").doc(match.params.id) // We get the user from the db whose id matches the name of the user
             .onSnapshot(doc => {
                 if (doc.exists) {
@@ -102,7 +101,6 @@ function Profile({ match }) {
                             );
                     }
                 } else {
-                    console.log("No such document!");
                 }
             });
         db.collection("users").doc(user.displayName)
@@ -111,7 +109,6 @@ function Profile({ match }) {
                     setViewingUserInfo(snapshot.data());
                 }
                 else
-                    console.log("No Such Document!")
             })
     }, [match, user.displayName]);
 

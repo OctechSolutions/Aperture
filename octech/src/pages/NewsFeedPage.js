@@ -78,7 +78,6 @@ export default function NewsfeedPage(props) {
     const [time, setTime] = useState("")
 
     const handleChange = (event, newValue) => {
-        console.log(newValue)
         setValue(newValue)
         history.push(`/${newValue}`)
     }

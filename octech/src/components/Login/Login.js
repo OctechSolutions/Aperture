@@ -64,7 +64,6 @@ export default function Login() {
     auth.signInWithEmailAndPassword(email, password)
       .then(function (result) {
         history.push("/")
-        console.log(result)
         dispatch(login({
           email: result.user.email,
           uid: result.user.uid,
@@ -72,13 +71,11 @@ export default function Login() {
           photoUrl: result.user.photoURL,
         }))
       }).catch(function (error) {
-        console.log(error)
         setError("Failed to log in")
       });
   }
 
   const forgotPassword = () => {
-    console.log("Forgot Password Clicked");
     setForgotPasswordClicked(true);
   }
 

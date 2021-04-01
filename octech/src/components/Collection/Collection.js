@@ -138,7 +138,6 @@ function Collection({ match, user }) {
                 var compressedb64 = a.prefix + a.data;
                 temp.push(compressedb64);
             })
-            console.log(temp)
             setSliderImages(sliderImages.concat(temp));
         })
 

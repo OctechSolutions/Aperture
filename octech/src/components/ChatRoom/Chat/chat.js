@@ -80,8 +80,6 @@ const Chat = (props) => {
             });
         }
         
-        console.log(users.length)
-
     }
 
     const delteMessage = async (message) => {

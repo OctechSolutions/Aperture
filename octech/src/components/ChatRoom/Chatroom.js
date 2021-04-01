@@ -66,10 +66,8 @@ const Chatroom = (match) => {
                     data: doc.data()
                 })
             } else {
-                console.log("No such document!");
             }
         }).catch(function (error) {
-            console.log("Error getting user data:", error)
         });
 
         db.collection("chatRooms")
@@ -88,10 +86,8 @@ const Chatroom = (match) => {
                     });
                     setChatList(userChats);
                 } else {
-                    console.log("No chats for the user");
                 }
             }, function (error) {
-                console.log("Error getting chats:", error);
             })
     }, [user.displayName]);
 
@@ -104,7 +100,6 @@ const Chatroom = (match) => {
         }).then(function (docRef) {
             id = docRef.id
         }).catch(function (error) {
-            console.error("Error adding document: ", error);
         });
         return id
     }

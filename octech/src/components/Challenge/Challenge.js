@@ -79,10 +79,8 @@ export default function Challenge({ user, name, description, hints, creator, cre
             if (doc.exists) {
                 setData(doc.data().friends.filter(a => !participants.map(u => u.name).concat(invitees).includes(a.name)))
             } else {
-                console.log("No such document!");
             }
         }).catch(function (error) {
-            console.log("Error getting user data:", error)
         });
     }, [])
 
@@ -166,7 +164,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const displayCodeToClipboardDialog = () => {
         setShowCopiedMessage({ vertical: 'bottom', horizontal: 'center', openCopiedMessage: true })
         sleep(3000).then(() => setShowCopiedMessage({ vertical: 'bottom', horizontal: 'center', openCopiedMessage: false }))
-        console.log(name + " copied to clipboard!")
     }
 
     // Funtion that loads all the posts participating in this challenge.
@@ -338,7 +335,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const sendInviteNotifications = (names) => {
         let inviteeNames = []
         names.forEach(a => {
-            console.log(`${creator} invited you to participate in ${name}`, a.name)
             inviteeNames.push(a.name)
             db.collection("users").doc(a.name).collection("notifications").doc(a.name).set({
                 notifications: firebase.firestore.FieldValue.arrayUnion({
@@ -409,7 +405,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
         }).then((data) => {
 
             // returns an array of compressed images
-            console.log("compressed data = " + data[0].prefix + data[0].data)
             var compressedb64 = data[0].prefix + data[0].data
             setInputImg(compressedb64)
 
@@ -420,12 +415,10 @@ export default function Challenge({ user, name, description, hints, creator, cre
                 const img = document.getElementById("img")
                 model.detect(img).then(
                     (predictions) => {
-                        console.log("Predictions: ", predictions)
                         if (predictions.length) {
                             predictions.forEach((prediction) => {
                                 if (prediction.class === "person") {
                                     setInputImg("")
-                                    console.log("HUMAN DETECTED!!!")
                                     setShow(true)
                                 }
                                 else {
@@ -470,12 +463,10 @@ export default function Challenge({ user, name, description, hints, creator, cre
             const img = document.getElementById("img")
             model.detect(img).then((predictions) => {
 
-                console.log("Predictions: ", predictions)
                 if (predictions.length) {
                     predictions.forEach((prediction) => {
                         if (prediction.class === "person") {
                             setInputImg("")
-                            console.log("HUMAN DETECTED!!!")
                             setShow(true)
                         }
                         else {
@@ -613,7 +604,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
     const getData = (val) => {
         setLat(val.lat);
         setLng(val.lng);
-        console.log(lat + "," + lng);
     }
 
     // Set map = map component with given latitude and longitude
@@ -742,7 +732,7 @@ export default function Challenge({ user, name, description, hints, creator, cre
                             </MenuItem>
 
                             {/* Send invites. */}
-                            <MenuItem key={"invite"} selected={false} onClick={() => { console.log("Send invites to join challenge."); handleMenuClose(); setAdd(true) }}>
+                            <MenuItem key={"invite"} selected={false} onClick={() => { handleMenuClose(); setAdd(true) }}>
                                 <ListItemIcon> <CallMadeIcon /> </ListItemIcon>
                                 Send Invites
                             </MenuItem>
@@ -1132,7 +1122,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                             <center>
                                 <ButtonBase onClick={() => {
                                     if (selectedUsers.length > 0) {
-                                        console.log(selectedUsers);
                                         sendInviteNotifications(selectedUsers);
                                     }
                                 }}>
@@ -1141,7 +1130,6 @@ export default function Challenge({ user, name, description, hints, creator, cre
                                         aria-label="invite to challenge"
                                         onClick={() => {
                                             if (selectedUsers.length > 0) {
-                                                console.log(selectedUsers);
                                             }
                                         }}
                                         color="primary"

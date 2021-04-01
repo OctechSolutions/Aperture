@@ -211,7 +211,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
   }, []);
 
   const postComment = () => {
-    console.log(comment, id);
     if (comment.replace(/\s/g, '').length) {
       if (isForumPost) {
         db.collection("forumPosts").doc(id).update({
@@ -286,7 +285,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
   }
 
   const addImagesToCollection = (a) => {
-    console.log(a);
     db.collection("collections").doc(user.displayName + a).update({
       imageRef: firebase.firestore.FieldValue.arrayUnion(...refs)
     });
@@ -304,11 +302,8 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
       posts: firebase.firestore.FieldValue.arrayRemove(id) // The post is removed from the users array of posts
     })
 
-    console.log(refs)
     refs.forEach((ids) => {
-      console.log(ids);
       db.collection('postImages').doc(ids).delete();
-      console.log("Post image deleted!")
     });
 
     if (largeGifs) {
@@ -319,7 +314,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
         // Delete the file
         ref.delete().then(function () {
           // File deleted successfully
-          console.log(name, " deleted from storage!")
         })
       })
     }
@@ -329,11 +323,8 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
         .doc(id)
         .delete()
         .then(function () {
-          console.log("deleted post successfully!");
-          console.log(id);
         })
         .catch(function (error) {
-          console.log(`Error post info delete ${error}`);
         });
     }
     else {
@@ -341,11 +332,8 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
         .doc(id)
         .delete()
         .then(function () {
-          console.log("deleted post successfully!");
-          console.log(id);
         })
         .catch(function (error) {
-          console.log(`Error post info delete ${error}`);
         });
     }
 
@@ -516,7 +504,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
               db.collection("posts").doc(id) // Add this challenge to the post's challenges array field.
                 .update({ challenge: challengeName })
                 .then(() => {
-                  console.log("Added Challenge = " + challengeName)
                   updateChallengeChip() // Update the challenge chips that are displayed on the post.
                   handleChallengeNameFormClose()
                 })
@@ -591,7 +578,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
           alert("You have reported this post successfully.");
         })
         .catch(err => {
-          console.log(err);
           alert("An error has occurred reporting this post.");
         })
     }
@@ -761,14 +747,14 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
                   open={open}
                   onClose={handleMenuClose}
                 >
-                  <MenuItem key={"delete"} selected={false} onClick={() => { console.log("Delete clicked"); deletePost(); handleMenuClose() }}>
+                  <MenuItem key={"delete"} selected={false} onClick={() => { deletePost(); handleMenuClose() }}>
                     <ListItemIcon>
                       <DeleteIcon />
                     </ListItemIcon>
                   Delete
                 </MenuItem>
                   {(images.length > 0) && !isForumPost &&
-                    <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { console.log("Add clicked"); handleMenuClose(); addToPortfolio() }}>
+                    <MenuItem key={"addToPortfolio"} selected={false} onClick={() => { handleMenuClose(); addToPortfolio() }}>
                       <ListItemIcon>
                         <AddToPhotosIcon />
                       </ListItemIcon>
@@ -787,7 +773,7 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
                   {/* To enter a challenge. */}
                   {
                     (images.length === 1) && !challengeChip && !isForumPost &&
-                    <MenuItem key={"enterChallenge"} selected={false} onClick={() => { console.log("Enter Challenge clicked"); handleChallengeNameFormOpen(); handleMenuClose() }}>
+                    <MenuItem key={"enterChallenge"} selected={false} onClick={() => { handleChallengeNameFormOpen(); handleMenuClose() }}>
                       <ListItemIcon>
                         <AddAlarmRoundedIcon />
                       </ListItemIcon>
@@ -892,7 +878,6 @@ const Post = forwardRef(({ id, name, message, photoUrl, largeGifs, comments, cha
             <div>
               {!isForumPost &&
                 <CopyToClipboard text={`${window.location.origin}/post/${id}`} onCopy={() => {
-                  console.log(window.location.origin)
                   setSnackbarOpen(true);
                   setSnackbarMessage(`Copied Link to Post to your Clipboard!`);
                   setSnackbarType("success");}}>
